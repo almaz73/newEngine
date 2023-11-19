@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import LeftMenu from '@/components/LeftMenu.vue'
+import HeadMenu from "@/components/HeadMenu.vue";
 </script>
 
 <template>
-  <header>
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div class="root">
+    <LeftMenu />
+    <div>
+      <HeadMenu/>
+      <RouterView />
     </div>
-  </header>
-
-  <RouterView />
+  </div>
 </template>
 
 <style scoped>
@@ -25,14 +21,12 @@ header {
   max-height: 100vh;
 }
 
-
 nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
 }
-
 
 nav a {
   display: inline-block;
