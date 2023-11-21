@@ -1,3 +1,9 @@
+:root {
+    --el-menu-icon-width: 33px !important;
+    --el-menu-item-height: 70px !important;
+}
+
+
 /* color palette from <https://github.com/vuejs/theme> */
 /*:root {
   --vt-c-white: #ffffff;
