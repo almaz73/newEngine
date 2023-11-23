@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import {RouterView} from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 import LeftMenu from '@/components/LeftMenu.vue'
 import HeadMenu from "@/components/HeadMenu.vue";
@@ -7,10 +7,11 @@ import HeadMenu from "@/components/HeadMenu.vue";
 
 <template>
   <div class="root">
-    <LeftMenu />
-    <div>
+
+    <LeftMenu/>
+    <div style="width: 100%">
       <HeadMenu/>
-      <RouterView />
+      <RouterView/>
     </div>
   </div>
 </template>
