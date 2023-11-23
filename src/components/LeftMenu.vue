@@ -13,29 +13,29 @@
       <img src="@/assets/img/big-logo.jpg" style="width: 100%; height: 72px" v-if="!isCollapse"/>
     </div>
 
-    <el-menu-item index="2">
+    <el-menu-item index="1">
       <el-icon><img src="../assets/icons/ic-desktop-windows-black-18-px.png" height="34" width="34"/></el-icon>
       <template #title>Рабочий стол</template>
     </el-menu-item>
-    <el-menu-item index="3" disabled>
+    <el-menu-item index="2">
       <el-icon><img src="../assets/icons/ic-people-black-18-px.png" height="34" width="34"/></el-icon>
       <template #title>Обращения</template>
     </el-menu-item>
-    <el-menu-item index="4" @click="isCollapse = !isCollapse">
+    <el-menu-item index="3" @click="isCollapse = !isCollapse">
       <el-icon><img src="../assets/icons/ic-directions-car-black-18-px.png" height="34" width="34"/></el-icon>
       <template #title>Оценки</template>
     </el-menu-item>
-    <el-menu-item index="2">
+    <el-menu-item index="4">
       <el-icon><img src="../assets/icons/ic-home-black-18-px.png" height="34" width="34"/></el-icon>
       <template #title>Склад</template>
     </el-menu-item>
-    <el-menu-item index="3" disabled>
+    <el-menu-item index="5" disabled>
       <el-icon><img src="../assets/icons/ic-call-black-20-px.png" height="34" width="34"/></el-icon>
       <template #title>Звонки</template>
     </el-menu-item>
 
 
-    <el-sub-menu index="1">
+    <el-sub-menu index="6">
       <template #title>
         <el-icon>
           <img src="../assets/icons/ic-settings-black-18-px.png" height="34" width="34"/>
@@ -43,13 +43,13 @@
         <span>Вложенные меню</span>
       </template>
       <el-menu-item-group title="Group Two"></el-menu-item-group>
-      <el-sub-menu index="1-4">
+      <el-sub-menu index="6-4">
         <template #title><span>item four</span></template>
-        <el-menu-item index="1-4-1">item one</el-menu-item>
+        <el-menu-item index="6-4-1">item one</el-menu-item>
       </el-sub-menu>
     </el-sub-menu>
 
-    <el-menu-item index="4" @click="isCollapse = !isCollapse">
+    <el-menu-item index="7" @click="isCollapse = !isCollapse">
       <el-icon><img src="../assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/></el-icon>
       <template #title>Управление</template>
     </el-menu-item>
