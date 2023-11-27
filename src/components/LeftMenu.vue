@@ -1,7 +1,8 @@
 <template>
-  <div class="left-menu-logo" :class="{'small':isCollapse}" @click="isCollapse = !isCollapse"></div>
+  <div class="left-menu-logo" :class="{'small':isCollapse, 'show': globalValues.isShowPanel}"
+       @click="globalValues.isShowPanel=false"></div>
 
-  <div class="left-menu-div" :class="{'narrow':isCollapse}">
+  <div class="left-menu-div" :class="{'narrow':isCollapse, 'show': globalValues.isShowPanel}">
     <el-menu
         default-active="3"
         class="el-menu-vertical"
@@ -9,12 +10,10 @@
         @open="handleOpen"
         @close="handleClose"
     >
-
       <el-menu-item index="1">
         <el-icon><img src="../assets/icons/ic-desktop-windows-black-18-px.png"/></el-icon>
         <template #title>Рабочий стол</template>
       </el-menu-item>
-
       <el-menu-item index="2">
         <el-icon><img src="../assets/icons/ic-people-black-18-px.png"/></el-icon>
         <template #title>Обращения</template>
@@ -129,15 +128,18 @@
 
 <script lang="ts" setup>
 import {ref} from 'vue'
-import {Document, Menu as IconMenu, Location, Setting} from '@element-plus/icons-vue'
+import {useGlobalValues} from "@/stores/globalValues";
 
+const globalValues = useGlobalValues()
 const isCollapse = ref(true)
 const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
+  // console.log(key, keyPath)
 }
 const handleClose = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
+
+window.addEventListener('resize', () => isCollapse.value = true)
 </script>
 
 <style>

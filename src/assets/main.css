@@ -13,21 +13,9 @@ body {
     height: 100vh;
 }
 
-/*#app {*/
-/*  !*max-width: 1280px;*!*/
-/*  margin: 0 auto;*/
-/*}*/
-
-
-/*@media (min-width: 1024px) {*/
-/*  body {*/
-/*    display: flex;*/
-/*    place-items: center;*/
-/*  }*/
-
-/*  #app {*/
-/*    display: grid;*/
-/*    grid-template-columns: 1fr 1fr;*/
-/*    padding: 0 2rem;*/
-/*  }*/
-/*}*/
+.head_menu {
+    background-color: #ebebeb;
+    height: 76px;
+    display: flex;
+    align-items: center;
+}

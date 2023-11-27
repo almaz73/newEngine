@@ -9,7 +9,7 @@ import HeadMenu from "@/components/HeadMenu.vue";
   <div class="root">
 
     <LeftMenu/>
-    <div style="width: 100%">
+    <div class="content">
       <HeadMenu/>
       <RouterView/>
     </div>

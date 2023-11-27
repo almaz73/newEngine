@@ -1,11 +1,13 @@
+/**
+Для кастомизации ElementPlus
+ */
 :root {
     --el-menu-icon-width: 35px !important;
     --el-menu-item-height: 70px !important;
 }
 
+/* Левое меню */
 .left-menu-logo {
-    /*background: #d34338;*/
-
     background-image: url("img/big-logo.gif");
 }
 
@@ -16,6 +18,7 @@
     width: 214px;
     transition: width 0.3s ease-in-out;
     border-right: 1px solid #ddd;
+    z-index: 11;
 }
 
 .left-menu-opener {
@@ -33,9 +36,7 @@
 .left-menu-opener:hover {
     background: #efefef;
     cursor: pointer;
-
 }
-
 
 .left-menu-logo.small, .left-menu-opener.small {
     width: 74px;
@@ -44,6 +45,7 @@
 .left-menu-logo.small {
     background-size: cover;
     background-image: url("img/small-logo.gif");
+
 }
 
 .el-menu {
@@ -58,9 +60,9 @@ li.el-menu-item {
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-
     width: 276px;
     transition: width 0.3s ease-in-out;
+    z-index: 10;
 }
 
 @media (width < 600px) {
@@ -69,12 +71,35 @@ li.el-menu-item {
         overflow-x: initial;
     }
 }
-@media (width<400px) {
-    .left-menu-div{
-        margin-left: -50px;
+
+.content {
+    width: 100%;
+}
+
+img.hamburger {
+    padding: 25px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: none;
+}
+
+@media (width < 400px) {
+    .left-menu-div, .left-menu-logo {
+        margin-left: -75px;
+        transition: margin-left 0.3s ease-in-out;
     }
-    .left-menu-opener, .left-menu-logo{
+
+    .left-menu-opener {
         display: none;
+    }
+
+    img.hamburger {
+        display: block;
+    }
+
+    .content {
+        position: absolute;
     }
 
 }
@@ -85,16 +110,22 @@ li.el-menu-item {
 }
 
 .left-menu-div::-webkit-scrollbar {
-    width: 0px;
+    width: 0;
 }
 
 .left-menu-div.narrow {
     width: 5.4rem;
 }
 
-/*.left-menu-div::-webkit-scrollbar-thumb {*/
-/*    width: 0px;*/
-/*}*/
+.left-menu-div.show, .left-menu-logo.show {
+    position: absolute;
+    margin-left: 0;
+}
 
+.left-menu-logo.show {
+    display: block;
+    width: 75px;
+    background-image: url("img/small-logo.gif");
+}
 
 
