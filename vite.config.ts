@@ -10,20 +10,28 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': {
-        target: "http://localhost:5000",
+      '/api/': {
+        target: 'http://localhost:5000',
+        ws: true,
         changeOrigin: true,
-        secure: false,
-        // rewrite: path => {
-        //   console.log('====path', path)
-        //   path.replace('/api', '')
-        // },
-        configure: (proxy, options) => {
-          // proxy будет экземпляром 'http-proxy'
-        },
-        cors:false
+        withCredentials: true
       }
     }
+    // proxy: {
+    //   '/api': {
+    //     target: "http://localhost:5000",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     // rewrite: path => {
+    //     //   console.log('====path', path)
+    //     //   path.replace('/api', '')
+    //     // },
+    //     configure: (proxy, options) => {
+    //       // proxy будет экземпляром 'http-proxy'
+    //     },
+    //     cors:false
+    //   }
+    // }
   },
   resolve: {
     alias: {

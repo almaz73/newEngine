@@ -47,11 +47,13 @@ function showMenu() {
 function signOut() {
   isAccountShow.value = false
 
-  axios.post('/api/account/signout').then(res => {
-    console.log('res', res)
-  }, err => {
-    console.error(err)
-  })
+  globalValues.signout()
+
+  // axios.post('/api/account/signout').then(res => {
+  //   console.log('res', res)
+  // }, err => {
+  //   console.error(err)
+  // })
 }
 
 
