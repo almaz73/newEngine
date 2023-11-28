@@ -8,7 +8,7 @@
 
 /* Левое меню */
 .left-menu-logo {
-    background-image: url("img/big-logo.gif");
+    background-image: url("../img/big-logo.gif");
 }
 
 .left-menu-logo, .left-menu-opener {
@@ -44,7 +44,7 @@
 
 .left-menu-logo.small {
     background-size: cover;
-    background-image: url("img/small-logo.gif");
+    background-image: url("../img/small-logo.gif");
 
 }
 
@@ -125,7 +125,7 @@ img.hamburger {
 .left-menu-logo.show {
     display: block;
     width: 75px;
-    background-image: url("img/small-logo.gif");
+    background-image: url("../img/small-logo.gif");
 }
 
 
