@@ -1,11 +1,3 @@
-/**
-Для кастомизации ElementPlus
- */
-:root {
-    --el-menu-icon-width: 35px !important;
-    --el-menu-item-height: 70px !important;
-}
-
 /* Левое меню */
 .left-menu-logo {
     background-image: url("../img/big-logo.gif");
@@ -46,14 +38,6 @@
     background-size: cover;
     background-image: url("../img/small-logo.gif");
 
-}
-
-.el-menu {
-    padding: 75px 0;
-}
-
-li.el-menu-item {
-    font-size: 12px;
 }
 
 .left-menu-div {
@@ -101,12 +85,6 @@ img.hamburger {
     .content {
         position: absolute;
     }
-
-}
-
-.el-menu-item.is-active {
-    background: #ffe4e1;
-    color: #d34439 !important;
 }
 
 .left-menu-div::-webkit-scrollbar {
@@ -127,5 +105,3 @@ img.hamburger {
     width: 75px;
     background-image: url("../img/small-logo.gif");
 }
-
-

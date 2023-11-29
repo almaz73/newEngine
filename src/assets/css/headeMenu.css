@@ -4,7 +4,6 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 0 30px;
 }
 
 
@@ -12,6 +11,7 @@
     border-radius: 50%;
     width: 36px;
     height: 36px;
+    margin-right: 30px;
 }
 
 .account {
@@ -83,4 +83,13 @@
     padding: 10px 15px;
     display: flex;
     justify-content: space-between;
+}
+
+.under_window{
+    top:0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 200%;
+    z-index: -1;
 }

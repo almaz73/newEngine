@@ -28,6 +28,7 @@
         <el-button> Редактировать</el-button>
         <el-button @click="signOut()"> Выйти</el-button>
       </div>
+      <div class="under_window" @click="isAccountShow=false"></div>
     </div>
   </nav>
 </template>

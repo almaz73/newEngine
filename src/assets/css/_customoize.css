@@ -1,0 +1,22 @@
+/**
+Для кастомизации ElementPlus
+ */
+:root {
+    --el-menu-icon-width: 35px !important;
+    --el-menu-item-height: 70px !important;
+}
+
+.el-menu-item.is-active {
+    background: #ffe4e1;
+    color: #d34439 !important;
+}
+
+.el-menu {
+    padding: 75px 0;
+}
+
+li.el-menu-item {
+    font-size: 12px;
+}
+
+
