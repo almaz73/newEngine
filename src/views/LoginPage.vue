@@ -1,4 +1,54 @@
 <template>
+  <form class="login">
+    <img src="../assets/icons/logo-gray.png" height="42" width="160"/>
+    <h1>Авторизация</h1>
+    <input type="text"
+           placeholder="Логин"
+           name="login"
+           autocomplete="off"
+           v-model="login">
+    <span class="passwors">
+      <input type="password"
+             placeholder="Пароль"
+             name="password"
+             v-model="password">
+      <img src="@/assets/icons/icon-password.png">
+    </span>
+    <input type="button"
+           value="Войти"
+           @click.prevent="signIn()">
+    <div class="danger">{{ authMessage }}</div>
 
-  ЛОГИН
+  </form>
 </template>
+<script setup lang="ts">
+import {ref} from "vue";
+import router from "@/router";
+import {useGlobalStore} from "@/stores/globalStore";
+
+const globalStore = useGlobalStore()
+const login = ref('')
+const password = ref('')
+const authMessage = ref('')
+
+function signIn(): void {
+  globalStore.signIn(login.value, password.value).then(res => {
+    switch (res.request.status) {
+      case 401:
+        authMessage.value = 'Неверное имя пользователя или пароль';
+        break
+      case 403:
+        authMessage.value = 'Пользователь заблокирован';
+        break
+      case 200:
+        globalStore.isAuthorized = true
+        router.push('/')
+        break;
+      default:
+        authMessage.value = 'Произошла ошибка';
+        if (res.request.statusText) authMessage.value = 'Произошла ошибка: ' + res.request.statusText;
+    }
+
+  })
+}
+</script>

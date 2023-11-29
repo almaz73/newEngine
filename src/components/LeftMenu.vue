@@ -1,8 +1,8 @@
 <template>
-  <div class="left-menu-logo" :class="{'small':isCollapse, 'show': globalValues.isShowPanel}"
-       @click="globalValues.isShowPanel=false"></div>
+  <div class="left-menu-logo" :class="{'small':isCollapse, 'show': globalStore.isShowPanel}"
+       @click="globalStore.isShowPanel=false"></div>
 
-  <div class="left-menu-div" :class="{'narrow':isCollapse, 'show': globalValues.isShowPanel}">
+  <div class="left-menu-div" :class="{'narrow':isCollapse, 'show': globalStore.isShowPanel}">
     <el-menu
         default-active="3"
         class="el-menu-vertical"
@@ -128,9 +128,9 @@
 
 <script lang="ts" setup>
 import {ref} from 'vue'
-import {useGlobalValues} from "@/stores/globalValues";
+import {useGlobalStore} from "@/stores/globalStore";
 
-const globalValues = useGlobalValues()
+const globalStore = useGlobalStore()
 const isCollapse = ref(true)
 const handleOpen = (key: string, keyPath: string[]) => {
   // console.log(key, keyPath)

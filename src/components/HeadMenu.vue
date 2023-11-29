@@ -33,27 +33,22 @@
 </template>
 <script setup lang="ts">
 import {RouterLink} from 'vue-router'
-import {useGlobalValues} from "@/stores/globalValues";
+import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
-import axios from "axios";
+import router from "@/router";
 
-const globalValues = useGlobalValues()
+const globalStore = useGlobalStore()
 const isAccountShow = ref(false)
 
 function showMenu() {
-  globalValues.isShowPanel = !globalValues.isShowPanel
+  globalStore.isShowPanel = !globalStore.isShowPanel
 }
 
 function signOut() {
-  isAccountShow.value = false
-
-  globalValues.signout()
-
-  // axios.post('/api/account/signout').then(res => {
-  //   console.log('res', res)
-  // }, err => {
-  //   console.error(err)
-  // })
+  globalStore.signOut().then(() => {
+    globalStore.isAuthorized = false
+    router.push('login')
+  })
 }
 
 
