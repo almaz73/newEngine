@@ -49,6 +49,8 @@ function signIn(): void {
         if (res.request.statusText) authMessage.value = 'Произошла ошибка: ' + res.request.statusText;
     }
 
+    globalStore.account = res.data
+    localStorage.setItem('account', JSON.stringify(res.data))
   })
 }
 </script>

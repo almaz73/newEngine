@@ -6,6 +6,7 @@ export const useGlobalStore = defineStore("globalStore", {
         /** @type {{boolean}} */
         isAuthorized: true,
         isShowPanel: false,  // состояние для узких экранов, гамбургер
+        account: {}, // настройки аккаунта
     }),
     actions: {
         async signIn(login: string, password: string) {

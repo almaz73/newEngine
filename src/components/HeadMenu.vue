@@ -6,8 +6,8 @@
     <div class="pusher" style="flex-grow: 1"></div>
 
     <div class="account">
-      <div>Нахаев Артём</div>
-      <div>Управляющий</div>
+      <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
+      <div>{{ globalStore.account.roleTitle }}</div>
     </div>
 
     <img src="../assets/icons/icon-face.png"
@@ -18,15 +18,15 @@
       <div class="account_window__content">
         <img class="account_window__photo" src="../assets/icons/icon-face.png"/>
         <div class="account_window__text">
-          <div>Нахаев Артём</div>
-          <div>Управляющий</div>
-          <div>Останкинский</div>
-          <div>Останкино свободный</div>
+          <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
+          <div>{{ globalStore.account.roleTitle }}</div>
+          <div>{{ globalStore.account.orgElementName }}</div>
+          <div>{{ globalStore.account.storage }}</div>
         </div>
       </div>
       <div class="account_window__buttons">
-        <el-button> Редактировать</el-button>
-        <el-button @click="signOut()"> Выйти</el-button>
+        <el-button class="edit"> Редактировать</el-button>
+        <el-button class="exit" @click="signOut()"> Выйти</el-button>
       </div>
       <div class="under_window" @click="isAccountShow=false"></div>
     </div>

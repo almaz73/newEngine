@@ -6,6 +6,9 @@
     --el-menu-item-height: 70px !important;
 }
 
+/**
+меню
+ */
 .el-menu-item.is-active {
     background: #ffe4e1;
     color: #d34439 !important;
@@ -18,5 +21,34 @@
 li.el-menu-item {
     font-size: 12px;
 }
+
+/**
+кнопки
+ */
+
+.root .el-button {
+    color: #e8e6e3;
+    font-size: 14px;
+    background: #666666;
+    height: 36px;
+    border-radius: 4px;
+}
+
+.root .el-button:hover, .root .el-button:focus {
+    color: white;
+}
+
+.root .el-button.edit {
+    padding-left: 40px;
+    background: #666666 url('../icons/icon-edit.png') no-repeat bottom 10px left 12px;
+}
+
+.root .el-button.exit {
+    padding-left: 40px;
+    background: #666666 url('../icons/icon-exit.png') no-repeat bottom 10px left 12px;
+}
+
+
+
 
 
