@@ -85,8 +85,8 @@
     justify-content: space-between;
 }
 
-.under_window{
-    top:0;
+.under_window {
+    top: 0;
     left: 0;
     position: fixed;
     width: 100%;

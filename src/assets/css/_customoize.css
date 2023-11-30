@@ -34,8 +34,13 @@ li.el-menu-item {
     border-radius: 4px;
 }
 
+.root .el-button + .el-button {
+    margin-left: 10px;
+}
+
 .root .el-button:hover, .root .el-button:focus {
     color: white;
+    background: #555;
 }
 
 .root .el-button.edit {
@@ -46,6 +51,11 @@ li.el-menu-item {
 .root .el-button.exit {
     padding-left: 40px;
     background: #666666 url('../icons/icon-exit.png') no-repeat bottom 10px left 12px;
+}
+
+.root .el-button.active{
+    background: #d34439;
+    color: white;
 }
 
 

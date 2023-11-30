@@ -9,20 +9,26 @@
         :collapse="isCollapse"
         @open="handleOpen"
         @close="handleClose"
+        popper-effect="light"
     >
-      <el-menu-item index="1">
-        <el-icon><img src="../assets/icons/ic-desktop-windows-black-18-px.png"/></el-icon>
-        <template #title>Рабочий стол</template>
-      </el-menu-item>
-      <el-menu-item index="2">
-        <el-icon><img src="../assets/icons/ic-people-black-18-px.png"/></el-icon>
-        <template #title>Обращения</template>
-      </el-menu-item>
-
-      <el-menu-item index="3">
-        <el-icon><img src="../assets/icons/ic-directions-car-black-18-px.png"/></el-icon>
-        <template #title>Оценки</template>
-      </el-menu-item>
+      <RouterLink to="/desktop">
+        <el-menu-item index="1">
+          <el-icon><img src="../assets/icons/ic-desktop-windows-black-18-px.png"/></el-icon>
+          <template #title>Рабочий стол</template>
+        </el-menu-item>
+      </RouterLink>
+      <RouterLink to="/appeal">
+        <el-menu-item index="2">
+          <el-icon><img src="../assets/icons/ic-people-black-18-px.png"/></el-icon>
+          <template #title>Обращения</template>
+        </el-menu-item>
+      </RouterLink>
+      <RouterLink to="/deal">
+        <el-menu-item index="3">
+          <el-icon><img src="../assets/icons/ic-directions-car-black-18-px.png"/></el-icon>
+          <template #title>Оценки</template>
+        </el-menu-item>
+      </RouterLink>
 
       <el-menu-item index="4">
         <el-icon><img src="../assets/icons/ic-home-black-18-px.png"/></el-icon>
@@ -102,11 +108,12 @@
         <el-icon><img src="../assets/icons/ic-system-inactive.png"/></el-icon>
         <template #title>Система</template>
       </el-menu-item>
-
-      <el-menu-item index="18">
-        <el-icon><img src="../assets/icons/ic-help-red-18-px.png" height="34" width="34"/></el-icon>
-        <template #title>Помощь</template>
-      </el-menu-item>
+      <RouterLink to="/desktop">
+        <el-menu-item index="18">
+          <el-icon><img src="../assets/icons/ic-help-red-18-px.png" height="34" width="34"/></el-icon>
+          <template #title>Помощь</template>
+        </el-menu-item>
+      </RouterLink>
 
       <el-menu-item index="19">
         <el-icon><img src="../assets/icons/icon-questionnaires.png" height="34" width="34"/></el-icon>

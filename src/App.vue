@@ -25,7 +25,7 @@ onMounted(() => {
     <LeftMenu v-if="globalStore.isAuthorized"/>
     <div class="content">
       <HeadMenu v-if="globalStore.isAuthorized"/>
-      <RouterView/>
+      <RouterView style="padding: 25px"/>
     </div>
   </div>
 </template>

@@ -1,8 +1,6 @@
 <template>
   <nav class="head_menu">
     <img class="hamburger" src="../assets/img/hamburger.png" @click="showMenu()"/>
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
     <div class="pusher" style="flex-grow: 1"></div>
 
     <div class="account">
@@ -33,7 +31,6 @@
   </nav>
 </template>
 <script setup lang="ts">
-import {RouterLink} from 'vue-router'
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import router from "@/router";
