@@ -1,15 +1,17 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-const path = 'api/workflow/GetBuyWorkflows/'
+const path = 'api/workflow/'
 export const useWorkflowStore = defineStore("workflowStore", {
     state: () => ({
         list: []
     }),
     actions: {
-        async getBuyWorkflows(params) {
+        async getBuyWorkflows(params: any) {
             const res = await getBuyWorkflows(params)
-            if (res.data) this.list = res.data.content
+
+            if (res.data) this.list = res.data.deals
+            else this.list = []
             return res.data
         },
     }
@@ -18,8 +20,7 @@ export const useWorkflowStore = defineStore("workflowStore", {
 function getBuyWorkflows(params) {
     const {filter, limit, mainFilter, id, offset, search} = params
     let url = path + 'GetBuyWorkflows';
-    url += '?filter=' + filter + '&limit=' + limit + '&mainFilter=' + mainFilter + '&id=' + id + '&offset=' + offset + '&search=' + search
-    // url += 'api/workflow/GetBuyWorkflows?filter=%7B%7D&id=&limit=25&mainFilter=10&offset=0&search='
+    url += '?filter=' + filter + '&id=' + id + '&limit=' + limit + '&mainFilter=' + mainFilter + '&offset=' + offset + '&search=' + search
     return axios.get(url).then(res => res)
 }
 

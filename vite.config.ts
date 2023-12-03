@@ -1,42 +1,24 @@
-import { fileURLToPath, URL } from 'node:url'
-
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
+import {fileURLToPath, URL} from 'node:url'
 import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-  ],
-  server: {
-    proxy: {
-      '/api/': {
-        // target: 'http://localhost:5000',
-        target: 'https://dev.autonet.pro/',
-        ws: true,
-        changeOrigin: true,
-        // withCredentials: true
-      }
+    plugins: [
+        vue(),
+    ],
+    server: {
+        proxy: {
+            '/api': {
+                // target: 'http://localhost:5000', // локальный сервер
+                target: 'https://dev.autonet.pro/', // удаленный сервер
+                changeOrigin: true,
+                withCredentials: true
+            }
+        }
+    },
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
     }
-    // proxy: {
-    //   '/api': {
-    //     target: "http://localhost:5000",
-    //     changeOrigin: true,
-    //     secure: false,
-    //     // rewrite: path => {
-    //     //   console.log('====path', path)
-    //     //   path.replace('/api', '')
-    //     // },
-    //     configure: (proxy, options) => {
-    //       // proxy будет экземпляром 'http-proxy'
-    //     },
-    //     cors:false
-    //   }
-    // }
-  },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
 })
