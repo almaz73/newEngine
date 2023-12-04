@@ -6,6 +6,7 @@ export const useGlobalStore = defineStore("globalStore", {
         /** @type {{boolean}} */
         isAuthorized: true,
         isShowPanel: false,  // состояние для узких экранов, гамбургер
+        isNarrowPanel: true, // Когда панель не раскрывается с описанием
         account: {}, // настройки аккаунта
     }),
     actions: {
