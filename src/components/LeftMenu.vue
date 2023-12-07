@@ -17,12 +17,14 @@
           <template #title>Рабочий стол</template>
         </el-menu-item>
       </RouterLink>
+
       <RouterLink to="/appeal">
         <el-menu-item index="2">
           <el-icon><img alt="Обращения" src="../assets/icons/ic-people-black-18-px.png"/></el-icon>
           <template #title>Обращения</template>
         </el-menu-item>
       </RouterLink>
+
       <RouterLink to="/deal">
         <el-menu-item index="3">
           <el-icon><img alt="Оценки" src="../assets/icons/ic-directions-car-black-18-px.png"/></el-icon>
@@ -69,10 +71,12 @@
         <template #title>Аналитика</template>
       </el-menu-item>
 
-      <el-menu-item index="10">
-        <el-icon><img alt="Плановые показатели" src="../assets/icons/icon-plan-indicator.png"/></el-icon>
-        <template #title>Плановые показатели</template>
-      </el-menu-item>
+      <RouterLink to="/ideas">
+        <el-menu-item index="10">
+          <el-icon><img alt="Плановые показатели" src="../assets/icons/icon-plan-indicator.png"/></el-icon>
+          <template #title>::::::::: По новому дизайну ::::::::</template>
+        </el-menu-item>
+      </RouterLink>
 
       <el-menu-item index="11">
         <el-icon><img alt="Заявки на кредит" src="../assets/icons/ic-account-balance-black-18-px.png"/></el-icon>
