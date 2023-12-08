@@ -2,13 +2,25 @@
 
   <main>
     <div class="place-filter">
-      <el-button class="active">Все оценки:{{ fastFilter.buy }}</el-button>
-      <el-button>По активным:{{ fastFilter.buyByActive }}</el-button>
-      <el-button>На продаже:{{ fastFilter.buyOnSale }}</el-button>
-      <el-button>Продано:{{ fastFilter.buySoldAuto }}</el-button>
-      <el-button>Возврат:{{ fastFilter.returned }}</el-button>
+      <el-button @click="buyFilterSelect(10)" :class="{'active':params.mainFilter==10}">
+        Все оценки:{{ fastFilter.buy }}
+      </el-button>
+      <el-button @click="buyFilterSelect(12)" :class="{'active':params.mainFilter==12}">По
+        активным:{{ fastFilter.buyByActive }}
+      </el-button>
+      <el-button @click="buyFilterSelect(11)" :class="{'active':params.mainFilter==11}">На
+        продаже:{{ fastFilter.buyOnSale }}
+      </el-button>
+      <el-button @click="buyFilterSelect(13)" :class="{'active':params.mainFilter==13}">
+        Продано:{{ fastFilter.buySoldAuto }}
+      </el-button>
+      <el-button @click="buyFilterSelect(14)" :class="{'active':params.mainFilter==14}">
+        Возврат:{{ fastFilter.returned }}
+      </el-button>
     </div>
 
+
+    <!-- для компа таблица -->
     <el-table
         style="margin-top: 24px"
         v-if="!globalStore.isMobileView"
@@ -48,7 +60,7 @@
     </el-table>
 
 
-    <!--    для мобилки таблица-->
+    <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="row in workflowStore.list" :key="row.id">
         <div class="head">
@@ -71,13 +83,8 @@
 import {reactive, ref} from "vue";
 import {useWorkflowStore} from "@/stores/workflowStore";
 import {useGlobalStore} from "@/stores/globalStore";
+import {formatDate} from '@/utils/globalFunctions'
 import {ElTable} from "element-plus";
-
-function formatDate(val) {
-  return new Date(val).toLocaleString('ru-Ru', {
-    year: 'numeric', month: 'long', day: 'numeric',
-  })
-}
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
@@ -96,14 +103,25 @@ const setCurrent = (row) => {
   singleTableRef.value!.setCurrentRow(row)
 }
 
-globalStore.isWaiting = true
-workflowStore.getBuyWorkflows(params).then(res => {
-  globalStore.isWaiting = false
-  fastFilter.buy = res.buyDealsCount
-  fastFilter.buyByActive = res.buyByActiveCount
-  fastFilter.buyOnSale = res.buyOnSellAutoCount
-  fastFilter.buySoldAuto = res.buySoldAutoCount
-  fastFilter.returned = res.buyReturnedAutoCount
+function buyFilterSelect(val) {
+  params.mainFilter = val;
+  getData()
+}
+
+function getData() {
+  globalStore.isWaiting = true
+  workflowStore.getBuyWorkflows(params).then(res => {
+    globalStore.isWaiting = false
+    fastFilter.buy = res.buyDealsCount
+    fastFilter.buyByActive = res.buyByActiveCount
+    fastFilter.buyOnSale = res.buyOnSellAutoCount
+    fastFilter.buySoldAuto = res.buySoldAutoCount
+    fastFilter.returned = res.buyReturnedAutoCount
+  })
+}
+
+onMounted(() => {
+  getData()
 })
 
 </script>

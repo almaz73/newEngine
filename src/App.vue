@@ -6,7 +6,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {onMounted} from "vue";
 import router from "@/router";
 import '@/stores/_g_axios.ts'
-import {widthMobile} from '@/stores/globalConstants'
+import {widthMobile} from '@/utils/globalConstants'
 
 const globalStore = useGlobalStore()
 
