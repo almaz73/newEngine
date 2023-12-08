@@ -125,6 +125,10 @@
     </el-menu>
   </div>
 
+  <div class="left-menu-fon" :class="{'small':globalStore.isNarrowPanel}"
+       v-if=" !globalStore.isMobileView && (!globalStore.isNarrowPanel || !globalStore.isShowPanel )">
+
+  </div>
   <div class="left-menu-opener" :class="{'small':globalStore.isNarrowPanel}"
        @click="globalStore.isNarrowPanel = !globalStore.isNarrowPanel">
     <div v-if="!globalStore.isNarrowPanel">
@@ -139,9 +143,16 @@
 
 <script lang="ts" setup>
 import {useGlobalStore} from "@/stores/globalStore";
+import {onMounted} from "vue";
 
 const globalStore = useGlobalStore()
 const select = () => globalStore.isShowPanel = false
 
-window.addEventListener('resize', () => globalStore.isNarrowPanel = true)
+onMounted(() => {
+  window.addEventListener('resize', () => globalStore.isNarrowPanel = true)
+  document.addEventListener("scroll", () => {
+    if (window.scrollY > 50) globalStore.isShowPanel = false
+  })
+})
+
 </script>

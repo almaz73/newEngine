@@ -2,17 +2,21 @@
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
     font-family: Arial, sans-serif;
     background-color: #f1f2f4;
-    color: #3d3d3d
+    color: #3d3d3d;
 }
 
 .root {
     display: flex;
-    height: 100vh;
 }
 
 .pusher {
     flex-grow: 1;
+}
+
+.waiter {
+    width: 73px;
+    position: fixed;
+    pointer-events: none
 }

@@ -16,8 +16,10 @@ globalStore.isMobileView = document.body.clientWidth < widthMobile
 
 onMounted(() => {
   let account = localStorage.getItem('account')
-  if (account && account !== 'undefined') globalStore.account = JSON.parse(account)
-  else {
+  if (account && account !== 'undefined') {
+    globalStore.account = JSON.parse(account)
+    router.push('/')
+  }  else {
     globalStore.isAuthorized = false
     router.push('login')
   }

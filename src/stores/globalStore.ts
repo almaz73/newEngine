@@ -8,6 +8,7 @@ export const useGlobalStore = defineStore("globalStore", {
         isMobileView: false, // мобильный режим
         isShowPanel: false,  // при узких экранах, гамбургер открывает левую панель
         isNarrowPanel: true, // Когда панель не раскрывается с описанием
+        isWaiting: false, // для ромашки ожидания
         account: {}, // настройки аккаунта
     }),
     actions: {

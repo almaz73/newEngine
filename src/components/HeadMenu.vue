@@ -1,5 +1,11 @@
 <template>
   <nav class="head_menu">
+    <img src="../assets/img/loading.gif"
+         alt=""
+         v-if="globalStore.isMobileView && globalStore.isWaiting"
+         class="waiter"
+    />
+
     <img alt="" class="hamburger" src="../assets/img/hamburger.png" @click="showMenu()"/>
     <div class="pusher" style="flex-grow: 1"></div>
 
@@ -7,6 +13,7 @@
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
       <div>{{ globalStore.account.roleTitle }}</div>
     </div>
+
 
     <img src="../assets/icons/icon-face.png"
          @click="isAccountShow=true"
@@ -45,8 +52,10 @@ function showMenu() {
 
 function signOut() {
   globalStore.signOut().then(() => {
+    localStorage.removeItem('account')
     globalStore.isAuthorized = false
     router.push('login')
+
   })
 }
 

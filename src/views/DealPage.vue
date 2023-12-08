@@ -96,7 +96,9 @@ const setCurrent = (row) => {
   singleTableRef.value!.setCurrentRow(row)
 }
 
+globalStore.isWaiting = true
 workflowStore.getBuyWorkflows(params).then(res => {
+  globalStore.isWaiting = false
   fastFilter.buy = res.buyDealsCount
   fastFilter.buyByActive = res.buyByActiveCount
   fastFilter.buyOnSale = res.buyOnSellAutoCount
