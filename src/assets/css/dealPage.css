@@ -1,0 +1,61 @@
+.place-filter {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+@media (width < 500px) {
+    .place-filter {
+        justify-content: center;
+    }
+
+    .place-filter button {
+        margin-top: 12px;
+    }
+}
+
+
+.el-table__body-wrapper td, .el-table__body-wrapper th {
+    background: #f1f2f4;
+    border-top: 1px solid #bdc1c2;
+}
+
+.deal-car-color {
+    border: 1px solid #bdc1c2;
+    width: 20px;
+    height: 15px;
+    background-color: #e6e6e6;
+}
+
+
+/** Таблица для мобильных экранов*/
+.vertical-table div {
+    padding: 4px;
+}
+
+.vertical-table div.head {
+    border-bottom: 2px solid #555;
+    border-radius: 4px;
+    background: #d34439;
+    display: flex;
+    color: white;
+    justify-content: space-between;
+    padding: 12px;
+    margin: 12px 0;
+}
+
+.vertical-table div.head span {
+    font-size: 0.9rem;
+}
+
+.vertical-table div {
+    font-size: 1.2rem;
+}
+
+.vertical-table small {
+    width: 73px;
+    text-align: right;
+    display: inline-block;
+    color: #d34439;
+    padding: 8px;
+}

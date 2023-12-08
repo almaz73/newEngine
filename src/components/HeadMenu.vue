@@ -1,20 +1,21 @@
 <template>
   <nav class="head_menu">
-    <img class="hamburger" src="../assets/img/hamburger.png" @click="showMenu()"/>
+    <img alt="" class="hamburger" src="../assets/img/hamburger.png" @click="showMenu()"/>
     <div class="pusher" style="flex-grow: 1"></div>
 
-    <div class="account">
+    <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
       <div>{{ globalStore.account.roleTitle }}</div>
     </div>
 
     <img src="../assets/icons/icon-face.png"
          @click="isAccountShow=true"
+         alt="photo"
          class="icon-face"/>
 
     <div class="account_window" v-if="isAccountShow">
       <div class="account_window__content">
-        <img class="account_window__photo" src="../assets/icons/icon-face.png"/>
+        <img alt="photo" class="account_window__photo" src="../assets/icons/icon-face.png"/>
         <div class="account_window__text">
           <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
           <div>{{ globalStore.account.roleTitle }}</div>

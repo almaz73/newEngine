@@ -22,6 +22,10 @@ li.el-menu-item {
     font-size: 12px;
 }
 
+.el-menu-vertical:not(.el-menu--collapse) {
+    width: 215px;
+}
+
 /**
 кнопки
  */

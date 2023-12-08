@@ -7,8 +7,7 @@
         default-active="1"
         class="el-menu-vertical"
         :collapse="globalStore.isNarrowPanel"
-        @open="handleOpen"
-        @close="handleClose"
+        @select="select"
         popper-effect="light"
     >
       <RouterLink to="/desktop">
@@ -142,19 +141,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 
 const globalStore = useGlobalStore()
-
-const handleOpen = (key: string, keyPath: string[]) => {
-  // console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
+const select = () => globalStore.isShowPanel = false
 
 window.addEventListener('resize', () => globalStore.isNarrowPanel = true)
 </script>
-
-<style>
-.el-menu-vertical:not(.el-menu--collapse) {
-  width: 215px;
-}
-</style>

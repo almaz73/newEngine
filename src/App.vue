@@ -3,12 +3,16 @@ import {RouterView} from 'vue-router'
 import LeftMenu from '@/components/LeftMenu.vue'
 import HeadMenu from "@/components/HeadMenu.vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {computed, onMounted} from "vue";
+import {onMounted} from "vue";
 import router from "@/router";
 import '@/stores/_g_axios.ts'
+import {widthMobile} from '@/stores/globalConstants'
 
 const globalStore = useGlobalStore()
-let widthCalss = computed(() => globalStore.isNarrowPanel ? 'narrow' : 'wide')
+
+window.addEventListener('resize', (e) => globalStore.isMobileView = e.currentTarget.innerWidth < widthMobile)
+globalStore.isMobileView = document.body.clientWidth < widthMobile
+
 
 onMounted(() => {
   let account = localStorage.getItem('account')
@@ -25,9 +29,9 @@ onMounted(() => {
   <div class="root">
 
     <LeftMenu v-if="globalStore.isAuthorized"/>
-    <div class="content" :class="widthCalss">
+    <div class="content" :class="globalStore.isNarrowPanel ? 'narrow' : 'wide'">
       <HeadMenu v-if="globalStore.isAuthorized"/>
-      <RouterView style="padding: 25px"/>
+      <RouterView :style="{padding: globalStore.isMobileView?'':'25px'}"/>
     </div>
   </div>
 </template>

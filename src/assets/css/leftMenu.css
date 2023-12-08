@@ -43,7 +43,8 @@
     height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-    width: 276px;
+    width: 215px;
+    max-width: 215px;
     transition: width 0.3s ease-in-out;
     z-index: 10;
 }
@@ -51,6 +52,7 @@
 .content {
     position: relative;
     width: calc(100% - 85px);
+    transition: width 0.3s ease-in-out;
 }
 
 .content.wide {
@@ -85,6 +87,10 @@ img.hamburger {
 
     .content {
         position: absolute;
+    }
+
+    .content.narrow {
+        width: 100%;
     }
 }
 

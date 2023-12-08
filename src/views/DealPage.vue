@@ -1,14 +1,17 @@
 <template>
 
   <main>
-    <el-button class="active">Все оценки:{{ fastFilter.buy }}</el-button>
-    <el-button>По активным:{{ fastFilter.buyByActive }}</el-button>
-    <el-button>На продаже:{{ fastFilter.buyOnSale }}</el-button>
-    <el-button>Продано:{{ fastFilter.buySoldAuto }}</el-button>
-    <el-button>Возврат:{{ fastFilter.returned }}</el-button>
-
+    <div class="place-filter">
+      <el-button class="active">Все оценки:{{ fastFilter.buy }}</el-button>
+      <el-button>По активным:{{ fastFilter.buyByActive }}</el-button>
+      <el-button>На продаже:{{ fastFilter.buyOnSale }}</el-button>
+      <el-button>Продано:{{ fastFilter.buySoldAuto }}</el-button>
+      <el-button>Возврат:{{ fastFilter.returned }}</el-button>
+    </div>
 
     <el-table
+        style="margin-top: 24px"
+        v-if="!globalStore.isMobileView"
         :data="workflowStore.list"
         ref="singleTableRef"
         highlight-current-row>
@@ -19,7 +22,7 @@
             }}<br></span>
           {{ scope.row.vin }}<br>
           <button
-              class="deal-button"
+              class="deal-car-color"
               disabled
               :style="{'background-color': scope.row.bodyColorCode}"
           ></button>
@@ -43,23 +46,31 @@
 
       <el-table-column prop="" label=""/>
     </el-table>
+
+
+    <!--    для мобилки таблица-->
+    <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
+      <div v-for="row in workflowStore.list" :key="row.id">
+        <div class="head">
+          <span class="deal-car-color" :style="{'background-color': row.bodyColorCode}"></span>
+          <span>Пробег:{{ row.rowmileage }} </span>
+          <span>vin: {{ row.vin }}</span>
+        </div>
+        <div><small>Авто:</small> {{ row.brand }} {{ row.model }} {{ row.yearReleased }}</div>
+        <div><small>Менеджер:</small> {{ row.userName }}</div>
+        <div><small>Место: </small> {{ row.locationCity }}/ {{ row.location }}</div>
+        <div><small>Статус:</small> {{ row.statusTitle }}</div>
+        <div><small>Клиент:</small> {{ row.clientTitle }}</div>
+        <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
+      </div>
+    </div>
   </main>
 </template>
-<style>
-.deal-button {
-  border: 1px solid #bdc1c2;
-  width: 20px;
-  height: 15px;
-  background-color: #e6e6e6;
-}
 
-.el-table__body-wrapper td, .el-table__body-wrapper th {
-//background: #f1f2f4; //border-top: 1px solid #bdc1c2;
-}
-</style>
 <script setup lang="ts">
 import {reactive, ref} from "vue";
 import {useWorkflowStore} from "@/stores/workflowStore";
+import {useGlobalStore} from "@/stores/globalStore";
 import {ElTable} from "element-plus";
 
 function formatDate(val) {
@@ -68,6 +79,7 @@ function formatDate(val) {
   })
 }
 
+const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
 const fastFilter = reactive({buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0})
 const params = {
