@@ -143,16 +143,8 @@
 
 <script lang="ts" setup>
 import {useGlobalStore} from "@/stores/globalStore";
-import {onMounted} from "vue";
 
 const globalStore = useGlobalStore()
 const select = () => globalStore.isShowPanel = false
-
-onMounted(() => {
-  window.addEventListener('resize', () => globalStore.isNarrowPanel = true)
-  document.addEventListener("scroll", () => {
-    if (window.scrollY > 50) globalStore.isShowPanel = false
-  })
-})
 
 </script>

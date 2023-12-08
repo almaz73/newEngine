@@ -47,7 +47,6 @@
 }
 
 .left-menu-div {
-    height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
     width: 215px;
