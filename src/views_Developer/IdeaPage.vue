@@ -1,8 +1,12 @@
 <template>
   <div>
-    <h4 style="">Сборник идей по редизайну сайта</h4>
+    <i> Временная страница для разработчиков</i>
+    <h3 style="">Сборник идей по редизайну сайта</h3>
 
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <el-tabs v-model="activeName"
+             acti
+             class="demo-tabs"
+             @tab-click="handleClick">
       <el-tab-pane label="Вопросы" name="first">
         <TabAsks/>
       </el-tab-pane>
@@ -38,7 +42,9 @@ import TabIdeal from "@/views_Developer/TabIdeal.vue";
 import TabErrors from "@/views_Developer/TabErrors.vue";
 import TabAsks from "@/views_Developer/TabAsks.vue";
 import TabRequirements from "@/views_Developer/TabRequirements.vue";
+import { ref } from "vue";
 
+const activeName = ref('first')
 function handleClick(){
 
 }

@@ -3,3 +3,5 @@ export const formatDate = (val) => {
         year: 'numeric', month: 'long', day: 'numeric',
     })
 }
+
+export const gotoTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })

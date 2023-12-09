@@ -62,6 +62,18 @@ li.el-menu-item {
     color: white;
 }
 
+/* paginator */
+.el-pagination{
+    margin-top: 20px;
+    float: left;
+}
+
+.el-pager .number,
+.el-pagination button,
+.el-pager .more{
+    background: none !important;
+}
+
 
 
 

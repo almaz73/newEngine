@@ -4,7 +4,19 @@ import axios from "axios";
 const path = 'api/workflow/'
 export const useWorkflowStore = defineStore("workflowStore", {
     state: () => ({
-        list: []
+        list: [{
+            rowmileage:'',
+            vin:'',
+            brand:'',
+            model:'',
+            yearReleased:'',
+            userName:'',
+            locationCity:'',
+            location:'',
+            statusTitle:'',
+            clientTitle:'',
+            created:'',
+        }]
     }),
     actions: {
         async getBuyWorkflows(params: any) {

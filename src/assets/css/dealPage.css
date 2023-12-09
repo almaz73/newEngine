@@ -1,16 +1,16 @@
-.place-filter {
+.filter-button {
     display: flex;
     flex-wrap: wrap;
 }
 
+.filter-button button {
+    margin-top: 12px;
+}
+
 
 @media (width < 500px) {
-    .place-filter {
+    .filter-button {
         justify-content: center;
-    }
-
-    .place-filter button {
-        margin-top: 12px;
     }
 }
 
@@ -25,6 +25,10 @@
     width: 20px;
     height: 15px;
     background-color: #e6e6e6;
+}
+
+.red-text {
+    color: #d34439
 }
 
 
@@ -58,4 +62,10 @@
     display: inline-block;
     color: #d34439;
     padding: 8px;
+}
+
+.page-info{
+    float: right;
+    margin-top: 27px;
+    font-size: smaller;
 }

@@ -1,6 +1,6 @@
 <template>
   <form class="login">
-    <img src="../assets/icons/logo-gray.png" height="42" width="160"/>
+    <img alt="" src="@/assets/icons/logo-gray.png" height="42" >
     <h1>Авторизация</h1>
     <input type="text"
            placeholder="Логин"
@@ -12,7 +12,7 @@
              placeholder="Пароль"
              name="password"
              v-model="password">
-      <img src="@/assets/icons/icon-password.png">
+      <img alt="" src="@/assets/icons/icon-password.png">
     </span>
     <input type="button"
            value="Войти"

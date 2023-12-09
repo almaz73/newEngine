@@ -1,70 +1,69 @@
 <template>
-
   <main>
-    <div class="place-filter">
-      <el-button @click="buyFilterSelect(10)" :class="{'active':params.mainFilter==10}">
+    <div class="filter-button">
+      <el-button @click="buyFilterSelect(10)" :class="{ active: params.mainFilter == 10 }">
         Все оценки:{{ fastFilter.buy }}
       </el-button>
-      <el-button @click="buyFilterSelect(12)" :class="{'active':params.mainFilter==12}">По
-        активным:{{ fastFilter.buyByActive }}
+      <el-button @click="buyFilterSelect(12)" :class="{ active: params.mainFilter == 12 }"
+        >По активным:{{ fastFilter.buyByActive }}
       </el-button>
-      <el-button @click="buyFilterSelect(11)" :class="{'active':params.mainFilter==11}">На
-        продаже:{{ fastFilter.buyOnSale }}
+      <el-button @click="buyFilterSelect(11)" :class="{ active: params.mainFilter == 11 }"
+        >На продаже:{{ fastFilter.buyOnSale }}
       </el-button>
-      <el-button @click="buyFilterSelect(13)" :class="{'active':params.mainFilter==13}">
+      <el-button @click="buyFilterSelect(13)" :class="{ active: params.mainFilter == 13 }">
         Продано:{{ fastFilter.buySoldAuto }}
       </el-button>
-      <el-button @click="buyFilterSelect(14)" :class="{'active':params.mainFilter==14}">
+      <el-button @click="buyFilterSelect(14)" :class="{ active: params.mainFilter == 14 }">
         Возврат:{{ fastFilter.returned }}
       </el-button>
     </div>
 
-
     <!-- для компа таблица -->
     <el-table
-        style="margin-top: 24px"
-        v-if="!globalStore.isMobileView"
-        :data="workflowStore.list"
-        ref="singleTableRef"
-        highlight-current-row>
+      style="margin-top: 24px"
+      v-if="!globalStore.isMobileView"
+      :data="workflowStore.list"
+      ref="singleTableRef"
+      highlight-current-row
+    >
       <el-table-column label="Автомобиль">
         <template #default="scope">
-          <span style="color:#d34439"> {{ scope.row.brand }} {{ scope.row.model }} {{
-              scope.row.yearReleased
-            }}<br></span>
-          {{ scope.row.vin }}<br>
+          <span class="red-text">
+            {{ scope.row.brand }} {{ scope.row.model }} {{ scope.row.yearReleased }}<br
+          /></span>
+          {{ scope.row.vin }}<br />
           <button
-              class="deal-car-color"
-              disabled
-              :style="{'background-color': scope.row.bodyColorCode}"
+            class="deal-car-color"
+            disabled
+            :style="{ 'background-color': scope.row.bodyColorCode }"
           ></button>
           &nbsp; Пробег:{{ scope.row.rowmileage }}
         </template>
       </el-table-column>
       <el-table-column label="Менеджер">
         <template #default="scope">
-          <b>{{ scope.row.userName }}</b><br>
-          {{ scope.row.location }}<br>
+          <b>{{ scope.row.userName }}</b
+          ><br />
+          {{ scope.row.location }}<br />
           <b>{{ scope.row.locationCity }}</b>
         </template>
       </el-table-column>
       <el-table-column label="Статус">
         <template #default="scope">
-          <span style="color:#d34439">{{ scope.row.statusTitle }}</span><br>
-          {{ scope.row.dealTypeTitle }}<br>
+          <span class="red-text"> {{ scope.row.statusTitle }} </span><br />
+          {{ scope.row.dealTypeTitle }}<br />
           {{ formatDate(scope.row.created) }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label=""/>
+      <el-table-column prop="" label="" />
     </el-table>
-
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="row in workflowStore.list" :key="row.id">
         <div class="head">
-          <span class="deal-car-color" :style="{'background-color': row.bodyColorCode}"></span>
+          <span class="deal-car-color" :style="{ 'background-color': row.bodyColorCode }"></span>
           <span>Пробег:{{ row.rowmileage }} </span>
           <span>vin: {{ row.vin }}</span>
         </div>
@@ -76,52 +75,77 @@
         <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
       </div>
     </div>
+    <el-pagination
+      v-model:page-size="rowsPerPage"
+      layout="prev, pager, next"
+      @current-change="changePage"
+      :total="total"
+    />
+    <div class="page-info" v-if="!globalStore.isMobileView">
+      Показаны {{ pageDescription }} из {{ total }}
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import {reactive, ref, onMounted} from "vue";
-import {useWorkflowStore} from "@/stores/workflowStore";
-import {useGlobalStore} from "@/stores/globalStore";
-import {formatDate} from '@/utils/globalFunctions'
-import {ElTable} from "element-plus";
+import { reactive, ref, onMounted, computed } from 'vue'
+import { useWorkflowStore } from '@/stores/workflowStore'
+import { useGlobalStore } from '@/stores/globalStore'
+import { formatDate, gotoTop } from '@/utils/globalFunctions'
+import { ElTable } from 'element-plus'
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
-const fastFilter = reactive({buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0})
+const total = ref(0)
+const rowsPerPage = ref(5)
+const currentPage = ref(1)
+const fastFilter = reactive({ buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0 })
 const params = {
   filter: '{}',
   id: '',
-  limit: 10,
+  limit: rowsPerPage.value,
   mainFilter: 10,
   offset: 0,
   search: ''
 }
+
+const pageDescription = computed(() => {
+  let start = (currentPage.value - 1) * rowsPerPage.value + 1
+  let end = start + rowsPerPage.value - 1
+  return start + ' - ' + end
+})
 const singleTableRef = ref<InstanceType<typeof ElTable>>()
 const setCurrent = (row) => {
   console.log('row', row)
   singleTableRef.value!.setCurrentRow(row)
 }
 
-function buyFilterSelect(val) {
-  params.mainFilter = val;
+function buyFilterSelect(val: number) {
+  params.mainFilter = val
   getData()
+}
+
+function changePage(val) {
+  currentPage.value = val
+  params.offset = (val - 1) * rowsPerPage.value
+  getData()
+  if (globalStore.isMobileView) gotoTop()
 }
 
 function getData() {
   globalStore.isWaiting = true
-  workflowStore.getBuyWorkflows(params).then(res => {
+  workflowStore.getBuyWorkflows(params).then((res) => {
     globalStore.isWaiting = false
     fastFilter.buy = res.buyDealsCount
     fastFilter.buyByActive = res.buyByActiveCount
     fastFilter.buyOnSale = res.buyOnSellAutoCount
     fastFilter.buySoldAuto = res.buySoldAutoCount
     fastFilter.returned = res.buyReturnedAutoCount
+    total.value = res.totalCount
   })
 }
 
 onMounted(() => {
   getData()
 })
-
 </script>
