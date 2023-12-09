@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 100vh;
 }
 
 .login img {
@@ -42,7 +42,6 @@
 
 .login input[type="Button"] {
     background-color: #d34439;
-    border: 1px solid green;
     color: white;
     padding: 0;
     border: none;

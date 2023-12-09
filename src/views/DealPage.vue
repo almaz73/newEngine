@@ -18,12 +18,25 @@
       </el-button>
     </div>
 
+    <div class="a-search" :style="searchInputStyle">
+      <input
+        type="search"
+        placeholder="Поиск по VIN"
+        v-model="searchText"
+        @keyup.enter="toSearch"
+      />
+      <el-button>4</el-button>
+    </div>
+
+    <div class="open-filter">filters</div>
+
     <!-- для компа таблица -->
     <el-table
       style="margin-top: 24px"
       v-if="!globalStore.isMobileView"
       :data="workflowStore.list"
       ref="singleTableRef"
+      empty-text="Нет данных"
       highlight-current-row
     >
       <el-table-column label="Автомобиль">
@@ -76,12 +89,13 @@
       </div>
     </div>
     <el-pagination
+      v-if="!globalStore.isMobileView && total > rowsPerPage.value"
       v-model:page-size="rowsPerPage"
       layout="prev, pager, next"
       @current-change="changePage"
       :total="total"
     />
-    <div class="page-info" v-if="!globalStore.isMobileView">
+    <div class="page-info" v-if="!globalStore.isMobileView && total > rowsPerPage.value">
       Показаны {{ pageDescription }} из {{ total }}
     </div>
   </main>
@@ -96,6 +110,7 @@ import { ElTable } from 'element-plus'
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
+const searchText = ref('')
 const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
@@ -108,6 +123,9 @@ const params = {
   offset: 0,
   search: ''
 }
+const searchInputStyle = computed(() => {
+  return globalStore.isMobileView ? { textAlign: 'center' } : { float: 'right' }
+})
 
 const pageDescription = computed(() => {
   let start = (currentPage.value - 1) * rowsPerPage.value + 1
@@ -118,6 +136,11 @@ const singleTableRef = ref<InstanceType<typeof ElTable>>()
 const setCurrent = (row) => {
   console.log('row', row)
   singleTableRef.value!.setCurrentRow(row)
+}
+
+function toSearch() {
+  params.search = searchText.value
+  getData()
 }
 
 function buyFilterSelect(val: number) {

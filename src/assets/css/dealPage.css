@@ -3,8 +3,12 @@
     flex-wrap: wrap;
 }
 
+.filter-button {
+    float: left;
+}
+
 .filter-button button {
-    margin-top: 12px;
+    margin: 12px 0;
 }
 
 
@@ -64,8 +68,30 @@
     padding: 8px;
 }
 
-.page-info{
-    float: right;
+.page-info {
     margin-top: 27px;
     font-size: smaller;
+}
+
+.a-search {
+    text-align: center;
+}
+
+.a-search input {
+    background: white url(@/assets/icons/icon-search.svg) no-repeat 8px center;
+    background-size: 1.5em;
+    cursor: pointer;
+    padding-left: 40px;
+    height: 35px;
+    border: 1px solid #999;
+    margin: 12px 0;
+    border-radius: 4px;
+}
+
+.a-search input:focus-visible {
+    outline: 1px solid #aaa;
+}
+
+.open-filter {
+    clear: both;
 }
