@@ -119,7 +119,3 @@ img.hamburger {
     width: 75px;
     background-image: url("../img/small-logo.gif");
 }
-
-.el-popper.is-light {
-    visibility: hidden;
-}

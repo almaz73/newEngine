@@ -74,6 +74,16 @@ li.el-menu-item {
     background: none !important;
 }
 
+/** input  */
+.el-input{
+    max-width: 200px;
+}
+.el-input__inner{
+    width: inherit !important;
+    flex-grow: initial;
+    max-width: 200px;
+}
+
 
 
 

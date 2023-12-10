@@ -1,19 +1,19 @@
 <template>
   <main>
     <div class="filter-button">
-      <el-button @click="buyFilterSelect(10)" :class="{ active: params.mainFilter == 10 }">
+      <el-button @click="buyFilterSelect(10)" :class="{ active: filter.mainFilter == 10 }">
         Все оценки:{{ fastFilter.buy }}
       </el-button>
-      <el-button @click="buyFilterSelect(12)" :class="{ active: params.mainFilter == 12 }"
+      <el-button @click="buyFilterSelect(12)" :class="{ active: filter.mainFilter == 12 }"
         >По активным:{{ fastFilter.buyByActive }}
       </el-button>
-      <el-button @click="buyFilterSelect(11)" :class="{ active: params.mainFilter == 11 }"
+      <el-button @click="buyFilterSelect(11)" :class="{ active: filter.mainFilter == 11 }"
         >На продаже:{{ fastFilter.buyOnSale }}
       </el-button>
-      <el-button @click="buyFilterSelect(13)" :class="{ active: params.mainFilter == 13 }">
+      <el-button @click="buyFilterSelect(13)" :class="{ active: filter.mainFilter == 13 }">
         Продано:{{ fastFilter.buySoldAuto }}
       </el-button>
-      <el-button @click="buyFilterSelect(14)" :class="{ active: params.mainFilter == 14 }">
+      <el-button @click="buyFilterSelect(14)" :class="{ active: filter.mainFilter == 14 }">
         Возврат:{{ fastFilter.returned }}
       </el-button>
     </div>
@@ -28,8 +28,14 @@
       <el-button>4</el-button>
     </div>
 
-    <div class="open-filter">filters</div>
+    <div class="open-filter">
+      <DealFilters v-model="searchFilter" @keyup.enter="toSearch" />
+    </div>
 
+    <div style="text-align: center">
+      <el-button @click="toSearch">Искать</el-button>
+      <el-button @click="toSearch">Очистить фильтр</el-button>
+    </div>
     <!-- для компа таблица -->
     <el-table
       style="margin-top: 24px"
@@ -87,6 +93,7 @@
         <div><small>Клиент:</small> {{ row.clientTitle }}</div>
         <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
       </div>
+      <div v-if="!workflowStore.list.length" style="text-align: center">Нет данных</div>
     </div>
     <el-pagination
       v-if="!globalStore.isMobileView && total > rowsPerPage.value"
@@ -105,8 +112,9 @@
 import { reactive, ref, onMounted, computed } from 'vue'
 import { useWorkflowStore } from '@/stores/workflowStore'
 import { useGlobalStore } from '@/stores/globalStore'
-import { formatDate, gotoTop } from '@/utils/globalFunctions'
+import { formatDate, formatDateDDMMYYYY, gotoTop } from '@/utils/globalFunctions'
 import { ElTable } from 'element-plus'
+import DealFilters from '@/components/DealFilters.vue'
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
@@ -115,14 +123,52 @@ const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
 const fastFilter = reactive({ buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0 })
-const params = {
-  filter: '{}',
+const filter = {
+  filter: {},
   id: '',
   limit: rowsPerPage.value,
   mainFilter: 10,
   offset: 0,
   search: ''
 }
+const searchFilter = ref({
+  createDate: null,
+  lowYearReleased: null,
+  highYearReleased: null,
+  lowEngineCapacity: null,
+  highEngineCapacity: null,
+  driveType: null,
+  gearboxType: null,
+  locationCity: null,
+  orgelement: null,
+  manager: null
+})
+
+function toSearch() {
+  filter.search = searchText.value
+  filter.filter = {}
+  if (searchFilter.value.createDate)
+    filter.filter.createDate = formatDateDDMMYYYY(searchFilter.value.createDate)
+  if (searchFilter.value.brand) filter.filter.carBrandId = searchFilter.value.brand
+  if (searchFilter.value.model) filter.filter.carModelId = searchFilter.value.model
+  if (searchFilter.value.lowYearReleased)
+    filter.filter.lowYearReleased = searchFilter.value.lowYearReleased
+  if (searchFilter.value.highYearReleased)
+    filter.filter.highYearReleased = searchFilter.value.highYearReleased
+  if (searchFilter.value.lowEngineCapacity)
+    filter.filter.lowEngineCapacity = searchFilter.value.lowEngineCapacity
+  if (searchFilter.value.highEngineCapacity)
+    filter.filter.highEngineCapacity = searchFilter.value.highEngineCapacity
+  if (searchFilter.value.driveType) filter.filter.driveType = searchFilter.value.driveType
+  if (searchFilter.value.gearboxType.length)
+    filter.filter.gearboxType = searchFilter.value.gearboxType
+  if (searchFilter.value.locationCity) filter.filter.locationCity = searchFilter.value.locationCity
+  if (searchFilter.value.orgelement) filter.filter.orgelement = searchFilter.value.orgelement
+  if (searchFilter.value.manager) filter.filter.manager = searchFilter.value.manager
+
+  getData()
+}
+
 const searchInputStyle = computed(() => {
   return globalStore.isMobileView ? { textAlign: 'center' } : { float: 'right' }
 })
@@ -138,26 +184,23 @@ const setCurrent = (row) => {
   singleTableRef.value!.setCurrentRow(row)
 }
 
-function toSearch() {
-  params.search = searchText.value
-  getData()
-}
-
 function buyFilterSelect(val: number) {
-  params.mainFilter = val
+  filter.mainFilter = val
   getData()
 }
 
 function changePage(val) {
   currentPage.value = val
-  params.offset = (val - 1) * rowsPerPage.value
+  filter.offset = (val - 1) * rowsPerPage.value
   getData()
   if (globalStore.isMobileView) gotoTop()
 }
 
 function getData() {
+  filter.filter = JSON.stringify(filter.filter)
+
   globalStore.isWaiting = true
-  workflowStore.getBuyWorkflows(params).then((res) => {
+  workflowStore.getBuyWorkflows(filter).then((res) => {
     globalStore.isWaiting = false
     fastFilter.buy = res.buyDealsCount
     fastFilter.buyByActive = res.buyByActiveCount
