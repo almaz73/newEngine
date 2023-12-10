@@ -2,13 +2,15 @@
   <div class="deal-filters">
     <div>
       <label>Дата соаздания</label>
-      <el-date-picker v-model="value.createDate" />
+      <el-date-picker
+        placeholder="Выберите дату"
+        v-model="value.createDate" />
     </div>
     <div>
       <label style="">Модель </label>
       <div class="filter-block">
         <el-select
-          placeholder="Бренд"
+          placeholder="Выберите бренд"
           v-model="value.brand"
           @change="changeBrand"
           filterable
@@ -16,7 +18,8 @@
         >
           <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
-        <el-select placeholder="Модель" v-model="value.model" filterable clearable>
+        &nbsp; &nbsp; 
+        <el-select placeholder="Выберите модель" v-model="value.model" filterable clearable>
           <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </div>
@@ -26,12 +29,12 @@
       <label>Год выпуска</label>
       <div class="filter-block">
         &nbsp; &nbsp; &nbsp; от
-        <el-select placeholder="год" v-model="value.lowYearReleased" filterable clearable>
+        <el-select placeholder="Выберите год" v-model="value.lowYearReleased" filterable clearable>
           <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name" />
         </el-select>
         <span style="white-space: nowrap">
           &nbsp; &nbsp; &nbsp; до
-          <el-select placeholder="год" v-model="value.highYearReleased" filterable clearable>
+          <el-select placeholder="Выберите год" v-model="value.highYearReleased" filterable clearable>
             <el-option
               v-for="item in years"
               :key="item.name"
@@ -46,7 +49,7 @@
       <label>Обьем двигателя</label>
       <div class="filter-block">
         &nbsp; &nbsp; &nbsp; от
-        <el-select placeholder="объем" v-model="value.lowEngineCapacity" filterable clearable>
+        <el-select placeholder="Выберите объем" v-model="value.lowEngineCapacity" filterable clearable>
           <el-option
             v-for="item in capacities"
             :key="item.name"
@@ -56,7 +59,7 @@
         </el-select>
         <span style="white-space: nowrap">
           &nbsp; &nbsp; &nbsp; до
-          <el-select placeholder="объем" v-model="value.highEngineCapacity" filterable clearable>
+          <el-select placeholder="Выберите объем" v-model="value.highEngineCapacity" filterable clearable>
             <el-option
               v-for="item in capacities"
               :key="item.name"
@@ -70,31 +73,31 @@
     <div style="clear: both"></div>
     <div>
       <label>Тип привода</label>
-      <el-select placeholder="выберите значение" v-model="value.driveType" filterable clearable>
+      <el-select placeholder="Выберите тип привода" v-model="value.driveType" filterable clearable>
         <el-option v-for="item in driveTypies" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
     </div>
     <div>
       <label>Тип КПП</label>
-      <el-select v-model="value.gearboxType" multiple placeholder="Выберите несколько значений">
+      <el-select v-model="value.gearboxType" multiple placeholder="Выберите несколько типов">
         <el-option v-for="item in kpp" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
     </div>
     <div>
       <label>Город</label>
-      <el-select placeholder="выберите значение" v-model="value.locationCity" filterable clearable>
+      <el-select placeholder="Выберите город" v-model="value.locationCity" filterable clearable>
         <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item" />
       </el-select>
     </div>
     <div>
       <label>Менеджер</label>
-      <el-select placeholder="выберите значение" v-model="value.manager" filterable clearable>
+      <el-select placeholder="Выберите менеджера" v-model="value.manager" filterable clearable>
         <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id" />
       </el-select>
     </div>
     <div>
       <label>Организация</label>
-      <el-select placeholder="выберите значение" v-model="value.orgelement" filterable clearable>
+      <el-select placeholder="Выберите организацию" v-model="value.orgelement" filterable clearable>
         <el-option
           v-for="item in organizations"
           :key="item.id"
@@ -152,19 +155,20 @@ function changeBrand(id) {
   globalStore.getModels(id).then((res) => (models.value = res))
 }
 
-for (let z = new Date().getFullYear(); z > 1930; z--) {
-  years.push({ name: z })
+function open ()  {
+  for (let z = new Date().getFullYear(); z > 1930; z--) {
+    years.push({ name: z })
+  }
+  for (let z = 800; z <= 6000; z = z + 100) {
+    capacities.push({ name: z })
+  }
+  globalStore.getBrands().then((res) => (brands.value = res))
+  globalStore.getOrganizations().then((res) => (organizations.value = res.items))
+  globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
+  globalStore.getPlaces().then((res) => {
+    cities.value = res.citys
+    places.value = res.items
+  })
 }
-for (let z = 800; z <= 6000; z = z + 100) {
-  capacities.push({ name: z })
-}
-
-globalStore.getBrands().then((res) => (brands.value = res))
-globalStore.getOrganizations().then((res) => (organizations.value = res.items))
-globalStore.getRoles([20, 120]).then((res) => manageres.value = res.items )
-globalStore.getPlaces().then((res) => {
-  cities.value = res.citys
-  places.value = res.items
-})
-
+defineExpose({open})
 </script>

@@ -25,16 +25,28 @@
         v-model="searchText"
         @keyup.enter="toSearch"
       />
-      <el-button>4</el-button>
+      <el-button @click.prevent="openFilter()">
+        <img
+          alt=""
+          class="filter-button"
+          :class="{ open: isFilterOpened }"
+          src="@/assets/icons/icon-menu-arrow-down.png"
+        />
+      </el-button>
     </div>
 
-    <div class="open-filter">
-      <DealFilters v-model="searchFilter" @keyup.enter="toSearch" />
+    <div class="open-filter" :class="{ open: isFilterOpened }">
+      <DealFilters
+        ref="dealFilter"
+        style="min-height: 0; overflow: hidden"
+        v-model="searchFilter"
+        @keyup.enter="toSearch"
+      />
     </div>
 
     <div style="text-align: center">
-      <el-button @click="toSearch">Искать</el-button>
-      <el-button @click="toSearch">Очистить фильтр</el-button>
+      <el-button @click="toSearch" v-if="isFilterOpened">Искать</el-button>
+      <el-button @click="toSearch" v-if="isFilterOpened">Очистить фильтр</el-button>
     </div>
     <!-- для компа таблица -->
     <el-table
@@ -123,6 +135,8 @@ const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
 const fastFilter = reactive({ buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0 })
+const isFilterOpened = ref(false)
+const dealFilter = ref<InstanceType<DealFilters | null>>(null)
 const filter = {
   filter: {},
   id: '',
@@ -182,6 +196,16 @@ const singleTableRef = ref<InstanceType<typeof ElTable>>()
 const setCurrent = (row) => {
   console.log('row', row)
   singleTableRef.value!.setCurrentRow(row)
+}
+
+function openFilter() {
+  isFilterOpened.value = !isFilterOpened.value
+  setTimeout(() => {
+    console.log('dealFilter.value', dealFilter.value)
+    dealFilter.value.open()
+  })
+
+  // setTimeout(dealFilter.value.open)
 }
 
 function buyFilterSelect(val: number) {

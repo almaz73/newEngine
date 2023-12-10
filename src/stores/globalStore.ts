@@ -48,10 +48,9 @@ export const useGlobalStore = defineStore('globalStore', {
       return (cash.getOrganizations = res.data)
     },
     async getRoles(roles) {
-      // if (cash['getModels' + brandId]) return cash['getModels' + brandId] // список статичный - кэшируем
+      if (cash['getModels' + roles.join('-')]) return cash['getModels' + roles.join('-')] // список статичный - кэшируем
       let res = await getRoles(roles)
-      // return (cash['getModels' + brandId] = res.data)
-      return res.data
+      return (cash['getModels' + roles.join('-')] = res.data)
     }
   }
 })

@@ -94,6 +94,12 @@
 
 .open-filter {
     clear: both;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-in-out;
+}
+.open-filter.open{
+    grid-template-rows: 1fr;
 }
 
 .deal-filters label {
@@ -109,4 +115,12 @@
     float: left;
     text-align: right;
     padding-right: 30px;
+}
+
+.filter-button{
+    transform: rotate(0);
+    transition: transform 0.3s ease-in-out;
+}
+.filter-button.open{
+    transform: rotate(-180deg);
 }
