@@ -10,9 +10,9 @@ export const formatDate = (val) => {
 export const formatDateDDMMYYYY = (val) => {
   // формат: 17.01.2022
   return new Date(val).toLocaleString('ru-Ru', {
-    year: 'numeric',
+    day: 'numeric',
     month: 'numeric',
-    day: 'numeric'
+    year: 'numeric'
   })
 }
 

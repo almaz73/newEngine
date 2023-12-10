@@ -40,8 +40,16 @@
         ref="dealFilter"
         style="min-height: 0; overflow: hidden"
         v-model="searchFilter"
+        @changeFilter="changeFilter"
         @keyup.enter="toSearch"
       />
+    </div>
+
+    <div class="tags">
+      <span v-for="el in  TAGS">
+        {{el.name}}
+        <b>✖</b>
+      </span>
     </div>
 
     <div style="text-align: center">
@@ -108,25 +116,22 @@
       <div v-if="!workflowStore.list.length" style="text-align: center">Нет данных</div>
     </div>
     <el-pagination
-      v-if="!globalStore.isMobileView && total > rowsPerPage.value"
       v-model:page-size="rowsPerPage"
       layout="prev, pager, next"
       @current-change="changePage"
       :total="total"
     />
-    <div class="page-info" v-if="!globalStore.isMobileView && total > rowsPerPage.value">
-      Показаны {{ pageDescription }} из {{ total }}
-    </div>
+    <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, computed } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { useWorkflowStore } from '@/stores/workflowStore'
 import { useGlobalStore } from '@/stores/globalStore'
 import { formatDate, formatDateDDMMYYYY, gotoTop } from '@/utils/globalFunctions'
 import { ElTable } from 'element-plus'
-import DealFilters from '@/components/DealFilters.vue'
+import DealFilters from '@/components/FilterCtrl.vue'
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
@@ -147,6 +152,8 @@ const filter = {
 }
 const searchFilter = ref({
   createDate: null,
+  carBrandId: null,
+  carModelId: null,
   lowYearReleased: null,
   highYearReleased: null,
   lowEngineCapacity: null,
@@ -157,29 +164,53 @@ const searchFilter = ref({
   orgelement: null,
   manager: null
 })
+const TAGS=ref([])
 
 function toSearch() {
   filter.search = searchText.value
-  filter.filter = {}
-  if (searchFilter.value.createDate)
-    filter.filter.createDate = formatDateDDMMYYYY(searchFilter.value.createDate)
-  if (searchFilter.value.brand) filter.filter.carBrandId = searchFilter.value.brand
-  if (searchFilter.value.model) filter.filter.carModelId = searchFilter.value.model
-  if (searchFilter.value.lowYearReleased)
-    filter.filter.lowYearReleased = searchFilter.value.lowYearReleased
-  if (searchFilter.value.highYearReleased)
-    filter.filter.highYearReleased = searchFilter.value.highYearReleased
-  if (searchFilter.value.lowEngineCapacity)
-    filter.filter.lowEngineCapacity = searchFilter.value.lowEngineCapacity
-  if (searchFilter.value.highEngineCapacity)
-    filter.filter.highEngineCapacity = searchFilter.value.highEngineCapacity
-  if (searchFilter.value.driveType) filter.filter.driveType = searchFilter.value.driveType
-  if (searchFilter.value.gearboxType.length)
-    filter.filter.gearboxType = searchFilter.value.gearboxType
-  if (searchFilter.value.locationCity) filter.filter.locationCity = searchFilter.value.locationCity
-  if (searchFilter.value.orgelement) filter.filter.orgelement = searchFilter.value.orgelement
-  if (searchFilter.value.manager) filter.filter.manager = searchFilter.value.manager
+  let s = searchFilter.value
 
+  filter.filter = dealFilters || {}
+
+  if (s.createDate) filter.filter.createDate = formatDateDDMMYYYY(s.createDate)
+  else delete filter.filter.createDate
+
+  if (s.carBrandId) filter.filter.carBrandId = s.carBrandId
+  else delete filter.filter.carBrandId
+
+  if (s.carModelId) filter.filter.carModelId = s.carModelId
+  else delete filter.filter.carModelId
+
+  if (s.lowYearReleased) filter.filter.lowYearReleased = s.lowYearReleased
+  else delete filter.filter.lowYearReleased
+
+  if (s.highYearReleased) filter.filter.highYearReleased = s.highYearReleased
+  else delete filter.filter.highYearReleased
+
+  if (s.lowEngineCapacity) filter.filter.lowEngineCapacity = s.lowEngineCapacity
+  else delete filter.filter.lowEngineCapacity
+
+  if (s.highEngineCapacity) filter.filter.highEngineCapacity = s.highEngineCapacity
+  else delete filter.filter.highEngineCapacity
+
+  if (s.driveType) filter.filter.driveType = s.driveType
+  else delete filter.filter.driveType
+
+  if (s.gearboxType && s.gearboxType.length) filter.filter.gearboxType = s.gearboxType
+  else delete filter.filter.gearboxType
+
+  if (s.locationCity) filter.filter.locationCity = s.locationCity
+  else delete filter.filter.locationCity
+
+  if (s.orgelement) filter.filter.orgelement = s.orgelement
+  else delete filter.filter.orgelement
+
+  if (s.manager) filter.filter.manager = s.manager
+  else delete filter.filter.manager
+
+  console.log('filter.filter', filter.filter)
+  let length = Object.keys(filter.filter).length
+  if (length) localStorage.setItem('dealFilters', JSON.stringify(filter.filter))
   getData()
 }
 
@@ -198,14 +229,13 @@ const setCurrent = (row) => {
   singleTableRef.value!.setCurrentRow(row)
 }
 
+function changeFilter(tags) {
+  TAGS.value= tags
+}
+
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
-  setTimeout(() => {
-    console.log('dealFilter.value', dealFilter.value)
-    dealFilter.value.open()
-  })
-
-  // setTimeout(dealFilter.value.open)
+  setTimeout(dealFilter.value.open)
 }
 
 function buyFilterSelect(val: number) {
@@ -235,7 +265,11 @@ function getData() {
   })
 }
 
-onMounted(() => {
-  getData()
-})
+let dealFilters = localStorage.getItem('dealFilters') || ''
+if (dealFilters) {
+  dealFilters = JSON.parse(dealFilters)
+  Object.assign(searchFilter.value, dealFilters)
+} else dealFilters = null
+
+toSearch()
 </script>
