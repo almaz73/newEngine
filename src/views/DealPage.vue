@@ -5,10 +5,10 @@
         Все оценки:{{ fastFilter.buy }}
       </el-button>
       <el-button @click="buyFilterSelect(12)" :class="{ active: filter.mainFilter == 12 }"
-        >По активным:{{ fastFilter.buyByActive }}
+      >По активным:{{ fastFilter.buyByActive }}
       </el-button>
       <el-button @click="buyFilterSelect(11)" :class="{ active: filter.mainFilter == 11 }"
-        >На продаже:{{ fastFilter.buyOnSale }}
+      >На продаже:{{ fastFilter.buyOnSale }}
       </el-button>
       <el-button @click="buyFilterSelect(13)" :class="{ active: filter.mainFilter == 13 }">
         Продано:{{ fastFilter.buySoldAuto }}
@@ -20,34 +20,34 @@
 
     <div class="a-search" :style="searchInputStyle">
       <input
-        type="search"
-        placeholder="Поиск по VIN"
-        v-model="searchText"
-        @keyup.enter="toSearch"
+          type="search"
+          placeholder="Поиск по VIN"
+          v-model="searchText"
+          @keyup.enter="toSearch"
       />
       <el-button @click.prevent="openFilter()">
         <img
-          alt=""
-          class="filter-button"
-          :class="{ open: isFilterOpened }"
-          src="@/assets/icons/icon-menu-arrow-down.png"
+            alt=""
+            class="filter-button"
+            :class="{ open: isFilterOpened }"
+            src="@/assets/icons/icon-menu-arrow-down.png"
         />
       </el-button>
     </div>
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
       <DealFilters
-        ref="dealFilter"
-        style="min-height: 0; overflow: hidden"
-        v-model="searchFilter"
-        @changeFilter="changeFilter"
-        @keyup.enter="toSearch"
+          ref="dealFilter"
+          style="min-height: 0; overflow: hidden"
+          v-model="searchFilter"
+          @changeFilter="changeFilter"
+          @keyup.enter="toSearch"
       />
     </div>
 
     <div class="tags">
-      <span v-for="el in  TAGS">
-        {{el.name}}
+      <span v-for="(el,ind) in  TAGS" :key="ind">
+        {{ el.name }}
         <b>✖</b>
       </span>
     </div>
@@ -58,23 +58,23 @@
     </div>
     <!-- для компа таблица -->
     <el-table
-      style="margin-top: 24px"
-      v-if="!globalStore.isMobileView"
-      :data="workflowStore.list"
-      ref="singleTableRef"
-      empty-text="Нет данных"
-      highlight-current-row
+        style="margin-top: 24px"
+        v-if="!globalStore.isMobileView"
+        :data="workflowStore.list"
+        ref="singleTableRef"
+        empty-text="Нет данных"
+        highlight-current-row
     >
       <el-table-column label="Автомобиль">
         <template #default="scope">
           <span class="red-text">
             {{ scope.row.brand }} {{ scope.row.model }} {{ scope.row.yearReleased }}<br
           /></span>
-          {{ scope.row.vin }}<br />
+          {{ scope.row.vin }}<br/>
           <button
-            class="deal-car-color"
-            disabled
-            :style="{ 'background-color': scope.row.bodyColorCode }"
+              class="deal-car-color"
+              disabled
+              :style="{ 'background-color': scope.row.bodyColorCode }"
           ></button>
           &nbsp; Пробег:{{ scope.row.rowmileage }}
         </template>
@@ -82,20 +82,20 @@
       <el-table-column label="Менеджер">
         <template #default="scope">
           <b>{{ scope.row.userName }}</b
-          ><br />
-          {{ scope.row.location }}<br />
+          ><br/>
+          {{ scope.row.location }}<br/>
           <b>{{ scope.row.locationCity }}</b>
         </template>
       </el-table-column>
       <el-table-column label="Статус">
         <template #default="scope">
-          <span class="red-text"> {{ scope.row.statusTitle }} </span><br />
-          {{ scope.row.dealTypeTitle }}<br />
+          <span class="red-text"> {{ scope.row.statusTitle }} </span><br/>
+          {{ scope.row.dealTypeTitle }}<br/>
           {{ formatDate(scope.row.created) }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label="" />
+      <el-table-column prop="" label=""/>
     </el-table>
 
     <!-- для мобилки таблица -->
@@ -115,22 +115,24 @@
       </div>
       <div v-if="!workflowStore.list.length" style="text-align: center">Нет данных</div>
     </div>
-    <el-pagination
-      v-model:page-size="rowsPerPage"
-      layout="prev, pager, next"
-      @current-change="changePage"
-      :total="total"
-    />
-    <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
+    <template v-if="workflowStore.list.length">
+      <el-pagination
+          v-model:page-size="rowsPerPage"
+          layout="prev, pager, next"
+          @current-change="changePage"
+          :total="total"
+      />
+      <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
+    </template>
   </main>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue'
-import { useWorkflowStore } from '@/stores/workflowStore'
-import { useGlobalStore } from '@/stores/globalStore'
-import { formatDate, formatDateDDMMYYYY, gotoTop } from '@/utils/globalFunctions'
-import { ElTable } from 'element-plus'
+import {reactive, ref, computed} from 'vue'
+import {useWorkflowStore} from '@/stores/workflowStore'
+import {useGlobalStore} from '@/stores/globalStore'
+import {formatDate, formatDateDDMMYYYY, gotoTop} from '@/utils/globalFunctions'
+import {ElTable} from 'element-plus'
 import DealFilters from '@/components/FilterCtrl.vue'
 
 const globalStore = useGlobalStore()
@@ -139,7 +141,7 @@ const searchText = ref('')
 const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
-const fastFilter = reactive({ buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0 })
+const fastFilter = reactive({buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0})
 const isFilterOpened = ref(false)
 const dealFilter = ref<InstanceType<DealFilters | null>>(null)
 const filter = {
@@ -164,7 +166,7 @@ const searchFilter = ref({
   orgelement: null,
   manager: null
 })
-const TAGS=ref([])
+const TAGS = ref([])
 
 function toSearch() {
   filter.search = searchText.value
@@ -215,7 +217,7 @@ function toSearch() {
 }
 
 const searchInputStyle = computed(() => {
-  return globalStore.isMobileView ? { textAlign: 'center' } : { float: 'right' }
+  return globalStore.isMobileView ? {textAlign: 'center'} : {float: 'right'}
 })
 
 const pageDescription = computed(() => {
@@ -230,7 +232,7 @@ const setCurrent = (row) => {
 }
 
 function changeFilter(tags) {
-  TAGS.value= tags
+  TAGS.value = tags
 }
 
 function openFilter() {
@@ -243,7 +245,7 @@ function buyFilterSelect(val: number) {
   getData()
 }
 
-function changePage(val) {
+function changePage(val: number) {
   currentPage.value = val
   filter.offset = (val - 1) * rowsPerPage.value
   getData()
@@ -251,7 +253,7 @@ function changePage(val) {
 }
 
 function getData() {
-  filter.filter = JSON.stringify(filter.filter)
+  filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
 
   globalStore.isWaiting = true
   workflowStore.getBuyWorkflows(filter).then((res) => {
