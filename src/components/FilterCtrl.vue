@@ -18,9 +18,9 @@
         </el-select>
 
         <el-select
-            @change="changed"
             placeholder="Выберите модель"
             v-model="vModel.carModelId"
+            @change="changed"
             filterable
             clearable
         >
@@ -209,6 +209,7 @@ const organizations = ref([])
 const manageres = ref([])
 
 function changeBrand(id: number) {
+  vModel.value.carModelId = null
   globalStore.getModels(id).then((res) => (models.value = res))
   changed()
 }

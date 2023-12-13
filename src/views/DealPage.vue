@@ -46,15 +46,15 @@
     </div>
 
     <div class="tags">
-      <span v-for="(el,ind) in  TAGS" :key="ind">
+      <span v-for="(el,ind) in TAGS" :key="ind">
         {{ el.name }}
-        <b>✖</b>
+        <b @click="removeFilter(el)">✖</b>
       </span>
     </div>
 
     <div style="text-align: center">
       <el-button @click="toSearch" v-if="isFilterOpened">Искать</el-button>
-      <el-button @click="toSearch" v-if="isFilterOpened">Очистить фильтр</el-button>
+      <el-button @click="clearSearch" v-if="isFilterOpened">Очистить фильтр</el-button>
     </div>
     <!-- для компа таблица -->
     <el-table
@@ -210,10 +210,20 @@ function toSearch() {
   if (s.manager) filter.filter.manager = s.manager
   else delete filter.filter.manager
 
-  console.log('filter.filter', filter.filter)
   let length = Object.keys(filter.filter).length
   if (length) localStorage.setItem('dealFilters', JSON.stringify(filter.filter))
   getData()
+}
+
+function clearSearch() {
+  filter.filter = {}
+  localStorage.removeItem('dealFilters')
+  toSearch()
+}
+
+function removeFilter(element) {
+  console.log(element)
+  TAGS.value = TAGS.value.filter(el => el.word != element.word)
 }
 
 const searchInputStyle = computed(() => {
@@ -242,6 +252,7 @@ function openFilter() {
 
 function buyFilterSelect(val: number) {
   filter.mainFilter = val
+  filter.offset = 0
   getData()
 }
 
@@ -271,7 +282,7 @@ let dealFilters = localStorage.getItem('dealFilters') || ''
 if (dealFilters) {
   dealFilters = JSON.parse(dealFilters)
   Object.assign(searchFilter.value, dealFilters)
-} else dealFilters = null
+} else dealFilters = ''
 
 toSearch()
 </script>

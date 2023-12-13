@@ -139,10 +139,14 @@
 
 .tags span {
     white-space: nowrap;
-    margin-left: 20px;
+    margin: 2px 5px;
+    border-radius: 2px;
+    padding:4px 12px;
+    border: 1px solid #ddd;
 }
 
 .tags b {
     margin-left: 5px;
+    cursor: pointer;
 }
 
