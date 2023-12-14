@@ -64,12 +64,19 @@
           <el-icon>
             <img alt="Вложенные меню" src="@/assets/icons/ic-settings-black-18-px.png" />
           </el-icon>
+
           <span>Вложенные меню</span>
+
         </template>
-        <el-menu-item-group title="Group Two"></el-menu-item-group>
+        <a target="_blank" href="https://www.forbes.ru/karera-i-svoy-biznes/384349-kak-zhitel-kazani-perezhil-bankrotstvo-i-postroil-set-avtosalonov-s">
+          <el-menu-item-group title="Это Подаздел"></el-menu-item-group>
+        </a>
         <el-sub-menu index="6-4">
-          <template #title><span>item four</span></template>
-          <el-menu-item index="6-4-1">item one</el-menu-item>
+          <template #title><span>Раздел с подподразделом</span></template>
+          <a href="https://xn--80aej9aped4f.xn--p1ai/" target="_blank">
+            <el-menu-item index="6-4-1">Подподраздел</el-menu-item>
+          </a>
+
         </el-sub-menu>
       </el-sub-menu>
 

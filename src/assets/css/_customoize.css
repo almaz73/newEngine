@@ -14,7 +14,7 @@
     color: #d34439 !important;
 }
 
-.el-menu {
+[role="menubar"].el-menu {
     padding: 75px 0;
 }
 
@@ -24,6 +24,10 @@ li.el-menu-item {
 
 .el-menu-vertical:not(.el-menu--collapse) {
     width: 215px;
+}
+
+.el-menu a{
+    text-decoration: none;
 }
 
 /**
