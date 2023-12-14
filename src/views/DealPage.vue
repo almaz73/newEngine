@@ -115,7 +115,7 @@
       </div>
       <div v-if="!workflowStore.list.length" style="text-align: center">Нет данных</div>
     </div>
-    <template v-if="workflowStore.list.length">
+    <template v-if="workflowStore.list.length>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
           layout="prev, pager, next"
@@ -133,7 +133,7 @@ import {useWorkflowStore} from '@/stores/workflowStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, formatDateDDMMYYYY, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
-import DealFilters from '@/components/FilterCtrl.vue'
+import DealFilters from '@/components/dealFilter/FilterCtrl.vue'
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
@@ -211,6 +211,12 @@ function toSearch() {
   else delete filter.filter.manager
 
   let length = Object.keys(filter.filter).length
+
+  if (filter.filter && filter.filter.createDate) {
+    // не хочет дата читаться из текста иначе
+    filter.filter.createDate = filter.filter.createDate.split('.').reverse().join('.')
+  }
+
   if (length) localStorage.setItem('dealFilters', JSON.stringify(filter.filter))
   getData()
 }
@@ -269,6 +275,9 @@ function getData() {
   globalStore.isWaiting = true
   workflowStore.getBuyWorkflows(filter).then((res) => {
     globalStore.isWaiting = false
+
+    if (!res)   return console.log('НЕТ ДАННЫХ')
+
     fastFilter.buy = res.buyDealsCount
     fastFilter.buyByActive = res.buyByActiveCount
     fastFilter.buyOnSale = res.buyOnSellAutoCount

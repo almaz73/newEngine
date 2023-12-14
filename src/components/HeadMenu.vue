@@ -9,7 +9,7 @@
     <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()"/>
     <div class="pusher"/>
 
-    <a href="https://g66.ru/almaz73/"> Идеи пишем сюда</a>
+    <a href="https://g66.ru/almaz73/" style="text-decoration: none"> Идеи пишем сюда</a>
 
     <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>

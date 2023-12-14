@@ -216,8 +216,13 @@ function changeBrand(id: number) {
 
 function changed() {
   // создаем кнопки
-  // console.log('organizations', organizations.value)
-  let tags = []
+  let tags: TypeTag[] = []
+
+  interface TypeTag {
+    word: string;
+    name: string;
+  }
+
   Object.keys(vModel.value).forEach((word) => {
     let key = vModel.value[word]
     let name
@@ -226,11 +231,13 @@ function changed() {
         key && tags.push({word, name: formatDateDDMMYYYY(key)})
         break
       case 'carBrandId':
-        name = brands.value.find((el) => el.id === key).name
+        var brand = brands.value.find((el) => el.id === key)
+        name = brand && brand.name
         name && tags.push({word, name: name})
         break
       case 'carModelId':
-        name = key && models.value.find((el) => el.id === key).name
+        var model = models.value.find((el) => el.id === key)
+        name = key && model && model.name
         name && tags.push({word, name: name})
         break
       case 'lowYearReleased':
@@ -249,7 +256,7 @@ function changed() {
         key && tags.push({word, name: 'ссс ' + key})
         break
       case 'gearboxType':
-        key && tags.push({word, name: 'до ' + key})
+        key.length && tags.push({word, name: 'до ' + key})
         break
       case 'locationCity':
         key && tags.push({word, name: 'г. ' + key})
