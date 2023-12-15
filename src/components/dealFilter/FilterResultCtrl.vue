@@ -1,5 +1,4 @@
 <template>
-  ={{ searchText }}=
   <div class="tags">
     <span v-for="(el,ind) in TAGS" :key="ind">
         {{ el.name }}
@@ -23,92 +22,37 @@
 }
 </style>
 <script setup lang="ts">
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
-import {ref} from "vue";
 
-const props = defineProps(['TAGS', 'isOpen', 'searchText', 'searchFilter'])
+const props = defineProps(['TAGS', 'isOpen', 'searchFilter'])
 const emits = defineEmits(['toSearch'])
 
+const filterParams = {}
 
-const filter = {
-  filter: {},
-  // limit: rowsPerPage,
-  // mainFilter: 10,
-  // offset: 0,
-  search: ''
-}
+let s = props.searchFilter
 
 
 function go() {
-  // console.log('searchFilter', props.searchFilter)
-  //
+  Object.keys(s).forEach(el => {
+    if (s[el]) filterParams[el] = s[el]
+    else delete filterParams[el]
+  })
 
-  let s = props.searchFilter
+  let length = Object.keys(filterParams).length
+  if (length) localStorage.setItem('dealFilters', JSON.stringify(filterParams))
 
-  console.log('s ', s)
-
-
-  console.log('filter.filter', filter.filter)
-
-  if (s.createDate) filter.filter.createDate = formatDateDDMMYYYY(s.createDate)
-  else delete filter.filter.createDate
-
-  if (s.carBrandId) filter.filter.carBrandId = s.carBrandId
-  else delete filter.filter.carBrandId
-
-  if (s.carModelId) filter.filter.carModelId = s.carModelId
-  else delete filter.filter.carModelId
-
-  if (s.lowYearReleased) filter.filter.lowYearReleased = s.lowYearReleased
-  else delete filter.filter.lowYearReleased
-
-  if (s.highYearReleased) filter.filter.highYearReleased = s.highYearReleased
-  else delete filter.filter.highYearReleased
-
-  if (s.lowEngineCapacity) filter.filter.lowEngineCapacity = s.lowEngineCapacity
-  else delete filter.filter.lowEngineCapacity
-
-  if (s.highEngineCapacity) filter.filter.highEngineCapacity = s.highEngineCapacity
-  else delete filter.filter.highEngineCapacity
-
-  if (s.driveType) filter.filter.driveType = s.driveType
-  else delete filter.filter.driveType
-
-  if (s.gearboxType && s.gearboxType.length) filter.filter.gearboxType = s.gearboxType
-  else delete filter.filter.gearboxType
-
-  if (s.locationCity) filter.filter.locationCity = s.locationCity
-  else delete filter.filter.locationCity
-
-  if (s.orgelement) filter.filter.orgelement = s.orgelement
-  else delete filter.filter.orgelement
-
-  if (s.manager) filter.filter.manager = s.manager
-  else delete filter.filter.manager
-
-  let length = Object.keys(filter.filter).length
-
-  if (filter.filter && filter.filter.createDate) {
-    // не хочет дата читаться из текста иначе
-    filter.filter.createDate = filter.filter.createDate.split('.').reverse().join('.')
-  }
-
-  if (length) localStorage.setItem('dealFilters', JSON.stringify(filter.filter))
-
-
-  console.log('filter.filter', filter)
-  // getData()
-  emits('toSearch', filter)
+  emits('toSearch')
 }
 
 function clearSearch() {
-  // filter.filter = {}
-  // localStorage.removeItem('filterCtrl')
-  // go()
+  localStorage.removeItem('dealFilters')
+  Object.keys(s).forEach(el => s[el] = null)
+  emits('toSearch')
 }
 
 function removeFilter(element) {
-  // console.log(element)
-  // TAGS.value = TAGS.value.filter(el => el.word != element.word)
+  Object.keys(s).forEach(el => {
+    if (el === element.word) s[el] = null
+  })
+
 }
 </script>

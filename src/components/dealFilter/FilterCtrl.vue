@@ -16,16 +16,18 @@
         >
           <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
         </el-select>
-
-        <el-select
-            placeholder="Выберите модель"
-            v-model="vModel.carModelId"
-            @change="changed"
-            filterable
-            clearable
-        >
-          <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
+        <span style="white-space: nowrap">
+           &nbsp; &nbsp; &nbsp; &nbsp;
+          <el-select
+              placeholder="Выберите модель"
+              v-model="vModel.carModelId"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </span>
       </div>
     </div>
 

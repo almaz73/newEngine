@@ -22,14 +22,9 @@
     <FilterResultCtrl :TAGS="TAGS"
                       :isOpen="isFilterOpened"
                       :searchFilter="searchFilter"
-                      :searchText="searchText"
                       @toSearch="toSearch"
     />
 
-    <div style="text-align: center">
-      <!--      <el-button @click="toSearch" v-if="isFilterOpened">Искать</el-button>-->
-      <el-button @click="clearSearch" v-if="isFilterOpened">Очистить фильтр</el-button>
-    </div>
     <!-- для компа таблица -->
     <el-table
         style="margin-top: 24px"
@@ -74,9 +69,9 @@
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
-      <div v-for="row in workflowStore.list" :key="row.id">
+      <div v-for="(row, ind) in workflowStore.list" :key="ind">
         <div class="head">
-          <span class="deal-car-color" :style="{ 'background-color': row.bodyColorCode }"></span>
+          <span class="deal-car-color" :style="carColor(row)"></span>
           <span>Пробег:{{ row.rowmileage }} </span>
           <span>vin: {{ row.vin }}</span>
         </div>
@@ -101,11 +96,11 @@
   </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {reactive, ref, computed} from 'vue'
 import {useWorkflowStore} from '@/stores/workflowStore'
 import {useGlobalStore} from '@/stores/globalStore'
-import {formatDate, formatDateDDMMYYYY, gotoTop} from '@/utils/globalFunctions'
+import {formatDate, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
 import FilterResultCtrl from "@/components/dealFilter/FilterResultCtrl.vue"
@@ -125,10 +120,9 @@ const filterButtons = reactive([
   {type: 'buyReturnedAutoCount', count: 0, name: 'Возврат:', code: 14}
 ])
 const isFilterOpened = ref(false)
-const dealFilter = ref<InstanceType<FilterCtrl | null>>(null)
+const dealFilter = ref(null)
 const filter = {
   filter: {},
-  id: '',
   limit: rowsPerPage.value,
   mainFilter: 10,
   offset: 0,
@@ -150,20 +144,12 @@ const searchFilter = ref({
 })
 const TAGS = ref([])
 
-
-function toSearch() {
-  filter.search = searchText.value
-  console.log('222 filter', filter)
-
-  if (length) localStorage.setItem('filterCtrl', JSON.stringify(filter.filter))
-  getData()
+function carColor(row) {
+  if (!row) return {}
+  if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
+  else return {}
 }
 
-function clearSearch() {
-  filter.filter = {}
-  localStorage.removeItem('filterCtrl')
-  toSearch()
-}
 
 // function removeFilter(element) {
 //   console.log(element)
@@ -176,11 +162,10 @@ const pageDescription = computed(() => {
   let end = start + rowsPerPage.value - 1
   return start + ' - ' + end
 })
-const singleTableRef = ref<InstanceType<typeof ElTable>>()
-const setCurrent = (row) => {
-  console.log('row', row)
-  singleTableRef.value!.setCurrentRow(row)
-}
+const singleTableRef = ref()
+// const setCurrent = (row) => {
+//   singleTableRef.value.setCurrentRow(row)
+// }
 
 function changeFilter(tags) {
   TAGS.value = tags
@@ -191,17 +176,32 @@ function openFilter() {
   setTimeout(dealFilter.value.open)
 }
 
-function buyFilterSelect(val: number) {
+function buyFilterSelect(val) {
   filter.mainFilter = val
   filter.offset = 0
-  getData()
+  toSearch()
 }
 
-function changePage(val: number) {
+function changePage(val) {
   currentPage.value = val
   filter.offset = (val - 1) * rowsPerPage.value
-  getData()
+  toSearch()
   if (globalStore.isMobileView) gotoTop()
+}
+
+function toSearch() {
+  let essy = {}
+
+  Object.keys(searchFilter.value).forEach(el => {
+    if (searchFilter.value[el] instanceof Array) {
+      if (searchFilter.value[el].length) essy[el] = searchFilter.value[el]
+    } else if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
+  })
+
+  filter.filter = essy
+  filter.search = searchText.value
+
+  getData()
 }
 
 function getData() {
