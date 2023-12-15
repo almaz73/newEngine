@@ -1,42 +1,17 @@
 <template>
   <main>
-    <div class="filter-button">
-      <el-button @click="buyFilterSelect(10)" :class="{ active: filter.mainFilter == 10 }">
-        Все оценки:{{ fastFilter.buy }}
-      </el-button>
-      <el-button @click="buyFilterSelect(12)" :class="{ active: filter.mainFilter == 12 }"
-      >По активным:{{ fastFilter.buyByActive }}
-      </el-button>
-      <el-button @click="buyFilterSelect(11)" :class="{ active: filter.mainFilter == 11 }"
-      >На продаже:{{ fastFilter.buyOnSale }}
-      </el-button>
-      <el-button @click="buyFilterSelect(13)" :class="{ active: filter.mainFilter == 13 }">
-        Продано:{{ fastFilter.buySoldAuto }}
-      </el-button>
-      <el-button @click="buyFilterSelect(14)" :class="{ active: filter.mainFilter == 14 }">
-        Возврат:{{ fastFilter.returned }}
-      </el-button>
-    </div>
-
-    <div class="a-search" :style="searchInputStyle">
-      <input
-          type="search"
-          placeholder="Поиск по VIN"
-          v-model="searchText"
-          @keyup.enter="toSearch"
-      />
-      <el-button @click.prevent="openFilter()">
-        <img
-            alt=""
-            class="filter-button"
-            :class="{ open: isFilterOpened }"
-            src="@/assets/icons/icon-menu-arrow-down.png"
-        />
-      </el-button>
-    </div>
+    <FilterButtonsCtrl
+        :filter="filter"
+        :buttons="filterButtons"
+        :isOpen="isFilterOpened"
+        @buyFilterSelect="buyFilterSelect"
+        @openFilter="openFilter"
+        @updateSearchText="val=>searchText=val"
+        @toSearch="toSearch"
+    />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
-      <DealFilters
+      <FilterCtrl
           ref="dealFilter"
           style="min-height: 0; overflow: hidden"
           v-model="searchFilter"
@@ -44,16 +19,15 @@
           @keyup.enter="toSearch"
       />
     </div>
-
-    <div class="tags">
-      <span v-for="(el,ind) in TAGS" :key="ind">
-        {{ el.name }}
-        <b @click="removeFilter(el)">✖</b>
-      </span>
-    </div>
+    <FilterResultCtrl :TAGS="TAGS"
+                      :isOpen="isFilterOpened"
+                      :searchFilter="searchFilter"
+                      :searchText="searchText"
+                      @toSearch="toSearch"
+    />
 
     <div style="text-align: center">
-      <el-button @click="toSearch" v-if="isFilterOpened">Искать</el-button>
+      <!--      <el-button @click="toSearch" v-if="isFilterOpened">Искать</el-button>-->
       <el-button @click="clearSearch" v-if="isFilterOpened">Очистить фильтр</el-button>
     </div>
     <!-- для компа таблица -->
@@ -133,7 +107,9 @@ import {useWorkflowStore} from '@/stores/workflowStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, formatDateDDMMYYYY, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
-import DealFilters from '@/components/dealFilter/FilterCtrl.vue'
+import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
+import FilterResultCtrl from "@/components/dealFilter/FilterResultCtrl.vue"
+import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
@@ -141,9 +117,15 @@ const searchText = ref('')
 const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
-const fastFilter = reactive({buy: 0, buyByActive: 0, buyOnSale: 0, buySoldAuto: 0, returned: 0})
+const filterButtons = reactive([
+  {type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true},
+  {type: 'buyByActiveCount', count: 0, name: 'По активным:', code: 12},
+  {type: 'buyOnSellAutoCount', count: 0, name: 'На продаже:', code: 11},
+  {type: 'buySoldAutoCount', count: 0, name: 'Продано:', code: 13},
+  {type: 'buyReturnedAutoCount', count: 0, name: 'Возврат:', code: 14}
+])
 const isFilterOpened = ref(false)
-const dealFilter = ref<InstanceType<DealFilters | null>>(null)
+const dealFilter = ref<InstanceType<FilterCtrl | null>>(null)
 const filter = {
   filter: {},
   id: '',
@@ -168,73 +150,26 @@ const searchFilter = ref({
 })
 const TAGS = ref([])
 
+
 function toSearch() {
   filter.search = searchText.value
-  let s = searchFilter.value
+  console.log('222 filter', filter)
 
-  filter.filter = dealFilters || {}
-
-  if (s.createDate) filter.filter.createDate = formatDateDDMMYYYY(s.createDate)
-  else delete filter.filter.createDate
-
-  if (s.carBrandId) filter.filter.carBrandId = s.carBrandId
-  else delete filter.filter.carBrandId
-
-  if (s.carModelId) filter.filter.carModelId = s.carModelId
-  else delete filter.filter.carModelId
-
-  if (s.lowYearReleased) filter.filter.lowYearReleased = s.lowYearReleased
-  else delete filter.filter.lowYearReleased
-
-  if (s.highYearReleased) filter.filter.highYearReleased = s.highYearReleased
-  else delete filter.filter.highYearReleased
-
-  if (s.lowEngineCapacity) filter.filter.lowEngineCapacity = s.lowEngineCapacity
-  else delete filter.filter.lowEngineCapacity
-
-  if (s.highEngineCapacity) filter.filter.highEngineCapacity = s.highEngineCapacity
-  else delete filter.filter.highEngineCapacity
-
-  if (s.driveType) filter.filter.driveType = s.driveType
-  else delete filter.filter.driveType
-
-  if (s.gearboxType && s.gearboxType.length) filter.filter.gearboxType = s.gearboxType
-  else delete filter.filter.gearboxType
-
-  if (s.locationCity) filter.filter.locationCity = s.locationCity
-  else delete filter.filter.locationCity
-
-  if (s.orgelement) filter.filter.orgelement = s.orgelement
-  else delete filter.filter.orgelement
-
-  if (s.manager) filter.filter.manager = s.manager
-  else delete filter.filter.manager
-
-  let length = Object.keys(filter.filter).length
-
-  if (filter.filter && filter.filter.createDate) {
-    // не хочет дата читаться из текста иначе
-    filter.filter.createDate = filter.filter.createDate.split('.').reverse().join('.')
-  }
-
-  if (length) localStorage.setItem('dealFilters', JSON.stringify(filter.filter))
+  if (length) localStorage.setItem('filterCtrl', JSON.stringify(filter.filter))
   getData()
 }
 
 function clearSearch() {
   filter.filter = {}
-  localStorage.removeItem('dealFilters')
+  localStorage.removeItem('filterCtrl')
   toSearch()
 }
 
-function removeFilter(element) {
-  console.log(element)
-  TAGS.value = TAGS.value.filter(el => el.word != element.word)
-}
+// function removeFilter(element) {
+//   console.log(element)
+//   TAGS.value = TAGS.value.filter(el => el.word != element.word)
+// }
 
-const searchInputStyle = computed(() => {
-  return globalStore.isMobileView ? {textAlign: 'center'} : {float: 'right'}
-})
 
 const pageDescription = computed(() => {
   let start = (currentPage.value - 1) * rowsPerPage.value + 1
@@ -275,23 +210,17 @@ function getData() {
   globalStore.isWaiting = true
   workflowStore.getBuyWorkflows(filter).then((res) => {
     globalStore.isWaiting = false
-
-    if (!res)   return console.log('НЕТ ДАННЫХ')
-
-    fastFilter.buy = res.buyDealsCount
-    fastFilter.buyByActive = res.buyByActiveCount
-    fastFilter.buyOnSale = res.buyOnSellAutoCount
-    fastFilter.buySoldAuto = res.buySoldAutoCount
-    fastFilter.returned = res.buyReturnedAutoCount
+    if (!res) return console.log('НЕТ ДАННЫХ')
+    filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
   })
 }
 
-let dealFilters = localStorage.getItem('dealFilters') || ''
-if (dealFilters) {
-  dealFilters = JSON.parse(dealFilters)
-  Object.assign(searchFilter.value, dealFilters)
-} else dealFilters = ''
+let filterCtrl = localStorage.getItem('filterCtrl') || ''
+if (filterCtrl) {
+  filterCtrl = JSON.parse(filterCtrl)
+  Object.assign(searchFilter.value, filterCtrl)
+} else filterCtrl = ''
 
 toSearch()
 </script>

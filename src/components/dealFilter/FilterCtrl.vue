@@ -276,7 +276,7 @@ function changed() {
 }
 
 function open() {
-  for (let z = new Date().getFullYear(); z > 1930; z--) {
+  for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
   }
   for (let z = 800; z <= 6000; z = z + 100) {
