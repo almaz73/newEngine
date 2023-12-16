@@ -176,14 +176,18 @@
       <!--      <el-input />-->
     </div>
     <div style="clear: both"></div>
+    <FilterTagsCtrl :TAGS="tags"
+               @removeElement="removeElement"
+               @toSearch="emit('toSearch')"/>
   </div>
 </template>
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDateDDMMYYYY} from '@/utils/globalFunctions'
+import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
 
-const emit = defineEmits(['update:modelValue', 'changeFilter'])
+const emit = defineEmits(['update:modelValue', 'changeFilter', 'toSearch'])
 const vModel = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
@@ -209,6 +213,19 @@ const cities = ref([])
 const places = ref([])
 const organizations = ref([])
 const manageres = ref([])
+const tags = ref([])
+
+function removeElement(element) {
+  if(!element){
+    Object.keys(vModel.value).forEach(el => vModel.value[el] = null)
+    tags.value=[]
+    return false
+  }
+  tags.value = tags.value.filter(el => {
+    if (el.paramName === element.paramName) vModel.value[el.paramName] = null
+    return el.paramName != element.paramName
+  })
+}
 
 function changeBrand(id: number) {
   vModel.value.carModelId = null
@@ -218,58 +235,52 @@ function changeBrand(id: number) {
 
 function changed() {
   // создаем кнопки
-  let tags: TypeTag[] = []
-
-  interface TypeTag {
-    word: string;
-    name: string;
-  }
-
-  Object.keys(vModel.value).forEach((word) => {
-    let key = vModel.value[word]
+  tags.value = []
+  Object.keys(vModel.value).forEach((paramName) => {
+    let key = vModel.value[paramName]
     let name
-    switch (word) {
+    switch (paramName) {
       case 'createDate':
-        key && tags.push({word, name: formatDateDDMMYYYY(key)})
+        key && tags.value.push({paramName, name: formatDateDDMMYYYY(key)})
         break
       case 'carBrandId':
         var brand = brands.value.find((el) => el.id === key)
         name = brand && brand.name
-        name && tags.push({word, name: name})
+        name && tags.value.push({paramName, name: name})
         break
       case 'carModelId':
         var model = models.value.find((el) => el.id === key)
         name = key && model && model.name
-        name && tags.push({word, name: name})
+        name && tags.value.push({paramName, name: name})
         break
       case 'lowYearReleased':
-        key && tags.push({word, name: 'от ' + key})
+        key && tags.value.push({paramName, name: 'от ' + key})
         break
       case 'highYearReleased':
-        key && tags.push({word, name: 'до ' + key})
+        key && tags.value.push({paramName, name: 'до ' + key})
         break
       case 'lowEngineCapacity':
-        key && tags.push({word, name: 'объем от ' + key})
+        key && tags.value.push({paramName, name: 'объем от ' + key})
         break
       case 'highEngineCapacity':
-        key && tags.push({word, name: 'объем до ' + key})
+        key && tags.value.push({paramName, name: 'объем до ' + key})
         break
       case 'driveType':
-        key && tags.push({word, name: 'ссс ' + key})
+        key && tags.value.push({paramName, name: 'ссс ' + key})
         break
       case 'gearboxType':
-        key.length && tags.push({word, name: 'до ' + key})
+        key.length && tags.value.push({paramName, name: 'до ' + key})
         break
       case 'locationCity':
-        key && tags.push({word, name: 'г. ' + key})
+        key && tags.value.push({paramName, name: 'г. ' + key})
         break
       case 'orgelement':
         name = key && organizations.value.find((el) => el.id === key).name
-        name && tags.push({word, name: 'Организация: ' + name})
+        name && tags.value.push({paramName, name: 'Организация: ' + name})
         break
       case 'manager':
         name = key && manageres.value.find((el) => el.id === key).title
-        name && tags.push({word, name: 'Менеджер: ' + name})
+        name && tags.value.push({paramName, name: 'Менеджер: ' + name})
         break
     }
   })

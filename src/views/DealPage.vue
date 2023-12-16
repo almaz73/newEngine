@@ -17,13 +17,9 @@
           v-model="searchFilter"
           @changeFilter="changeFilter"
           @keyup.enter="toSearch"
+          @toSearch="toSearch"
       />
     </div>
-    <FilterResultCtrl :TAGS="TAGS"
-                      :isOpen="isFilterOpened"
-                      :searchFilter="searchFilter"
-                      @toSearch="toSearch"
-    />
 
     <!-- для компа таблица -->
     <el-table
@@ -103,7 +99,6 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
-import FilterResultCtrl from "@/components/dealFilter/FilterResultCtrl.vue"
 import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
 
 const globalStore = useGlobalStore()
@@ -149,13 +144,6 @@ function carColor(row) {
   if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
   else return {}
 }
-
-
-// function removeFilter(element) {
-//   console.log(element)
-//   TAGS.value = TAGS.value.filter(el => el.word != element.word)
-// }
-
 
 const pageDescription = computed(() => {
   let start = (currentPage.value - 1) * rowsPerPage.value + 1
