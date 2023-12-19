@@ -1,11 +1,14 @@
 <template>
   <div class="deal-filters">
     <div>
-      <label>Дата соаздания</label>
-      <el-date-picker @change="changed" placeholder="Выберите дату" v-model="vModel.createDate"/>
+      <span class="label">Дата соаздания</span>
+      <el-date-picker placeholder="Выберите дату"
+                      @change="changed"
+                      format="DD-MM-YYYY"
+                      v-model="vModel.createDate"/>
     </div>
     <div>
-      <label style="">Модель </label>
+      <span class="label">Модель </span>
       <div class="filter-block">
         <el-select
             placeholder="Выберите бренд"
@@ -32,7 +35,7 @@
     </div>
 
     <div>
-      <label>Год выпуска</label>
+      <span class="label">Год выпуска</span>
       <div class="filter-block">
         &nbsp; &nbsp; &nbsp; от
         <el-select
@@ -64,7 +67,7 @@
       </div>
     </div>
     <div>
-      <label>Обьем двигателя</label>
+      <span class="label">Обьем двигателя</span>
       <div class="filter-block">
         &nbsp; &nbsp; &nbsp; от
         <el-select
@@ -102,7 +105,7 @@
     </div>
     <div style="clear: both"></div>
     <div>
-      <label>Тип привода</label>
+      <span class="label">Тип привода</span>
       <el-select
           placeholder="Выберите тип привода"
           v-model="vModel.driveType"
@@ -114,7 +117,7 @@
       </el-select>
     </div>
     <div>
-      <label>Тип КПП</label>
+      <span class="label">Тип КПП</span>
       <el-select
           v-model="vModel.gearboxType"
           @change="changed"
@@ -125,7 +128,7 @@
       </el-select>
     </div>
     <div>
-      <label>Город</label>
+      <span class="label">Город</span>
       <el-select
           placeholder="Выберите город"
           v-model="vModel.locationCity"
@@ -137,7 +140,7 @@
       </el-select>
     </div>
     <div>
-      <label>Менеджер</label>
+      <span class="label">Менеджер</span>
       <el-select
           placeholder="Выберите менеджера"
           v-model="vModel.manager"
@@ -149,7 +152,7 @@
       </el-select>
     </div>
     <div>
-      <label>Организация</label>
+      <span class="label">Организация</span>
       <el-select
           placeholder="Выберите организацию"
           v-model="vModel.orgelement"
@@ -166,28 +169,25 @@
       </el-select>
     </div>
     <div>
-      <label>Тип выкупа</label>
+      <span class="label">Тип выкупа</span>
     </div>
     <div>
-      <label>Источник</label>
+      <span class="label">Источник</span>
     </div>
     <div>
-      <label>Гос.номер</label>
+      <span class="label">Гос.номер</span>
       <!--      <el-input />-->
     </div>
     <div style="clear: both"></div>
-    <FilterTagsCtrl :TAGS="tags"
-               @removeElement="removeElement"
-               @toSearch="emit('toSearch')"/>
   </div>
 </template>
-<script setup lang="ts">
-import {computed, ref} from 'vue'
+<script setup>
+import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {formatDateDDMMYYYY} from '@/utils/globalFunctions'
-import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
+import {store} from './dealStore'
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
-const emit = defineEmits(['update:modelValue', 'changeFilter', 'toSearch'])
+const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
@@ -215,19 +215,19 @@ const organizations = ref([])
 const manageres = ref([])
 const tags = ref([])
 
-function removeElement(element) {
-  if(!element){
-    Object.keys(vModel.value).forEach(el => vModel.value[el] = null)
-    tags.value=[]
-    return false
-  }
-  tags.value = tags.value.filter(el => {
-    if (el.paramName === element.paramName) vModel.value[el.paramName] = null
-    return el.paramName != element.paramName
-  })
-}
+watch(store, function () {
+  let params = store.tags.map(el => el.param)
 
-function changeBrand(id: number) {
+  Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
+    if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
+  })
+
+  store.tags.forEach(el => { // добавляем
+    if (el.name) vModel.value[el.param] = el.code
+  })
+})
+
+function changeBrand(id) {
   vModel.value.carModelId = null
   globalStore.getModels(id).then((res) => (models.value = res))
   changed()
@@ -236,72 +236,84 @@ function changeBrand(id: number) {
 function changed() {
   // создаем кнопки
   tags.value = []
-  Object.keys(vModel.value).forEach((paramName) => {
-    let key = vModel.value[paramName]
-    let name
-    switch (paramName) {
+  Object.keys(vModel.value).forEach((param) => {
+    let name = ''
+    let key = vModel.value[param]
+    if (!key) return false;
+
+    switch (param) {
       case 'createDate':
-        key && tags.value.push({paramName, name: formatDateDDMMYYYY(key)})
+        tags.value.push({param, name: formatDateDDMMYYYY(key), code: new Date(key)})
         break
       case 'carBrandId':
         var brand = brands.value.find((el) => el.id === key)
         name = brand && brand.name
-        name && tags.value.push({paramName, name: name})
+        name && tags.value.push({param, name, code: brand.id})
         break
       case 'carModelId':
         var model = models.value.find((el) => el.id === key)
-        name = key && model && model.name
-        name && tags.value.push({paramName, name: name})
+        name = model && model.name
+        name && tags.value.push({param, name, code: model.id})
         break
       case 'lowYearReleased':
-        key && tags.value.push({paramName, name: 'от ' + key})
+        tags.value.push({param, name: 'от ' + key, code: key})
         break
       case 'highYearReleased':
-        key && tags.value.push({paramName, name: 'до ' + key})
+        tags.value.push({param, name: 'до ' + key, code: key})
         break
       case 'lowEngineCapacity':
-        key && tags.value.push({paramName, name: 'объем от ' + key})
+        tags.value.push({param, name: 'объем от ' + key, code: key})
         break
       case 'highEngineCapacity':
-        key && tags.value.push({paramName, name: 'объем до ' + key})
+        tags.value.push({param, name: 'объем до ' + key, code: key})
         break
       case 'driveType':
-        key && tags.value.push({paramName, name: 'ссс ' + key})
+        name = driveTypies.find(el => el.id === key).name
+        tags.value.push({param, name, code: key})
         break
       case 'gearboxType':
-        key.length && tags.value.push({paramName, name: 'до ' + key})
+        name = Object.keys(key).reduce((sum, el) => {
+          return sum + kpp.find(item => item.id === key[el]).name + '; '
+        }, '')
+        key.length && tags.value.push({param, name, code: key})
         break
       case 'locationCity':
-        key && tags.value.push({paramName, name: 'г. ' + key})
+        tags.value.push({param, name: 'г. ' + key, code: key})
         break
       case 'orgelement':
-        name = key && organizations.value.find((el) => el.id === key).name
-        name && tags.value.push({paramName, name: 'Организация: ' + name})
+        name = organizations.value.find((el) => el.id === key).name
+        name && tags.value.push({param, name: 'Организация: ' + name, code: key})
         break
       case 'manager':
-        name = key && manageres.value.find((el) => el.id === key).title
-        name && tags.value.push({paramName, name: 'Менеджер: ' + name})
+        name = manageres.value.find((el) => el.id === key).title
+        name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
         break
     }
   })
-
-  emit('changeFilter', tags)
+  store.tags = tags.value
 }
 
 function open() {
+  if (brands.value.length) return false;
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
   }
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
   }
-  globalStore.getBrands().then((res) => (brands.value = res))
+
+  globalStore.getBrands().then(res => brands.value = res)
   globalStore.getOrganizations().then((res) => (organizations.value = res.items))
   globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
   globalStore.getPlaces().then((res) => {
     cities.value = res.citys
     places.value = res.items
   })
+
+   if(vModel.value.carBrandId) {
+     let id = vModel.value.carBrandId
+     globalStore.getModels(id).then((res) => (models.value = res))
+   }
 }
 
 defineExpose({open})

@@ -37,13 +37,13 @@ const router = createRouter({
         },
         {
             path: '/ideas',
-            name: 'help',
+            name: 'ideas',
             component: () => import('../views_Developer/IdeaPage.vue')
         },
         {
             path: '/bayerhelp',
-            name: 'help',
-            component: () => import('../documentation/BayerHelp.vue')
+            name: 'bayerhelp',
+            component: () => import('../documentation/bayerhelp.vue')
         }
     ]
 })

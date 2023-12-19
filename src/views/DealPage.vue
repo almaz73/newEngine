@@ -1,13 +1,12 @@
 <template>
   <main>
     <FilterButtonsCtrl
-        :filter="filter"
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
-        @buyFilterSelect="buyFilterSelect"
+        @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
-        @toSearch="toSearch"
+        @getData="getData"
     />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
@@ -15,11 +14,12 @@
           ref="dealFilter"
           style="min-height: 0; overflow: hidden"
           v-model="searchFilter"
-          @changeFilter="changeFilter"
-          @keyup.enter="toSearch"
-          @toSearch="toSearch"
+          @keyup.enter="getData"
+          @getData="getData"
       />
     </div>
+
+    <FilterTagsCtrl @getData="getData"/>
 
     <!-- для компа таблица -->
     <el-table
@@ -94,18 +94,21 @@
 
 <script setup>
 import {reactive, ref, computed} from 'vue'
+import {ElMessage} from 'element-plus'
 import {useWorkflowStore} from '@/stores/workflowStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
 import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
+import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
+import {store} from '@/components/dealFilter/dealStore';
 
 const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
 const searchText = ref('')
 const total = ref(0)
-const rowsPerPage = ref(5)
+const rowsPerPage = ref(1)
 const currentPage = ref(1)
 const filterButtons = reactive([
   {type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true},
@@ -137,12 +140,10 @@ const searchFilter = ref({
   orgelement: null,
   manager: null
 })
-const TAGS = ref([])
 
 function carColor(row) {
-  if (!row) return {}
   if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
-  else return {}
+  return {}
 }
 
 const pageDescription = computed(() => {
@@ -155,29 +156,36 @@ const singleTableRef = ref()
 //   singleTableRef.value.setCurrentRow(row)
 // }
 
-function changeFilter(tags) {
-  TAGS.value = tags
-}
-
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
-  setTimeout(dealFilter.value.open)
+  dealFilter.value.open()
 }
 
-function buyFilterSelect(val) {
+function buttonFilterSelect(val) {
   filter.mainFilter = val
   filter.offset = 0
-  toSearch()
+  getData()
 }
 
 function changePage(val) {
   currentPage.value = val
   filter.offset = (val - 1) * rowsPerPage.value
-  toSearch()
+  getData()
   if (globalStore.isMobileView) gotoTop()
 }
 
-function toSearch() {
+function validateVin(vin) {
+  var re = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
+  return vin.match(re);
+}
+
+function getData() {
+
+  if (searchText.value) {
+    filter.search = searchText.value
+    if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
+  }
+
   let essy = {}
 
   Object.keys(searchFilter.value).forEach(el => {
@@ -187,14 +195,10 @@ function toSearch() {
   })
 
   filter.filter = essy
-  filter.search = searchText.value
-
-  getData()
-}
-
-function getData() {
   filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
 
+
+  store.tags.length && localStorage.setItem('dealFilters', JSON.stringify(store.tags))
   globalStore.isWaiting = true
   workflowStore.getBuyWorkflows(filter).then((res) => {
     globalStore.isWaiting = false
@@ -204,11 +208,14 @@ function getData() {
   })
 }
 
-let filterCtrl = localStorage.getItem('filterCtrl') || ''
-if (filterCtrl) {
-  filterCtrl = JSON.parse(filterCtrl)
-  Object.assign(searchFilter.value, filterCtrl)
-} else filterCtrl = ''
 
-toSearch()
+let dealFilters = localStorage.getItem('dealFilters') || ''
+if (dealFilters) {
+  dealFilters = JSON.parse(dealFilters)
+  store.tags = dealFilters
+  dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
+} else dealFilters = ''
+
+getData()
+
 </script>

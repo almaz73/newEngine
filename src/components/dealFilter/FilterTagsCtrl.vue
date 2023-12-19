@@ -1,22 +1,27 @@
 <template>
   <div class="tags">
-    <span v-for="(el,ind) in TAGS" :key="ind">
-        {{ el.name }}
-        <b @click="emits('removeElement', el)">✖</b>
-      </span>
-  </div>
-  <div style="text-align: center">
-    <el-button @click="emits('toSearch')">
-      Искать
-    </el-button>
-    <el-button :disabled="!TAGS.length"
-               @click=" emits('removeElement')">
-      Очистить фильтр
-    </el-button>
+    <span v-for="(el,ind) in store.tags" :key="ind">
+      {{ el.name }}
+      <b @click="isDirty=true; removeElement(el)">✖</b>
+    </span>
+    <span
+        v-if="store.tags.length"
+        class="clear"
+        @click="isDirty=true; removeElement(el)">Очистить все</span>
+    <span
+        class="find "
+        :class="{active:true}"
+        v-if="isDirty"
+        @click="isDirty=false; emits('getData')">Искать</span>
   </div>
 </template>
-<script setup lang="ts">
 
-defineProps(['TAGS'])
-const emits = defineEmits(['toSearch', 'removeElement'])
+<script setup>
+import {store, removeElement} from './dealStore'
+import {ref, watch} from "vue";
+
+watch(store, () => isDirty.value = true)
+
+const emits = defineEmits(['getData'])
+const isDirty = ref(false)
 </script>

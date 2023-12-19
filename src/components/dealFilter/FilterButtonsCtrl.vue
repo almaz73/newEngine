@@ -2,7 +2,7 @@
   <div class="filter-button">
     <el-button v-for="(b, ind) in buttons"
                :key="ind" @click="clicked(b.code)"
-               :class="{ active: activeButton == b.code }">
+               :class="{ active: activeButton === b.code }">
       {{ b.name }} {{ b.count }}
     </el-button>
 
@@ -11,9 +11,10 @@
     <input
         type="search"
         placeholder="Поиск по VIN"
+        name="vin"
         v-model="text"
         @input="emits('updateSearchText', text)"
-        @keyup.enter="emits('toSearch')"
+        @keyup.enter="emits('getData')"
     />
     <el-button @click.prevent="emits('openFilter')">
       <img
@@ -30,8 +31,8 @@ import {computed, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 
 const text = ref('')
-const emits = defineEmits(['buyFilterSelect', 'openFilter', 'updateSearchText', 'toSearch'])
-const props = defineProps(['filter', 'buttons', 'isOpen'])
+const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData'])
+const props = defineProps(['buttons', 'isOpen'])
 const activeCode = props.buttons.find(el => el.active).code
 const activeButton = ref(activeCode)
 
@@ -42,7 +43,7 @@ const searchInputStyle = computed(() => {
 
 function clicked(code) {
   activeButton.value = code
-  emits('buyFilterSelect', code)
+  emits('buttonFilterSelect', code)
 }
 
 

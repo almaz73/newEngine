@@ -1,6 +1,6 @@
 <template>
   <form class="login">
-    <img alt="" src="@/assets/icons/logo-gray.png" height="42" >
+    <img alt="" src="@/assets/icons/logo-gray.png" height="42">
     <h1>Авторизация</h1>
     <input type="text"
            placeholder="Логин"
@@ -42,7 +42,7 @@ function signIn(): void {
         break
       case 200:
         globalStore.isAuthorized = true
-        router.push('/')
+        router.push('/deal')
         break;
       default:
         authMessage.value = 'Произошла ошибка';

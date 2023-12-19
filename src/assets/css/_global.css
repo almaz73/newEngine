@@ -38,6 +38,33 @@ body {
     z-index: 1000;
 }
 
-main{
+main {
     padding-bottom: 120px;
+}
+
+
+/** Поисковые теги  */
+.tags span {
+    cursor: pointer;
+    background: #ebebeb;
+    border-radius: 4px !important;
+}
+
+.tags span:hover {
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.1);
+}
+
+.tags span.clear {
+    background: #d34439;
+    color: white
+}
+
+.tags span.find {
+    background: #606266;
+    color: white;
+    display: none;
+}
+
+.tags span.find.active {
+    display: block;
 }
