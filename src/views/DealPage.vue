@@ -186,6 +186,13 @@ function getData() {
     if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
   }
 
+  if (searchFilter.value.registrationMark) {
+    if (searchFilter.value.registrationMark.length < 12) return ElMessage({
+      message: 'Неверный ГосНомер.',
+      type: 'warning',
+    })
+  }
+
   let essy = {}
 
   Object.keys(searchFilter.value).forEach(el => {

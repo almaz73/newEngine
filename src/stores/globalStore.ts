@@ -29,29 +29,35 @@ export const useGlobalStore = defineStore('globalStore', {
     },
     async getBrands() {
       if (cash.getBrands) return cash.getBrands // список статичный - кэшируем
-      let res = await getBrands()
+      const res = await getBrands()
       return (cash.getBrands = res.data)
     },
     async getModels(brandId: number) {
       if (cash['getModels' + brandId]) return cash['getModels' + brandId] // список статичный - кэшируем
-      let res = await getModels(brandId)
+      const res = await getModels(brandId)
       return (cash['getModels' + brandId] = res.data)
     },
     async getPlaces() {
       if (cash.getPlaces) return cash.getPlaces // список статичный - кэшируем
-      let res = await getPlaces()
+      const res = await getPlaces()
       return (cash.getPlaces = res.data)
     },
     async getOrganizations() {
       if (cash.getOrganizations) return cash.getOrganizations // список статичный - кэшируем
-      let res = await getOrganizations()
+      const res = await getOrganizations()
       return (cash.getOrganizations = res.data)
     },
     async getRoles(roles) {
       if (cash['getModels' + roles.join('-')]) return cash['getModels' + roles.join('-')] // список статичный - кэшируем
-      let res = await getRoles(roles)
+      const res = await getRoles(roles)
       return (cash['getModels' + roles.join('-')] = res.data)
-    }
+    },
+    async getTeatments() {
+      if (cash.getTeatments) return cash.getTeatments // список статичный - кэшируем
+      const res = await getTeatments()
+      return (cash.getTeatments = res.data)
+    },
+
   }
 })
 
@@ -83,6 +89,10 @@ function getOrganizations() {
 }
 
 function getRoles(roles) {
-  let params = roles.reduce((acc, el) => (acc += 'roles=' + el + '&'), '?')
+  const params = roles.reduce((acc, el) => (acc += 'roles=' + el + '&'), '?')
   return axios.get(`api/user/list/policy${params}`).then((res) => res)
+}
+
+function getTeatments() {
+  return axios.get(`api/treatmentsource/get/list`).then((res) => res)
 }

@@ -170,13 +170,47 @@
     </div>
     <div>
       <span class="label">Тип выкупа</span>
+      <el-select
+          placeholder="Выберите тип"
+          v-model="vModel.buyType"
+          @change="changed"
+          filterable
+          clearable
+      >
+        <el-option
+            v-for="item in buyTypes"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+        />
+      </el-select>
     </div>
     <div>
       <span class="label">Источник</span>
+      <el-select
+          placeholder="Выберите тип"
+          v-model="vModel.treatmentSource"
+          @change="changed"
+          filterable
+          clearable
+      >
+        <el-option
+            v-for="item in treatments"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+        />
+      </el-select>
     </div>
     <div>
       <span class="label">Гос.номер</span>
-      <!--      <el-input />-->
+      <el-input v-model="vModel.registrationMark"
+                @change="changed"
+                @input="changeRegistartionMark"
+                style="text-transform: uppercase"
+                placeholder="X 000 XX 000"
+                maxlength="12"
+                @key.enter="changed"/>
     </div>
     <div style="clear: both"></div>
   </div>
@@ -185,7 +219,7 @@
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {store} from './dealStore'
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, vetRegNumber} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -209,11 +243,22 @@ const kpp = [
   {id: 30, name: 'Вариатор'},
   {id: 40, name: 'Роботизированная'}
 ]
+const buyTypes = [
+  {id: 10, name: 'Комиссия'},
+  {id: 20, name: 'Trade-in'},
+  {id: 30, name: 'Корпоративная комиссия'},
+  {id: 40, name: 'Выкуп у физ. лица'},
+  {id: 50, name: 'Выкуп у юр. лица'},
+  {id: 60, name: 'A/м через салон'},
+  {id: 70, name: 'Хранение'},
+]
+
 const cities = ref([])
 const places = ref([])
 const organizations = ref([])
 const manageres = ref([])
 const tags = ref([])
+const treatments = ref([])
 
 watch(store, function () {
   let params = store.tags.map(el => el.param)
@@ -226,6 +271,11 @@ watch(store, function () {
     if (el.name) vModel.value[el.param] = el.code
   })
 })
+
+
+function changeRegistartionMark(val) {
+  vModel.value.registrationMark = vetRegNumber(val)
+}
 
 function changeBrand(id) {
   vModel.value.carModelId = null
@@ -288,6 +338,19 @@ function changed() {
         name = manageres.value.find((el) => el.id === key).title
         name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
         break
+      case 'buyType':
+        name = buyTypes.find(el => el.id === key).name
+        tags.value.push({param, name, code: key})
+        break
+      case 'treatmentSource':
+        name = treatments.value.find(el => el.id === key).name
+        tags.value.push({param, name, code: key})
+        break
+      case 'registrationMark':
+        tags.value.push({param, name: key, code: key})
+        break
+
+
     }
   })
   store.tags = tags.value
@@ -304,16 +367,17 @@ function open() {
 
   globalStore.getBrands().then(res => brands.value = res)
   globalStore.getOrganizations().then((res) => (organizations.value = res.items))
+  globalStore.getTeatments().then(res => treatments.value = res.items)
   globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
   globalStore.getPlaces().then((res) => {
     cities.value = res.citys
     places.value = res.items
   })
 
-   if(vModel.value.carBrandId) {
-     let id = vModel.value.carBrandId
-     globalStore.getModels(id).then((res) => (models.value = res))
-   }
+  if (vModel.value.carBrandId) {
+    let id = vModel.value.carBrandId
+    globalStore.getModels(id).then((res) => (models.value = res))
+  }
 }
 
 defineExpose({open})
