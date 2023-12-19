@@ -39,6 +39,11 @@ const router = createRouter({
             path: '/ideas',
             name: 'help',
             component: () => import('../views_Developer/IdeaPage.vue')
+        },
+        {
+            path: '/bayerhelp',
+            name: 'help',
+            component: () => import('../documentation/BayerHelp.vue')
         }
     ]
 })

@@ -9,7 +9,7 @@
     <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()"/>
     <div class="pusher"/>
 
-    <a href="https://g66.ru/almaz73/" style="text-decoration: none"> Идеи пишем сюда</a>
+
 
     <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
@@ -37,6 +37,15 @@
         <el-button class="exit" @click="signOut()">Выйти</el-button>
       </div>
       <div class="under_window" @click="isAccountShow=false"></div>
+      <div  class="account_window__buttons">
+        <a href="https://g66.ru/almaz73/" title="Оставить замечания, предложения, идеи">Task Board </a>
+        <RouterLink to="/bayerhelp">Инструкция. Байер</RouterLink>
+
+      </div>
+<!--      <div  class="account_window__buttons">-->
+<!--        <a href="https://g66.ru/almaz73/">Инструкция. Сall-центра</a>-->
+<!--      </div>-->
+
     </div>
   </nav>
 </template>
