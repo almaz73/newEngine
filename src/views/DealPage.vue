@@ -95,7 +95,7 @@
 <script setup>
 import {reactive, ref, computed} from 'vue'
 import {ElMessage} from 'element-plus'
-import {useWorkflowStore} from '@/stores/workflowStore'
+import {useWorkflowStore} from '@/stores/dealStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, gotoTop} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'

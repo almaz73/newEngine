@@ -47,7 +47,7 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await getOrganizations()
             return (cash.getOrganizations = res.data)
         },
-        async getRoles(roles) {
+        async getRoles(roles:any) {
             if (cash['getModels' + roles.join('-')]) return cash['getModels' + roles.join('-')] // список статичный - кэшируем
             const res = await getRoles(roles)
             return (cash['getModels' + roles.join('-')] = res.data)
@@ -80,7 +80,7 @@ function getBrands() {
     return axios.get(`api/auto/getBrands`).then((res) => res)
 }
 
-function getModels(brandId) {
+function getModels(brandId: number) {
     return axios.get(`api/auto/getModels?brandId=${brandId}`).then((res) => res)
 }
 
@@ -92,8 +92,8 @@ function getOrganizations() {
     return axios.get(`api/orgelement/get/organizations`).then((res) => res)
 }
 
-function getRoles(roles) {
-    const params = roles.reduce((acc, el) => (acc += 'roles=' + el + '&'), '?')
+function getRoles(roles: any) {
+    const params = roles.reduce((acc: string, el: string) => (acc += 'roles=' + el + '&'), '?')
     return axios.get(`api/user/list/policy${params}`).then((res) => res)
 }
 
