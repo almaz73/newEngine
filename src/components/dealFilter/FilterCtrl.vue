@@ -54,7 +54,7 @@
         <div>
           <span class="label">Тип кузова</span>
           <el-select
-              placeholder="Выберите город"
+              placeholder="Выберите тип кузова"
               v-model="vModel.bodyType"
               @change="changed"
               filterable
@@ -68,14 +68,14 @@
           </el-select>
         </div>
         <div>
-          <span class="label">Цвет кузова*</span>
+          <span class="label">Цвет кузова</span>
           <el-select
-              placeholder="Выберите менеджера"
-              v-model="vModel.manager"
+              placeholder="Выберите цвет кузова"
+              v-model="vModel.bodyColorId"
               @change="changed"
               filterable
               clearable>
-            <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id"/>
+            <el-option v-for="item in colors" :key="item.id" :label="item.colorName" :value="item.id"/>
           </el-select>
         </div>
 
@@ -87,7 +87,7 @@
             <el-date-picker placeholder="Выберите дату"
                             @change="changed"
                             format="DD-MM-YYYY"
-                            v-model="vModel.createDate"/>
+                            v-model="vModel.lowCreateDatePeriod"/>
           </span>
           <br v-if="globalStore.isMobileView">
           <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'105px':''}">
@@ -95,30 +95,31 @@
             <el-date-picker placeholder="Выберите дату"
                             @change="changed"
                             format="DD-MM-YYYY"
-                            v-model="vModel.createDate"/>
+                            v-model="vModel.highCreateDatePeriod"/>
          </span>
         </div>
 
         <div>
-          <span class="label">Местонахождение*</span>
+          <span class="label">Местонахождение</span>
           <el-select
-              placeholder="Выберите город"
-              v-model="vModel.locationCity"
+              placeholder="Выберите место"
+              v-model="vModel.locationId"
               @change="changed"
               filterable
               clearable>
-            <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item"/>
+            <el-option v-for="item in places" :key="item.id"
+                       :label="item.title + '  - ('+item.city+' '+item.typeTitle+')'" :value="item.id"/>
           </el-select>
         </div>
         <div>
-          <span class="label">Статус*</span>
+          <span class="label">Статус</span>
           <el-select
-              placeholder="Выберите менеджера"
-              v-model="vModel.manager"
+              placeholder="Выберите статус"
+              v-model="vModel.DealStatus"
               @change="changed"
               filterable
               clearable>
-            <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id"/>
+            <el-option v-for="item in statuses" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
         </div>
       </div>
@@ -161,7 +162,7 @@
     <div>
       <span class="label">Год выпуска</span>
       <div class="filter-block">
-        &nbsp; &nbsp; &nbsp; от
+        &nbsp; от
         <el-select
             @change="changed"
             placeholder="Выберите год"
@@ -193,7 +194,7 @@
     <div>
       <span class="label">Обьем двигателя</span>
       <div class="filter-block">
-        &nbsp; &nbsp; &nbsp; от
+        &nbsp; от
         <el-select
             placeholder="Выберите объем"
             v-model="vModel.lowEngineCapacity"
@@ -246,7 +247,7 @@
           v-model="vModel.gearboxType"
           @change="changed"
           multiple
-          placeholder="Выберите несколько типов"
+          placeholder="Выберите типы КПП"
       >
         <el-option v-for="item in kpp" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
@@ -295,7 +296,7 @@
     <div>
       <span class="label">Тип выкупа</span>
       <el-select
-          placeholder="Выберите тип"
+          placeholder="Выберите тип выкупа"
           v-model="vModel.buyType"
           @change="changed"
           filterable
@@ -312,7 +313,7 @@
     <div>
       <span class="label">Источник</span>
       <el-select
-          placeholder="Выберите тип"
+          placeholder="Выберите источник"
           v-model="vModel.treatmentSource"
           @change="changed"
           filterable
@@ -342,6 +343,7 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
+import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
 import {store} from './dealStore'
 import {formatDateDDMMYYYY, vetRegNumber} from "@/utils/globalFunctions";
 
@@ -356,39 +358,7 @@ const brands = ref([])
 const models = ref([])
 const years = ref([])
 const capacities = ref([])
-const driveTypies = [
-  {id: 10, name: 'Передний привод'},
-  {id: 20, name: 'Задний привод'},
-  {id: 30, name: 'Полный привод'}
-]
-const kpp = [
-  {id: 10, name: 'Механическая'},
-  {id: 20, name: 'Автоматическая'},
-  {id: 30, name: 'Вариатор'},
-  {id: 40, name: 'Роботизированная'}
-]
-const buyTypes = [
-  {id: 10, name: 'Комиссия'},
-  {id: 20, name: 'Trade-in'},
-  {id: 30, name: 'Корпоративная комиссия'},
-  {id: 40, name: 'Выкуп у физ. лица'},
-  {id: 50, name: 'Выкуп у юр. лица'},
-  {id: 60, name: 'A/м через салон'},
-  {id: 70, name: 'Хранение'},
-]
-const bodyTypes = [
-  {id: 1, name: 'Хэтчбэк'},
-  {id: 2, name: 'Седан'},
-  {id: 3, name: 'Универсал'},
-  {id: 4, name: 'Минивен'},
-  {id: 5, name: 'Кабриолет'},
-  {id: 6, name: 'Кроссовер'},
-  {id: 7, name: 'Пикап'},
-  {id: 8, name: 'Лифтбэк'},
-  {id: 9, name: 'Автобус'},
-  {id: 10, name: 'Купе'},
-  {id: 11, name: 'Внедорожник'}
-]
+
 
 const cities = ref([])
 const places = ref([])
@@ -397,6 +367,7 @@ const manageres = ref([])
 const tags = ref([])
 const treatments = ref([])
 const isMoreFilter = ref(false)
+const colors = ref([])
 
 watch(store, function () {
   let params = store.tags.map(el => el.param)
@@ -503,7 +474,25 @@ function changed() {
         name = bodyTypes.find(el => el.id === key).name
         tags.value.push({param, name, code: key})
         break
-
+      case 'bodyColorId':
+        name = colors.value.find(el => el.id === key).colorName
+        tags.value.push({param, name, code: key})
+        break
+      case 'lowCreateDatePeriod':
+        tags.value.push({param, name: 'Период от ' + formatDateDDMMYYYY(key), code: new Date(key)})
+        break
+      case 'highCreateDatePeriod':
+        tags.value.push({param, name: 'Период до ' + formatDateDDMMYYYY(key), code: new Date(key)})
+        break
+      case 'locationId':
+        var pl = places.value.find(el => el.id === key)
+        name = pl.title + ' ' + pl.typeTitle
+        tags.value.push({param, name: 'Место: ' + name, code: key})
+        break
+      case 'DealStatus':
+        name = statuses.find((el) => el.id === key).name
+        name && tags.value.push({param, name: 'Статус: ' + name, code: key})
+        break
 
     }
   })
@@ -523,6 +512,8 @@ function open() {
   globalStore.getOrganizations().then((res) => (organizations.value = res.items))
   globalStore.getTeatments().then(res => treatments.value = res.items)
   globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
+  globalStore.getColors().then((res) => (colors.value = res.items))
+
   globalStore.getPlaces().then((res) => {
     cities.value = res.citys
     places.value = res.items

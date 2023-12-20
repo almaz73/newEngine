@@ -12,7 +12,7 @@
         class="find "
         :class="{active:true}"
         v-if="isDirty"
-        @click="isDirty=false; emits('getData')">Искать</span>
+        @click="isDirty=false; emits('getData')">Искать и запомнить</span>
   </div>
 </template>
 
