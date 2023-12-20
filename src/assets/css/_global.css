@@ -68,3 +68,23 @@ main {
 .tags span.find.active {
     display: block;
 }
+
+a {
+    color: #d34439;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #606266;
+    text-decoration: underline;
+}
+
+.more-filter{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .73s ease-in-out;
+}
+.more-filter.open{
+    grid-template-rows: 1fr;
+}

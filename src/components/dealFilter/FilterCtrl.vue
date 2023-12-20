@@ -1,5 +1,129 @@
 <template>
   <div class="deal-filters">
+    <a @click="isMoreFilter=!isMoreFilter">Дополнительный фильтер </a>
+    <!--    Скрытая часть-->
+    <div class="more-filter" :class="{open:isMoreFilter}">
+      <div style="min-height: 0; overflow: hidden">
+        <div>
+          <span class="label">Пробег, км</span>
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+            &nbsp; от
+            <el-input v-model="vModel.lowMileage"
+                      @change="changed"
+                      type="number"
+                      placeholder="Введите пробег"
+                      clearable
+                      @key.enter="changed"/>
+          </span>
+          <br v-if="globalStore.isMobileView">
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
+            &nbsp; до
+            <el-input v-model="vModel.highMileage"
+                      @change="changed"
+                      type="number"
+                      placeholder="Введите пробег"
+                      clearable
+                      @key.enter="changed"/>
+          </span>
+        </div>
+
+        <div>
+          <span class="label">Мощность двигателя</span>
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+            &nbsp; от
+            <el-input v-model="vModel.lowEnginePowerHP"
+                      @change="changed"
+                      type="number"
+                      placeholder="Введите мощность"
+                      clearable
+                      @key.enter="changed"/>
+          </span>
+          <br v-if="globalStore.isMobileView">
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
+            &nbsp; до
+            <el-input v-model="vModel.highEnginePowerHP"
+                      @change="changed"
+                      type="number"
+                      placeholder="Введите мощность"
+                      clearable
+                      @key.enter="changed"/>
+          </span>
+        </div>
+
+
+        <div>
+          <span class="label">Тип кузова</span>
+          <el-select
+              placeholder="Выберите город"
+              v-model="vModel.bodyType"
+              @change="changed"
+              filterable
+              clearable>
+            <el-option
+                v-for="item in bodyTypes"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+            />
+          </el-select>
+        </div>
+        <div>
+          <span class="label">Цвет кузова*</span>
+          <el-select
+              placeholder="Выберите менеджера"
+              v-model="vModel.manager"
+              @change="changed"
+              filterable
+              clearable>
+            <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
+        </div>
+
+
+        <div>
+          <span class="label">Период оценок</span>
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+            &nbsp; от
+            <el-date-picker placeholder="Выберите дату"
+                            @change="changed"
+                            format="DD-MM-YYYY"
+                            v-model="vModel.createDate"/>
+          </span>
+          <br v-if="globalStore.isMobileView">
+          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'105px':''}">
+            &nbsp; &nbsp; до
+            <el-date-picker placeholder="Выберите дату"
+                            @change="changed"
+                            format="DD-MM-YYYY"
+                            v-model="vModel.createDate"/>
+         </span>
+        </div>
+
+        <div>
+          <span class="label">Местонахождение*</span>
+          <el-select
+              placeholder="Выберите город"
+              v-model="vModel.locationCity"
+              @change="changed"
+              filterable
+              clearable>
+            <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item"/>
+          </el-select>
+        </div>
+        <div>
+          <span class="label">Статус*</span>
+          <el-select
+              placeholder="Выберите менеджера"
+              v-model="vModel.manager"
+              @change="changed"
+              filterable
+              clearable>
+            <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
+        </div>
+      </div>
+    </div>
+    <!--    Конец скрытой части-->
     <div>
       <span class="label">Дата соаздания</span>
       <el-date-picker placeholder="Выберите дату"
@@ -252,6 +376,19 @@ const buyTypes = [
   {id: 60, name: 'A/м через салон'},
   {id: 70, name: 'Хранение'},
 ]
+const bodyTypes = [
+  {id: 1, name: 'Хэтчбэк'},
+  {id: 2, name: 'Седан'},
+  {id: 3, name: 'Универсал'},
+  {id: 4, name: 'Минивен'},
+  {id: 5, name: 'Кабриолет'},
+  {id: 6, name: 'Кроссовер'},
+  {id: 7, name: 'Пикап'},
+  {id: 8, name: 'Лифтбэк'},
+  {id: 9, name: 'Автобус'},
+  {id: 10, name: 'Купе'},
+  {id: 11, name: 'Внедорожник'}
+]
 
 const cities = ref([])
 const places = ref([])
@@ -259,6 +396,7 @@ const organizations = ref([])
 const manageres = ref([])
 const tags = ref([])
 const treatments = ref([])
+const isMoreFilter = ref(false)
 
 watch(store, function () {
   let params = store.tags.map(el => el.param)
@@ -348,6 +486,22 @@ function changed() {
         break
       case 'registrationMark':
         tags.value.push({param, name: key, code: key})
+        break
+      case 'lowMileage':
+        tags.value.push({param, name: 'Пробег от ' + key, code: key})
+        break
+      case 'highMileage':
+        tags.value.push({param, name: 'Пробег до ' + key, code: key})
+        break
+      case 'lowEnginePowerHP':
+        tags.value.push({param, name: 'Мощномть от ' + key, code: key})
+        break
+      case 'highEnginePowerHP':
+        tags.value.push({param, name: 'Мощность до ' + key, code: key})
+        break
+      case 'bodyType':
+        name = bodyTypes.find(el => el.id === key).name
+        tags.value.push({param, name, code: key})
         break
 
 

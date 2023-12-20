@@ -108,7 +108,7 @@ const globalStore = useGlobalStore()
 const workflowStore = useWorkflowStore()
 const searchText = ref('')
 const total = ref(0)
-const rowsPerPage = ref(1)
+const rowsPerPage = ref(5)
 const currentPage = ref(1)
 const filterButtons = reactive([
   {type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true},
@@ -126,20 +126,7 @@ const filter = {
   offset: 0,
   search: ''
 }
-const searchFilter = ref({
-  createDate: null,
-  carBrandId: null,
-  carModelId: null,
-  lowYearReleased: null,
-  highYearReleased: null,
-  lowEngineCapacity: null,
-  highEngineCapacity: null,
-  driveType: null,
-  gearboxType: null,
-  locationCity: null,
-  orgelement: null,
-  manager: null
-})
+const searchFilter = ref({})
 
 function carColor(row) {
   if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
