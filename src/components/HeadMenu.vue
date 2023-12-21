@@ -39,7 +39,7 @@
       <div class="under_window" @click="isAccountShow=false"></div>
       <div  class="account_window__buttons">
         <a href="https://g66.ru/almaz73/" title="Оставить замечания, предложения, идеи">Task Board </a>
-        <RouterLink to="/bayerhelp">Инструкция. Байер</RouterLink>
+        <RouterLink to="/bayerhelp" @click="isAccountShow=false">Инструкция. Байер</RouterLink>
 
       </div>
 <!--      <div  class="account_window__buttons">-->
