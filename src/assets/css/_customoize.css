@@ -88,6 +88,11 @@ li.el-menu-item {
     max-width: 200px;
 }
 
+@media (width<500px){
+    .el-pagination__sizes{
+        display: none;
+    }
+}
 
 
 

@@ -83,8 +83,10 @@
     <template v-if="dealStore.list.length>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
-          layout="prev, pager, next"
+          :page-sizes="[5, 10, 20, 50]"
+          layout="prev, pager, next, sizes"
           @current-change="changePage"
+          @size-change="changePageSize"
           :total="total"
       />
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
@@ -159,6 +161,13 @@ function changePage(val) {
   filter.offset = (val - 1) * rowsPerPage.value
   getData()
   if (globalStore.isMobileView) gotoTop()
+}
+
+function changePageSize(val) {
+  rowsPerPage.value = val
+  filter.offset = 0
+  filter.limit = rowsPerPage.value
+  getData()
 }
 
 
