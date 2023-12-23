@@ -100,15 +100,15 @@
     </template>
   </main>
 </template>
-<script setup lang="ts">
-import {formatDate, gotoTop} from "@/utils/globalFunctions";
+<script setup>
+import {formatDate, gotoTop, validateVin} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
 import FilterCtrl from "@/components/dealFilter/FilterCtrl.vue";
 import {ElMessage, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
-import {reactive, ref, computed} from 'vue'
+import {reactive, ref, computed, onMounted} from 'vue'
 import {store} from '@/components/dealFilter/dealStore.js';
 
 
@@ -166,47 +166,50 @@ const pageDescription = computed(() => {
   return start + ' - ' + end
 })
 
-function validateVin(vin) {
-  var re = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
-  return vin.match(re);
-}
-
-function getData() {
-
+function validateFilter() {
   if (searchText.value) {
     filter.search = searchText.value
     if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
   }
 
-  if (searchFilter.value.registrationMark) {
-    if (searchFilter.value.registrationMark.length < 12) return ElMessage({
-      message: 'Неверный ГосНомер.',
-      type: 'warning',
-    })
+  if (searchFilter.value.registrationMark && searchFilter.value.registrationMark.length < 12) {
+    ElMessage({message: 'Неверный ГосНомер.', type: 'warning',})
+    return false
   }
 
   let essy = {}
-
   Object.keys(searchFilter.value).forEach(el => {
-    if (searchFilter.value[el] instanceof Array) {
-      if (searchFilter.value[el].length) essy[el] = searchFilter.value[el]
-    } else if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
+    if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
   })
 
   filter.filter = essy
   filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
-  //
-  //
-  store.tags.length && localStorage.setItem('dealFilters', JSON.stringify(store.tags))
+
+  store.tags.length && localStorage.setItem('appealFilters', JSON.stringify(store.tags))
+  return true
+}
+
+function getData() {
+  if (!validateFilter()) return false;
   globalStore.isWaiting = true
   appealStore.getAppeals(filter).then((res) => {
     globalStore.isWaiting = false
-    if (!res) return console.log('НЕТ ДАННЫХ')
+    if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
   })
 }
 
-getData()
+onMounted(() => {
+  let appealFilters = localStorage.getItem('appealFilters') || ''
+  if (appealFilters) {
+    appealFilters = JSON.parse(appealFilters)
+    store.tags = appealFilters
+    appealFilters.forEach(el => searchFilter.value[el.param] = el.code)
+  }
+
+  getData()
+})
+
 
 </script>

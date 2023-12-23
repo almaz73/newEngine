@@ -4,19 +4,7 @@ import axios from "axios";
 const path = 'api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
     state: () => ({
-        list: [{
-            rowmileage: '',
-            vin: '',
-            brand: '',
-            model: '',
-            yearReleased: '',
-            userName: '',
-            locationCity: '',
-            location: '',
-            statusTitle: '',
-            clientTitle: '',
-            created: '',
-        }]
+        list: [{}]
     }),
     actions: {
         async getAppeals(params: any) {

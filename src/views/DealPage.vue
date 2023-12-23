@@ -25,7 +25,7 @@
     <el-table
         style="margin-top: 24px"
         v-if="!globalStore.isMobileView"
-        :data="workflowStore.list"
+        :data="dealStore.list"
         ref="singleTableRef"
         empty-text="Нет данных"
         highlight-current-row
@@ -65,7 +65,7 @@
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
-      <div v-for="(row, ind) in workflowStore.list" :key="ind">
+      <div v-for="(row, ind) in dealStore.list" :key="ind">
         <div class="head">
           <span class="deal-car-color" :style="carColor(row)"></span>
           <span>Пробег:{{ row.rowmileage }} </span>
@@ -78,9 +78,9 @@
         <div><small>Клиент:</small> {{ row.clientTitle }}</div>
         <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
       </div>
-      <div v-if="!workflowStore.list.length" style="text-align: center">Нет данных</div>
+      <div v-if="!dealStore.list.length" style="text-align: center">Нет данных</div>
     </div>
-    <template v-if="workflowStore.list.length>2">
+    <template v-if="dealStore.list.length>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
           layout="prev, pager, next"
@@ -93,11 +93,11 @@
 </template>
 
 <script setup>
-import {reactive, ref, computed} from 'vue'
+import {reactive, ref, computed, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
-import {useWorkflowStore} from '@/stores/dealStore'
+import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from '@/stores/globalStore'
-import {formatDate, gotoTop} from '@/utils/globalFunctions'
+import {formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
 import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
@@ -105,7 +105,7 @@ import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
 import {store} from '@/components/dealFilter/dealStore';
 
 const globalStore = useGlobalStore()
-const workflowStore = useWorkflowStore()
+const dealStore = useDealStore()
 const searchText = ref('')
 const total = ref(0)
 const rowsPerPage = ref(5)
@@ -161,55 +161,50 @@ function changePage(val) {
   if (globalStore.isMobileView) gotoTop()
 }
 
-function validateVin(vin) {
-  var re = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
-  return vin.match(re);
-}
 
-function getData() {
-
+function validateFilter() {
   if (searchText.value) {
     filter.search = searchText.value
     if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
   }
 
-  if (searchFilter.value.registrationMark) {
-    if (searchFilter.value.registrationMark.length < 12) return ElMessage({
-      message: 'Неверный ГосНомер.',
-      type: 'warning',
-    })
+  if (searchFilter.value.registrationMark && searchFilter.value.registrationMark.length < 12) {
+    ElMessage({message: 'Неверный ГосНомер.', type: 'warning',})
+    return false
   }
 
   let essy = {}
-
   Object.keys(searchFilter.value).forEach(el => {
-    if (searchFilter.value[el] instanceof Array) {
-      if (searchFilter.value[el].length) essy[el] = searchFilter.value[el]
-    } else if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
+    if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
   })
 
   filter.filter = essy
   filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
 
-
   store.tags.length && localStorage.setItem('dealFilters', JSON.stringify(store.tags))
+  return true
+}
+
+function getData() {
+  if (!validateFilter()) return false;
   globalStore.isWaiting = true
-  workflowStore.getBuyWorkflows(filter).then((res) => {
+  dealStore.getDeal(filter).then((res) => {
     globalStore.isWaiting = false
-    if (!res) return console.log('НЕТ ДАННЫХ')
+    if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
   })
 }
 
+onMounted(() => {
+  let dealFilters = localStorage.getItem('dealFilters') || ''
+  if (dealFilters) {
+    dealFilters = JSON.parse(dealFilters)
+    store.tags = dealFilters
+    dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
+  }
 
-let dealFilters = localStorage.getItem('dealFilters') || ''
-if (dealFilters) {
-  dealFilters = JSON.parse(dealFilters)
-  store.tags = dealFilters
-  dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
-} else dealFilters = ''
-
-getData()
+  getData()
+})
 
 </script>
