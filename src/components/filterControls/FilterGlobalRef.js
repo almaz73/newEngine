@@ -3,13 +3,11 @@
  */
 import {reactive} from "vue";
 
-export const store = reactive({
+export const globalRef = reactive({
     tags: []
 })
 
 export function removeElement(tag) {
-    if (tag) store.tags = store.tags.filter(el => el.param !== tag.param)
-    else store.tags = []
-
-    localStorage.removeItem('dealFilters')
+    if (tag) globalRef.tags = globalRef.tags.filter(el => el.param !== tag.param)
+    else globalRef.tags = []
 }

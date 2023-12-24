@@ -10,7 +10,7 @@
   <div class="a-search" :style="searchInputStyle">
     <input
         type="search"
-        placeholder="Поиск по VIN"
+        :placeholder="placeholder"
         name="vin"
         v-model="text"
         @input="emits('updateSearchText', text)"
@@ -32,7 +32,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 
 const text = ref('')
 const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData'])
-const props = defineProps(['buttons', 'isOpen'])
+const props = defineProps(['buttons', 'isOpen', 'placeholder'])
 const activeCode = props.buttons.find(el => el.active).code
 const activeButton = ref(activeCode)
 

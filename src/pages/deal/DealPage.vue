@@ -3,6 +3,7 @@
     <FilterButtonsCtrl
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
+        :placeholder="'Поиск по VIN'"
         @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
@@ -10,7 +11,7 @@
     />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
-      <FilterCtrl
+      <DealFilterCtrl
           ref="dealFilter"
           style="min-height: 0; overflow: hidden"
           v-model="searchFilter"
@@ -101,10 +102,10 @@ import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
-import FilterCtrl from '@/components/dealFilter/FilterCtrl.vue'
-import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
-import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
-import {store} from '@/components/dealFilter/dealStore';
+import DealFilterCtrl from '@/pages/deal/DealFilterCtrl.vue'
+import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
+import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
+import {globalRef} from '@/components/filterControls/FilterGlobalRef';
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -182,15 +183,18 @@ function validateFilter() {
     return false
   }
 
-  let essy = {}
+  let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
-    if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
+    let val = searchFilter.value[el]
+    if (!val) return false
+    if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
+    else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
+  filter.filter = JSON.stringify(easy)
 
-  filter.filter = essy
-  filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
+  if (globalRef.tags.length) localStorage.setItem('dealFilters', JSON.stringify(globalRef.tags))
+  else localStorage.removeItem('dealFilters')
 
-  store.tags.length && localStorage.setItem('dealFilters', JSON.stringify(store.tags))
   return true
 }
 
@@ -209,7 +213,7 @@ onMounted(() => {
   let dealFilters = localStorage.getItem('dealFilters') || ''
   if (dealFilters) {
     dealFilters = JSON.parse(dealFilters)
-    store.tags = dealFilters
+    globalRef.tags = dealFilters
     dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
   }
 

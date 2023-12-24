@@ -90,3 +90,11 @@ export const statuses = [
     {id: 362, name: 'Транзит'},
     {id: 400, name: 'Оформление'}
 ]
+
+export const appealStatus = [
+    {name: 'Обращения', tyoe: 'Appeals', id: 10},
+    {name: 'События на сегодня', tyoe: 'Today', id: 20},
+    {name: 'Просроченные события', tyoe: 'Expired', id: 30},
+    {name: 'Запрос в архив', tyoe: 'ArchiveRequest', id: 50}
+]
+

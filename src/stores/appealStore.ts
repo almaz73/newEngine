@@ -22,7 +22,7 @@ function getAppeals(params: any) {
     let url = path;
     if (filter) url += '?filter=' + filter
     if (offset) url += '&offset=' + offset
-    if (search) url += '&search=' + search
+    if (search) url += '&quickSearch=' + search
     if (mainFilter) url += '&mainFilter=' + mainFilter
     if (limit) url += '&limit=' + limit
     return axios.get(url).then(res => res)

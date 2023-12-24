@@ -3,6 +3,7 @@
     <FilterButtonsCtrl
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
+        :placeholder="''"
         @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
@@ -10,7 +11,7 @@
     />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
-      <FilterCtrl
+      <AppealFilterCtrl
           ref="dealFilter"
           style="min-height: 0; overflow: hidden"
           v-model="searchFilter"
@@ -103,15 +104,15 @@
   </main>
 </template>
 <script setup>
-import {formatDate, gotoTop, validateVin} from "@/utils/globalFunctions";
-import FilterButtonsCtrl from "@/components/dealFilter/FilterButtonsCtrl.vue";
-import FilterTagsCtrl from "@/components/dealFilter/FilterTagsCtrl.vue";
-import FilterCtrl from "@/components/dealFilter/FilterCtrl.vue";
-import {ElMessage, ElTable} from "element-plus";
+import {formatDate, gotoTop} from "@/utils/globalFunctions";
+import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
+import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
+import AppealFilterCtrl from "@/pages/appeal/AppealFilterCtrl.vue";
+import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
 import {reactive, ref, computed, onMounted} from 'vue'
-import {store} from '@/components/dealFilter/dealStore.js';
+import {globalRef} from '@/components/filterControls/FilterGlobalRef.js';
 
 
 const globalStore = useGlobalStore()
@@ -121,11 +122,10 @@ const searchText = ref('')
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
 const filterButtons = reactive([
-  {type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true},
-  {type: 'buyByActiveCount', count: 0, name: 'По активным:', code: 12},
-  {type: 'buyOnSellAutoCount', count: 0, name: 'На продаже:', code: 11},
-  {type: 'buySoldAutoCount', count: 0, name: 'Продано:', code: 13},
-  {type: 'buyReturnedAutoCount', count: 0, name: 'Возврат:', code: 14}
+  {type: 'appealsCount', count: 0, name: 'Обращения:', code: 10, active: true},
+  {type: 'eventsToday', count: 0, name: 'События на сегодня:', code: 20},
+  {type: 'eventsExpired', count: 0, name: 'Просроченные события:', code: 30},
+  {type: 'archiveRequest', count: 0, name: 'Запрос в архив:', code: 50},
 ])
 const isFilterOpened = ref(false)
 const searchFilter = ref({})
@@ -176,25 +176,21 @@ const pageDescription = computed(() => {
 })
 
 function validateFilter() {
-  if (searchText.value) {
-    filter.search = searchText.value
-    if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
-  }
 
-  if (searchFilter.value.registrationMark && searchFilter.value.registrationMark.length < 12) {
-    ElMessage({message: 'Неверный ГосНомер.', type: 'warning',})
-    return false
-  }
+  filter.search = searchText.value
 
-  let essy = {}
+  let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
-    if (searchFilter.value[el]) essy[el] = searchFilter.value[el]
+    let val = searchFilter.value[el]
+    if (!val) return false
+    if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
+    else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
+  filter.filter = JSON.stringify(easy)
 
-  filter.filter = essy
-  filter.filter = (filter.filter === '{}') ? filter.filter : JSON.stringify(filter.filter)
+  if (globalRef.tags.length) localStorage.setItem('appealFilters', JSON.stringify(globalRef.tags))
+  else localStorage.removeItem('appealFilters')
 
-  store.tags.length && localStorage.setItem('appealFilters', JSON.stringify(store.tags))
   return true
 }
 
@@ -213,7 +209,7 @@ onMounted(() => {
   let appealFilters = localStorage.getItem('appealFilters') || ''
   if (appealFilters) {
     appealFilters = JSON.parse(appealFilters)
-    store.tags = appealFilters
+    globalRef.tags = appealFilters
     appealFilters.forEach(el => searchFilter.value[el.param] = el.code)
   }
 

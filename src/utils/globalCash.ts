@@ -3,6 +3,7 @@ const cash = {
     getPlaces: null,
     getOrganizations: null,
     getTeatments: null,
-    getColors: null
+    getColors: null,
+    getAppeals: null
 }
 export default cash

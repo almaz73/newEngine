@@ -126,7 +126,7 @@
     </div>
     <!--    Конец скрытой части-->
     <div>
-      <span class="label">Дата соаздания</span>
+      <span class="label">Дата создания</span>
       <el-date-picker placeholder="Выберите дату"
                       @change="changed"
                       format="DD-MM-YYYY"
@@ -192,7 +192,7 @@
       </div>
     </div>
     <div>
-      <span class="label">Обьем двигателя</span>
+      <span class="label">Объем двигателя</span>
       <div class="filter-block">
         &nbsp; от
         <el-select
@@ -344,7 +344,8 @@
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
-import {store} from './dealStore'
+import {globalRef} from "@/components/filterControls/FilterGlobalRef";
+
 import {formatDateDDMMYYYY, vetRegNumber} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
@@ -369,14 +370,14 @@ const treatments = ref([])
 const isMoreFilter = ref(false)
 const colors = ref([])
 
-watch(store, function () {
-  let params = store.tags.map(el => el.param)
+watch(globalRef, function () {
+  let params = globalRef.tags.map(el => el.param)
 
   Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
     if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
   })
 
-  store.tags.forEach(el => { // добавляем
+  globalRef.tags.forEach(el => { // добавляем
     if (el.name) vModel.value[el.param] = el.code
   })
 })
@@ -496,7 +497,7 @@ function changed() {
 
     }
   })
-  store.tags = tags.value
+  globalRef.tags = tags.value
 }
 
 function open() {

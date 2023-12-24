@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import LoginPage from '../views/LoginPage.vue'
-import HomeView from "@/views/HomeView.vue";
+import LoginPage from '@/pages/LoginPage.vue'
+import HomeView from "@/pages/HomeView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,22 +18,22 @@ const router = createRouter({
         {
             path: '/appeal',
             name: 'appeal',
-            component: () => import('../views/AppealPage.vue')
+            component: () => import('@/pages/appeal/AppealPage.vue')
         },
         {
             path: '/desktop',
             name: 'desktop',
-            component: () => import('../views/DeskTopPage.vue')
+            component: () => import('@/pages/DeskTopPage.vue')
         },
         {
             path: '/deal',
             name: 'deal',
-            component: () => import('../views/DealPage.vue')
+            component: () => import('@/pages/deal/DealPage.vue')
         },
         {
             path: '/help',
             name: 'help',
-            component: () => import('../views/HelpPage.vue')
+            component: () => import('@/pages/HelpPage.vue')
         },
         {
             path: '/ideas',

@@ -33,8 +33,10 @@ export const useGlobalStore = defineStore('globalStore', {
             return (cash.getBrands = res.data)
         },
         async getModels(brandId: number) {
+            // @ts-ignore
             if (cash['getModels' + brandId]) return cash['getModels' + brandId] // список статичный - кэшируем
             const res = await getModels(brandId)
+            // @ts-ignore
             return (cash['getModels' + brandId] = res.data)
         },
         async getPlaces() {
@@ -47,9 +49,11 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await getOrganizations()
             return (cash.getOrganizations = res.data)
         },
-        async getRoles(roles:any) {
+        async getRoles(roles: any) {
+            // @ts-ignore
             if (cash['getModels' + roles.join('-')]) return cash['getModels' + roles.join('-')] // список статичный - кэшируем
             const res = await getRoles(roles)
+            // @ts-ignore
             return (cash['getModels' + roles.join('-')] = res.data)
         },
         async getTeatments() {
@@ -62,6 +66,12 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await getColors()
             return (cash.getColors = res.data)
         },
+        async getAppeals() {
+            if (cash.getAppeals) return cash.getAppeals // список статичный - кэшируем
+            const res = await getAppeals()
+            return (cash.getAppeals = res.data)
+        },
+
     }
 })
 
@@ -104,5 +114,11 @@ function getTeatments() {
 function getColors() {
     return axios.get(`api/bodycolor/getbytype/10`).then((res) => res)
 }
+
+function getAppeals() {
+    return axios.get(`api/appeals/get/types`).then((res) => res)
+}
+
+
 
 

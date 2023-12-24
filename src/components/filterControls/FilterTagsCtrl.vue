@@ -1,11 +1,11 @@
 <template>
   <div class="tags">
-    <span v-for="(el,ind) in store.tags" :key="ind">
+    <span v-for="(el,ind) in globalRef.tags" :key="ind">
       {{ el.name }}
       <b @click="isDirty=true; removeElement(el)">✖</b>
     </span>
     <span
-        v-if="store.tags.length"
+        v-if="globalRef.tags.length"
         class="clear"
         @click="isDirty=true; removeElement(el)">Очистить все</span>
     <span
@@ -17,10 +17,10 @@
 </template>
 
 <script setup>
-import {store, removeElement} from './dealStore'
+import {globalRef, removeElement} from './FilterGlobalRef'
 import {ref, watch} from "vue";
 
-watch(store, () => isDirty.value = true)
+watch(globalRef, () => isDirty.value = true)
 
 const emits = defineEmits(['getData'])
 const isDirty = ref(false)
