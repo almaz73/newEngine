@@ -43,7 +43,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/ideas">
+      <RouterLink to="">
         <el-menu-item index="4">
           <el-icon>
             <img alt="Склад" src="@/assets/icons/ic-home-black-18-px.png" height="34" width="34"/>

@@ -42,9 +42,10 @@
         <RouterLink to="/bayerhelp" @click="isAccountShow=false">Инструкция. Байер</RouterLink>
 
       </div>
-<!--      <div  class="account_window__buttons">-->
+      <div  class="account_window__buttons">
 <!--        <a href="https://g66.ru/almaz73/">Инструкция. Сall-центра</a>-->
-<!--      </div>-->
+        <RouterLink to="/ideas" @click="isAccountShow=false">Идеи по редизайну</RouterLink>
+      </div>
 
     </div>
   </nav>

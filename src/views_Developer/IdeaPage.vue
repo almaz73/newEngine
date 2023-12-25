@@ -7,12 +7,17 @@
              acti
              class="demo-tabs"
              @tab-click="handleClick">
-      <el-tab-pane label="Вопросы" name="first">
-        <TabAsks/>
-      </el-tab-pane>
-      <el-tab-pane label="Что сделано">
+
+      <el-tab-pane label="Что сделано" name="first">
         <TabDone/>
       </el-tab-pane>
+      <el-tab-pane label="Идеи и предложения">
+        <TabOffers/>
+      </el-tab-pane>
+      <el-tab-pane label="Вопросы">
+        <TabAsks/>
+      </el-tab-pane>
+
 
       <el-tab-pane label="Ошибки">
         <TabErrors/>
@@ -22,11 +27,6 @@
         <TabRequirements/>
       </el-tab-pane>
 
-      <el-tab-pane label="Идеи и предложения">
-        <TabOffers/>
-      </el-tab-pane>
-
-
 
       <el-tab-pane label="Идеальный вариант программы">
         <TabIdeal/>
@@ -35,7 +35,7 @@
   </div>
 </template>
 <style>
-.idea{
+.idea {
   padding: 8px;
 }
 </style>
@@ -48,10 +48,11 @@ import TabErrors from "@/views_Developer/TabErrors.vue";
 import TabAsks from "@/views_Developer/TabAsks.vue";
 import TabDone from "@/views_Developer/TabDone.vue";
 import TabRequirements from "@/views_Developer/TabRequirements.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 
 const activeName = ref('first')
-function handleClick(){
+
+function handleClick() {
 
 }
 </script>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {useGlobalStore} from "@/stores/globalStore";
 import router from "@/router";
+import {ElMessage} from "element-plus";
 
 axios.interceptors.response.use(resp => resp
     , err => {
@@ -11,6 +12,10 @@ axios.interceptors.response.use(resp => resp
             // возможно у токена вышел срок, перекидываем на cтраницу авторизации
             useGlobalStore().isAuthorized = false
             router.push('login')
+        }
+
+        if (err.request.status === 500) {
+             ElMessage({message: 'Ошибка 500. Возможно нет связи!', type: 'warning',})
         }
         return err
     })
