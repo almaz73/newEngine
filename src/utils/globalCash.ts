@@ -4,6 +4,8 @@ const cash = {
     getOrganizations: null,
     getTeatments: null,
     getColors: null,
-    getAppeals: null
+    getAppeals: null,
+    getUsers: null,
+    getClientStatuses: null
 }
 export default cash

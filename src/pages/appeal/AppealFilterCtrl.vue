@@ -104,31 +104,29 @@
         </div>
         <div>
           <span class="label">Модель </span>
-          <div class="filter-block">
-            <el-select
-                placeholder="Выберите бренд"
-                v-model="vModel.carBrandId"
-                @change="changeBrand"
-                filterable
-                clearable>
-              <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
-            <span style="white-space: nowrap">
-           &nbsp; &nbsp; &nbsp; &nbsp;
           <el-select
-              placeholder="Выберите модель"
-              v-model="vModel.carModelId"
-              @change="changed"
+              placeholder="Выберите бренд"
+              v-model="vModel.carBrandId"
+              @change="changeBrand"
               filterable
-              clearable
-          >
-            <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+              clearable>
+            <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
           </el-select>
-        </span>
-          </div>
+          <span style="white-space: nowrap">
+             &nbsp; &nbsp; &nbsp; &nbsp;
+            <el-select
+                placeholder="Выберите модель"
+                v-model="vModel.carModelId"
+                @change="changed"
+                filterable
+                clearable
+            >
+              <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </span>
         </div>
 
-        <div>
+        <div v-if="1">
           <span class="label">Год выпуска</span>
           <div class="filter-block">
             &nbsp; от
@@ -142,24 +140,28 @@
               <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name"/>
             </el-select>
             <span style="white-space: nowrap">
-          &nbsp; &nbsp; &nbsp; до
-          <el-select
-              @change="changed"
-              placeholder="Выберите год"
-              v-model="vModel.highYearReleased"
-              filterable
-              clearable
-          >
-            <el-option
-                v-for="item in years"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-            />
-          </el-select>
-        </span>
+              &nbsp; &nbsp; &nbsp; до
+              <el-select
+                  @change="changed"
+                  placeholder="Выберите год"
+                  v-model="vModel.highYearReleased"
+                  filterable
+                  clearable
+              >
+                <el-option
+                    v-for="item in years"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.name"
+                />
+              </el-select>
+            </span>
           </div>
+        </div>
+      </div>
 
+      <div>
+        <div>
           <div>
             <span class="label">Пробег, км</span>
             <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
@@ -183,6 +185,60 @@
           </span>
           </div>
         </div>
+
+        <div>
+          <span class="label">Категория</span>
+          <el-select
+              placeholder="Выберите категорию"
+              v-model="vModel.categoryAuto"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in categoryAutos" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </div>
+
+        <div>
+          <span class="label">Сотрудник КЦ</span>
+          <el-select
+              placeholder="Выберите сотрудника"
+              v-model="vModel.ccEmployee"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in ccEmployees" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
+        </div>
+
+        <div style="white-space: nowrap">
+          <span class="label">Статус обращения</span>
+          <el-select
+              placeholder="Выберите статус"
+              v-model="vModel.workflowStatus"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in statuses" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </div>
+
+        <div>
+          <span class="label">Статус клиента</span>
+          <el-select
+              placeholder="Выберите статус клиента"
+              v-model="vModel.clientStatus"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in clientStatuses" :key="item.value" :label="item.title" :value="item.value"/>
+          </el-select>
+        </div>
+
+
       </div>
       <!--    Конец скрытой части-->
     </div>
@@ -192,7 +248,7 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {statuses} from '@/utils/globalConstants'
+import {categoryAutos, statuses} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
@@ -216,6 +272,8 @@ const tags = ref([])
 const workflowTypes = ref([])
 const isMoreFilter = ref(false)
 const colors = ref([])
+const ccEmployees = ref([])
+const clientStatuses = ref([])
 
 watch(globalRef, function () {
   let params = globalRef.tags.map(el => el.param)
@@ -254,6 +312,10 @@ function changed() {
       case 'manager':
         name = manageres.value.find((el) => el.id === key).title
         name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
+        break
+      case 'ccEmployee':
+        name = ccEmployees.value.find((el) => el.id === key).title
+        name && tags.value.push({param, name: 'Сотрудник КЦ: ' + name, code: key})
         break
       case 'dealNumber':
         tags.value.push({param, name: '№ обращения ' + key, code: key})
@@ -302,6 +364,18 @@ function changed() {
       case 'highYearReleased':
         tags.value.push({param, name: 'до ' + key, code: key})
         break
+      case 'categoryAuto':
+        name = categoryAutos.find((el) => el.id === key).name
+        name && tags.value.push({param, name: 'Категория: ' + name, code: key})
+        break
+      case 'workflowStatus':
+        name = statuses.find((el) => el.id === key).name
+        name && tags.value.push({param, name: 'Статус: ' + name, code: key})
+        break
+      case 'clientStatus':
+        name = clientStatuses.value.find((el) => el.value === key).title
+        name && tags.value.push({param, name: 'Статус клиента: ' + name, code: key})
+        break
 
     }
   })
@@ -317,12 +391,18 @@ function open() {
   }
 
   globalStore.getBrands().then(res => brands.value = res)
-  globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
+  globalStore.getClientStatuses().then(res => clientStatuses.value = res.items)
   globalStore.getColors().then((res) => (colors.value = res.items))
   globalStore.getAppeals().then((res) => (workflowTypes.value = res.items))
   globalStore.getPlaces().then((res) => {
     cities.value = res.citys
     places.value = res.items
+  })
+  globalStore.getUsers().then((res) => {
+    manageres.value = res.items
+    manageres.value.forEach(item => {
+      if (item.role === 110 || item.role === 111) ccEmployees.value.push(item);
+    });
   })
 
   if (vModel.value.carBrandId) {

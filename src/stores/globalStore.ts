@@ -71,6 +71,16 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await getAppeals()
             return (cash.getAppeals = res.data)
         },
+        async getUsers() {
+            if (cash.getUsers) return cash.getUsers // список статичный - кэшируем
+            const res = await getUsers()
+            return (cash.getUsers = res.data)
+        },
+        async getClientStatuses() {
+            if (cash.getClientStatuses) return cash.getClientStatuses // список статичный - кэшируем
+            const res = await getClientStatuses()
+            return (cash.getClientStatuses = res.data)
+        },
 
     }
 })
@@ -119,6 +129,12 @@ function getAppeals() {
     return axios.get(`api/appeals/get/types`).then((res) => res)
 }
 
+function getUsers() {
+    return axios.get(`api/appeals/get/filter/users`).then((res) => res)
+}
 
+function getClientStatuses() {
+    return axios.get(`api/lead/get/client/statuses`).then((res) => res)
+}
 
 

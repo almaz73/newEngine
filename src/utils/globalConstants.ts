@@ -98,3 +98,10 @@ export const appealStatus = [
     {name: 'Запрос в архив', tyoe: 'ArchiveRequest', id: 50}
 ]
 
+export const categoryAutos = [
+    {id: 1, name: 'A'},
+    {id: 2, name: 'B'},
+    {id: 3, name: 'C'},
+    {id: 4, name: 'D'},
+    {id: 5, name: 'S'},
+]
