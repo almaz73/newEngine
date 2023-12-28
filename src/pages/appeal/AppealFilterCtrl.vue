@@ -76,7 +76,7 @@
     <!--    Скрытая часть-->
     <div class="more-filter" :class="{open:isMoreFilter}">
       <div style="min-height: 0; overflow: hidden">
-        <div>
+        <div style="white-space: nowrap">
           <span class="label">Подменный номер</span>
           <el-input v-model="vModel.swapPhone"
                     @change="changed"
@@ -102,31 +102,34 @@
             />
           </el-select>
         </div>
+
         <div>
           <span class="label">Модель </span>
-          <el-select
-              placeholder="Выберите бренд"
-              v-model="vModel.carBrandId"
-              @change="changeBrand"
-              filterable
-              clearable>
-            <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
-          <span style="white-space: nowrap">
-             &nbsp; &nbsp; &nbsp; &nbsp;
+          <div class="filter-block">
             <el-select
-                placeholder="Выберите модель"
-                v-model="vModel.carModelId"
-                @change="changed"
+                placeholder="Выберите бренд"
+                v-model="vModel.carBrandId"
+                @change="changeBrand"
                 filterable
                 clearable
             >
-              <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
-          </span>
+            <span style="white-space: nowrap">
+           &nbsp; &nbsp; &nbsp; &nbsp;
+          <el-select
+              placeholder="Выберите модель"
+              v-model="vModel.carModelId"
+              @change="changed"
+              filterable
+              clearable
+          >
+            <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </span>
+          </div>
         </div>
-
-        <div v-if="1">
+        <div>
           <span class="label">Год выпуска</span>
           <div class="filter-block">
             &nbsp; от
@@ -140,39 +143,37 @@
               <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name"/>
             </el-select>
             <span style="white-space: nowrap">
-              &nbsp; &nbsp; &nbsp; до
-              <el-select
-                  @change="changed"
-                  placeholder="Выберите год"
-                  v-model="vModel.highYearReleased"
-                  filterable
-                  clearable
-              >
-                <el-option
-                    v-for="item in years"
-                    :key="item.name"
-                    :label="item.name"
-                    :value="item.name"
-                />
-              </el-select>
-            </span>
+          &nbsp; &nbsp; &nbsp; до
+          <el-select
+              @change="changed"
+              placeholder="Выберите год"
+              v-model="vModel.highYearReleased"
+              filterable
+              clearable
+          >
+            <el-option
+                v-for="item in years"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+            />
+          </el-select>
+        </span>
           </div>
         </div>
-      </div>
 
-      <div>
         <div>
           <div>
             <span class="label">Пробег, км</span>
             <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
-            &nbsp; от
-            <el-input v-model="vModel.lowMileage"
+             &nbsp; от
+                <el-input v-model="vModel.lowMileage"
                       @change="changed"
                       type="number"
                       placeholder="Введите пробег"
                       clearable
                       @key.enter="changed"/>
-          </span>
+             </span>
             <br v-if="globalStore.isMobileView">
             <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
             &nbsp; до
@@ -182,7 +183,7 @@
                       placeholder="Введите пробег"
                       clearable
                       @key.enter="changed"/>
-          </span>
+             </span>
           </div>
         </div>
 

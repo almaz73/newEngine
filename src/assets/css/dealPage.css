@@ -25,12 +25,20 @@
 }
 
 .deal-car-color {
-    border-right: 4px solid white;
-    border-left: 4px solid white;
-    width: 60px;
-    height: 50px;
+    width: 50px;
+    height: 20px;
     background-color: #e6e6e6;
-    margin: 0 8px;
+}
+
+@media (width<500px) {
+    .deal-car-color {
+        border-right: 4px solid white;
+        border-left: 4px solid white;
+        width: 60px;
+        height: 50px;
+        background-color: #e6e6e6;
+        margin: 0 8px;
+    }
 }
 
 .red-text {
