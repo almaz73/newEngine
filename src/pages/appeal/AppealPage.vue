@@ -137,6 +137,7 @@ const filter = {
   offset: 0,
   search: ''
 }
+let filterOld; // кучковый способ запросов
 
 function colorBox(txt) {
   if (txt === 'Новый') return {background: '#0187af'}
@@ -186,7 +187,7 @@ function validateFilter() {
     if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
     else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
-  filter.filter = JSON.stringify(easy)
+  filterOld = Object.assign({}, filter, easy) // filter.filter = JSON.stringify(easy)
 
   if (globalRef.tags.length) localStorage.setItem('appealFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('appealFilters')
@@ -197,7 +198,7 @@ function validateFilter() {
 function getData() {
   if (!validateFilter()) return false;
   globalStore.isWaiting = true
-  appealStore.getAppeals(filter).then((res) => {
+  appealStore.getAppeals(filterOld).then((res) => {
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)

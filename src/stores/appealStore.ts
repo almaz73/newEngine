@@ -18,13 +18,11 @@ export const useAppealStore = defineStore("appealStore", {
 })
 
 function getAppeals(params: any) {
-    const {filter, limit, mainFilter, offset, search} = params
-    let url = path;
-    if (filter) url += '?filter=' + filter
-    if (offset) url += '&offset=' + offset
-    if (search) url += '&quickSearch=' + search
-    if (mainFilter) url += '&mainFilter=' + mainFilter
-    if (limit) url += '&limit=' + limit
-    return axios.get(url).then(res => res)
+    // кучковый способ запросов
+    const newUrl = Object.entries(params).reduce((sum, el) => {
+        if (el[0] != 'filter' && el[1]) return sum + '&' + el[0] + '=' + el[1]
+        else return sum
+    }, path + '?filter={}')
+    return axios.get(newUrl).then(res => res)
 }
 
