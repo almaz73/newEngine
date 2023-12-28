@@ -48,6 +48,7 @@ main {
     cursor: pointer;
     background: #ebebeb;
     border-radius: 4px !important;
+    line-height: 2.5rem;
 }
 
 .tags span:hover {

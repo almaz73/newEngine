@@ -77,9 +77,9 @@
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="(row, ind) in appealStore.list" :key="ind">
         <div class="head">
-          <span class="deal-car-color" :style="row"></span>
-          <span>Пробег:{{ row.rowmileage }} </span>
-          <span>vin: {{ row.vin }}</span>
+          <span class="deal-car-color" :style="carColor(row)"></span>
+          <span>Пробег: {{ row.rowmileage }} </span>
+          <span style="font-size: small">vin: {{ row.vin }}</span>
         </div>
         <div><small>Авто:</small> {{ row.brand }} {{ row.model }} {{ row.yearReleased }}</div>
         <div><small>Менеджер:</small> {{ row.userName }}</div>
@@ -104,7 +104,7 @@
   </main>
 </template>
 <script setup>
-import {formatDate, gotoTop} from "@/utils/globalFunctions";
+import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
 import AppealFilterCtrl from "@/pages/appeal/AppealFilterCtrl.vue";
@@ -160,7 +160,10 @@ function changePage(val) {
   currentPage.value = val
   filter.offset = (val - 1) * rowsPerPage.value
   getData()
-  if (globalStore.isMobileView) gotoTop()
+  if (globalStore.isMobileView) {
+    gotoTop()
+    isFilterOpened.value = false
+  }
 }
 
 function changePageSize(val) {

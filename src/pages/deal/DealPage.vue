@@ -69,7 +69,7 @@
       <div v-for="(row, ind) in dealStore.list" :key="ind">
         <div class="head">
           <span class="deal-car-color" :style="carColor(row)"></span>
-          <span>Пробег:{{ row.rowmileage }} </span>
+          <span>Пробег: {{ row.rowmileage }} </span>
           <span>vin: {{ row.vin }}</span>
         </div>
         <div><small>Авто:</small> {{ row.brand }} {{ row.model }} {{ row.yearReleased }}</div>
@@ -100,7 +100,7 @@ import {reactive, ref, computed, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
 import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from '@/stores/globalStore'
-import {formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
+import {carColor, formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import DealFilterCtrl from '@/pages/deal/DealFilterCtrl.vue'
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
@@ -131,11 +131,6 @@ const filter = {
 }
 const searchFilter = ref({})
 
-function carColor(row) {
-  if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
-  return {}
-}
-
 const pageDescription = computed(() => {
   let start = (currentPage.value - 1) * rowsPerPage.value + 1
   let end = start + rowsPerPage.value - 1
@@ -161,7 +156,10 @@ function changePage(val) {
   currentPage.value = val
   filter.offset = (val - 1) * rowsPerPage.value
   getData()
-  if (globalStore.isMobileView) gotoTop()
+  if (globalStore.isMobileView) {
+    gotoTop()
+    isFilterOpened.value = false
+  }
 }
 
 function changePageSize(val) {

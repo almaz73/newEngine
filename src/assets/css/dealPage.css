@@ -25,10 +25,12 @@
 }
 
 .deal-car-color {
-    border: 1px solid #bdc1c2;
-    width: 20px;
-    height: 15px;
+    border-right: 4px solid white;
+    border-left: 4px solid white;
+    width: 60px;
+    height: 50px;
     background-color: #e6e6e6;
+    margin: 0 8px;
 }
 
 .red-text {
@@ -42,14 +44,13 @@
 }
 
 .vertical-table div.head {
-    border-bottom: 2px solid #555;
     border-radius: 4px;
     background: #d34439;
     display: flex;
     color: white;
-    justify-content: space-between;
-    padding: 12px;
-    margin: 12px 0;
+    justify-content: space-around;
+    padding: 0 8px;
+    align-items: center;
 }
 
 .vertical-table div.head span {

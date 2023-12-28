@@ -91,3 +91,8 @@ function upEng2rus(value: string) {
     value = /^[A-Z,.;'[\]`]*$/.test(value) ? translate[value] : value;
     return value;
 }
+
+export function carColor(row: any) {
+    if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
+    return {}
+}
