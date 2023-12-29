@@ -24,7 +24,7 @@
 
 .account div:last-child {
     font-size: 14px;
-    color: #d34439
+    color: var(--el-main-color)
 }
 
 .account_window {
@@ -76,7 +76,7 @@
 
 .account_window__text div:last-child {
     font-size: 14px;
-    color: #d34439
+    color: var(--el-main-color)
 }
 
 .account_window__buttons {

@@ -1,3 +1,8 @@
+:root {
+    /*--el-main-color: #d34439; старый вариант*/
+    --el-main-color: #f13d03;
+}
+
 
 body {
     margin: 0;
@@ -62,7 +67,7 @@ main {
 }
 
 .tags span.clear {
-    background: #d34439;
+    background: var(--el-main-color);
     color: white
 }
 
@@ -77,7 +82,7 @@ main {
 }
 
 a {
-    color: #d34439;
+    color: var(--el-main-color);
     text-decoration: none;
     cursor: pointer;
 }

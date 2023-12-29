@@ -5,6 +5,11 @@
       @click="globalStore.isShowPanel = false"
   ></div>
 
+  <div v-if="globalStore.isMobileView && globalStore.isShowPanel"
+       style="width: 100%; height: 100vh; position: fixed; z-index: 10"
+       @click="globalStore.isShowPanel = false"
+  ></div>
+
   <div
       class="left-menu-div"
       :class="{ narrow: globalStore.isNarrowPanel, show: globalStore.isShowPanel }"
@@ -174,7 +179,12 @@
         <template #title>Анкеты</template>
       </el-menu-item>
     </el-menu>
+
+
+
   </div>
+
+
 
   <div
       class="left-menu-fon"
