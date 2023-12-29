@@ -290,6 +290,7 @@ watch(globalRef, function () {
 
 
 function changeBrand(id) {
+  console.log('changeBrand111222')
   vModel.value.carModelId = null
   globalStore.getModels(id).then((res) => (models.value = res))
   changed()

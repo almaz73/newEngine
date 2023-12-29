@@ -125,72 +125,84 @@
       </div>
     </div>
     <!--    Конец скрытой части-->
-    <div>
-      <span class="label">Дата создания</span>
-      <el-date-picker placeholder="Выберите дату"
-                      @change="changed"
-                      format="DD-MM-YYYY"
-                      v-model="vModel.createDate"/>
-    </div>
-    <div>
-      <span class="label">Модель </span>
-      <div class="filter-block">
-        <el-select
-            placeholder="Выберите бренд"
-            v-model="vModel.carBrandId"
-            @change="changeBrand"
-            filterable
-            clearable
-        >
-          <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
-        <span style="white-space: nowrap">
-           &nbsp; &nbsp; &nbsp; &nbsp;
-          <el-select
-              placeholder="Выберите модель"
-              v-model="vModel.carModelId"
-              @change="changed"
-              filterable
-              clearable
-          >
-            <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
-        </span>
-      </div>
-    </div>
 
-    <div>
-      <span class="label">Год выпуска</span>
-      <div class="filter-block">
-        &nbsp; от
-        <el-select
-            @change="changed"
-            placeholder="Выберите год"
-            v-model="vModel.lowYearReleased"
-            filterable
-            clearable
-        >
-          <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name"/>
-        </el-select>
-        <span style="white-space: nowrap">
-          &nbsp; &nbsp; &nbsp; до
-          <el-select
-              @change="changed"
-              placeholder="Выберите год"
-              v-model="vModel.highYearReleased"
-              filterable
-              clearable
-          >
-            <el-option
-                v-for="item in years"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-            />
-          </el-select>
-        </span>
-      </div>
-    </div>
+    <FilterFieldsCtrl @changed="changed"
+                      :vModel="vModel"
+                      :fields="fields"
+                      :models="models"
+                      :brands="brands"
+                      :cities="cities"
+                      :places="places"
+                      :years="years"
+    />
+
+    <br><br>===========================================
+<!--        <div>-->
+<!--          <span class="label">Дата создания</span>-->
+<!--          <el-date-picker placeholder="Выберите дату"-->
+<!--                          @change="changed"-->
+<!--                          format="DD-MM-YYYY"-->
+<!--                          v-model="vModel.createDate"/>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--          <span class="label">Модель </span>-->
+<!--          <div class="filter-block">-->
+<!--            <el-select-->
+<!--                placeholder="Выберите бренд"-->
+<!--                v-model="vModel.carBrandId"-->
+<!--                @change="changeBrand"-->
+<!--                filterable-->
+<!--                clearable-->
+<!--            >-->
+<!--              <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>-->
+<!--            </el-select>-->
+<!--            <span style="white-space: nowrap">-->
+<!--               &nbsp; &nbsp; &nbsp; &nbsp;-->
+<!--              <el-select-->
+<!--                  placeholder="Выберите модель"-->
+<!--                  v-model="vModel.carModelId"-->
+<!--                  @change="changed"-->
+<!--                  filterable-->
+<!--                  clearable-->
+<!--              >-->
+<!--                <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>-->
+<!--              </el-select>-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--    <div>-->
+<!--      <span class="label">Год выпуска</span>-->
+<!--      <div class="filter-block">-->
+<!--        &nbsp; от-->
+<!--        <el-select-->
+<!--            @change="changed"-->
+<!--            placeholder="Выберите год"-->
+<!--            v-model="vModel.lowYearReleased"-->
+<!--            filterable-->
+<!--            clearable-->
+<!--        >-->
+<!--          <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name"/>-->
+<!--        </el-select>-->
+<!--        <span style="white-space: nowrap">-->
+<!--          &nbsp; &nbsp; &nbsp; до-->
+<!--          <el-select-->
+<!--              @change="changed"-->
+<!--              placeholder="Выберите год"-->
+<!--              v-model="vModel.highYearReleased"-->
+<!--              filterable-->
+<!--              clearable-->
+<!--          >-->
+<!--            <el-option-->
+<!--                v-for="item in years"-->
+<!--                :key="item.name"-->
+<!--                :label="item.name"-->
+<!--                :value="item.name"-->
+<!--            />-->
+<!--          </el-select>-->
+<!--        </span>-->
+<!--      </div>-->
+<!--    </div>-->
     <div>
       <span class="label">Объем двигателя</span>
       <div class="filter-block">
@@ -347,6 +359,7 @@ import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalCon
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 
 import {formatDateDDMMYYYY, vetRegNumber} from "@/utils/globalFunctions";
+import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -370,6 +383,23 @@ const treatments = ref([])
 const isMoreFilter = ref(false)
 const colors = ref([])
 
+const fields = [
+  {type: '1.Дата', label: 'Дата создания', name: 'createDate', placeholder: 'Выберите дату'},
+  {
+    type: '4. Два списка', label: 'Модель', name1: 'carBrandId', placeholder1: 'Выберите бренд',
+    name2: 'carModelId', placeholder2: 'Выберите модель'
+  },
+  {
+    type: '5. Две даты', label: 'Год выпуска', name1: 'lowYearReleased', placeholder1: 'Выберите год',
+    name2: 'highYearReleased', placeholder2: 'Выберите год'
+  },
+
+
+  // {type: '2.Список', label: 'Город', name: 'locationCity', placeholder: 'Выберите город'},
+  // {type: '3.Список c множественным выбором', label: 'Тип КПП', name: 'gearboxType', placeholder: 'Выберите типы КПП'},
+
+]
+
 watch(globalRef, function () {
   let params = globalRef.tags.map(el => el.param)
 
@@ -388,12 +418,20 @@ function changeRegistartionMark(val) {
 }
 
 function changeBrand(id) {
+  console.log('changeBrand =2222222 = =')
   vModel.value.carModelId = null
   globalStore.getModels(id).then((res) => (models.value = res))
-  changed()
 }
 
 function changed() {
+  console.log('changed')
+
+  // Если есть уже бренд авто, вытягиваем модели
+  if (!models.value.length && vModel.value.carBrandId) changeBrand(vModel.value.carBrandId)
+
+
+
+
   // создаем кнопки
   tags.value = []
   Object.keys(vModel.value).forEach((param) => {
@@ -466,7 +504,7 @@ function changed() {
         tags.value.push({param, name: 'Пробег до ' + key, code: key})
         break
       case 'lowEnginePowerHP':
-        tags.value.push({param, name: 'Мощномть от ' + key, code: key})
+        tags.value.push({param, name: 'Мощноcть от ' + key, code: key})
         break
       case 'highEnginePowerHP':
         tags.value.push({param, name: 'Мощность до ' + key, code: key})
@@ -504,6 +542,8 @@ function open() {
   if (brands.value.length) return false;
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
+
+    console.log('years.value')
   }
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
