@@ -4,6 +4,8 @@
       {{ el.name }}
       <b @click="removeElement(el)">✖</b>
     </span>
+  </div>
+  <div class="tags">
     <span
         v-if="globalRef.tags.length"
         class="clear"
@@ -14,6 +16,7 @@
         v-if="isDirty"
         @click="getData()">Искать и запомнить</span>
   </div>
+  <div style="clear: both"></div>
 </template>
 
 <script setup>
@@ -23,8 +26,11 @@ import {ref, watch} from "vue";
 watch(globalRef, () => isDirty.value = true)
 
 function getData() {
-  setTimeout(() => isDirty.value = false, 100)
-  emits('getData')
+  setTimeout(() => {
+    emits('getData')
+    isDirty.value = false
+  }, 100)
+
 }
 
 const emits = defineEmits(['getData'])

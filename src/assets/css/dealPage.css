@@ -30,7 +30,7 @@
     background-color: #e6e6e6;
 }
 
-@media (width<500px) {
+@media (width < 500px) {
     .deal-car-color {
         border-right: 4px solid white;
         border-left: 4px solid white;
@@ -123,11 +123,6 @@
     clear: both;
     line-height: 30px;
 }
-@media (width<500px) {
-    .deal-filters .label {
-        width: 130px;
-    }
-}
 
 .filter-block {
     float: left;
@@ -149,13 +144,25 @@
     flex-wrap: wrap;
     margin: 12px 0;
     font-size: small;
+    float: left;
+}
+
+@media (width < 500px) {
+    .deal-filters .label {
+        width: 130px;
+    }
+
+    .tags {
+        float: initial;
+        justify-content: center;
+    }
 }
 
 .tags span {
     white-space: nowrap;
     margin: 2px 5px;
     border-radius: 2px;
-    padding:4px 12px;
+    padding: 4px 12px;
     border: 1px solid #ddd;
 }
 

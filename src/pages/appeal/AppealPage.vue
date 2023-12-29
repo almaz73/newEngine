@@ -154,6 +154,7 @@ function buttonFilterSelect(val) {
   filter.mainFilter = val
   filter.offset = 0
   getData()
+  isFilterOpened.value = false
 }
 
 function changePage(val) {

@@ -51,8 +51,8 @@ main {
 
 }
 
-@media (width>500px) {
-    .tags span {
+@media (width < 500px) {
+    .tags span.clear, .tags span.find {
         line-height: 2.5rem;
     }
 }
@@ -87,11 +87,12 @@ a:hover {
     text-decoration: underline;
 }
 
-.more-filter{
+.more-filter {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows .73s ease-in-out;
 }
-.more-filter.open{
+
+.more-filter.open {
     grid-template-rows: 1fr;
 }
