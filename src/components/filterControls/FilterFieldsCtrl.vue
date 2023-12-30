@@ -197,6 +197,16 @@
                             v-model="vModel.highCreateDatePeriod"/>
          </span>
     </div>
+
+    <div v-if="f.type==='10. Число'">
+      <span class="label">{{f.label}}</span>
+      <el-input v-model="vModel[f.name]"
+                @change="emits('changed')"
+                type="number"
+                clearable
+                placeholder=""
+                @key.enter="emits('changed')"/>
+    </div>
     <div style="clear: both"></div>
   </div>
 </template>
