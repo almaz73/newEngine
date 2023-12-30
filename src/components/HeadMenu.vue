@@ -7,6 +7,13 @@
     />
 
     <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()"/>
+
+
+    <div class="head-text">
+      <h1>{{ globalStore.title }}</h1>
+      <StepsCtrl/>
+    </div>
+
     <div class="pusher"/>
 
 
@@ -28,6 +35,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import LoginPanel from "@/components/LoginPanel.vue";
+import StepsCtrl from "@/components/StepsCtrl.vue";
 
 const globalStore = useGlobalStore()
 const isAccountShow = ref(false)

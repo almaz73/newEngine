@@ -211,6 +211,7 @@ function getData() {
 }
 
 onMounted(() => {
+  globalStore.setTitle('Обращения')
   let appealFilters = localStorage.getItem('appealFilters') || ''
   if (appealFilters) {
     appealFilters = JSON.parse(appealFilters)

@@ -5,6 +5,7 @@ import cash from '@/utils/globalCash'
 export const useGlobalStore = defineStore('globalStore', {
     state: () => ({
         /** @type {{boolean}} */
+        title: '#### NEW ENGINE',
         isAuthorized: true,
         isMobileView: false, // мобильный режим
         isShowPanel: false, // при узких экранах, гамбургер открывает левую панель
@@ -21,6 +22,9 @@ export const useGlobalStore = defineStore('globalStore', {
         }
     }),
     actions: {
+        setTitle(title: string) {
+            document.title = this.title = title
+        },
         async signIn(login: string, password: string) {
             return await signIn(login, password)
         },
@@ -113,7 +117,7 @@ function getOrganizations() {
 }
 
 function getRoles(roles: any) {
-    const params = roles.reduce((acc: string, el: string) => (acc += 'roles=' + el + '&'), '?')
+    const params = roles.reduce((acc: string, el: string) => (acc + 'roles=' + el + '&'), '?')
     return axios.get(`api/user/list/policy${params}`).then((res) => res)
 }
 

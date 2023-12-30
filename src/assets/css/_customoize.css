@@ -11,7 +11,7 @@
  */
 .el-menu-item.is-active {
     background: #ffe4e1;
-    color: var(--el-main-color) !important;
+    color: var(--main-color) !important;
 }
 
 [role="menubar"].el-menu {
@@ -62,7 +62,7 @@ li.el-menu-item {
 }
 
 .root .el-button.active{
-    background: var(--el-main-color);
+    background: var(--main-color);
     color: white;
 }
 

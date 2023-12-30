@@ -209,6 +209,7 @@ function getData() {
 }
 
 onMounted(() => {
+  globalStore.setTitle('Оценки')
   let dealFilters = localStorage.getItem('dealFilters') || ''
   if (dealFilters) {
     dealFilters = JSON.parse(dealFilters)

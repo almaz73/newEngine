@@ -179,9 +179,6 @@
         <template #title>Анкеты</template>
       </el-menu-item>
     </el-menu>
-
-
-
   </div>
 
 
@@ -209,7 +206,7 @@
 
 <script lang="ts" setup>
 import {useGlobalStore} from '@/stores/globalStore'
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 
 const globalStore = useGlobalStore()
 const activeIndex = ref('')
@@ -217,7 +214,4 @@ const select = (val: string) => {
   globalStore.isShowPanel = false
   sessionStorage.setItem('menuIndex', '' + val)
 }
-onMounted(() => {
-  activeIndex.value = sessionStorage.getItem('menuIndex') || '3'
-})
 </script>

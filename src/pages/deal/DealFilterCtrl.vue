@@ -418,13 +418,11 @@ function changeRegistartionMark(val) {
 }
 
 function changeBrand(id) {
-  console.log('changeBrand =2222222 = =')
   vModel.value.carModelId = null
   globalStore.getModels(id).then((res) => (models.value = res))
 }
 
 function changed() {
-  console.log('changed')
 
   // Если есть уже бренд авто, вытягиваем модели
   if (!models.value.length && vModel.value.carBrandId) changeBrand(vModel.value.carBrandId)
@@ -542,8 +540,6 @@ function open() {
   if (brands.value.length) return false;
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
-
-    console.log('years.value')
   }
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
