@@ -4,352 +4,13 @@
     <!--    Скрытая часть-->
     <div class="more-filter" :class="{open:isMoreFilter}">
       <div style="min-height: 0; overflow: hidden">
-        <div>
-          <span class="label">Пробег, км</span>
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
-            &nbsp; от
-            <el-input v-model="vModel.lowMileage"
-                      @change="changed"
-                      type="number"
-                      placeholder="Введите пробег"
-                      clearable
-                      @key.enter="changed"/>
-          </span>
-          <br v-if="globalStore.isMobileView">
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
-            &nbsp; до
-            <el-input v-model="vModel.highMileage"
-                      @change="changed"
-                      type="number"
-                      placeholder="Введите пробег"
-                      clearable
-                      @key.enter="changed"/>
-          </span>
-        </div>
-
-        <div>
-          <span class="label">Мощность двигателя</span>
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
-            &nbsp; от
-            <el-input v-model="vModel.lowEnginePowerHP"
-                      @change="changed"
-                      type="number"
-                      placeholder="Введите мощность"
-                      clearable
-                      @key.enter="changed"/>
-          </span>
-          <br v-if="globalStore.isMobileView">
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
-            &nbsp; до
-            <el-input v-model="vModel.highEnginePowerHP"
-                      @change="changed"
-                      type="number"
-                      placeholder="Введите мощность"
-                      clearable
-                      @key.enter="changed"/>
-          </span>
-        </div>
-
-
-        <div>
-          <span class="label">Тип кузова</span>
-          <el-select
-              placeholder="Выберите тип кузова"
-              v-model="vModel.bodyType"
-              @change="changed"
-              filterable
-              clearable>
-            <el-option
-                v-for="item in bodyTypes"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-            />
-          </el-select>
-        </div>
-        <div>
-          <span class="label">Цвет кузова</span>
-          <el-select
-              placeholder="Выберите цвет кузова"
-              v-model="vModel.bodyColorId"
-              @change="changed"
-              filterable
-              clearable>
-            <el-option v-for="item in colors" :key="item.id" :label="item.colorName" :value="item.id"/>
-          </el-select>
-        </div>
-
-
-        <div>
-          <span class="label">Период оценок</span>
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
-            &nbsp; от
-            <el-date-picker placeholder="Выберите дату"
-                            @change="changed"
-                            format="DD-MM-YYYY"
-                            v-model="vModel.lowCreateDatePeriod"/>
-          </span>
-          <br v-if="globalStore.isMobileView">
-          <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'105px':''}">
-            &nbsp; &nbsp; до
-            <el-date-picker placeholder="Выберите дату"
-                            @change="changed"
-                            format="DD-MM-YYYY"
-                            v-model="vModel.highCreateDatePeriod"/>
-         </span>
-        </div>
-
-        <div>
-          <span class="label">Местонахождение</span>
-          <el-select
-              placeholder="Выберите место"
-              v-model="vModel.locationId"
-              @change="changed"
-              filterable
-              clearable>
-            <el-option v-for="item in places" :key="item.id"
-                       :label="item.title + '  - ('+item.city+' '+item.typeTitle+')'" :value="item.id"/>
-          </el-select>
-        </div>
-        <div>
-          <span class="label">Статус</span>
-          <el-select
-              placeholder="Выберите статус"
-              v-model="vModel.DealStatus"
-              @change="changed"
-              filterable
-              clearable>
-            <el-option v-for="item in statuses" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
-        </div>
+        <FilterFieldsCtrl @changed="changed" :lists="lists" :vModel="vModel" :fields="fields_additional"/>
       </div>
     </div>
     <!--    Конец скрытой части-->
 
-    <FilterFieldsCtrl @changed="changed"
-                      :vModel="vModel"
-                      :fields="fields"
-                      :models="models"
-                      :brands="brands"
-                      :cities="cities"
-                      :places="places"
-                      :years="years"
-    />
-
-    <br><br>===========================================
-<!--        <div>-->
-<!--          <span class="label">Дата создания</span>-->
-<!--          <el-date-picker placeholder="Выберите дату"-->
-<!--                          @change="changed"-->
-<!--                          format="DD-MM-YYYY"-->
-<!--                          v-model="vModel.createDate"/>-->
-<!--        </div>-->
-<!--        <div>-->
-<!--          <span class="label">Модель </span>-->
-<!--          <div class="filter-block">-->
-<!--            <el-select-->
-<!--                placeholder="Выберите бренд"-->
-<!--                v-model="vModel.carBrandId"-->
-<!--                @change="changeBrand"-->
-<!--                filterable-->
-<!--                clearable-->
-<!--            >-->
-<!--              <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>-->
-<!--            </el-select>-->
-<!--            <span style="white-space: nowrap">-->
-<!--               &nbsp; &nbsp; &nbsp; &nbsp;-->
-<!--              <el-select-->
-<!--                  placeholder="Выберите модель"-->
-<!--                  v-model="vModel.carModelId"-->
-<!--                  @change="changed"-->
-<!--                  filterable-->
-<!--                  clearable-->
-<!--              >-->
-<!--                <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>-->
-<!--              </el-select>-->
-<!--            </span>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--    <div>-->
-<!--      <span class="label">Год выпуска</span>-->
-<!--      <div class="filter-block">-->
-<!--        &nbsp; от-->
-<!--        <el-select-->
-<!--            @change="changed"-->
-<!--            placeholder="Выберите год"-->
-<!--            v-model="vModel.lowYearReleased"-->
-<!--            filterable-->
-<!--            clearable-->
-<!--        >-->
-<!--          <el-option v-for="item in years" :key="item.name" :label="item.name" :value="item.name"/>-->
-<!--        </el-select>-->
-<!--        <span style="white-space: nowrap">-->
-<!--          &nbsp; &nbsp; &nbsp; до-->
-<!--          <el-select-->
-<!--              @change="changed"-->
-<!--              placeholder="Выберите год"-->
-<!--              v-model="vModel.highYearReleased"-->
-<!--              filterable-->
-<!--              clearable-->
-<!--          >-->
-<!--            <el-option-->
-<!--                v-for="item in years"-->
-<!--                :key="item.name"-->
-<!--                :label="item.name"-->
-<!--                :value="item.name"-->
-<!--            />-->
-<!--          </el-select>-->
-<!--        </span>-->
-<!--      </div>-->
-<!--    </div>-->
-    <div>
-      <span class="label">Объем двигателя</span>
-      <div class="filter-block">
-        &nbsp; от
-        <el-select
-            placeholder="Выберите объем"
-            v-model="vModel.lowEngineCapacity"
-            @change="changed"
-            filterable
-            clearable
-        >
-          <el-option
-              v-for="item in capacities"
-              :key="item.name"
-              :label="item.name"
-              :value="item.name"
-          />
-        </el-select>
-        <span style="white-space: nowrap">
-          &nbsp; &nbsp; &nbsp; до
-          <el-select
-              placeholder="Выберите объем"
-              v-model="vModel.highEngineCapacity"
-              @change="changed"
-              filterable
-              clearable
-          >
-            <el-option
-                v-for="item in capacities"
-                :key="item.name"
-                :label="item.name"
-                :value="item.name"
-            />
-          </el-select>
-        </span>
-      </div>
-    </div>
-    <div style="clear: both"></div>
-    <div>
-      <span class="label">Тип привода</span>
-      <el-select
-          placeholder="Выберите тип привода"
-          v-model="vModel.driveType"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option v-for="item in driveTypies" :key="item.id" :label="item.name" :value="item.id"/>
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Тип КПП</span>
-      <el-select
-          v-model="vModel.gearboxType"
-          @change="changed"
-          multiple
-          placeholder="Выберите типы КПП"
-      >
-        <el-option v-for="item in kpp" :key="item.id" :label="item.name" :value="item.id"/>
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Город</span>
-      <el-select
-          placeholder="Выберите город"
-          v-model="vModel.locationCity"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item"/>
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Менеджер</span>
-      <el-select
-          placeholder="Выберите менеджера"
-          v-model="vModel.manager"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option v-for="item in manageres" :key="item.id" :label="item.title" :value="item.id"/>
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Организация</span>
-      <el-select
-          placeholder="Выберите организацию"
-          v-model="vModel.orgelement"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option
-            v-for="item in organizations"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-        />
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Тип выкупа</span>
-      <el-select
-          placeholder="Выберите тип выкупа"
-          v-model="vModel.buyType"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option
-            v-for="item in buyTypes"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-        />
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Источник</span>
-      <el-select
-          placeholder="Выберите источник"
-          v-model="vModel.treatmentSource"
-          @change="changed"
-          filterable
-          clearable
-      >
-        <el-option
-            v-for="item in treatments"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-        />
-      </el-select>
-    </div>
-    <div>
-      <span class="label">Гос.номер</span>
-      <el-input v-model="vModel.registrationMark"
-                @change="changed"
-                @input="changeRegistartionMark"
-                style="text-transform: uppercase"
-                placeholder="X 000 XX 000"
-                maxlength="12"
-                @key.enter="changed"/>
-    </div>
-    <div style="clear: both"></div>
+    <br>
+    <FilterFieldsCtrl @changed="changed" :lists="lists" :vModel="vModel" :fields="fields"/>
   </div>
 </template>
 <script setup>
@@ -358,7 +19,7 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 
-import {formatDateDDMMYYYY, vetRegNumber} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
@@ -369,6 +30,7 @@ const vModel = computed({
 const props = defineProps(['modelValue'])
 const globalStore = useGlobalStore()
 const brands = ref([])
+let oldCarBrandId = null
 const models = ref([])
 const years = ref([])
 const capacities = ref([])
@@ -382,22 +44,100 @@ const tags = ref([])
 const treatments = ref([])
 const isMoreFilter = ref(false)
 const colors = ref([])
+const lists = ref({driveTypies, kpp, buyTypes, bodyTypes, statuses})
 
 const fields = [
   {type: '1.Дата', label: 'Дата создания', name: 'createDate', placeholder: 'Выберите дату'},
   {
-    type: '4. Два списка', label: 'Модель', name1: 'carBrandId', placeholder1: 'Выберите бренд',
+    type: '4. Зависимые списки', label: 'Модель', listName1: 'brands', listName2: 'models',
+    name1: 'carBrandId', placeholder1: 'Выберите бренд',
     name2: 'carModelId', placeholder2: 'Выберите модель'
-  },
-  {
-    type: '5. Две даты', label: 'Год выпуска', name1: 'lowYearReleased', placeholder1: 'Выберите год',
+  }, {
+    type: '5. Две даты (годы)', label: 'Год выпуска', listName: 'years',
+    name1: 'lowYearReleased', placeholder1: 'Выберите год',
     name2: 'highYearReleased', placeholder2: 'Выберите год'
-  },
+  }, {
+    type: '6. Два списка', label: 'Объем двигателя', listName: 'capacities',
+    name1: 'lowEngineCapacity', placeholder1: 'Выберите объем',
+    name2: 'highEngineCapacity', placeholder2: 'Выберите объем'
+  }, {
+    type: '2. Список', listName: 'driveTypies',
+    label: 'Тип привода',
+    name: 'driveType',
+    placeholder: 'Выберите тип привода'
+  }, {
+    type: '3.Список c множественным выбором', listName: 'kpp',
+    label: 'Тип КПП', name: 'gearboxType',
+    placeholder: 'Выберите типы КПП'
+  }, {
+    type: '2. Список без кодов', listName: 'cities',
+    label: 'Город',
+    name: 'locationCity',
+    placeholder: 'Выберите город'
+  }, {
+    type: '2. Список', listName: 'manageres',
+    label: 'Менеджер',
+    name: 'manager',
+    placeholder: 'Выберите менеджера'
+  }, {
+    type: '2. Список', listName: 'organizations',
+    label: 'Организация',
+    name: 'orgelement',
+    placeholder: 'Выберите организацию'
+  }, {
+    type: '2. Список', listName: 'buyTypes',
+    label: 'Тип выкупа',
+    name: 'buyType',
+    placeholder: 'Выберите тип выкупа'
+  }, {
+    type: '2. Список', listName: 'treatments',
+    label: 'Источник',
+    name: 'treatmentSource',
+    placeholder: 'Выберите источник'
+  }, {
+    type: '7. Госномер',
+    label: 'Гос.номер',
+    name: 'registrationMark',
+  }
+]
 
-
-  // {type: '2.Список', label: 'Город', name: 'locationCity', placeholder: 'Выберите город'},
-  // {type: '3.Список c множественным выбором', label: 'Тип КПП', name: 'gearboxType', placeholder: 'Выберите типы КПП'},
-
+const fields_additional = [
+  {
+    type: '8. Два числа',
+    label: 'Пробег, км',
+    name1: 'lowMileage', placeholder1: 'Введите пробег',
+    name2: 'highMileage', placeholder2: 'Введите пробег'
+  }, {
+    type: '8. Два числа',
+    label: 'Мощность двигателя',
+    name1: 'lowEnginePowerHP', placeholder1: 'Введите мощность',
+    name2: 'highEnginePowerHP', placeholder2: 'Введите мощность'
+  }, {
+    type: '2. Список', listName: 'bodyTypes',
+    label: 'Тип кузова',
+    name: 'bodyType',
+    placeholder: 'Выберите тип кузова'
+  }, {
+    type: '2. Список', listName: 'colors',
+    label: 'Цвет кузова',
+    name: 'bodyColorId',
+    placeholder: 'Выберите цвет кузова'
+  }, {
+    type: '9. Две даты',
+    label: 'Период оценок',
+    name1: 'lowCreateDatePeriod', placeholder1: 'Выберите дату',
+    name2: 'highCreateDatePeriod', placeholder2: 'Выберите дату'
+  }, {
+    type: '2. Список', listName: 'places',
+    label: 'Местонахождение',
+    name: 'locationId',
+    placeholder: 'Выберите место'
+  }, {
+    type: '2. Список', listName: 'statuses',
+    label: 'Статус',
+    name: 'DealStatus',
+    placeholder: 'Выберите статус'
+  }
 ]
 
 watch(globalRef, function () {
@@ -413,21 +153,21 @@ watch(globalRef, function () {
 })
 
 
-function changeRegistartionMark(val) {
-  vModel.value.registrationMark = vetRegNumber(val)
-}
-
 function changeBrand(id) {
-  vModel.value.carModelId = null
-  globalStore.getModels(id).then((res) => (models.value = res))
+  globalStore.getModels(id).then((res) => {
+    models.value = res
+    lists.value.models = res
+  })
 }
 
 function changed() {
 
   // Если есть уже бренд авто, вытягиваем модели
-  if (!models.value.length && vModel.value.carBrandId) changeBrand(vModel.value.carBrandId)
-
-
+  if (vModel.value.carBrandId && oldCarBrandId !== vModel.value.carBrandId) {
+    vModel.value.carModelId = null
+    oldCarBrandId = vModel.value.carBrandId
+    changeBrand(vModel.value.carBrandId)
+  }
 
 
   // создаем кнопки
@@ -544,21 +284,30 @@ function open() {
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
   }
+  lists.value.years = years.value
+  lists.value.capacities = capacities.value
 
-  globalStore.getBrands().then(res => brands.value = res)
-  globalStore.getOrganizations().then((res) => (organizations.value = res.items))
-  globalStore.getTeatments().then(res => treatments.value = res.items)
-  globalStore.getRoles([20, 120]).then((res) => (manageres.value = res.items))
-  globalStore.getColors().then((res) => (colors.value = res.items))
-
+  globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
+  globalStore.getOrganizations().then((res) => organizations.value = lists.value.organizations = res.items)
+  globalStore.getTeatments().then(res => treatments.value = lists.value.treatments = res.items)
+  globalStore.getColors().then((res) => {
+    res.items.map(el => el.name = el.colorName)
+    colors.value = lists.value.colors = res.items
+  })
+  globalStore.getRoles([20, 120]).then((res) => {
+    res.items.map(el => el.name = el.title)
+    manageres.value = lists.value.manageres = res.items
+  })
   globalStore.getPlaces().then((res) => {
-    cities.value = res.citys
-    places.value = res.items
+    res.items.map(el => el.name = el.title + '  - (' + el.city + ' ' + el.typeTitle + ')')
+    cities.value = lists.value.cities = res.citys
+    places.value = lists.value.places = res.items
   })
 
   if (vModel.value.carBrandId) {
-    let id = vModel.value.carBrandId
+    let id = oldCarBrandId = vModel.value.carBrandId
     globalStore.getModels(id).then((res) => (models.value = res))
+    changeBrand(vModel.value.carBrandId)
   }
 }
 
