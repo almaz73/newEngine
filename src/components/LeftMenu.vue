@@ -121,12 +121,14 @@
         <template #title>Заявки на кредит</template>
       </el-menu-item>
 
-      <el-menu-item index="12">
-        <el-icon>
-          <img alt="Реализация" src="@/assets/icons/ic-shopping-cart-black-18-px.png" height="34" width="34"/>
-        </el-icon>
-        <template #title>Реализация</template>
-      </el-menu-item>
+      <RouterLink to="/realization">
+        <el-menu-item index="12">
+          <el-icon>
+            <img alt="Реализация" src="@/assets/icons/ic-shopping-cart-black-18-px.png" height="34" width="34"/>
+          </el-icon>
+          <template #title>Реализация</template>
+        </el-menu-item>
+      </RouterLink>
 
       <el-menu-item index="13">
         <el-icon>

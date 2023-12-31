@@ -28,9 +28,9 @@ const capacities = ref([])
 const cities = ref([])
 const places = ref([])
 const manageres = ref([])
+const organizations = ref([])
 const tags = ref([])
 const workflowTypes = ref([])
-const organizations = ref([])
 const colors = ref([])
 const ccEmployees = ref([])
 const clientStatuses = ref([])
@@ -40,59 +40,41 @@ const lists = ref({bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuse
 
 const fields = [
   {
-    type: '8. Два числа',
-    label: 'Пробег, км',
-    name1: 'lowMileage', placeholder1: 'Введите пробег',
-    name2: 'highMileage', placeholder2: 'Введите пробег'
+    type: '9. Две даты',
+    label: 'Период',
+    name1: 'lowCreateDatePeriod', placeholder1: 'Выберите дату',
+    name2: 'highCreateDatePeriod', placeholder2: 'Выберите дату'
+  },{
+    type: '1.Дата', label: 'Дата', name: 'createDate', placeholder: 'Выберите дату'
   }, {
-    type: '8. Два числа',
-    label: 'Мощность двигателя',
-    name1: 'lowEnginePowerHP', placeholder1: 'Введите мощность',
-    name2: 'highEnginePowerHP', placeholder2: 'Введите мощность'
+    type: '10. Число', label: 'Номер обращения', name: 'dealNumber'
   }, {
-    type: '2. Список', listName: 'bodyTypes',
-    label: 'Тип кузова',
-    name: 'bodyType',
-    placeholder: 'Выберите тип кузова'
-  }, {
-    type: '2. Список', listName: 'colors',
-    label: 'Цвет кузова',
-    name: 'bodyColorId',
-    placeholder: 'Выберите цвет кузова'
-  }, {
-    type: '2. Список', listName: 'places',
-    label: 'Местонахождение',
-    name: 'locationId',
-    placeholder: 'Выберите место'
+    type: '2. Список', listName: 'statuses',
+    label: 'Статус',
+    name: 'DealStatus',
+    placeholder: 'Выберите статус'
+  },{
+    type: '4. Зависимые списки', label: 'Модель', listName1: 'brands', listName2: 'models',
+    name1: 'carBrandId', placeholder1: 'Выберите бренд',
+    name2: 'carModelId', placeholder2: 'Выберите модель'
   }, {
     type: '2. Список без кодов', listName: 'cities',
     label: 'Город',
     name: 'locationCity',
     placeholder: 'Выберите город'
-  }, {
-    type: '4. Зависимые списки', label: 'Модель', listName1: 'brands', listName2: 'models',
-    name1: 'carBrandId', placeholder1: 'Выберите бренд',
-    name2: 'carModelId', placeholder2: 'Выберите модель'
-  }, {
-    type: '5. Две даты (годы)', label: 'Год выпуска', listName: 'years',
-    name1: 'lowYearReleased', placeholder1: 'Выберите год',
-    name2: 'highYearReleased', placeholder2: 'Выберите год'
-  }, {
-    type: '6. Два списка', label: 'Объем двигателя', listName: 'capacities',
-    name1: 'lowEngineCapacity', placeholder1: 'Выберите объем',
-    name2: 'highEngineCapacity', placeholder2: 'Выберите объем'
-  }, {
-    type: '2. Список', listName: 'driveTypies',
-    label: 'Тип привода',
-    name: 'driveType',
-    placeholder: 'Выберите тип привода'
-  }, {
-    type: '3.Список c множественным выбором', listName: 'kpp',
-    label: 'Тип КПП', name: 'gearboxType',
-    placeholder: 'Выберите типы КПП'
+  },{
+    type: '2. Список', listName: 'organizations',
+    label: 'Организация',
+    name: 'orgelement',
+    placeholder: 'Выберите организацию'
+  },{
+    type: '2. Список', listName: 'manageres',
+    label: 'Менеджер',
+    name: 'manager',
+    placeholder: 'Выберите менеджера'
   }
-
 ]
+
 
 
 watch(globalRef, function () {
@@ -149,12 +131,6 @@ function changed() {
       case 'lowMileage':
         tags.value.push({param, name: 'Пробег от ' + key, code: key})
         break
-      case 'lowEnginePowerHP':
-        tags.value.push({param, name: 'Мощноcть от ' + key, code: key})
-        break
-      case 'highEnginePowerHP':
-        tags.value.push({param, name: 'Мощность до ' + key, code: key})
-        break
       case 'highMileage':
         tags.value.push({param, name: 'Пробег до ' + key, code: key})
         break
@@ -208,34 +184,11 @@ function changed() {
         name = clientStatuses.value.find((el) => el.value === key).title
         name && tags.value.push({param, name: 'Статус клиента: ' + name, code: key})
         break
-      case 'bodyType':
-        name = bodyTypes.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'bodyColorId':
-        name = colors.value.find(el => el.id === key).colorName
-        tags.value.push({param, name, code: key})
-        break
-      case 'lowEngineCapacity':
-        tags.value.push({param, name: 'объем от ' + key, code: key})
-        break
-      case 'highEngineCapacity':
-        tags.value.push({param, name: 'объем до ' + key, code: key})
-        break
-      case 'driveType':
-        name = driveTypies.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'gearboxType':
-        name = Object.keys(key).reduce((sum, el) => {
-          return sum + kpp.find(item => item.id === key[el]).name + '; '
-        }, '')
-        key.length && tags.value.push({param, name, code: key})
-        break
       case 'orgelement':
         name = organizations.value.find((el) => el.id === key).name
         name && tags.value.push({param, name: 'Организация: ' + name, code: key})
         break
+
     }
   })
   globalRef.tags = tags.value
@@ -261,10 +214,7 @@ function open() {
     })
     clientStatuses.value = lists.value.clientStatuses = res.items
   })
-  globalStore.getColors().then((res) => {
-    res.items.map(el => el.name = el.colorName)
-    colors.value = lists.value.colors = res.items
-  })
+  globalStore.getColors().then(res => colors.value = lists.value.colors = res.items)
   globalStore.getAppeals().then(res => {
     res.items.map(el => {
       el.name = el.title;
