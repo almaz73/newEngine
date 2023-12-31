@@ -9,33 +9,31 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: IntrodusionPage
-        },
-        {
+        }, {
             path: '/login',
             name: 'login',
             component: LoginPage
-        },
-        {
-            path: '/appeal',
-            name: 'appeal',
-            component: () => import('@/pages/appeal/AppealPage.vue')
-        },
-        {
+        }, {
             path: '/desktop',
             name: 'desktop',
             component: () => import('@/pages/DeskTopPage.vue')
-        },
-        {
+        }, {
+            path: '/appeal',
+            name: 'appeal',
+            component: () => import('@/pages/appeal/AppealPage.vue')
+        }, {
             path: '/deal',
             name: 'deal',
             component: () => import('@/pages/deal/DealPage.vue')
-        },
-        {
+        }, {
+            path: '/sell',
+            name: 'sell',
+            component: () => import('@/pages/warehous/WarehousPage.vue')
+        }, {
             path: '/ideas',
             name: 'ideas',
             component: () => import('../views_Developer/IdeaPage.vue')
-        },
-        {
+        }, {
             path: '/bayerhelp',
             name: 'bayerhelp',
             component: () => import('../documentation/bayerhelp.vue')

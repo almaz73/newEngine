@@ -11,7 +11,7 @@
     />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
-      <AppealFilterCtrl
+      <AppealFilter
           ref="dealFilter"
           style="min-height: 0; overflow: hidden"
           v-model="searchFilter"
@@ -107,7 +107,7 @@
 import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
-import AppealFilterCtrl from "@/pages/appeal/AppealFilterCtrl.vue";
+import AppealFilter from "@/pages/appeal/AppealFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
