@@ -5,13 +5,12 @@
     <br>
 
     <p>
+      <RouterLink to="/ideas">Накоплено</RouterLink>
+      - Идеи по редизайну
+    </p>
+    <p>
       <a href="https://g66.ru/almaz73/" title="Оставить замечания, предложения, идеи">
         Task Board</a> - Доска замечаний и предложений
-    </p>
-
-    <p>
-      <RouterLink to="/ideas">Разное</RouterLink>
-      - Идеи по редизайну
     </p>
 
     <br>
