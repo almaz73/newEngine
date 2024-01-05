@@ -76,17 +76,15 @@
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="(row, ind) in appealStore.list" :key="ind">
-        <div class="head">
-          <span class="deal-car-color" :style="carColor(row)"></span>
-          <span>Пробег: {{ row.rowmileage }} </span>
-          <span style="font-size: small">vin: {{ row.vin }}</span>
+        <div class="head mobile-row-head" :style="colorBox(row.statusTitle)">
+          <span> {{ row.statusTitle }}. &nbsp; &nbsp; {{ formatDate(row.lastTaskDate) }}</span>
         </div>
-        <div><small>Авто:</small> {{ row.brand }} {{ row.model }} {{ row.yearReleased }}</div>
-        <div><small>Менеджер:</small> {{ row.userName }}</div>
-        <div><small>Место: </small> {{ row.locationCity }}/ {{ row.location }}</div>
-        <div><small>Статус:</small> {{ row.statusTitle }}</div>
-        <div><small>Клиент:</small> {{ row.clientTitle }}</div>
-        <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
+        <div><small>Авто:</small> {{ row.carBrandModel }} {{ row.yearReleased }}</div>
+        <div><small>Клиент:</small> {{ row.leadName }}</div>
+        <div><small>Телефон клиента:</small> {{ row.leadPhone }}</div>
+
+        <div><small>Менеджер:</small> {{ row.createUserName }}</div>
+        <div><small>Место: </small> {{ row.locationName }}</div>
       </div>
       <div v-if="!appealStore.list.length" style="text-align: center">Нет данных</div>
     </div>
@@ -104,7 +102,7 @@
   </main>
 </template>
 <script setup>
-import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
+import {formatDate, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
 import AppealFilter from "@/pages/appeal/AppealFilter.vue";

@@ -33,8 +33,11 @@ import {useGlobalStore} from "@/stores/globalStore";
 const text = ref('')
 const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData'])
 const props = defineProps(['buttons', 'isOpen', 'placeholder'])
-const activeCode = props.buttons.find(el => el.active).code
+const buttons = props.buttons
+const activeCode = buttons.length && buttons.find(el => el.active).code
 const activeButton = ref(activeCode)
+
+if (!buttons.length) console.warn('Внимание : Нет кнопок над фильтрами:::')
 
 
 const searchInputStyle = computed(() => {

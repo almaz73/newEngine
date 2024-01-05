@@ -1,5 +1,6 @@
 export const formatDate = (val: string) => {
     // формат: 17 мая 2022 г.
+    if (!val) return ''
     return new Date(val).toLocaleString('ru-Ru', {
         year: 'numeric',
         month: 'long',
@@ -94,5 +95,19 @@ function upEng2rus(value: string) {
 
 export function carColor(row: any) {
     if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
+    if (row) return {'background-color': row}
     return {}
+}
+
+
+export function tagsControl(globalRef: any, vModel: any) {
+    const params = globalRef.tags.map((el: any) => el.param)
+
+    Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
+        if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
+    })
+
+    globalRef.tags.forEach((el: any) => { // добавляем
+        if (el.name) vModel.value[el.param] = el.code
+    })
 }

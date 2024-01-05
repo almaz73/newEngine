@@ -30,6 +30,10 @@
     background-color: #e6e6e6;
 }
 
+.mobile-row-head {
+    height: 50px;
+}
+
 @media (width < 500px) {
     .deal-car-color {
         border-right: 4px solid white;

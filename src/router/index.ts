@@ -29,11 +29,11 @@ const router = createRouter({
             path: '/sell',
             name: 'sell',
             component: () => import('@/pages/warehous/WarehousPage.vue')
-        },  {
+        }, {
             path: '/realization',
             name: 'realization',
             component: () => import('@/pages/realization/RealizationPage.vue')
-        },{
+        }, {
             path: '/ideas',
             name: 'ideas',
             component: () => import('../views_Developer/IdeaPage.vue')
@@ -41,6 +41,10 @@ const router = createRouter({
             path: '/bayerhelp',
             name: 'bayerhelp',
             component: () => import('../documentation/bayerhelp.vue')
+        }, {
+            path: '/calls',
+            name: 'calls',
+            component: () => import('@/pages/calls/CallsPage.vue')
         }
     ]
 })

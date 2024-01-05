@@ -21,6 +21,7 @@ import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import {getTags} from "@/components/filterControls/FilterGetTags";
 
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
+import {tagsControl} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -140,17 +141,7 @@ const fields_additional = [
   }
 ]
 
-watch(globalRef, function () {
-  let params = globalRef.tags.map(el => el.param)
-
-  Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
-    if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
-  })
-
-  globalRef.tags.forEach(el => { // добавляем
-    if (el.name) vModel.value[el.param] = el.code
-  })
-})
+watch(globalRef, () => tagsControl(globalRef, vModel))
 
 
 function changeBrand(id) {
@@ -171,18 +162,19 @@ function changed() {
 
   // создаем теги
   tags.value = []
-  globalRef.tags = getTags(tags,vModel, lists)
+  globalRef.tags = getTags(tags, vModel, lists)
 }
 
 function open() {
-  if (brands.value.length) return false;
+  // if (brands.value.length) return false;
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
   }
+  lists.value.years = years.value
+
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
   }
-  lists.value.years = years.value
   lists.value.capacities = capacities.value
 
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
@@ -201,7 +193,6 @@ function open() {
     cities.value = lists.value.cities = res.citys
     places.value = lists.value.places = res.items
   })
-
   if (vModel.value.carBrandId) {
     let id = oldCarBrandId = vModel.value.carBrandId
     globalStore.getModels(id).then((res) => (models.value = res))

@@ -9,7 +9,6 @@ export const useWarehousStore = defineStore("warehousStore", {
     actions: {
         async getWarehouses(params: any) {
             const res = await getWarehouses(params)
-            console.log('res', res)
             if (res.data) this.list = res.data.items
             else this.list = []
             return res.data

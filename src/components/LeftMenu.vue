@@ -57,12 +57,14 @@
         </el-menu-item>
       </RouterLink>
 
-      <el-menu-item index="5" disabled>
-        <el-icon>
-          <img alt="Звонки" src="@/assets/icons/ic-call-black-20-px.png" height="34" width="34"/>
-        </el-icon>
-        <template #title>Звонки</template>
-      </el-menu-item>
+      <RouterLink to="calls">
+        <el-menu-item index="5">
+          <el-icon>
+            <img alt="Звонки" src="@/assets/icons/ic-call-black-20-px.png" height="34" width="34"/>
+          </el-icon>
+          <template #title>Звонки</template>
+        </el-menu-item>
+      </RouterLink>
 
       <el-sub-menu index="6">
         <template #title>
@@ -81,6 +83,10 @@
           <a href="https://xn--80aej9aped4f.xn--p1ai/" target="_blank">
             <el-menu-item index="6-2-1">Подподраздел</el-menu-item>
           </a>
+        </el-sub-menu>
+
+        <el-sub-menu index="6-3" disabled>
+          <template #title><span>Задизаблим</span></template>
         </el-sub-menu>
       </el-sub-menu>
 
@@ -182,7 +188,6 @@
       </el-menu-item>
     </el-menu>
   </div>
-
 
 
   <div

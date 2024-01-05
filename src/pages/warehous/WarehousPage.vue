@@ -31,42 +31,36 @@
         empty-text="Нет данных"
         highlight-current-row
     >
-      <el-table-column label="Обращение">
-        <template #default="scope">
-          <div :style="colorBox(scope.row.statusTitle)"><b> {{ scope.row.statusTitle }}</b></div>
-          <div class="red-text">{{ scope.row.id }}</div>
-          <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Клиент">
-        <template #default="scope">
-          <div><b> {{ scope.row.leadName }}</b></div>
-          <div> {{ scope.row.leadPhone }}</div>
-          <div class="red-text">{{ scope.row.clientStatusTitle }}</div>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Менеджер">
-        <template #default="scope">
-          <div><b> {{ scope.row.createUserName }}</b></div>
-          <div> {{ scope.row.locationName }}</div>
-          <div class="red-text">{{ scope.row.city }}</div>
-        </template>
-      </el-table-column>
 
       <el-table-column label="Автомобиль">
         <template #default="scope">
-          <div><b> {{ scope.row.carBrandModel }}</b></div>
-          <div> {{ scope.row.carBrandModel }}</div>
-          <div class="red-text">{{ scope.row.vin }}</div>
+          <div class="red-text" v-if="scope.row.auto">
+            {{ scope.row.auto.brandTitle + ' ' + (scope.row.auto.modelTitle ? scope.row.auto.modelTitle : '') }}
+            &nbsp; &nbsp; {{ scope.row.auto.year }}
+          </div>
+          <div v-if="scope.row.auto"> {{ scope.row.auto.vin }}</div>
+          <div>
+            <span v-if="scope.row.auto"
+                  :style="carColor(scope.row.auto.bodyColorCode)"> &nbsp; &nbsp; &nbsp; &nbsp; </span>
+            <span> &nbsp; Пробег: {{ scope.c }} </span>
+          </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="Событие">
+      <el-table-column label="Характеристики">
         <template #default="scope">
-          <span class="red-text"> {{ scope.row.lastTaskTitle }} </span><br/>
-          {{ formatDate(scope.row.lastTaskDate) }}<br/>
+          <div v-if="scope.row.auto" class="red-text">{{ scope.row.auto.certificate.registrationMark }}</div>
+          <div v-if="scope.row.auto">{{ scope.row.auto.gearboxTypeTitle }}</div>
+          <div v-if="scope.row.auto">V. двиг (см): {{ scope.row.auto.certificate.engineCapacityByVC }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Место хранения">
+        <template #default="scope">
+          <div class="red-text">{{ scope.row.statusTitle }}</div>
+          <div>{{ scope.row.appeal && scope.row.appeal.locationTitle }}</div>
+          <div>{{ scope.row.appeal && scope.row.appeal.location.city }}</div>
+
         </template>
       </el-table-column>
 
@@ -77,16 +71,20 @@
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="(row, ind) in warehousStore.list" :key="ind">
         <div class="head">
-          <span class="deal-car-color" :style="carColor(row)"></span>
-          <span>Пробег: {{ row.rowmileage }} </span>
-          <span style="font-size: small">vin: {{ row.vin }}</span>
+          <span v-if="row.auto" class="deal-car-color" :style="carColor(row.auto.bodyColorCode)"></span>
+          <span v-if="row.auto"> {{
+              row.auto.brandTitle + ' ' + (row.auto.modelTitle ? row.auto.modelTitle : '')
+            }} </span>
+          <span v-if="row.auto">vin: {{ row.auto.vin }}</span>
         </div>
-        <div><small>Авто:</small> {{ row.brand }} {{ row.model }} {{ row.yearReleased }}</div>
-        <div><small>Менеджер:</small> {{ row.userName }}</div>
-        <div><small>Место: </small> {{ row.locationCity }}/ {{ row.location }}</div>
+
+        <div v-if="row.appeal"><small>Место хранения:</small>{{ row.statusTitle }} / {{ row.appeal.locationTitle }} /
+          {{ row.appeal.location.city }}
+        </div>
+        <div v-if="row.auto"><small>Харак-ки:</small> {{ row.auto.gearboxTypeTitle }} / V. двиг (см):
+          {{ row.auto.certificate.engineCapacityByVC }}
+        </div>
         <div><small>Статус:</small> {{ row.statusTitle }}</div>
-        <div><small>Клиент:</small> {{ row.clientTitle }}</div>
-        <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
       </div>
       <div v-if="!warehousStore.list.length" style="text-align: center">Нет данных</div>
     </div>
@@ -104,7 +102,7 @@
   </main>
 </template>
 <script setup>
-import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
+import {carColor, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
 import WarehousFilter from "@/pages/warehous/WarehousFilter.vue";
@@ -140,12 +138,6 @@ const filter = {
   search: ''
 }
 let filterOld; // кучковый способ запросов
-
-function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#0187af'}
-  if (txt === 'В работе') return {background: '#308a5a'}
-
-}
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value

@@ -11,6 +11,7 @@ import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
+import {tagsControl} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -77,17 +78,7 @@ const fields = [
 
 
 
-watch(globalRef, function () {
-  let params = globalRef.tags.map(el => el.param)
-
-  Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
-    if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
-  })
-
-  globalRef.tags.forEach(el => { // добавляем
-    if (el.name) vModel.value[el.param] = el.code
-  })
-})
+watch(globalRef, () => tagsControl(globalRef, vModel))
 
 
 function changeBrand(id) {

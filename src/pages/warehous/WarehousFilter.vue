@@ -11,6 +11,7 @@ import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
+import {tagsControl} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -27,13 +28,8 @@ const capacities = ref([])
 
 const cities = ref([])
 const places = ref([])
-const manageres = ref([])
 const tags = ref([])
-const workflowTypes = ref([])
-const organizations = ref([])
 const colors = ref([])
-const ccEmployees = ref([])
-const clientStatuses = ref([])
 let oldCarBrandId = null
 
 const lists = ref({bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses})
@@ -95,17 +91,7 @@ const fields = [
 ]
 
 
-watch(globalRef, function () {
-  let params = globalRef.tags.map(el => el.param)
-
-  Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
-    if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
-  })
-
-  globalRef.tags.forEach(el => { // добавляем
-    if (el.name) vModel.value[el.param] = el.code
-  })
-})
+watch(globalRef, () => tagsControl(globalRef, vModel))
 
 
 function changeBrand(id) {
@@ -113,7 +99,6 @@ function changeBrand(id) {
 }
 
 function changed() {
-
   // Если есть уже бренд авто, вытягиваем модели
   if (vModel.value.carBrandId && oldCarBrandId !== vModel.value.carBrandId) {
     vModel.value.carModelId = null
@@ -123,61 +108,30 @@ function changed() {
 
   // создаем теги
   tags.value = []
-  globalRef.tags = getTags(tags,vModel, lists)
+  globalRef.tags = getTags(tags, vModel, lists)
 }
 
 function open() {
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
   }
+  lists.value.years = years.value
   for (let z = 800; z <= 6000; z = z + 100) {
     capacities.value.push({name: z})
   }
-  lists.value.years = years.value
   lists.value.capacities = capacities.value
 
+
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
-  globalStore.getOrganizations().then((res) => organizations.value = lists.value.organizations = res.items)
-  globalStore.getClientStatuses().then(res => {
-    res.items.map(el => {
-      el.name = el.title;
-      el.id = el.value;
-      return el
-    })
-    clientStatuses.value = lists.value.clientStatuses = res.items
-  })
   globalStore.getColors().then((res) => {
     res.items.map(el => el.name = el.colorName)
     colors.value = lists.value.colors = res.items
-  })
-  globalStore.getAppeals().then(res => {
-    res.items.map(el => {
-      el.name = el.title;
-      el.id = el.value;
-      return el
-    })
-    workflowTypes.value = res.items
-    lists.value.workflowTypes = res.items
   })
   globalStore.getPlaces().then(res => {
     res.items.map(el => el.name = el.title + '  - (' + el.city + ' ' + el.typeTitle + ')')
     cities.value = lists.value.cities = res.citys
     places.value = lists.value.places = res.items
   })
-  globalStore.getRoles([20, 120]).then((res) => {
-    res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
-  })
-
-  globalStore.getUsers().then((res) => {
-    res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
-    manageres.value.forEach(item => {
-      if (item.role === 110 || item.role === 111) ccEmployees.value.push(item);
-    });
-    lists.value.ccEmployees = ccEmployees.value
-  })
-
   if (vModel.value.carBrandId) {
     let id = oldCarBrandId = vModel.value.carBrandId
     globalStore.getModels(id).then((res) => (models.value = res))

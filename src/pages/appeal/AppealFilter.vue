@@ -19,6 +19,7 @@ import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
+import {tagsControl} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -30,7 +31,6 @@ const globalStore = useGlobalStore()
 const brands = ref([])
 const models = ref([])
 const years = ref([])
-const capacities = ref([])
 
 
 const cities = ref([])
@@ -39,7 +39,6 @@ const manageres = ref([])
 const tags = ref([])
 const workflowTypes = ref([])
 const isMoreFilter = ref(false)
-const colors = ref([])
 const ccEmployees = ref([])
 const clientStatuses = ref([])
 let oldCarBrandId = null
@@ -118,19 +117,7 @@ const fields_additional = [
   }
 ]
 
-
-watch(globalRef, function () {
-  let params = globalRef.tags.map(el => el.param)
-
-  Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
-    if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
-  })
-
-  globalRef.tags.forEach(el => { // добавляем
-    if (el.name) vModel.value[el.param] = el.code
-  })
-})
-
+watch(globalRef, () => tagsControl(globalRef, vModel))
 
 function changeBrand(id) {
   globalStore.getModels(id).then((res) => models.value = lists.value.models = res)
@@ -147,19 +134,14 @@ function changed() {
 
   // создаем теги
   tags.value = []
-  globalRef.tags = getTags(tags,vModel, lists)
+  globalRef.tags = getTags(tags, vModel, lists)
 }
 
 function open() {
   for (let z = new Date().getFullYear(); z > 1939; z--) {
     years.value.push({name: z})
   }
-  for (let z = 800; z <= 6000; z = z + 100) {
-    capacities.value.push({name: z})
-  }
   lists.value.years = years.value
-  lists.value.capacities = capacities.value
-
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getClientStatuses().then(res => {
     res.items.map(el => {
@@ -169,7 +151,6 @@ function open() {
     })
     clientStatuses.value = lists.value.clientStatuses = res.items
   })
-  globalStore.getColors().then(res => colors.value = lists.value.colors = res.items)
   globalStore.getAppeals().then(res => {
     res.items.map(el => {
       el.name = el.title;
@@ -183,10 +164,6 @@ function open() {
     res.items.map(el => el.name = el.title + '  - (' + el.city + ' ' + el.typeTitle + ')')
     cities.value = lists.value.cities = res.citys
     places.value = lists.value.places = res.items
-  })
-  globalStore.getRoles([20, 120]).then((res) => {
-    res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
   })
 
   globalStore.getUsers().then((res) => {
