@@ -17,8 +17,8 @@ import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
+import {getTags} from "@/components/filterControls/FilterGetTags";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -147,89 +147,7 @@ function changed() {
 
   // создаем теги
   tags.value = []
-  Object.keys(vModel.value).forEach((param) => {
-    let name = ''
-    let key = vModel.value[param]
-    if (!key) return false;
-
-    switch (param) {
-      case 'createDate':
-        tags.value.push({param, name: 'Обращение: ' + formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'locationCity':
-        tags.value.push({param, name: 'г. ' + key, code: key})
-        break
-      case 'manager':
-        name = manageres.value.find((el) => el.id === key).title
-        name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
-        break
-      case 'ccEmployee':
-        name = ccEmployees.value.find((el) => el.id === key).title
-        name && tags.value.push({param, name: 'Сотрудник КЦ: ' + name, code: key})
-        break
-      case 'dealNumber':
-        tags.value.push({param, name: '№ обращения ' + key, code: key})
-        break
-      case 'lowMileage':
-        tags.value.push({param, name: 'Пробег от ' + key, code: key})
-        break
-      case 'highMileage':
-        tags.value.push({param, name: 'Пробег до ' + key, code: key})
-        break
-      case 'lowCreateDatePeriod':
-        tags.value.push({param, name: 'Период от ' + formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'highCreateDatePeriod':
-        tags.value.push({param, name: 'Период до ' + formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'locationId':
-        var pl = places.value.find(el => el.id === key)
-        name = pl.title + ' ' + pl.typeTitle
-        tags.value.push({param, name: 'Место: ' + name, code: key})
-        break
-      case 'DealStatus':
-        name = statuses.find((el) => el.id === key).name
-        name && tags.value.push({param, name: 'Статус: ' + name, code: key})
-        break
-      case 'workflowLeadType':
-        name = workflowTypes.value.find((el) => el.value === key).title
-        name && tags.value.push({param, name: 'Тип обращения: ' + name, code: key})
-        break
-      case 'swapPhone':
-        tags.value.push({param, name: 'Подменный номер: ' + key, code: key})
-        break
-      case 'carBrandId':
-        var brand = brands.value.find((el) => el.id === key)
-        name = brand && brand.name
-        name && tags.value.push({param, name, code: brand.id})
-        break
-      case 'carModelId':
-        var model = models.value.find((el) => el.id === key)
-        name = model && model.name
-        name && tags.value.push({param, name, code: model.id})
-        break
-      case 'lowYearReleased':
-        tags.value.push({param, name: 'от ' + key, code: key})
-        break
-      case 'highYearReleased':
-        tags.value.push({param, name: 'до ' + key, code: key})
-        break
-      case 'categoryAuto':
-        name = categoryAutos.find((el) => el.id === key).name
-        name && tags.value.push({param, name: 'Категория: ' + name, code: key})
-        break
-      case 'workflowStatus':
-        name = statuses.find((el) => el.id === key).name
-        name && tags.value.push({param, name: 'Статус: ' + name, code: key})
-        break
-      case 'clientStatus':
-        name = clientStatuses.value.find((el) => el.value === key).title
-        name && tags.value.push({param, name: 'Статус клиента: ' + name, code: key})
-        break
-
-    }
-  })
-  globalRef.tags = tags.value
+  globalRef.tags = getTags(tags,vModel, lists)
 }
 
 function open() {

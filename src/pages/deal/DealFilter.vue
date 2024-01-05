@@ -18,8 +18,8 @@ import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
+import {getTags} from "@/components/filterControls/FilterGetTags";
 
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
@@ -169,111 +169,9 @@ function changed() {
     changeBrand(vModel.value.carBrandId)
   }
 
-
-  // создаем кнопки
+  // создаем теги
   tags.value = []
-  Object.keys(vModel.value).forEach((param) => {
-    let name = ''
-    let key = vModel.value[param]
-    if (!key) return false;
-
-    switch (param) {
-      case 'createDate':
-        tags.value.push({param, name: formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'carBrandId':
-        var brand = brands.value.find((el) => el.id === key)
-        name = brand && brand.name
-        name && tags.value.push({param, name, code: brand.id})
-        break
-      case 'carModelId':
-        var model = models.value.find((el) => el.id === key)
-        name = model && model.name
-        name && tags.value.push({param, name, code: model.id})
-        break
-      case 'lowYearReleased':
-        tags.value.push({param, name: 'от ' + key, code: key})
-        break
-      case 'highYearReleased':
-        tags.value.push({param, name: 'до ' + key, code: key})
-        break
-      case 'lowEngineCapacity':
-        tags.value.push({param, name: 'объем от ' + key, code: key})
-        break
-      case 'highEngineCapacity':
-        tags.value.push({param, name: 'объем до ' + key, code: key})
-        break
-      case 'driveType':
-        name = driveTypies.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'gearboxType':
-        name = Object.keys(key).reduce((sum, el) => {
-          return sum + kpp.find(item => item.id === key[el]).name + '; '
-        }, '')
-        key.length && tags.value.push({param, name, code: key})
-        break
-      case 'locationCity':
-        tags.value.push({param, name: 'г. ' + key, code: key})
-        break
-      case 'orgelement':
-        name = organizations.value.find((el) => el.id === key).name
-        name && tags.value.push({param, name: 'Организация: ' + name, code: key})
-        break
-      case 'manager':
-        name = manageres.value.find((el) => el.id === key).title
-        name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
-        break
-      case 'buyType':
-        name = buyTypes.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'treatmentSource':
-        name = treatments.value.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'registrationMark':
-        tags.value.push({param, name: key, code: key})
-        break
-      case 'lowMileage':
-        tags.value.push({param, name: 'Пробег от ' + key, code: key})
-        break
-      case 'highMileage':
-        tags.value.push({param, name: 'Пробег до ' + key, code: key})
-        break
-      case 'lowEnginePowerHP':
-        tags.value.push({param, name: 'Мощноcть от ' + key, code: key})
-        break
-      case 'highEnginePowerHP':
-        tags.value.push({param, name: 'Мощность до ' + key, code: key})
-        break
-      case 'bodyType':
-        name = bodyTypes.find(el => el.id === key).name
-        tags.value.push({param, name, code: key})
-        break
-      case 'bodyColorId':
-        name = colors.value.find(el => el.id === key).colorName
-        tags.value.push({param, name, code: key})
-        break
-      case 'lowCreateDatePeriod':
-        tags.value.push({param, name: 'Период от ' + formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'highCreateDatePeriod':
-        tags.value.push({param, name: 'Период до ' + formatDateDDMMYYYY(key), code: new Date(key)})
-        break
-      case 'locationId':
-        var pl = places.value.find(el => el.id === key)
-        name = pl.title + ' ' + pl.typeTitle
-        tags.value.push({param, name: 'Место: ' + name, code: key})
-        break
-      case 'DealStatus':
-        name = statuses.find((el) => el.id === key).name
-        name && tags.value.push({param, name: 'Статус: ' + name, code: key})
-        break
-
-    }
-  })
-  globalRef.tags = tags.value
+  globalRef.tags = getTags(tags,vModel, lists)
 }
 
 function open() {

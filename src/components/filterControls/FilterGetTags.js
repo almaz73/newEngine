@@ -114,6 +114,17 @@ export function getTags(tags, vModel, lists) {
                 name = lists.value['organizations'].find((el) => el.id === key).name
                 name && tags.value.push({param, name: 'Организация: ' + name, code: key})
                 break
+            case 'buyType':
+                name = lists.value['buyTypes'].find(el => el.id === key).name
+                tags.value.push({param, name, code: key})
+                break
+            case 'treatmentSource':
+                  name = lists.value['treatments'].find(el => el.id === key).name
+                  tags.value.push({param, name, code: key})
+                  break
+            case 'registrationMark':
+                  tags.value.push({param, name: key, code: key})
+                  break
         }
 
     })
