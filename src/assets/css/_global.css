@@ -16,6 +16,11 @@ body {
     display: flex;
 }
 
+.dark .root {
+    background: #111;
+    color: #999;
+}
+
 .pusher {
     flex-grow: 1;
 }
@@ -51,9 +56,7 @@ main {
 /** Поисковые теги  */
 .tags span {
     cursor: pointer;
-    background: #ebebeb;
     border-radius: 4px !important;
-
 }
 
 @media (width < 500px) {

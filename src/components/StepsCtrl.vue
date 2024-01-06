@@ -1,17 +1,16 @@
 <template>
   <div class="step">
-    <span class="step__line"></span>
     <div v-for="(s, ind) in steps" :key="ind">
       <div class="step__circle"
            :title="s.name"
            :class="{'done':s.done}">{{ ind + 1 }}
       </div>
     </div>
+    <span class="step__line"></span>
   </div>
 </template>
 <style>
 .step {
-  margin: 0;
   display: flex;
   width: 100%;
   min-width: 400px;
@@ -19,10 +18,11 @@
   flex-wrap: nowrap;
   justify-content: space-between;
   position: relative;
+  color: white;
 }
 
-.step span {
-  z-index: 10;
+.step > div {
+  z-index: 11;
 }
 
 .step__circle {

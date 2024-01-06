@@ -14,6 +14,10 @@
     color: var(--main-color) !important;
 }
 
+.dark .el-menu {
+    background-color: black !important;
+}
+
 [role="menubar"].el-menu {
     padding: 75px 0;
 }
@@ -26,7 +30,7 @@ li.el-menu-item {
     width: 215px;
 }
 
-.el-menu a{
+.el-menu a {
     text-decoration: none;
 }
 
@@ -61,35 +65,36 @@ li.el-menu-item {
     background: #666666 url('../icons/icon-exit.png') no-repeat bottom 10px left 12px;
 }
 
-.root .el-button.active{
+.root .el-button.active {
     background: var(--main-color);
     color: white;
 }
 
 /* paginator */
-.el-pagination{
+.el-pagination {
     margin-top: 20px;
     float: left;
 }
 
 .el-pager .number,
 .el-pagination button,
-.el-pager .more{
+.el-pager .more {
     background: none !important;
 }
 
 /** input  */
-.el-input{
+.el-input {
     max-width: 200px;
 }
-.el-input__inner{
+
+.el-input__inner {
     width: inherit !important;
     flex-grow: initial;
     max-width: 200px;
 }
 
-@media (width<500px){
-    .el-pagination__sizes{
+@media (width < 500px) {
+    .el-pagination__sizes {
         display: none;
     }
 }

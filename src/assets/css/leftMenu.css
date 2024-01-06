@@ -3,7 +3,7 @@
     background-image: url("../img/big-logo.gif");
 }
 
-.left-menu-logo, .left-menu-opener , .left-menu-fon{
+.left-menu-logo, .left-menu-opener, .left-menu-fon {
     position: fixed;
     height: 75px;
     width: 214px;
@@ -12,7 +12,7 @@
     z-index: 11;
 }
 
-.left-menu-fon{
+.left-menu-fon {
     background: #fff;
     height: 100%;
     pointer-events: none;
@@ -22,8 +22,7 @@
 .left-menu-opener {
     font-size: 12px;
     bottom: 0;
-    background: white;
-
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -31,12 +30,21 @@
     overflow-x: hidden;
 }
 
+.dark .left-menu-opener {
+    background-color: #111;
+    border-right: 1px solid #444;
+}
+
+.dark .left-menu-opener:hover {
+    background-color: #222;
+}
+
 .left-menu-opener:hover {
     background: #efefef;
     cursor: pointer;
 }
 
-.left-menu-logo.small, .left-menu-opener.small, .left-menu-fon.small  {
+.left-menu-logo.small, .left-menu-opener.small, .left-menu-fon.small {
     width: 74px;
 }
 

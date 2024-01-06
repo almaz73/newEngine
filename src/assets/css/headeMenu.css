@@ -5,6 +5,9 @@
     align-items: center;
     gap: 20px;
 }
+.dark .head_menu{
+    background-color: #222;
+}
 
 
 .icon-face {
