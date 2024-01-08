@@ -93,21 +93,41 @@ function upEng2rus(value: string) {
     return value;
 }
 
-export function carColor(row: any) {
+interface Row {
+    bodyColorCode?: string;
+
+    [key: string]: unknown;
+}
+
+export function carColor(row: Row) {
     if (row && row.bodyColorCode) return {'background-color': row.bodyColorCode}
     if (row) return {'background-color': row}
     return {}
 }
 
 
-export function tagsControl(globalRef: any, vModel: any) {
-    const params = globalRef.tags.map((el: any) => el.param)
+interface Tag {
+    param: string;
+    name?: string;
+    code?: string;
+}
 
-    Object.keys(vModel.value).forEach(el => { // чистим контрол, если удалили тег
+interface GlobalRef {
+    tags: Tag[];
+}
+
+interface VModel {
+    value: Record<string, unknown>;
+}
+
+export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
+    const params = globalRef.tags.map((el: Tag) => el.param)
+
+    Object.keys(vModel.value).forEach((el: string) => {
         if (!params.includes(el) && vModel.value[el]) vModel.value[el] = null
     })
 
-    globalRef.tags.forEach((el: any) => { // добавляем
+    globalRef.tags.forEach((el: Tag) => {
         if (el.name) vModel.value[el.param] = el.code
     })
 }

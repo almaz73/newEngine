@@ -13,6 +13,9 @@
     background: #ffe4e1;
     color: var(--main-color) !important;
 }
+.dark .el-menu-item.is-active{
+    background: #3f3938;
+}
 
 .dark .el-menu {
     background-color: black !important;

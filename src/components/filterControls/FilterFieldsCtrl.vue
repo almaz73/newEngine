@@ -1,5 +1,5 @@
 <template>
-  <div v-for="(f, ind) in fields" :key="ind">
+  <div v-for="(f, ind) in fields" :key="ind" class="filter__row">
     <div v-if="f.type==='1.Дата'">
       <span class="label">{{ f.label }}</span>
       <el-date-picker :placeholder="f.placeholder"
@@ -75,8 +75,9 @@
     <div v-if="f.type==='5. Две даты (годы)'">
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
-        &nbsp; от
+         от
         <el-select
+            class="filter__row-select"
             @change="emits('changed')"
             :placeholder="f.placeholder1"
             v-model="vModel[f.name1]"
@@ -86,11 +87,12 @@
           <el-option v-for="item in lists[f.listName]" :key="item.name" :label="item.name" :value="item.name"/>
         </el-select>
         <span style="white-space: nowrap">
-          &nbsp; &nbsp; &nbsp; до
+          &nbsp; &nbsp; до
           <el-select
               @change="emits('changed')"
               :placeholder="f.placeholder2"
               v-model="vModel[f.name2]"
+              class="filter__row-select"
               filterable
               clearable
           >
@@ -109,11 +111,12 @@
 
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
-        &nbsp; от
+         от
         <el-select
             :placeholder="f.placeholder1"
             v-model="vModel[f.name1]"
             @change="emits('changed')"
+            class="filter__row-select"
             filterable
             clearable
         >
@@ -125,11 +128,12 @@
           />
         </el-select>
         <span style="white-space: nowrap">
-          &nbsp; &nbsp; &nbsp; до
+          &nbsp; &nbsp; до
           <el-select
               :placeholder="f.placeholder2"
               v-model="vModel[f.name2]"
               @change="emits('changed')"
+              class="filter__row-select"
               filterable
               clearable
           >
@@ -158,7 +162,7 @@
 
     <div v-if="f.type==='8. Два числа'">
       <span class="label">{{ f.label }}</span>
-      <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+      <span v-if="globalStore.isMobileView" style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
             &nbsp; от
             <el-input v-model="vModel[f.name1]"
                       @change="emits('changed')"
@@ -166,7 +170,15 @@
                       :placeholder="f.placeholder1"
                       clearable
                       @key.enter="emits('changed')"/>
-          </span>
+      </span>
+      <span v-else style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+        от<el-input v-model="vModel[f.name1]"
+                      @change="emits('changed')"
+                      type="number"
+                      :placeholder="f.placeholder1"
+                      clearable
+                      @key.enter="emits('changed')"/>
+      </span>
       <br v-if="globalStore.isMobileView">
       <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
             &nbsp; до
@@ -181,19 +193,28 @@
 
     <div v-if="f.type==='9. Две даты'">
       <span class="label">{{ f.label }}</span>
-      <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+      <span v-if="globalStore.isMobileView" style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
             &nbsp; от
             <el-date-picker :placeholder="f.placeholder1"
                             @change="emits('changed')"
+                            class="filter__row-select"
+                            format="DD-MM-YYYY"
+                            v-model="vModel.lowCreateDatePeriod"/>
+          </span>
+      <span v-else style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+            от<el-date-picker :placeholder="f.placeholder1"
+                            @change="emits('changed')"
+                            class="filter__row-select"
                             format="DD-MM-YYYY"
                             v-model="vModel.lowCreateDatePeriod"/>
           </span>
       <br v-if="globalStore.isMobileView">
       <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'105px':''}">
-            &nbsp; &nbsp; до
+        &nbsp; <span v-if="globalStore.isMobileView">&nbsp;</span> до
             <el-date-picker :placeholder="f.placeholder2"
                             @change="emits('changed')"
                             format="DD-MM-YYYY"
+                            class="filter__row-select"
                             v-model="vModel.highCreateDatePeriod"/>
          </span>
     </div>
