@@ -14,7 +14,7 @@
           :placeholder="f.placeholder"
           v-model="vModel[f.name]"
           @change="emits('changed')"
-          filterable
+          :filterable="!globalStore.isMobileView"
           clearable
       >
         <el-option v-for="(item, ind) in lists[f.listName]" :key="ind" :label="item" :value="item"/>
@@ -27,7 +27,7 @@
           :placeholder="f.placeholder"
           v-model="vModel[f.name]"
           @change="emits('changed')"
-          filterable
+          :filterable="!globalStore.isMobileView"
           clearable
       >
         <el-option v-for="(item, ind) in lists[f.listName]" :key="ind" :label="item.name" :value="item.id"/>
@@ -52,7 +52,7 @@
             :placeholder="f.placeholder1"
             v-model="vModel[f.name1]"
             @change="emits('changed')"
-            filterable
+            :filterable="!globalStore.isMobileView"
             clearable
         >
           <el-option v-for="item in lists[f.listName1]" :key="item.id" :label="item.name" :value="item.id"/>
@@ -63,7 +63,7 @@
               :placeholder="f.placeholder2"
               v-model="vModel[f.name2]"
               @change="emits('changed')"
-              filterable
+              :filterable="!globalStore.isMobileView"
               clearable
           >
             <el-option v-for="item in lists[f.listName2]" :key="item.id" :label="item.name" :value="item.id"/>
@@ -75,13 +75,13 @@
     <div v-if="f.type==='5. Две даты (годы)'">
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
-         от
+        от
         <el-select
             class="filter__row-select"
             @change="emits('changed')"
             :placeholder="f.placeholder1"
             v-model="vModel[f.name1]"
-            filterable
+            :filterable="!globalStore.isMobileView"
             clearable
         >
           <el-option v-for="item in lists[f.listName]" :key="item.name" :label="item.name" :value="item.name"/>
@@ -93,7 +93,7 @@
               :placeholder="f.placeholder2"
               v-model="vModel[f.name2]"
               class="filter__row-select"
-              filterable
+              :filterable="!globalStore.isMobileView"
               clearable
           >
             <el-option
@@ -111,13 +111,13 @@
 
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
-         от
+        от
         <el-select
             :placeholder="f.placeholder1"
             v-model="vModel[f.name1]"
             @change="emits('changed')"
             class="filter__row-select"
-            filterable
+            :filterable="!globalStore.isMobileView"
             clearable
         >
           <el-option
@@ -134,7 +134,7 @@
               v-model="vModel[f.name2]"
               @change="emits('changed')"
               class="filter__row-select"
-              filterable
+              :filterable="!globalStore.isMobileView"
               clearable
           >
             <el-option
@@ -162,7 +162,8 @@
 
     <div v-if="f.type==='8. Два числа'">
       <span class="label">{{ f.label }}</span>
-      <span v-if="globalStore.isMobileView" style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+      <span v-if="globalStore.isMobileView" style="white-space: nowrap"
+            :style="{margin:globalStore.isMobileView?'116px':''}">
             &nbsp; от
             <el-input v-model="vModel[f.name1]"
                       @change="emits('changed')"
@@ -173,11 +174,11 @@
       </span>
       <span v-else style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
         от<el-input v-model="vModel[f.name1]"
-                      @change="emits('changed')"
-                      type="number"
-                      :placeholder="f.placeholder1"
-                      clearable
-                      @key.enter="emits('changed')"/>
+                    @change="emits('changed')"
+                    type="number"
+                    :placeholder="f.placeholder1"
+                    clearable
+                    @key.enter="emits('changed')"/>
       </span>
       <br v-if="globalStore.isMobileView">
       <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'114px':''}">
@@ -193,7 +194,8 @@
 
     <div v-if="f.type==='9. Две даты'">
       <span class="label">{{ f.label }}</span>
-      <span v-if="globalStore.isMobileView" style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
+      <span v-if="globalStore.isMobileView" style="white-space: nowrap"
+            :style="{margin:globalStore.isMobileView?'116px':''}">
             &nbsp; от
             <el-date-picker :placeholder="f.placeholder1"
                             @change="emits('changed')"
@@ -203,10 +205,10 @@
           </span>
       <span v-else style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'116px':''}">
             от<el-date-picker :placeholder="f.placeholder1"
-                            @change="emits('changed')"
-                            class="filter__row-select"
-                            format="DD-MM-YYYY"
-                            v-model="vModel.lowCreateDatePeriod"/>
+                              @change="emits('changed')"
+                              class="filter__row-select"
+                              format="DD-MM-YYYY"
+                              v-model="vModel.lowCreateDatePeriod"/>
           </span>
       <br v-if="globalStore.isMobileView">
       <span style="white-space: nowrap" :style="{margin:globalStore.isMobileView?'105px':''}">
@@ -220,7 +222,7 @@
     </div>
 
     <div v-if="f.type==='10. Число'">
-      <span class="label">{{f.label}}</span>
+      <span class="label">{{ f.label }}</span>
       <el-input v-model="vModel[f.name]"
                 @change="emits('changed')"
                 type="number"
