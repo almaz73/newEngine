@@ -12,6 +12,8 @@ import ElementPlus from 'element-plus'
 import ru from 'element-plus/dist/locale/ru.min.mjs'
 import 'element-plus/dist/index.css'
 
+navigator.serviceWorker.register('sw.js');
+
 const app = createApp(App)
 
 app.use(createPinia())

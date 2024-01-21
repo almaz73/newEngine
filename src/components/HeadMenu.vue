@@ -1,16 +1,18 @@
 <template>
-  <nav class="head_menu">
+  <nav class="head_menu" :style="{'background':isOnline?'':'gold'}">
+    <div v-if="!isOnline" style="position: fixed; top:0; text-align: center; width: 100%; z-index: 1000">
+      <b>НЕТ ИНТЕРНЕТА</b>
+    </div>
     <img src="@/assets/img/loading.gif"
          alt=""
          v-if="globalStore.isWaiting"
          class="waiter"
     />
-
     <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()"/>
 
 
     <div class="head-text">
-      <h1>{{ globalStore.title }}</h1>
+      <h1>{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
       <StepsCtrl/>
     </div>
 
@@ -41,13 +43,17 @@ import {useDark, useToggle} from '@vueuse/core'
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
-
+const isOnline = ref(navigator.onLine)
 const globalStore = useGlobalStore()
 const isAccountShow = ref(false)
 
 function showMenu() {
   globalStore.isShowPanel = !globalStore.isShowPanel
 }
+
+
+window.addEventListener('online', () => isOnline.value = true);
+window.addEventListener('offline', () => isOnline.value = false);
 
 
 </script>

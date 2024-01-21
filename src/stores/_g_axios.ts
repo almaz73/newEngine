@@ -8,6 +8,10 @@ axios.interceptors.response.use(resp => resp
         console.log('Перехватываею все ошибкиь err=', err)
         console.log(" err.request.status = ", err.request.status)
 
+        if (!navigator.onLine) {
+            return ElMessage({message: 'Данные не получены, сайт работает офлайн!', type: 'warning',})
+        }
+
         if (!err.request.status && err.code === "ERR_NETWORK") {
             // возможно у токена вышел срок, перекидываем на cтраницу авторизации
             useGlobalStore().isAuthorized = false
