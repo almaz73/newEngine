@@ -221,4 +221,12 @@ const select = (val: string) => {
   globalStore.isShowPanel = false
   sessionStorage.setItem('menuIndex', '' + val)
 }
+
+// нужно вычислить по адресу, что открыто и высветить меню
+const storage = sessionStorage.getItem('menuIndex')
+const menuButtons = {'/desktop':'1', '/appeal':'2', '/deal':'3', '/sell':'4'}
+
+activeIndex.value = menuButtons[location.pathname]
+if (!activeIndex.value) activeIndex.value = storage
+
 </script>

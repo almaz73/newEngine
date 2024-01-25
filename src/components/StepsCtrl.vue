@@ -1,6 +1,6 @@
 <template>
   <div class="step">
-    <div v-for="(s, ind) in steps" :key="ind">
+    <div v-for="(s, ind) in globalStore.steps" :key="ind">
       <div class="step__circle"
            :title="s.name"
            :class="{'done':s.done}">{{ ind + 1 }}
@@ -57,14 +57,8 @@
 }
 </style>
 <script setup>
-let steps = [
-  {name: 'Обращение', done: true},
-  {name: 'Осмотр', done: true},
-  {name: 'Оценка', done: true},
-  {name: 'Договор', done: true},
-  {name: 'Банк'},
-  {name: 'Выкуп'},
-]
+import {useGlobalStore} from "@/stores/globalStore";
 
+const globalStore=useGlobalStore()
 </script>
 

@@ -13,7 +13,7 @@
 
     <div class="head-text">
       <h1>{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
-      <StepsCtrl/>
+      <StepsCtrl v-if="globalStore.steps.length"/>
     </div>
 
     <div class="pusher"/>
