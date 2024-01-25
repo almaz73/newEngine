@@ -12,14 +12,12 @@
 
 
     <div class="head-text">
-      <h1>{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
+      <h1 style="white-space: nowrap">{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
       <StepsCtrl v-if="globalStore.steps.length"/>
     </div>
 
     <div class="pusher"/>
 
-    <div style="width: 20px; height: 20px; border-radius: 50%; background: #999; cursor: pointer"
-         @click="toggleDark()"></div>
     <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
       <div>{{ globalStore.account.roleTitle }}</div>
@@ -39,10 +37,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import LoginPanel from "@/components/LoginPanel.vue";
 import StepsCtrl from "@/components/StepsCtrl.vue";
-import {useDark, useToggle} from '@vueuse/core'
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 const isOnline = ref(navigator.onLine)
 const globalStore = useGlobalStore()
 const isAccountShow = ref(false)

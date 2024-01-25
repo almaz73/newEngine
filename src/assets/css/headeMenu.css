@@ -41,6 +41,10 @@
     background: white;
 }
 
+.dark .account_window{
+    background: black;
+}
+
 .account_window:before {
     content: "";
     position: absolute;
@@ -89,6 +93,10 @@
     justify-content: space-between;
 }
 
+.dark .account_window__buttons {
+    background: black;
+}
+
 .under_window {
     top: 0;
     left: 0;
@@ -100,11 +108,16 @@
 
 .head-text {
     margin: 48px;
-    line-height: .1
+    line-height: .1;
 }
 
 @media (width < 500px) {
+    .head_menu{
+        gap: 0;
+    }
     .head-text {
+        width: 600px;
+        overflow: hidden;
         margin: 0;
     }
 }
