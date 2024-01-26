@@ -7,10 +7,7 @@
              alt=""
              @click="router.push('/'); emits('closeLoginPanel')"
              src="@/assets/icons/icon-management-active.png">
-        <div class="settings toggle"
-             style="width: 20px; height: 20px; border-radius: 50%; background: #999; cursor: pointer"
-             @click="toggleDark()">
-        </div>
+
 
         <div style="margin-right: 25px">
           {{ globalStore.account.lastName }} {{ globalStore.account.firstName }}
@@ -38,17 +35,10 @@
   cursor: pointer;
 }
 
-.settings.toggle {
-  top: 60px
-}
 </style>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import router from "@/router";
-import {useDark, useToggle} from "@vueuse/core";
-
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 
 const emits = defineEmits(['closeLoginPanel'])
 const globalStore = useGlobalStore()

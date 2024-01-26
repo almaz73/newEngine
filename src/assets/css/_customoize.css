@@ -13,7 +13,8 @@
     background: #ffe4e1;
     color: var(--main-color) !important;
 }
-.dark .el-menu-item.is-active{
+
+.dark .el-menu-item.is-active {
     background: #3f3938;
 }
 
@@ -96,9 +97,18 @@ li.el-menu-item {
     max-width: 200px;
 }
 
+.canvas .el-input__wrapper {
+    margin-bottom: 8px;
+    width: 200px;
+}
+
 @media (width < 500px) {
-    .el-pagination__sizes {
+    .canvas .el-pagination__sizes {
         display: none;
+    }
+
+    .canvas .el-input__wrapper {
+        margin: 0;
     }
 }
 
