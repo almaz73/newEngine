@@ -97,17 +97,17 @@ li.el-menu-item {
     max-width: 200px;
 }
 
-.canvas .el-input__wrapper {
+.desk .el-input__wrapper {
     margin-bottom: 8px;
     width: 200px;
 }
 
 @media (width < 500px) {
-    .canvas .el-pagination__sizes {
+    .desk .el-pagination__sizes {
         display: none;
     }
 
-    .canvas .el-input__wrapper {
+    .desk .el-input__wrapper {
         margin: 0;
     }
 }

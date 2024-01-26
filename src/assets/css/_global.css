@@ -127,22 +127,3 @@ a:hover {
     }
 }
 
-.label {
-    position: absolute;
-    transform: translate(8px, -46px);
-    font-size: 11px;
-    background: white;
-    padding: 0 8px;
-    color: #999;
-}
-
-.dark .label {
-    background: black;
-}
-
-@media (width < 500px) {
-    .label {
-        /*только при фокусе поля */
-        transform: translate(8px, -38px);
-    }
-}

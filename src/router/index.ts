@@ -17,7 +17,7 @@ const router = createRouter({
         }, {
             path: '/desktop',
             name: 'desktop',
-            component: () => import('@/pages/DeskTopPage.vue').catch(val => fail(val))
+            component: () => import('@/desktop/DeskTopPage.vue').catch(val => fail(val))
         }, {
             path: '/appeal',
             name: 'appeal',

@@ -1,8 +1,8 @@
 import './assets/css/__index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import {createApp} from 'vue'
+import {createPinia} from 'pinia'
 
 import App from './App.vue'
 import router from './router'
@@ -12,7 +12,15 @@ import ElementPlus from 'element-plus'
 import ru from 'element-plus/dist/locale/ru.min.mjs'
 import 'element-plus/dist/index.css'
 
-navigator.serviceWorker.register('sw.js');
+setTimeout(() => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('sw.js')
+            .then(e => {
+                console.log('ServiceWorker заработал')
+            })
+    }
+}, 3000)
 
 const app = createApp(App)
 
