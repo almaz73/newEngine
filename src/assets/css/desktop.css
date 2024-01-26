@@ -85,8 +85,12 @@
 }
 
 .field_left {
+    padding: 0 24px;
+    width: 360px;
+}
 
-    width: 360px
+.field_left  .el-input__wrapper {
+    margin-bottom: 8px;
 }
 
 .desk__label {

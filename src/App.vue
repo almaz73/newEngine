@@ -27,6 +27,9 @@ import router from '@/router'
 import '@/stores/_g_axios.ts'
 import { widthMobile } from '@/utils/globalConstants'
 import {gotoTop} from "@/utils/globalFunctions";
+import {useDark} from "@vueuse/core";
+
+const isDark = useDark()
 
 const globalStore = useGlobalStore()
 

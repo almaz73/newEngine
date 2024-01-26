@@ -16,14 +16,15 @@
           </el-button-group>
 
           <div class="fields">
-
             <div class="fields__in">
               <div v-if="appeal.lead.leadType==10">Юридическое лицо</div>
               <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
               <br>
 
-              <el-input placeholder="Основной телефон" v-model="appeal.lead.person.phone"
-                        style="position: relative"></el-input>
+              <el-input placeholder="Основной телефон"
+                        required
+                        v-model="appeal.lead.person.phone">
+              </el-input>
               <div v-if="appeal.lead.person.phone" class="desk__label">Основной телефон</div>
               <el-input placeholder="Подменный телефон" v-model="appeal.workflow.swapPhone"></el-input>
               <div v-if="appeal.workflow.swapPhone" class="desk__label">Подменный телефон</div>
@@ -53,29 +54,60 @@
           </el-button-group>
 
           <div class="fields">
-            <div>{{ workflows.find(el => el.value == appeal.workflow.workflowLeadType).title }}</div>
-            <br>
-            <el-input placeholder="Основной телефон" v-model="appeal.lead.person.phone"
-                      style="position: relative"></el-input>
-            <el-input placeholder="Подменный телефон" v-model="appeal.workflow.swapPhone"></el-input>
-            <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
-            <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
-            <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"></el-input>
-            <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"></el-input>
+            <div class="fields__in">
+              <div v-if="appeal.lead.leadType==10">Юридическое лицо</div>
+              <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
+              <br>
+
+              <el-input placeholder="Основной телефон" v-model="appeal.lead.person.phone"
+                        style="position: relative"></el-input>
+              <div v-if="appeal.lead.person.phone" class="desk__label">Основной телефон</div>
+              <el-input placeholder="Подменный телефон" v-model="appeal.workflow.swapPhone"></el-input>
+              <div v-if="appeal.workflow.swapPhone" class="desk__label">Подменный телефон</div>
+              <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
+            </div>
+            <div class="fields__in">
+              <br>
+              <br>
+              <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
+              <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"></el-input>
+              <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"></el-input>
+            </div>
           </div>
         </div>
       </div>
-      <div class="field_left">
-        <h2>Источник обращения</h2>
-        <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
+      <div class="field_left " style="background: none">
+        <div style="margin: 17px 0">Иссточник обращения</div>
+
+        <el-select
+            placeholder="Входящий звонок"
+            v-model="appeal.lead.person.lastNam"
+            @change="()=>{}"
+            :filterable="!globalStore.isMobileView"
+            clearable
+        >
+          <el-option v-for="(item, ind) in []" :key="ind" :label="item.name" :value="item.id"/>
+        </el-select>
+
+        <el-select
+            placeholder="Call-center"
+            v-model="appeal.lead.person.lastNam"
+            @change="()=>{}"
+            :filterable="!globalStore.isMobileView"
+            clearable
+        >
+          <el-option v-for="(item, ind) in []" :key="ind" :label="item.name" :value="item.id"/>
+        </el-select>
+
+
         <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
-        <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"></el-input>
-        <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"></el-input>
+
+        <br><br><br>
+        <el-button @click="save()">Сохранить новое обращение</el-button>
       </div>
-
-
     </div>
-    <el-button @click="save()">Сохранить</el-button>
+    <br>
+
   </main>
 </template>
 <style>
@@ -85,6 +117,7 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
+import {ElMessage} from "element-plus";
 
 const globalStore = useGlobalStore()
 const workflows = [
@@ -108,7 +141,28 @@ let appeal = ref({
   communication: {}
 })
 
+
+function validateForm() {
+
+  Object.entries(document.querySelectorAll('.el-input__wrapper')).map(el => {
+
+    if (el[1].children[0].hasAttribute('required')) {
+      console.log(el[1])
+      console.log(el[1].textContent)
+      el[1].style.boxShadow = "0 0 5px red";
+    }
+  })
+
+
+  if (!appeal.value.lead.person.phone) {
+    return  ElMessage({message: 'Поле "Основной телефон" обязателен для заполнения!', type: 'error',})
+  }
+
+  return false
+}
+
 function save() {
+  if (validateForm()) return false;
   console.log('appeal', appeal.value)
 }
 
