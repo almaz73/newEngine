@@ -123,6 +123,16 @@ li.el-menu-item {
     }
 }
 
+.el-form-item {
+    margin-bottom: 10px !important;
+}
+
+.el-form-item__error {
+    padding-top: 0;
+    font-size: 11px !important;
+    margin-top: -8px;
+}
+
 
 
 
