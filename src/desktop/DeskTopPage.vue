@@ -3,8 +3,18 @@
     <el-form ref="form" :model="appeal">
       <div class="main__flex">
         <div>
-          <div class="desk">
+          <!--          <div style="border: 1px solid pink; padding-left: 220px">-->
 
+          <!--            <div> Юрилическое лицо</div>-->
+          <!--            <el-form-item prop="lead.person['phone']"-->
+          <!--                          :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">-->
+          <!--              <el-input-->
+          <!--                style="width: 450px"-->
+          <!--                v-model.number="appeal.lead.person.phone" placeholder="* Название организации"/>-->
+          <!--            </el-form-item>-->
+          <!--          </div>-->
+
+          <div class="desk">
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Клиент</div>
               <br>
@@ -17,7 +27,6 @@
             </el-button-group>
 
             <div class="fields">
-
               <div class="fields__in">
                 <div v-if="appeal.lead.leadType==10">Юридическое лицо</div>
                 <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
@@ -54,7 +63,6 @@
           </div>
 
           <div class="desk">
-
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Обращение</div>
               <br>
@@ -72,12 +80,25 @@
                 <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
                 <br>
 
-                <el-input placeholder="Основной телефон" v-model="appeal.lead.person.phone"
-                          style="position: relative"></el-input>
-                <div v-if="appeal.lead.person.phone" class="desk__label">Основной телефон</div>
-                <el-input placeholder="Подменный телефон" v-model="appeal.workflow.swapPhone"></el-input>
-                <div v-if="appeal.workflow.swapPhone" class="desk__label">Подменный телефон</div>
-                <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
+                <el-form-item>
+                  <el-input placeholder="VIN 17 символов" v-model="appeal.workflow.auto.vin"
+                            style="position: relative"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-select
+                    v-model="appeal.workflow.carBrand"
+                    placeholder="Марка"
+                  >
+                    <el-option v-for="item in brands"
+                               :key="item.id"
+                               :label="item.name"
+                               :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item>
+                  <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
+                </el-form-item>
               </div>
               <div class="fields__in">
                 <br>
@@ -155,13 +176,17 @@ let appeal = reactive({
     leadType: 10,
     person: {phone: '', email: '', firstName: '', lastName: '', middleName: ''}
   },
-  workflow: {swapPhone: '', workflowLeadType: 2},
+  workflow: {swapPhone: '', workflowLeadType: 2, auto:{vin:''}},
   communication: {}
 })
+const brands = ref([])
+globalStore.getBrands().then(res => brands.value = res)
 
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => formEl && formEl.resetFields()
 function save() {
+  console.log('--->>> appeal', appeal)
+
   if (!appeal.lead.person.phone) {
     ElMessage({message: 'Поле "Основной телефон" обязателен для заполнения!', type: 'error',})
   }
