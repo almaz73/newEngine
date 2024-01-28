@@ -19,7 +19,7 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import {getTags} from "@/components/filterControls/FilterGetTags";
-
+import {years, capacities} from "@/stores/constants";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {tagsControl} from "@/utils/globalFunctions";
 
@@ -33,10 +33,6 @@ const globalStore = useGlobalStore()
 const brands = ref([])
 let oldCarBrandId = null
 const models = ref([])
-const years = ref([])
-const capacities = ref([])
-
-
 const cities = ref([])
 const places = ref([])
 const organizations = ref([])
@@ -167,15 +163,8 @@ function changed() {
 
 function open() {
   // if (brands.value.length) return false;
-  for (let z = new Date().getFullYear(); z > 1939; z--) {
-    years.value.push({name: z})
-  }
-  lists.value.years = years.value
-
-  for (let z = 800; z <= 6000; z = z + 100) {
-    capacities.value.push({name: z})
-  }
-  lists.value.capacities = capacities.value
+  lists.value.years = years
+  lists.value.capacities = capacities
 
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getOrganizations().then((res) => organizations.value = lists.value.organizations = res.items)

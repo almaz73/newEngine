@@ -20,6 +20,7 @@ import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
 import {tagsControl} from "@/utils/globalFunctions";
+import {years} from "@/stores/constants";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -30,9 +31,6 @@ const props = defineProps(['modelValue'])
 const globalStore = useGlobalStore()
 const brands = ref([])
 const models = ref([])
-const years = ref([])
-
-
 const cities = ref([])
 const places = ref([])
 const manageres = ref([])
@@ -138,10 +136,7 @@ function changed() {
 }
 
 function open() {
-  for (let z = new Date().getFullYear(); z > 1939; z--) {
-    years.value.push({name: z})
-  }
-  lists.value.years = years.value
+  lists.value.years = years
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getClientStatuses().then(res => {
     res.items.map(el => {
