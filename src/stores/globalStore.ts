@@ -93,7 +93,11 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await getClientStatuses()
             return (cash.getClientStatuses = res.data)
         },
-
+        async getTreatmentSources() {
+            if (cash.getTreatmentSources) return cash.getTreatmentSources // список статичный - кэшируем
+            const res = await getTreatmentSources()
+            return (cash.getTreatmentSources = res.data)
+        },
     }
 })
 
@@ -147,6 +151,10 @@ function getUsers() {
 
 function getClientStatuses() {
     return axios.get(`api/lead/get/client/statuses`).then((res) => res)
+}
+
+function getTreatmentSources() {
+    return axios.get(`api/treatmentSource/getTreatmentSources`).then((res) => res)
 }
 
 

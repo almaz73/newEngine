@@ -170,28 +170,27 @@
         </div>
 
         <div class="field_left " style="background: none">
-          <div style="margin: 17px 0">Иссточник обращения</div>
+          <div style="margin: 17px 0">Источник обращения</div>
+          <el-form-item>
+            <el-select v-model="appeal.communication.type">
+              <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </el-form-item>
 
-          <el-select
-              placeholder="Входящий звонок"
-              v-model="appeal.lead.person.lastName"
-              @change="()=>{}"
-              :filterable="!globalStore.isMobileView"
-              clearable>
-            <el-option v-for="(item, ind) in []" :key="ind" :label="item.name" :value="item.id"/>
-          </el-select>
+          <el-form-item>
+            <el-select v-model="appeal.communication.sourceId">
+              <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </el-form-item>
 
-          <el-select
-              placeholder="Call-center"
-              v-model="appeal.lead.person.lastName"
-              @change="()=>{}"
-              :filterable="!globalStore.isMobileView"
-              clearable>
-            <el-option v-for="(item, ind) in []" :key="ind" :label="item.name" :value="item.id"/>
-          </el-select>
+          <el-form-item>
+            <el-select v-model="appeal.communication.city" placeholder="Город" :filterable="!globalStore.isMobileView">
+              <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item"/>
+            </el-select>
+          </el-form-item>
 
 
-          <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
+          <el-input placeholder="Описание" v-model="appeal.communication.description"></el-input>
 
           <br><br><br>
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
@@ -210,10 +209,10 @@
 </style>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
-import {reactive, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 
-import {Workflows, Years, BuyCategoryTypes} from '@/utils/globalConstants'
+import {Workflows, Years, BuyCategoryTypes, CommunicationTypes} from '@/utils/globalConstants'
 
 const form = ref(null)
 const globalStore = useGlobalStore()
@@ -223,6 +222,10 @@ const colors = ref([])
 const cities = ref([])
 const places = ref([])
 const managers = ref([])
+const treatmentSources = ref([])
+const sources = computed(() => {
+  return treatmentSources.value.filter(el => el.communicationType == appeal.communication.type)
+})
 const appeal = reactive({
   lead: {
     leadType: 10,
@@ -235,7 +238,7 @@ const appeal = reactive({
     yearReleased: null, workflowLeadType: 2, auto: {vin: ''},
     locationId: null, managerId: null
   },
-  communication: {}
+  communication: {type: 10, sourceId: 15, callType: null, city: null, description: ''}
 })
 
 globalStore.getBrands().then(res => brands.value = res)
@@ -248,6 +251,10 @@ globalStore.getUsers().then(res => {
   managers.value = res.items
 })
 
+globalStore.getTreatmentSources().then(res => {
+  treatmentSources.value = res.items
+})
+
 const changeBrand = id => globalStore.getModels(id).then((res) => models.value = res)
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => formEl && formEl.resetFields()
@@ -255,7 +262,7 @@ const resetForm = formEl => formEl && formEl.resetFields()
 function save() {
   console.log('--->>> workflow', appeal.workflow)
   console.log('--->>> lead', appeal.lead)
-  // console.log('--->>> communication', appeal.communication)
+  console.log('--->>> communication', appeal.communication)
 
   if (!appeal.lead.person.phone) {
     ElMessage({message: 'Поле "Основной телефон" обязателен для заполнения!', type: 'error',})

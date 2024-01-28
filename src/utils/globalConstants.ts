@@ -118,6 +118,13 @@ export const Workflows = [
     {id: 10, value: 10, title: 'Сделка через салон'},
 ]
 
+export const CommunicationTypes = [
+    {id: 10, name: 'Входящий звонок'},
+    {id: 15, name: 'Исходящий звонок'},
+    {id: 20, name: 'Визит'},
+    {id: 30, name: 'Заявка через интернет'}
+]
+
 export const BuyCategoryTypes = [
     {id: 10, title: 'Свободный выкуп'},
     {id: 20, title: 'Выездной выкуп'}
