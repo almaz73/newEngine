@@ -105,3 +105,32 @@ export const categoryAutos = [
     {id: 4, name: 'D'},
     {id: 5, name: 'S'},
 ]
+
+export const Workflows = [
+    {id: 2, value: 2, title: 'Выкуп'},
+    {id: 1, value: 1, title: 'Продажа'},
+    {id: 3, value: 3, title: 'Сервис'},
+    {id: 4, value: 4, title: 'КСО'},
+    {id: 5, value: 5, title: 'Fleet'},
+    {id: 7, value: 7, title: 'Доп.оборуд.'},
+    {id: 8, value: 8, title: 'Комиссия'},
+    {id: 9, value: 9, title: 'Подбор авто'},
+    {id: 10, value: 10, title: 'Сделка через салон'},
+]
+
+export const BuyCategoryTypes = [
+    {id: 10, title: 'Свободный выкуп'},
+    {id: 20, title: 'Выездной выкуп'}
+]
+
+const some_years = []
+for (let z = new Date().getFullYear(); z > 1939; z--) {
+    some_years.push({name: z})
+}
+export const Years = some_years
+
+const some_capacities = []
+for (let z = 800; z <= 6000; z = z + 100) {
+    some_capacities.push({name: z})
+}
+export const Capacities = some_capacities

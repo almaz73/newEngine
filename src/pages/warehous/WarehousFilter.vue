@@ -7,12 +7,11 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/utils/globalConstants'
+import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses, Years, Capacities} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
 import {tagsControl} from "@/utils/globalFunctions";
-import {years, capacities} from "@/stores/constants";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -109,8 +108,8 @@ function changed() {
 }
 
 function open() {
-  lists.value.years = years
-  lists.value.capacities = capacities
+  lists.value.years = Years
+  lists.value.capacities = Capacities
 
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getColors().then((res) => {

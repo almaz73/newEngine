@@ -16,10 +16,9 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {driveTypies, kpp, buyTypes, bodyTypes, statuses} from '@/utils/globalConstants'
+import {driveTypies, kpp, buyTypes, bodyTypes, statuses, Years, Capacities} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import {getTags} from "@/components/filterControls/FilterGetTags";
-import {years, capacities} from "@/stores/constants";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {tagsControl} from "@/utils/globalFunctions";
 
@@ -36,7 +35,7 @@ const models = ref([])
 const cities = ref([])
 const places = ref([])
 const organizations = ref([])
-const manageres = ref([])
+const managers = ref([])
 const tags = ref([])
 const treatments = ref([])
 const isMoreFilter = ref(false)
@@ -72,7 +71,7 @@ const fields = [
     name: 'locationCity',
     placeholder: 'Выберите город'
   }, {
-    type: '2. Список', listName: 'manageres',
+    type: '2. Список', listName: 'managers',
     label: 'Менеджер',
     name: 'manager',
     placeholder: 'Выберите менеджера'
@@ -163,8 +162,8 @@ function changed() {
 
 function open() {
   // if (brands.value.length) return false;
-  lists.value.years = years
-  lists.value.capacities = capacities
+  lists.value.years = Years
+  lists.value.capacities = Capacities
 
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getOrganizations().then((res) => organizations.value = lists.value.organizations = res.items)
@@ -175,7 +174,7 @@ function open() {
   })
   globalStore.getRoles([20, 120]).then((res) => {
     res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
+    managers.value = lists.value.managers = res.items
   })
   globalStore.getPlaces().then((res) => {
     res.items.map(el => el.name = el.title + '  - (' + el.city + ' ' + el.typeTitle + ')')

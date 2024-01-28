@@ -28,7 +28,7 @@ const vModel = computed({
 const props = defineProps(['modelValue'])
 const globalStore = useGlobalStore()
 const ccEmployees = ref([])
-const manageres = ref([])
+const managers = ref([])
 const tags = ref([])
 const isMoreFilter = ref(false)
 const lists = ref({})
@@ -63,8 +63,8 @@ function changed() {
 function open() {
   globalStore.getUsers().then((res) => {
     res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
-    manageres.value.forEach(item => {
+    managers.value = lists.value.managers = res.items
+    managers.value.forEach(item => {
       if (item.role === 110 || item.role === 111) ccEmployees.value.push(item);
     });
     lists.value.ccEmployees = ccEmployees.value

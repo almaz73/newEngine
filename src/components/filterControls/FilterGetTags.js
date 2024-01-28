@@ -14,7 +14,7 @@ export function getTags(tags, vModel, lists) {
                 tags.value.push({param, name: 'г. ' + key, code: key})
                 break
             case 'manager':
-                name = lists.value['manageres'].find((el) => el.id === key).title
+                name = lists.value['managers'].find((el) => el.id === key).title
                 name && tags.value.push({param, name: 'Менеджер: ' + name, code: key})
                 break
             case 'ccEmployee':

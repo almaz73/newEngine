@@ -69,7 +69,7 @@
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Обращение</div>
               <br>
-              <el-button v-for="workflow in workflows"
+              <el-button v-for="workflow in Workflows"
                          :key="workflow.id"
                          @click="appeal.workflow.workflowLeadType=workflow.value"
                          :class="{active:workflow.value == appeal.workflow.workflowLeadType}">
@@ -112,7 +112,7 @@
 
                 <el-form-item>
                   <el-select v-model="appeal.workflow.yearReleased" placeholder="Год выпуска">
-                    <el-option v-for="item in years"
+                    <el-option v-for="item in Years"
                                :key="item.name"
                                :label="item.name"
                                :value="item.name"/>
@@ -136,9 +136,34 @@
               <div class="fields__in">
                 <br>
                 <br>
-                <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
-                <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"></el-input>
-                <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"></el-input>
+                <el-form-item>
+                  <el-select v-model="appeal.workflow.BuyCategory" placeholder="Вид выкупа">
+                    <el-option v-for="item in BuyCategoryTypes"
+                               :key="item.id"
+                               :label="item.title"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+
+
+                <el-form-item>
+                  <el-select v-model="appeal.workflow.locationId" placeholder="Салон">
+                    <el-option v-for="item in places"
+                               :key="item.id"
+                               :label="item.title"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+
+
+                <el-form-item>
+                  <el-select v-model="appeal.workflow.managerId" placeholder="Ответственный">
+                    <el-option v-for="item in managers"
+                               :key="item.id"
+                               :label="item.title"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
               </div>
             </div>
           </div>
@@ -187,35 +212,43 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
-import {workflows, years} from "@/stores/constants";
+
+import {Workflows, Years, BuyCategoryTypes} from '@/utils/globalConstants'
 
 const form = ref(null)
 const globalStore = useGlobalStore()
 const brands = ref([])
 const models = ref([])
-const colors =ref([])
+const colors = ref([])
+const cities = ref([])
+const places = ref([])
+const managers = ref([])
 const appeal = reactive({
   lead: {
     leadType: 10,
     legalEntity: {name: ''},
     person: {phone: '', email: '', firstName: '', lastName: '', middleName: ''}
   },
-  workflow: {swapPhone: '', brandId: null, carModelId: null,
-    mileageAuto:null, bodyColorId:null,
-    yearReleased:null, workflowLeadType: 2, auto: {vin: ''}},
+  workflow: {
+    swapPhone: '', brandId: null, carModelId: null,
+    mileageAuto: null, bodyColorId: null, BuyCategory: null,
+    yearReleased: null, workflowLeadType: 2, auto: {vin: ''},
+    locationId: null, managerId: null
+  },
   communication: {}
 })
 
 globalStore.getBrands().then(res => brands.value = res)
-globalStore.getColors().then((res) => {
-  colors.value = res.items
+globalStore.getColors().then(res => colors.value = res.items)
+globalStore.getPlaces().then(res => {
+  cities.value = res.citys
+  places.value = res.items
+})
+globalStore.getUsers().then(res => {
+  managers.value = res.items
 })
 
-function changeBrand(id) {
-  console.log(id)
-  globalStore.getModels(id).then((res) => models.value = res)
-}
-
+const changeBrand = id => globalStore.getModels(id).then((res) => models.value = res)
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => formEl && formEl.resetFields()
 
@@ -230,7 +263,7 @@ function save() {
 
   submitForm(form.value).then(res => {
     if (res) console.log('Ошибок нет >>>')
-    else console.error('ОШИБКА ФОРМЫ')
+    else console.error('ОШИБКА ЗАПОЛНЕНИЯ ФОРМЫ')
   })
 }
 

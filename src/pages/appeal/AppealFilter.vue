@@ -15,12 +15,11 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses} from '@/utils/globalConstants'
+import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses, Years} from '@/utils/globalConstants'
 import {globalRef} from "@/components/filterControls/FilterGlobalRef";
 import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
 import {getTags} from "@/components/filterControls/FilterGetTags";
 import {tagsControl} from "@/utils/globalFunctions";
-import {years} from "@/stores/constants";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])
 const vModel = computed({
@@ -33,7 +32,7 @@ const brands = ref([])
 const models = ref([])
 const cities = ref([])
 const places = ref([])
-const manageres = ref([])
+const managers = ref([])
 const tags = ref([])
 const workflowTypes = ref([])
 const isMoreFilter = ref(false)
@@ -55,7 +54,7 @@ const fields = [
     name: 'locationId',
     placeholder: 'Выберите место'
   }, {
-    type: '2. Список', listName: 'manageres',
+    type: '2. Список', listName: 'managers',
     label: 'Менеджер',
     name: 'manager',
     placeholder: 'Выберите менеджера'
@@ -136,7 +135,7 @@ function changed() {
 }
 
 function open() {
-  lists.value.years = years
+  lists.value.years = Years
   globalStore.getBrands().then(res => brands.value = lists.value.brands = res)
   globalStore.getClientStatuses().then(res => {
     res.items.map(el => {
@@ -163,8 +162,8 @@ function open() {
 
   globalStore.getUsers().then((res) => {
     res.items.map(el => el.name = el.title)
-    manageres.value = lists.value.manageres = res.items
-    manageres.value.forEach(item => {
+    managers.value = lists.value.managers = res.items
+    managers.value.forEach(item => {
       if (item.role === 110 || item.role === 111) ccEmployees.value.push(item);
     });
     lists.value.ccEmployees = ccEmployees.value
