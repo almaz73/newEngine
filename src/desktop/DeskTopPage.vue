@@ -3,16 +3,25 @@
     <el-form ref="form" :model="appeal">
       <div class="main__flex">
         <div>
-          <!--          <div style="border: 1px solid pink; padding-left: 220px">-->
+          <div class="desk" style="margin-bottom: -40px;">
+            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType==10">
+            </el-button-group>
 
-          <!--            <div> Юрилическое лицо</div>-->
-          <!--            <el-form-item prop="lead.person['phone']"-->
-          <!--                          :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">-->
-          <!--              <el-input-->
-          <!--                style="width: 450px"-->
-          <!--                v-model.number="appeal.lead.person.phone" placeholder="* Название организации"/>-->
-          <!--            </el-form-item>-->
-          <!--          </div>-->
+            <div class="fields yourPlace">
+              <div v-if="appeal.lead.leadType==10">Физическое лицо</div>
+              <div v-if="appeal.lead.leadType==20">Юридическое лицо</div>
+              <br><br>
+              <el-form-item
+                  v-if="appeal.lead.leadType==20"
+                  style="min-width: calc(100% - 35px)"
+                  prop="lead.legalEntity['name']"
+                  :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">
+                <el-input
+                    :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
+                    v-model.number="appeal.lead.legalEntity.name" placeholder="* Название организации"/>
+              </el-form-item>
+            </div>
+          </div>
 
           <div class="desk">
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
@@ -28,10 +37,6 @@
 
             <div class="fields">
               <div class="fields__in">
-                <div v-if="appeal.lead.leadType==10">Юридическое лицо</div>
-                <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
-                <br>
-
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur', 'change']}">
                   <el-input v-model.number="appeal.lead.person.phone" placeholder="* Основной телефон"/>
@@ -46,8 +51,6 @@
                 </el-form-item>
               </div>
               <div class="fields__in">
-                <br>
-                <br>
                 <el-form-item prop="lead.person['firstName']"
                               :rules="{required: true, message: 'Пожалуйста, введите имя', trigger: ['blur', 'change']}">
                   <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"></el-input>
@@ -87,13 +90,13 @@
 
                 <el-form-item>
                   <el-select
-                    v-model="appeal.workflow.carBrand"
-                    placeholder="Марка"
+                      v-model="appeal.workflow.carBrand"
+                      placeholder="Марка"
                   >
                     <el-option v-for="item in brands"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id" />
+                               :value="item.id"/>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -136,10 +139,8 @@
           <el-input placeholder="Имя" v-model="appeal.lead.person.firstName"></el-input>
 
           <br><br><br>
-          <el-button @click="save()">Сохранить новое обращение</el-button>
-          <br> <br>
-
-          <el-button @click="submitForm(form)"> Проверка</el-button>
+          <el-button @click="save()">+ Сохранить новое обращение</el-button>
+          <br><br>
           <el-button @click="resetForm(form)">Сброс</el-button>
         </div>
 
@@ -174,16 +175,18 @@ const workflows = [
 let appeal = reactive({
   lead: {
     leadType: 10,
+    legalEntity: {name: ''},
     person: {phone: '', email: '', firstName: '', lastName: '', middleName: ''}
   },
-  workflow: {swapPhone: '', workflowLeadType: 2, auto:{vin:''}},
+  workflow: {swapPhone: '', workflowLeadType: 2, auto: {vin: ''}},
   communication: {}
 })
 const brands = ref([])
-globalStore.getBrands().then(res => brands.value = res)
-
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => formEl && formEl.resetFields()
+
+globalStore.getBrands().then(res => brands.value = res)
+
 function save() {
   console.log('--->>> appeal', appeal)
 
@@ -192,7 +195,8 @@ function save() {
   }
 
   submitForm(form.value).then(res => {
-    if (res) console.log('>>> appeal', appeal)
+    if (res) console.log('Ошибок нет >>>')
+    else console.error('ОШИБКА ФОРМЫ')
   })
 }
 
