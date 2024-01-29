@@ -341,33 +341,26 @@ globalStore.getTreatmentSources().then(res => {
 const changeBrand = id => globalStore.getModels(id).then((res) => models.value = res)
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
+  formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
-  formEl && formEl.resetFields && formEl.resetFields()
 }
 
 function changeRegistartionMark(value) {
   appeal.workflow.registrationMark = vetRegNumber(value)
 }
 
-function notify() {
+function checkAndWarning() {
   if (appeal.lead.leadType === 20 && !appeal.lead.legalEntity.name)
     return ElMessage({message: 'Поле "Название организации" не заполнено', type: 'error'})
   if (!appeal.lead.person.phone) return ElMessage({message: 'Поле "Основной телефон" не заполнен', type: 'error'})
   if (!appeal.lead.person.firstName) return ElMessage({message: 'Поле "Имя" не заполнено', type: 'error'})
   if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
     return ElMessage({message: 'Поле "Вид выкупа" не заполнено', type: 'error'})
-
 }
 
 function save() {
-  // console.log('--->>> workflow', appeal.workflow)
-  // console.log('--->>> lead', appeal.lead)
-  // console.log('--->>> communication', appeal.communication)
-
-  notify()
-
-  submitForm(form.value).then(res => {
-    // проверка заполненности обязательных полей
+  checkAndWarning()
+  submitForm(form.value).then(res => { // проверка заполненности обязательных полей
     if (res) prepareAndSave()
     else console.error('ОШИБКА ЗАПОЛНЕНИЯ ФОРМЫ')
   })
@@ -378,14 +371,59 @@ function prepareAndSave() {
   if (!appeal.workflow.bodyColorId) delete appeal.workflow.bodyColorId
   if (!appeal.workflow.locationId) delete appeal.workflow.locationId
 
-  if (appeal.workflow.workflowLeadType === 8) {// комисся
+  if (appeal.workflow.workflowLeadType === 8) {// комиссия
+    var commission = {
+      TreatmentSourceId: appeal.communication.sourceId,
+      LocationId: appeal.workflow.locationId,
+      Client: {
+        leadId: appeal.lead.leadId,
+        TreatmentSourceId: appeal.communication.sourceId,
+        Person: appeal.lead.person,
+      },
+      Appeal: {ResponsibleId: appeal.workflow.managerId},
+      LeadType: appeal.lead.leadType,
+    };
 
+    desktopStore.saveAppealComission(commission).then(res => {
+      console.log('res', res)
+
+      if (res.status === 200) {
+        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        resetForm(form.value)
+      }
+    })
   } else if (appeal.workflow.workflowLeadType == 10) { // сделка через салон
+    var deal = {
+      buyLead: {
+        leadId: appeal.buyLead.leadId,
+        person: appeal.buyLead.person,
+        treatmentSourceId: 2,
+      },
+      locationId: appeal.workflow.locationId,
+      sellLead: {
+        leadId: appeal.lead.leadId,
+        person: appeal.lead.person,
+        treatmentSourceId: 2,
+      },
+      treatmentSourceId: appeal.communication.sourceId,
+    };
+    delete deal.buyLead.person.email;
+    delete deal.buyLead.person.middleName;
+    delete deal.sellLead.person.email;
+    delete deal.sellLead.person.middleName;
 
+    desktopStore.saveAppealSalon(deal).then(res => {
+      if (res.status === 200) {
+        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        resetForm(form.value)
+      }
+    })
   } else {
     desktopStore.saveAppeal(appeal).then(res => {
-      ElMessage({message: 'Обращение сохранено', type: 'success'})
-      Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
+      if (res.status === 200) {
+        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        resetForm(form.value)
+      }
     })
   }
 }
