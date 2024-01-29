@@ -22,7 +22,6 @@
               </el-form-item>
             </div>
           </div>
-
           <div class="desk">
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Клиент</div>
@@ -64,7 +63,22 @@
               </div>
             </div>
           </div>
+          <div class="desk" style="margin-bottom: -40px;">
+            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.communication.type!==15">
+            </el-button-group>
 
+            <div class="fields yourPlace">
+              <div>Продажа</div>
+              <br><br>
+              <el-form-item
+                  v-if="appeal.communication.type===15"
+                  style="min-width: calc(100% - 35px)">
+                <el-input
+                    :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
+                    v-model.number="appeal.communication.weblink" placeholder="Вебссылка"/>
+              </el-form-item>
+            </div>
+          </div>
           <div class="desk">
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Обращение</div>
@@ -79,9 +93,7 @@
 
             <div class="fields">
               <div class="fields__in">
-                <div v-if="appeal.lead.leadType==10">Юридическое лицо</div>
-                <div v-if="appeal.lead.leadType==20">Физическое лицо</div>
-                <br>
+
 
                 <el-form-item prop="workflow.auto['vin']"
                               :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur', 'change']}]">
@@ -123,7 +135,7 @@
                   <el-input placeholder="Пробег автомобиля" type="number" v-model="appeal.workflow.mileageAuto"/>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="appeal.workflow.workflowLeadType===2">
                   <el-select v-model="appeal.workflow.bodyColorId" placeholder="Цвет кузова">
                     <el-option v-for="item in colors"
                                :key="item.id"
@@ -134,9 +146,9 @@
 
               </div>
               <div class="fields__in">
-                <br>
-                <br>
-                <el-form-item>
+                <el-form-item prop="workflow.BuyCategory"
+                    :rules="{required: true, message: 'Введите вид выкупа', trigger: ['blur']}"
+                    v-if="appeal.workflow.workflowLeadType===2">
                   <el-select v-model="appeal.workflow.BuyCategory" placeholder="Вид выкупа">
                     <el-option v-for="item in BuyCategoryTypes"
                                :key="item.id"
@@ -233,12 +245,15 @@ const appeal = reactive({
     person: {phone: '', email: '', firstName: '', lastName: '', middleName: ''}
   },
   workflow: {
+    workflowLeadType: 2, auto: {vin: ''},
     swapPhone: '', brandId: null, carModelId: null,
     mileageAuto: null, bodyColorId: null, BuyCategory: null,
-    yearReleased: null, workflowLeadType: 2, auto: {vin: ''},
-    locationId: null, managerId: null
+    yearReleased: null, locationId: null, managerId: null
   },
-  communication: {type: 10, sourceId: 15, callType: null, city: null, description: ''}
+  communication: {
+    type: 10, sourceId: 15, callType: null, city: null,
+    weblink: '', description: ''
+  }
 })
 
 globalStore.getBrands().then(res => brands.value = res)
