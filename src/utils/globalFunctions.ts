@@ -131,3 +131,60 @@ export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
         if (el.name) vModel.value[el.param] = el.code
     })
 }
+
+export const weblink = function (link) {
+    const car = link.split('/').pop().split('_');
+    let brand, line = '';
+    car.pop();
+
+    ['amt', 'at', 'mt'].forEach((type) => {// вырезаем тип КПП
+        if (car.includes(type)) {
+            const place = car.indexOf(type)
+            if (type == 'at' && !Number.isFinite(+car[place - 1])) return car.splice(place, 1)
+            car.splice(place - 1, 2)
+        }
+    })
+
+    if (!car.includes('km') && car.find(el => el.includes('km'))) car.push('km')
+
+    if (car.includes('km')) { // вытаскиваем км
+        const placeYear = car.findLastIndex(el => el.match(/\b\d{4}\b/g))
+        const placeKM = car.indexOf('km')
+        let count = 0
+
+        for (let i = placeYear + 1; i < placeKM; i++) {
+            count++
+            line = line + car[i]
+        }
+
+        for (let i = 0; i < count + 1; i++) {
+            car.pop()
+        }
+    }
+
+    // eslint-disable-next-line prefer-const
+    let year = car.pop();
+
+
+    if (car[0] == 'tesla' && car[1] == 'model') {
+        car[1] = car[1] + car[2]
+        car.pop()
+    }
+
+    if (car.length > 2) {
+        brand = car.splice(0, 2);
+    } else {
+        brand = car.splice(0, 1);
+    }
+    const model = car;
+
+
+    console.log('===============================')
+    console.log('brand=', brand)
+    console.log('model=', model)
+    console.log('year=', year)
+    console.log('line=', line)
+
+    return {brand, model, year, line}
+
+}

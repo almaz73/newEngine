@@ -265,6 +265,8 @@
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
           <br><br>
           <el-button @click="resetForm(form)">Сброс</el-button>
+
+          <el-button @click="weblinkTreatment()">ПАРСИНГ</el-button>
         </div>
 
       </div>
@@ -347,6 +349,13 @@ const resetForm = formEl => {
 
 function changeRegistartionMark(value) {
   appeal.workflow.registrationMark = vetRegNumber(value)
+}
+
+function weblinkTreatment() {
+  let zzz = weblink('https://www.avito.ru/kazan/avtomobili/tesla_model_s_at_2018_90_000_km_3528757965')
+  // console.log('zzz', zzz)
+  console.log('brands', brands.value)
+
 }
 
 function checkAndWarning() {
