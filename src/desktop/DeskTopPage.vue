@@ -68,14 +68,14 @@
             </el-button-group>
 
             <div class="fields yourPlace">
-              <div>Продажа</div>
+              <div>{{ Workflows.find(el => el.value === appeal.workflow.workflowLeadType).title }}</div>
               <br><br>
               <el-form-item
                   v-if="appeal.communication.type===15"
                   style="min-width: calc(100% - 35px)">
                 <el-input
                     :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
-                    v-model.number="appeal.communication.weblink" placeholder="Вебссылка"/>
+                    v-model.number="appeal.communication.weblink" placeholder="Веб-ссылка"/>
               </el-form-item>
             </div>
           </div>
@@ -95,12 +95,14 @@
               <div class="fields__in">
 
 
-                <el-form-item prop="workflow.auto['vin']"
-                              :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur', 'change']}]">
+                <el-form-item
+                    v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)"
+                    prop="workflow.auto['vin']"
+                    :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur', 'change']}]">
                   <el-input placeholder="VIN 17 символов" v-model="appeal.workflow.auto.vin"/>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="[1,2,3,4,8,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select
                       v-model="appeal.workflow.brandId"
                       @change="changeBrand(appeal.workflow.brandId)"
@@ -113,7 +115,7 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="[1,2,3,4,8,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select v-model="appeal.workflow.carModelId" placeholder="Модель">
                     <el-option v-for="item in models"
                                :key="item.id"
@@ -122,7 +124,7 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="[1,2,3,4,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select v-model="appeal.workflow.yearReleased" placeholder="Год выпуска">
                     <el-option v-for="item in Years"
                                :key="item.name"
@@ -131,9 +133,37 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)">
                   <el-input placeholder="Пробег автомобиля" type="number" v-model="appeal.workflow.mileageAuto"/>
                 </el-form-item>
+
+                <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
+                  <el-input v-model="appeal.workflow.registrationMark"
+                            @input="changeRegistartionMark(appeal.workflow.registrationMark)"
+                            style="text-transform: uppercase"
+                            placeholder="X 000 XX 000"
+                            maxlength="12"
+                            @key.enter="emits('changed')"/>
+                </el-form-item>
+
+                <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
+                  <el-select v-model="appeal.workflow.engineType" placeholder="Тип двигателя">
+                    <el-option v-for="item in EngineType"
+                               :key="item.id"
+                               :label="item.name"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+
+                <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
+                  <el-select v-model="appeal.workflow.gearboxType" placeholder="Тип КПП">
+                    <el-option v-for="item in GearboxType"
+                               :key="item.id"
+                               :label="item.name"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+
 
                 <el-form-item v-if="appeal.workflow.workflowLeadType===2">
                   <el-select v-model="appeal.workflow.bodyColorId" placeholder="Цвет кузова">
@@ -147,9 +177,9 @@
               </div>
               <div class="fields__in">
                 <el-form-item prop="workflow.BuyCategory"
-                    :rules="{required: true, message: 'Введите вид выкупа', trigger: ['blur']}"
-                    v-if="appeal.workflow.workflowLeadType===2">
-                  <el-select v-model="appeal.workflow.BuyCategory" placeholder="Вид выкупа">
+                              :rules="{required: true, message: 'Введите вид выкупа', trigger: ['blur']}"
+                              v-if="appeal.workflow.workflowLeadType===2">
+                  <el-select v-model="appeal.workflow.BuyCategory" placeholder="* Вид выкупа">
                     <el-option v-for="item in BuyCategoryTypes"
                                :key="item.id"
                                :label="item.title"
@@ -158,7 +188,7 @@
                 </el-form-item>
 
 
-                <el-form-item>
+                <el-form-item v-if="![6].includes(appeal.workflow.workflowLeadType)">
                   <el-select v-model="appeal.workflow.locationId" placeholder="Салон">
                     <el-option v-for="item in places"
                                :key="item.id"
@@ -167,8 +197,18 @@
                   </el-select>
                 </el-form-item>
 
+                <el-form-item v-if="[6].includes(appeal.workflow.workflowLeadType)"
+                              :rules="{required: true, message: 'Введите франшизу', trigger: ['blur']}"
+                              prop="workflow.organizationId">
+                  <el-select v-model="appeal.workflow.organizationId" placeholder="* Франчази">
+                    <el-option v-for="item in organizations"
+                               :key="item.id"
+                               :label="item.name"
+                               :value="item.id"/>
+                  </el-select>
+                </el-form-item>
 
-                <el-form-item>
+                <el-form-item v-if="[1,2,3,4,5,6,7,8,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select v-model="appeal.workflow.managerId" placeholder="Ответственный">
                     <el-option v-for="item in managers"
                                :key="item.id"
@@ -224,7 +264,8 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {computed, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 
-import {Workflows, Years, BuyCategoryTypes, CommunicationTypes} from '@/utils/globalConstants'
+import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
+import {vetRegNumber} from "@/utils/globalFunctions";
 
 const form = ref(null)
 const globalStore = useGlobalStore()
@@ -235,6 +276,7 @@ const cities = ref([])
 const places = ref([])
 const managers = ref([])
 const treatmentSources = ref([])
+const organizations = ref([])
 const sources = computed(() => {
   return treatmentSources.value.filter(el => el.communicationType == appeal.communication.type)
 })
@@ -248,7 +290,8 @@ const appeal = reactive({
     workflowLeadType: 2, auto: {vin: ''},
     swapPhone: '', brandId: null, carModelId: null,
     mileageAuto: null, bodyColorId: null, BuyCategory: null,
-    yearReleased: null, locationId: null, managerId: null
+    yearReleased: null, locationId: null, managerId: null,
+    organizationId: null
   },
   communication: {
     type: 10, sourceId: 15, callType: null, city: null,
@@ -258,6 +301,7 @@ const appeal = reactive({
 
 globalStore.getBrands().then(res => brands.value = res)
 globalStore.getColors().then(res => colors.value = res.items)
+globalStore.getOrganizations().then((res) => organizations.value = res.items)
 globalStore.getPlaces().then(res => {
   cities.value = res.citys
   places.value = res.items
@@ -265,23 +309,36 @@ globalStore.getPlaces().then(res => {
 globalStore.getUsers().then(res => {
   managers.value = res.items
 })
-
 globalStore.getTreatmentSources().then(res => {
   treatmentSources.value = res.items
 })
 
+
 const changeBrand = id => globalStore.getModels(id).then((res) => models.value = res)
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => formEl && formEl.resetFields()
+
+function changeRegistartionMark(value) {
+  appeal.workflow.registrationMark = vetRegNumber(value)
+}
+
+function notify() {
+  if (appeal.lead.leadType === 20 && !appeal.lead.legalEntity.name) {
+    return ElMessage({message: 'Поле "Название организации" не заполнено', type: 'error'})
+  }
+  if (!appeal.lead.person.phone) return ElMessage({message: 'Поле "Основной телефон" не заполнен', type: 'error'})
+  if (!appeal.lead.person.firstName) return ElMessage({message: 'Поле "Имя" не заполнено', type: 'error'})
+  if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory) {
+    return ElMessage({message: 'Поле "Вид выкупа" не заполнено', type: 'error'})
+  }
+}
 
 function save() {
   console.log('--->>> workflow', appeal.workflow)
   console.log('--->>> lead', appeal.lead)
   console.log('--->>> communication', appeal.communication)
 
-  if (!appeal.lead.person.phone) {
-    ElMessage({message: 'Поле "Основной телефон" обязателен для заполнения!', type: 'error',})
-  }
+  notify()
 
   submitForm(form.value).then(res => {
     if (res) console.log('Ошибок нет >>>')

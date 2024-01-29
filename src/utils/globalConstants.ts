@@ -112,6 +112,7 @@ export const Workflows = [
     {id: 3, value: 3, title: 'Сервис'},
     {id: 4, value: 4, title: 'КСО'},
     {id: 5, value: 5, title: 'Fleet'},
+    {id: 6, value: 6, title: 'Франшиза'},
     {id: 7, value: 7, title: 'Доп.оборуд.'},
     {id: 8, value: 8, title: 'Комиссия'},
     {id: 9, value: 9, title: 'Подбор авто'},
@@ -128,6 +129,19 @@ export const CommunicationTypes = [
 export const BuyCategoryTypes = [
     {id: 10, title: 'Свободный выкуп'},
     {id: 20, title: 'Выездной выкуп'}
+]
+
+export const GearboxType = [
+    {id: 10, name: 'Механическая'},
+    {id: 20, name: 'Автоматическая'},
+    {id: 30, name: 'Вариатор'},
+    {id: 40, name: 'Роботизированная'}
+]
+export const EngineType = [
+    {id: 10, name: 'Бензин'},
+    {id: 20, name: 'Дизель'},
+    {id: 30, name: 'Бензин/газ'},
+    {id: 40, name: 'Гибрид'}
 ]
 
 const some_years = []
