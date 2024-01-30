@@ -333,6 +333,7 @@ import {ElMessage} from "element-plus";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
 import {formattingPhone, emailValidate, vetRegNumber, weblink} from "@/utils/globalFunctions";
+import {unSaved, saveUnSaved} from "@/utils/unsavedRequests";
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -453,9 +454,14 @@ function prepareAndSave() {
       LeadType: appeal.lead.leadType,
     };
 
+    if (!navigator.onLine) {
+      unSaved('desktopStore.saveAppealComission', commission).then(() => resetForm(form.value))
+      return false
+    }
+
     desktopStore.saveAppealComission(commission).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
       }
     })
@@ -474,16 +480,26 @@ function prepareAndSave() {
       },
       treatmentSourceId: appeal.communication.sourceId,
     };
+    if (!navigator.onLine) {
+      unSaved('desktopStore.saveAppealSalon', deal).then(() => resetForm(form.value))
+      return false
+    }
+
     desktopStore.saveAppealSalon(deal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
       }
     })
   } else {
+    if (!navigator.onLine) {
+      unSaved('desktopStore.saveAppeal', appeal).then(() => resetForm(form.value))
+      return false
+    }
+
     desktopStore.saveAppeal(appeal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение сохранено', type: 'success'})
+        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
       }
     })
@@ -492,4 +508,6 @@ function prepareAndSave() {
 
 globalStore.setTitle('Новое обращение')
 globalStore.steps = []
+
+saveUnSaved()
 </script>

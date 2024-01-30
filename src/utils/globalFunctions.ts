@@ -20,6 +20,17 @@ export const formatDateDDMMYYYY = (val: string) => {
     })
 }
 
+export const formatDM_hm = (val: string) => {
+    // формат: 17.01.2022, 15:12
+    return new Date(val).toLocaleString('ru-Ru', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+        hour: "numeric",
+        minute: "numeric",
+    })
+}
+
 export const gotoTop = () => window.scrollTo({top: 0, behavior: 'smooth'})
 
 export function validateVin(vin: string) {
