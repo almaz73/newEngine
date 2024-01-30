@@ -1,3 +1,5 @@
+import {ElMessage} from "element-plus";
+
 export const formatDate = (val: string) => {
     // формат: 17 мая 2022 г.
     if (!val) return ''
@@ -132,7 +134,34 @@ export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
     })
 }
 
-export const weblink = function (link) {
+export const formattingPhone = function (val: string) {
+    let txt = val.replace(/\D/g, ''),
+        res = "";
+
+    if (txt.length < 2) return txt
+
+    if (["7", "8", "9"].indexOf(txt[0]) > -1) {
+        if (txt[0] == "9") txt = "7" + txt;
+        const firstSymbols = (txt[0] == "8") ? "8" : "+7";
+        res = firstSymbols + " ";
+        if (txt.length > 1) res += '(' + txt.substring(1, 4);
+        if (txt.length >= 5) res += ') ' + txt.substring(4, 7);
+        if (txt.length >= 8) res += '-' + txt.substring(7, 9);
+        if (txt.length >= 10) res += '-' + txt.substring(9, 11);
+    } else {
+        res = '+' + txt.substring(0, 16);
+    }
+
+    return res
+}
+
+export const emailValidate = function (val: string) {
+    const EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+    const err = EMAIL_REGEXP.test(val)
+    if (!err) ElMessage({message: 'Ошибочный Email ', type: 'warning'})
+}
+export const weblink = function (link: string) {
+    if (!link) return false
     const car = link.split('/').pop().split('_');
     let brand, line = '';
     car.pop();

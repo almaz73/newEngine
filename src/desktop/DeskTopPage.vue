@@ -4,15 +4,14 @@
       <div class="main__flex">
         <div>
           <div class="desk" style="margin-bottom: -40px;">
-            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType==10">
-            </el-button-group>
+            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType===10"/>
 
             <div class="fields yourPlace">
-              <div v-if="appeal.lead.leadType==10">Физическое лицо</div>
-              <div v-if="appeal.lead.leadType==20">Юридическое лицо</div>
+              <div v-if="appeal.lead.leadType===10">Физическое лицо</div>
+              <div v-if="appeal.lead.leadType===20">Юридическое лицо</div>
               <br><br>
               <el-form-item
-                  v-if="appeal.lead.leadType==20"
+                  v-if="appeal.lead.leadType===20"
                   style="min-width: calc(100% - 35px)"
                   prop="lead.legalEntity['name']"
                   :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">
@@ -26,10 +25,10 @@
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Клиент</div>
               <br>
-              <el-button @click="appeal.lead.leadType=10" :class="{active:appeal.lead.leadType==10}">
+              <el-button @click="appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
                 Физ. лицо
               </el-button>
-              <el-button @click="appeal.lead.leadType=20" :class="{active:appeal.lead.leadType==20}">
+              <el-button @click="appeal.lead.leadType=20" :class="{active:appeal.lead.leadType===20}">
                 Юр. лицо
               </el-button>
             </el-button-group>
@@ -37,35 +36,40 @@
             <div class="fields">
               <div class="fields__in">
                 <el-form-item prop="lead.person['phone']"
-                              :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur', 'change']}">
-                  <el-input v-model.number="appeal.lead.person.phone" placeholder="* Основной телефон"/>
+                              :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
+                  <el-input placeholder="* Основной телефон"
+                            :formatter="(value) =>formattingPhone(value)"
+                            v-model="appeal.lead.person.phone"/>
                 </el-form-item>
 
                 <el-form-item>
-                  <el-input placeholder="Подменный телефон" v-model="appeal.workflow.swapPhone"></el-input>
+                  <el-input placeholder="Подменный телефон"
+                            :formatter="(value) =>formattingPhone(value)"
+                            v-model="appeal.workflow.swapPhone"/>
                 </el-form-item>
 
                 <el-form-item>
-                  <el-input placeholder="Эл.почта" v-model="appeal.lead.person.email"></el-input>
+                  <el-input placeholder="Эл.почта"
+                            @change="emailValidate(appeal.lead.person.email)"
+                            v-model="appeal.lead.person.email"/>
                 </el-form-item>
               </div>
               <div class="fields__in">
                 <el-form-item prop="lead.person['firstName']"
                               :rules="{required: true, message: 'Пожалуйста, введите имя', trigger: ['blur', 'change']}">
-                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"></el-input>
+                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
                 </el-form-item>
                 <el-form-item>
-                  <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"></el-input>
+                  <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"/>
                 </el-form-item>
                 <el-form-item>
-                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"></el-input>
+                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
                 </el-form-item>
               </div>
             </div>
           </div>
           <div class="desk" style="margin-bottom: -40px;">
-            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.communication.type!==15">
-            </el-button-group>
+            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.communication.type!==15"/>
 
             <div class="fields yourPlace">
               <div>{{ Workflows.find(el => el.value === appeal.workflow.workflowLeadType).title }}</div>
@@ -86,7 +90,7 @@
               <el-button v-for="workflow in Workflows"
                          :key="workflow.id"
                          @click="appeal.workflow.workflowLeadType=workflow.value"
-                         :class="{active:workflow.value == appeal.workflow.workflowLeadType}">
+                         :class="{active:workflow.value === appeal.workflow.workflowLeadType}">
                 {{ workflow.title }}
               </el-button>
             </el-button-group>
@@ -259,7 +263,7 @@
           </el-form-item>
 
 
-          <el-input placeholder="Описание" v-model="appeal.communication.description"></el-input>
+          <el-input placeholder="Описание" v-model="appeal.communication.description"/>
 
           <br><br><br>
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
@@ -284,7 +288,7 @@ import {computed, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
-import {vetRegNumber, weblink} from "@/utils/globalFunctions";
+import {formattingPhone, emailValidate, vetRegNumber, weblink} from "@/utils/globalFunctions";
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -298,7 +302,7 @@ const managers = ref([])
 const treatmentSources = ref([])
 const organizations = ref([])
 const sources = computed(() => {
-  return treatmentSources.value.filter(el => el.communicationType == appeal.communication.type)
+  return treatmentSources.value.filter(el => el.communicationType === appeal.communication.type)
 })
 
 const appealStart = {
@@ -401,7 +405,7 @@ function prepareAndSave() {
         resetForm(form.value)
       }
     })
-  } else if (appeal.workflow.workflowLeadType == 10) { // сделка через салон
+  } else if (appeal.workflow.workflowLeadType === 10) { // сделка через салон
     var deal = {
       buyLead: {
         leadId: appeal.buyLead.leadId,

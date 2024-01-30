@@ -9,7 +9,7 @@ axios.interceptors.response.use(resp => resp
         console.log(" err.request.status = ", err.request.status)
 
         if (!navigator.onLine) {
-            return ElMessage({message: 'Данные не получены, сайт работает офлайн!', type: 'warning',})
+            return ElMessage({message: 'Связи нет, сайт работает офлайн!', type: 'warning',})
         }
 
         if (!err.request.status && err.code === "ERR_NETWORK") {
