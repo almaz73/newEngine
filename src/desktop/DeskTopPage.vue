@@ -79,6 +79,8 @@
                   style="min-width: calc(100% - 35px)">
                 <el-input
                     :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
+                    @input="weblinkTreatment(appeal.communication.weblink)"
+                    clearable
                     v-model.number="appeal.communication.weblink" placeholder="Веб-ссылка"/>
               </el-form-item>
             </div>
@@ -269,8 +271,6 @@
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
           <br><br>
           <el-button @click="resetForm(form)">Сброс</el-button>
-
-          <el-button @click="weblinkTreatment()">ПАРСИНГ</el-button>
         </div>
 
       </div>
@@ -344,7 +344,7 @@ globalStore.getTreatmentSources().then(res => {
 })
 
 
-const changeBrand = id => globalStore.getModels(id).then((res) => models.value = res)
+const changeBrand = id => id && globalStore.getModels(id).then((res) => models.value = res)
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
   formEl && formEl.resetFields()
@@ -355,11 +355,15 @@ function changeRegistartionMark(value) {
   appeal.workflow.registrationMark = vetRegNumber(value)
 }
 
-function weblinkTreatment() {
-  let zzz = weblink('https://www.avito.ru/kazan/avtomobili/tesla_model_s_at_2018_90_000_km_3528757965')
-  // console.log('zzz', zzz)
-  console.log('brands', brands.value)
-
+function weblinkTreatment(link) {
+  weblink(link).then(res => {
+    appeal.workflow.brandId = res.brandId
+    changeBrand(res.brandId)
+    appeal.workflow.carModelId = res.modelId
+    appeal.workflow.mileageAuto = res.line
+    appeal.workflow.yearReleased = res.year
+    appeal.workflow.gearboxType = res.kpp
+  })
 }
 
 function checkAndWarning() {
@@ -398,8 +402,6 @@ function prepareAndSave() {
     };
 
     desktopStore.saveAppealComission(commission).then(res => {
-      console.log('res', res)
-
       if (res.status === 200) {
         ElMessage({message: 'Обращение сохранено', type: 'success'})
         resetForm(form.value)

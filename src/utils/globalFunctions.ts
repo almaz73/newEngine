@@ -1,4 +1,5 @@
 import {ElMessage} from "element-plus";
+import {useGlobalStore} from "@/stores/globalStore";
 
 export const formatDate = (val: string) => {
     // формат: 17 мая 2022 г.
@@ -160,60 +161,99 @@ export const emailValidate = function (val: string) {
     const err = EMAIL_REGEXP.test(val)
     if (!err) ElMessage({message: 'Ошибочный Email ', type: 'warning'})
 }
+
+/** вытаскивание из ссылки модель-бренд-год-КПП и пробег автомобиля **/
+let brands = []
+const kppTypes = {'amt': 40, 'at': 20, 'mt': 10, 'cvt': 30}
 export const weblink = function (link: string) {
-    if (!link) return false
-    const car = link.split('/').pop().split('_');
-    let brand, line = '';
-    car.pop();
+    return new Promise((resolve) => {
+        if (!link || !link.includes('/')) return false
+        const car = link.split('/').pop().split('_');
+        let brand, kpp, line='';
+        car.pop();
+        ['amt', 'at', 'mt', 'cvt'].forEach((type) => {// вырезаем тип КПП
+            if (car.includes(type)) {
+                kpp = kppTypes[type]
+                const place = car.indexOf(type)
+                if (type == 'at' && !Number.isFinite(+car[place - 1])) return car.splice(place, 1)
+                car.splice(place - 1, 2)
+            }
+        })
 
-    ['amt', 'at', 'mt'].forEach((type) => {// вырезаем тип КПП
-        if (car.includes(type)) {
-            const place = car.indexOf(type)
-            if (type == 'at' && !Number.isFinite(+car[place - 1])) return car.splice(place, 1)
-            car.splice(place - 1, 2)
+        if (!car.includes('km') && car.find(el => el.includes('km'))) car.push('km')
+
+        if (car.includes('km')) { // вытаскиваем км
+            const placeYear = car.findLastIndex(el => el.match(/\b\d{4}\b/g))
+            const placeKM = car.indexOf('km')
+            let count = 0
+
+            for (let i = placeYear + 1; i < placeKM; i++) {
+                count++
+                line = line + car[i]
+            }
+
+            for (let i = 0; i < count + 1; i++) {
+                car.pop()
+            }
         }
-    })
 
-    if (!car.includes('km') && car.find(el => el.includes('km'))) car.push('km')
+        const year = car.pop();
 
-    if (car.includes('km')) { // вытаскиваем км
-        const placeYear = car.findLastIndex(el => el.match(/\b\d{4}\b/g))
-        const placeKM = car.indexOf('km')
-        let count = 0
-
-        for (let i = placeYear + 1; i < placeKM; i++) {
-            count++
-            line = line + car[i]
-        }
-
-        for (let i = 0; i < count + 1; i++) {
+        if (car[0] == 'tesla' && car[1] == 'model') {
+            car[1] = car[1] + car[2]
             car.pop()
         }
+
+        if (car.length > 2) brand = car.splice(0, 2);
+        else brand = car.splice(0, 1);
+
+        let model = car;
+
+        brand = brand && brand.join('').toUpperCase()
+        model = model && model.join('').toUpperCase()
+
+        if (!brands.length) {
+            useGlobalStore().getBrands().then(res => {
+                brands = JSON.parse(JSON.stringify(res))
+                brands.map(el => { // нормализация списка автомобилей
+                    el.name = [...el.name].map(item => translitRu2En(item)).join('')
+                    el.name = el.name.replace('(', '').replace(')', '').replace(' ', '').toUpperCase()
+                })
+                getCar()
+            })
+        } else getCar()
+
+        function getCar() {
+            findCarAndModel(brand, model).then(res => {
+                resolve({brandId: res.foundBrand && res.foundBrand.id, modelId: res.foundModel && res.foundModel.id, year, line, kpp})
+            })
+        }
+    })
+}
+
+
+function findCarAndModel(brand, model) {
+    return new Promise((resolve) => {
+        let foundBrand = brands.find(el => el.name.toUpperCase() === brand)
+        if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))
+        foundBrand && useGlobalStore().getModels(foundBrand.id).then(models => {
+            const foundModel = models.find(el => el.name.replace(' ', '').toUpperCase() == model)
+            resolve({foundBrand, foundModel})
+        })
+        if (!foundBrand) resolve({})
+    })
+}
+
+function translitRu2En(value, short) {
+    const translate = {
+        А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Е: 'E', Ё: 'E', Ж: 'ZH', З: 'Z', И: 'I', Й: 'Y', К: 'K',
+        Л: 'L', М: 'M', Н: 'N', О: 'O', П: 'P', Р: 'R', С: 'S', Т: 'T', У: 'U', Ф: 'F', Х: 'KH', Ц: 'C',
+        Ч: 'CH', Ш: 'SH', Щ: 'SCH', Ъ: '"', Ы: 'IY', Ь: "'", Э: 'EH', Ю: 'YU', Я: 'YA',
+    };
+    if (short) {
+        translate['Ъ'] = '';
+        translate['Ь'] = '';
     }
-
-    // eslint-disable-next-line prefer-const
-    let year = car.pop();
-
-
-    if (car[0] == 'tesla' && car[1] == 'model') {
-        car[1] = car[1] + car[2]
-        car.pop()
-    }
-
-    if (car.length > 2) {
-        brand = car.splice(0, 2);
-    } else {
-        brand = car.splice(0, 1);
-    }
-    const model = car;
-
-
-    console.log('===============================')
-    console.log('brand=', brand)
-    console.log('model=', model)
-    console.log('year=', year)
-    console.log('line=', line)
-
-    return {brand, model, year, line}
-
+    value = /^[А-Я]*$/.test(value) ? translate[value] : value;
+    return value;
 }
