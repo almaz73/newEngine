@@ -28,12 +28,14 @@
               <el-button @click="appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
                 Физ. лицо
               </el-button>
-              <el-button @click="appeal.lead.leadType=20" :class="{active:appeal.lead.leadType===20}">
+              <el-button @click="appeal.lead.leadType=20"
+                         :disabled="appeal.workflow.workflowLeadType===10"
+                         :class="{active:appeal.lead.leadType===20}">
                 Юр. лицо
               </el-button>
             </el-button-group>
 
-            <div class="fields">
+            <div class="fields" v-if="appeal.workflow.workflowLeadType!==10">
               <div class="fields__in">
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
@@ -56,7 +58,7 @@
               </div>
               <div class="fields__in">
                 <el-form-item prop="lead.person['firstName']"
-                              :rules="{required: true, message: 'Пожалуйста, введите имя', trigger: ['blur', 'change']}">
+                              :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
                   <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
                 </el-form-item>
                 <el-form-item>
@@ -64,6 +66,46 @@
                 </el-form-item>
                 <el-form-item>
                   <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
+                </el-form-item>
+              </div>
+            </div>
+
+
+            <div class="fields" v-if="appeal.workflow.workflowLeadType===10">
+              <div class="fields__in">
+                Продавец<br><br>
+                <el-form-item prop="lead.person['phone']"
+                              :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
+                  <el-input placeholder="* Телефон"
+                            :formatter="(value) =>formattingPhone(value)"
+                            v-model="appeal.lead.person.phone"/>
+                </el-form-item>
+
+                <el-form-item prop="lead.person['firstName']"
+                              :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
+                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
+                </el-form-item>
+              </div>
+              <div class="fields__in">
+                Покупатель<br><br>
+                <el-form-item prop="buyLead.person['phone']"
+                              :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
+                  <el-input placeholder="* Телефон"
+                            :formatter="(value) =>formattingPhone(value)"
+                            v-model="appeal.buyLead.person.phone"/>
+                </el-form-item>
+
+                <el-form-item prop="buyLead.person['firstName']"
+                              :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
+                  <el-input placeholder="* Имя" v-model="appeal.buyLead.person.firstName"/>
+                </el-form-item>
+
+                <el-form-item>
+                  <el-input placeholder="Фамилия" v-model="appeal.buyLead.person.lastName"/>
                 </el-form-item>
               </div>
             </div>
@@ -91,7 +133,7 @@
               <br>
               <el-button v-for="workflow in Workflows"
                          :key="workflow.id"
-                         @click="appeal.workflow.workflowLeadType=workflow.value"
+                         @click="changeWorkflow(workflow.value)"
                          :class="{active:workflow.value === appeal.workflow.workflowLeadType}">
                 {{ workflow.title }}
               </el-button>
@@ -136,7 +178,9 @@
                 </el-form-item>
 
                 <el-form-item v-if="[1,2,3,4,9].includes(appeal.workflow.workflowLeadType)">
-                  <el-select v-model="appeal.workflow.yearReleased" placeholder="Год выпуска">
+                  <el-select placeholder="Год выпуска"
+                             clearable
+                             v-model="appeal.workflow.yearReleased">
                     <el-option v-for="item in Years"
                                :key="item.name"
                                :label="item.name"
@@ -324,6 +368,9 @@ const appealStart = {
   communication: {
     type: 10, sourceId: 15, callType: null, city: 'Казань',
     weblink: '', description: ''
+  },
+  buyLead: {
+    person: {phone: '', firstName: '', lastName: ''}
   }
 }
 
@@ -349,6 +396,11 @@ const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
   formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
+}
+
+function changeWorkflow(val) {
+  appeal.workflow.workflowLeadType = val
+  if (val === 10) appeal.lead.leadType = 10
 }
 
 function changeRegistartionMark(value) {
@@ -422,11 +474,6 @@ function prepareAndSave() {
       },
       treatmentSourceId: appeal.communication.sourceId,
     };
-    delete deal.buyLead.person.email;
-    delete deal.buyLead.person.middleName;
-    delete deal.sellLead.person.email;
-    delete deal.sellLead.person.middleName;
-
     desktopStore.saveAppealSalon(deal).then(res => {
       if (res.status === 200) {
         ElMessage({message: 'Обращение сохранено', type: 'success'})
