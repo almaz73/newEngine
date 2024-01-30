@@ -169,7 +169,7 @@ export const weblink = function (link: string) {
     return new Promise((resolve) => {
         if (!link || !link.includes('/')) return false
         const car = link.split('/').pop().split('_');
-        let brand, kpp, line='';
+        let brand, kpp, line = '';
         car.pop();
         ['amt', 'at', 'mt', 'cvt'].forEach((type) => {// вырезаем тип КПП
             if (car.includes(type)) {
@@ -199,7 +199,7 @@ export const weblink = function (link: string) {
 
         const year = car.pop();
 
-        if (car[0] == 'tesla' && car[1] == 'model') {
+        if (brands.find(el => el.name === car[0].toUpperCase())) {
             car[1] = car[1] + car[2]
             car.pop()
         }
@@ -236,8 +236,15 @@ function findCarAndModel(brand, model) {
     return new Promise((resolve) => {
         let foundBrand = brands.find(el => el.name.toUpperCase() === brand)
         if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))
-        foundBrand && useGlobalStore().getModels(foundBrand.id).then(models => {
-            const foundModel = models.find(el => el.name.replace(' ', '').toUpperCase() == model)
+        foundBrand && useGlobalStore().getModels(foundBrand.id).then(res => {
+            let models = JSON.parse(JSON.stringify(res))
+            let foundModel = models.find(el => el.name.replace(' ', '').toUpperCase() == model)
+            if (!foundModel) {
+                foundModel = models.find(el => {
+                    el.name = [...el.name].map(item => translitRu2En(item.toUpperCase())).join('')
+                    return el.name.replace(' ', '').includes(model)
+                })
+            }
             resolve({foundBrand, foundModel})
         })
         if (!foundBrand) resolve({})
