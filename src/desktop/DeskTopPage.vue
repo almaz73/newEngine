@@ -463,6 +463,8 @@ function prepareAndSave() {
       if (res.status === 200) {
         ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
+      } else {
+        ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
     })
   } else if (appeal.workflow.workflowLeadType === 10) { // сделка через салон
@@ -489,6 +491,8 @@ function prepareAndSave() {
       if (res.status === 200) {
         ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
+      } else {
+        ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
     })
   } else {
@@ -501,6 +505,8 @@ function prepareAndSave() {
       if (res.status === 200) {
         ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
         resetForm(form.value)
+      } else {
+        ElMessage({duration: 0, message: 'Ошибка сохранения. ' + res.message, type: 'error'})
       }
     })
   }
@@ -509,5 +515,14 @@ function prepareAndSave() {
 globalStore.setTitle('Новое обращение')
 globalStore.steps = []
 
-saveUnSaved()
+function cbForEdit(howMuchIsLeft, fromLocalStorage) {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  if (howMuchIsLeft) globalStore.setTitle('Несохраненных: ' + howMuchIsLeft)
+  else globalStore.setTitle('Новое обращение')
+
+  if (fromLocalStorage) Object.assign(appeal, JSON.parse(JSON.stringify(fromLocalStorage)));
+}
+
+saveUnSaved(cbForEdit)
+
 </script>

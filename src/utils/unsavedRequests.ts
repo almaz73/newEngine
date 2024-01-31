@@ -4,9 +4,11 @@ import {useDesktopStore} from "@/stores/desktopStore";
 import {formatDMY_hm} from "@/utils/globalFunctions";
 
 const desktopStore = useDesktopStore()
+let cb; // колбак на страницу, если нужно дальше редактировать вызов
 let unsavedRequests: {} | undefined;
 let selectedRequest = ''
 let selectedInd = null
+let howMuchIsLeft
 
 window.addEventListener("online", saveUnSaved);
 
@@ -30,7 +32,8 @@ export function saveInLocalStorage(method, params) {
 
 
 // проходим по всем сохраненным в локалстораж узлам и составляем плоский масиив
-export function saveUnSaved() {
+export function saveUnSaved(cbForEdit) {
+    cb = cbForEdit
     if (!navigator.onLine) return false;
     const list = []
     unsavedRequests = localStorage.getItem('UnsavedRequests')
@@ -49,10 +52,13 @@ export function saveUnSaved() {
 }
 
 function treatment(list) {
+    howMuchIsLeft = list.length
     const request = list.pop()
     if (!request) return false
     selectedRequest = request.request
     selectedInd = request.ind
+
+    cb(howMuchIsLeft)
 
     ElMessageBox.confirm(`Есть несохраненный на сервере обращение. Клиент: ${request.name}. Время: ${request.time} Сохранить?`,
         {confirmButtonText: 'Да', cancelButtonText: 'Нет', showClose: false})
@@ -73,7 +79,7 @@ function saveRequestOnServer() {
                         ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
                         setTimeout(() => saveUnSaved(), 730)
                     })
-                }
+                } else showAndEditRequest()
             })
             break;
         case'desktopStore.saveAppealSalon':
@@ -84,7 +90,7 @@ function saveRequestOnServer() {
                         ElMessage({message: 'Сделка через салон успешно сохранено', type: 'success'})
                         setTimeout(() => saveUnSaved(), 730)
                     })
-                }
+                } else showAndEditRequest()
             })
             break;
         case'desktopStore.saveAppealComission':
@@ -95,10 +101,24 @@ function saveRequestOnServer() {
                         ElMessage({message: 'Комиссия успешно сохранена', type: 'success'})
                         setTimeout(() => saveUnSaved(), 730)
                     })
-                }
+                } else showAndEditRequest()
             })
             break;
     }
+}
+
+/**
+ * Ошибка при сохранении на сервер, предлагаем отредактировать перед сохранением
+ */
+
+function showAndEditRequest() {
+    ElMessageBox.confirm(`'Сохранить не получилось. Редактировать?`, 'Ошибка',
+        {confirmButtonText: 'Да', cancelButtonText: 'Нет', showClose: false, type: 'error',})
+        .then(() => {
+            if (selectedRequest === 'desktopStore.saveAppeal') cb(howMuchIsLeft, unsavedRequests[selectedRequest][selectedInd])
+            else ElMessage({duration: 0, showClose: true, message: 'Восстановление Комиссия и Через салон не доработаны. Удалено', type: 'warning'})
+            deleteRequest()
+        }).catch(() => refuseRequest())
 }
 
 /**
