@@ -20,7 +20,7 @@ export const formatDateDDMMYYYY = (val: string) => {
     })
 }
 
-export const formatDM_hm = (val: string) => {
+export const formatDMY_hm = (val: string) => {
     // формат: 17.01.2022, 15:12
     return new Date(val).toLocaleString('ru-Ru', {
         day: 'numeric',

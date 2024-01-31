@@ -333,7 +333,7 @@ import {ElMessage} from "element-plus";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
 import {formattingPhone, emailValidate, vetRegNumber, weblink} from "@/utils/globalFunctions";
-import {unSaved, saveUnSaved} from "@/utils/unsavedRequests";
+import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -455,7 +455,7 @@ function prepareAndSave() {
     };
 
     if (!navigator.onLine) {
-      unSaved('desktopStore.saveAppealComission', commission).then(() => resetForm(form.value))
+      saveInLocalStorage('desktopStore.saveAppealComission', commission).then(() => resetForm(form.value))
       return false
     }
 
@@ -481,7 +481,7 @@ function prepareAndSave() {
       treatmentSourceId: appeal.communication.sourceId,
     };
     if (!navigator.onLine) {
-      unSaved('desktopStore.saveAppealSalon', deal).then(() => resetForm(form.value))
+      saveInLocalStorage('desktopStore.saveAppealSalon', deal).then(() => resetForm(form.value))
       return false
     }
 
@@ -493,7 +493,7 @@ function prepareAndSave() {
     })
   } else {
     if (!navigator.onLine) {
-      unSaved('desktopStore.saveAppeal', appeal).then(() => resetForm(form.value))
+      saveInLocalStorage('desktopStore.saveAppeal', appeal).then(() => resetForm(form.value))
       return false
     }
 
