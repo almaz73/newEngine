@@ -51,6 +51,10 @@ const router = createRouter({
             name: 'calls',
             component: () => import('@/pages/calls/CallsPage.vue').catch(val => fail(val))
         }, {
+            path: '/admin',
+            name: 'admin',
+            component: () => import('@/pages/admin/AdminPage.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },

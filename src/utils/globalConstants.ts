@@ -144,6 +144,7 @@ export const EngineType = [
     {id: 40, name: 'Гибрид'}
 ]
 
+
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {
     some_years.push({name: z})

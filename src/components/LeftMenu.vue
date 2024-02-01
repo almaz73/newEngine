@@ -66,10 +66,20 @@
         </el-menu-item>
       </RouterLink>
 
+      <RouterLink to="/admin">
+        <el-menu-item index="7">
+          <el-icon>
+            <img alt="Вложенные меню" src="@/assets/icons/ic-settings-black-18-px.png" height="34" width="34"/>
+
+          </el-icon>
+          <template #title>Управление</template>
+        </el-menu-item>
+      </RouterLink>
+
       <el-sub-menu index="6">
         <template #title>
           <el-icon>
-            <img alt="Вложенные меню" src="@/assets/icons/ic-settings-black-18-px.png" height="34" width="34"/>
+            <img alt="Управление" src="@/assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/>
           </el-icon>
           <span>Вложенные меню</span>
         </template>
@@ -90,12 +100,6 @@
         </el-sub-menu>
       </el-sub-menu>
 
-      <el-menu-item index="7">
-        <el-icon>
-          <img alt="Управление" src="@/assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/>
-        </el-icon>
-        <template #title>Управление</template>
-      </el-menu-item>
 
       <el-menu-item index="8">
         <el-icon>
@@ -224,7 +228,7 @@ const select = (val: string) => {
 
 // нужно вычислить по адресу, что открыто и высветить меню
 const storage = sessionStorage.getItem('menuIndex')
-const menuButtons = {'/desktop':'1', '/appeal':'2', '/deal':'3', '/sell':'4'}
+const menuButtons = {'/desktop': '1', '/appeal': '2', '/deal': '3', '/sell': '4'}
 
 activeIndex.value = menuButtons[location.pathname]
 if (!activeIndex.value) activeIndex.value = storage
