@@ -40,7 +40,7 @@ const tryNetwork = (req, timeout) => {
             })
             resolve(res);
             // Reject also if network fetch rejects.
-        }, reject);
+        }, reject());
     });
 };
 

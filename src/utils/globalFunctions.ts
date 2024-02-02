@@ -20,7 +20,7 @@ export const formatDateDDMMYYYY = (val: string) => {
     })
 }
 
-export const formatDMY_hm = (val: string) => {
+export const formatDMY_hm = (val: Date) => {
     // формат: 17.01.2022, 15:12
     return new Date(val).toLocaleString('ru-Ru', {
         day: 'numeric',
@@ -236,19 +236,25 @@ export const weblink = function (link: string) {
 
         function getCar() {
             findCarAndModel(brand, model).then(res => {
-                resolve({brandId: res.foundBrand && res.foundBrand.id, modelId: res.foundModel && res.foundModel.id, year, line, kpp})
+                resolve({
+                    brandId: res.foundBrand && res.foundBrand.id,
+                    modelId: res.foundModel && res.foundModel.id,
+                    year,
+                    line,
+                    kpp
+                })
             })
         }
     })
 }
 
 
-function findCarAndModel(brand, model) {
+function findCarAndModel(brand:any[], model:any[]) {
     return new Promise((resolve) => {
         let foundBrand = brands.find(el => el.name.toUpperCase() === brand)
         if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))
         foundBrand && useGlobalStore().getModels(foundBrand.id).then(res => {
-            let models = JSON.parse(JSON.stringify(res))
+            const models = JSON.parse(JSON.stringify(res))
             let foundModel = models.find(el => el.name.replace(' ', '').toUpperCase() == model)
             if (!foundModel) {
                 foundModel = models.find(el => {
@@ -262,7 +268,7 @@ function findCarAndModel(brand, model) {
     })
 }
 
-function translitRu2En(value, short) {
+function translitRu2En(value: string, short: boolean) {
     const translate = {
         А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Е: 'E', Ё: 'E', Ж: 'ZH', З: 'Z', И: 'I', Й: 'Y', К: 'K',
         Л: 'L', М: 'M', Н: 'N', О: 'O', П: 'P', Р: 'R', С: 'S', Т: 'T', У: 'U', Ф: 'F', Х: 'KH', Ц: 'C',
@@ -272,6 +278,7 @@ function translitRu2En(value, short) {
         translate['Ъ'] = '';
         translate['Ь'] = '';
     }
+    // @ts-ignore
     value = /^[А-Я]*$/.test(value) ? translate[value] : value;
     return value;
 }

@@ -1,46 +1,59 @@
 // Если нет интернета, временно запоминаем, чтобы потом после появления интернета сохранить на сайт
 import {ElMessage, ElMessageBox} from "element-plus";
-import {useDesktopStore} from "@/stores/desktopStore";
 import {formatDMY_hm} from "@/utils/globalFunctions";
 
-const desktopStore = useDesktopStore()
-let cb; // колбак на страницу, если нужно дальше редактировать вызов
-let unsavedRequests: {} | undefined;
+let cb: any; // колбак на страницу, если нужно дальше редактировать вызов
+let unsavedRequests: {} | null;
 let selectedRequest = ''
-let selectedInd = null
-let howMuchIsLeft
+let selectedInd: any = null
+let howMuchIsLeft: number
 
-window.addEventListener("online", saveUnSaved);
+window.addEventListener("online", () => saveUnSaved(cb));
 
-export function saveInLocalStorage(method, params) {
+export function saveInLocalStorage(method: string, params: any) {
     return new Promise(resolve => {
-        let unsavedRequests: {} | undefined = localStorage.getItem('UnsavedRequests')
+        let unsavedRequests: {} | string | null = localStorage.getItem('UnsavedRequests')
 
-        if (unsavedRequests) unsavedRequests = JSON.parse(unsavedRequests)
-        else unsavedRequests = {}
+        if (unsavedRequests && typeof unsavedRequests === "string") {
+            unsavedRequests = JSON.parse(unsavedRequests)
+        } else unsavedRequests = {}
 
         params.timeNoInternet = Date.now()
 
-        if (unsavedRequests[method]) unsavedRequests[method].push(params)
-        else unsavedRequests[method] = [params]
+        // @ts-ignore
+        if (typeof unsavedRequests !== "string" || unsavedRequests[method]) {
+            // @ts-ignore
+            unsavedRequests[method].push(params)
+        } else { // @ts-ignore
+            unsavedRequests[method] = [params]
+        }
 
         localStorage.setItem('UnsavedRequests', JSON.stringify(unsavedRequests))
-        ElMessage({duration: 0, showClose: true, message: 'Обращение сохранено временно в памяти до появления интернета', type: 'success'})
-        resolve()
+        ElMessage({
+            duration: 5000,
+            showClose: true,
+            message: 'Обращение сохранено в кэше до появления интернета',
+            type: 'success'
+        })
+        resolve(true)
     })
 }
 
 
 // проходим по всем сохраненным в локалстораж узлам и составляем плоский масиив
-export function saveUnSaved(cbForEdit) {
+export function saveUnSaved(cbForEdit: any) {
     cb = cbForEdit
     if (!navigator.onLine) return false;
-    const list = []
+    const list: any[] = []
     unsavedRequests = localStorage.getItem('UnsavedRequests')
     if (unsavedRequests) {
+        // @ts-ignore
         unsavedRequests = JSON.parse(unsavedRequests)
+
+        // @ts-ignore
         Object.entries(unsavedRequests).forEach(el => {
-            el[1].forEach((item, ind) => {
+            // @ts-ignore
+            el[1].forEach((item: any, ind: number) => {
                 let name = item.lead && item.lead.person.firstName
                 if (!name) name = item.Client && item.Client.Person.firstName
                 if (!name) name = item.sellLead && item.sellLead.person.firstName
@@ -51,17 +64,18 @@ export function saveUnSaved(cbForEdit) {
     }
 }
 
-function treatment(list) {
+function treatment(list: any) {
     howMuchIsLeft = list.length
     const request = list.pop()
     if (!request) return false
     selectedRequest = request.request
     selectedInd = request.ind
-
     cb(howMuchIsLeft)
 
-    ElMessageBox.confirm(`Есть несохраненный на сервере обращение. Клиент: ${request.name}. Время: ${request.time} Сохранить?`,
-        {confirmButtonText: 'Да', cancelButtonText: 'Нет', showClose: false})
+    ElMessageBox.confirm(`Клиент: ${request.name}. 
+    Время: ${request.time}`,
+        'Есть несохраненное обращение',
+        {confirmButtonText: 'Показать', cancelButtonText: 'Удалить', showClose: false})
         .then(() => saveRequestOnServer()).catch(() => refuseRequest())
 }
 
@@ -70,73 +84,28 @@ function treatment(list) {
  * СОхраняем на сервере и удаляем из локалсторожа
  */
 function saveRequestOnServer() {
-    switch (selectedRequest) {
-        case'desktopStore.saveAppeal':
-            const appeal = unsavedRequests[selectedRequest][selectedInd]
-            desktopStore.saveAppeal(appeal).then(res => {
-                if (res.status === 200) {
-                    deleteRequest().then(() => {
-                        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-                        setTimeout(() => saveUnSaved(), 730)
-                    })
-                } else showAndEditRequest()
-            })
-            break;
-        case'desktopStore.saveAppealSalon':
-            const deal = unsavedRequests[selectedRequest][selectedInd]
-            desktopStore.saveAppealSalon(deal).then(res => {
-                if (res.status === 200) {
-                    deleteRequest().then(() => {
-                        ElMessage({message: 'Сделка через салон успешно сохранено', type: 'success'})
-                        setTimeout(() => saveUnSaved(), 730)
-                    })
-                } else showAndEditRequest()
-            })
-            break;
-        case'desktopStore.saveAppealComission':
-            const commission = unsavedRequests[selectedRequest][selectedInd]
-            desktopStore.saveAppealComission(commission).then(res => {
-                if (res.status === 200) {
-                    deleteRequest().then(() => {
-                        ElMessage({message: 'Комиссия успешно сохранена', type: 'success'})
-                        setTimeout(() => saveUnSaved(), 730)
-                    })
-                } else showAndEditRequest()
-            })
-            break;
-    }
+    // @ts-ignore
+    cb(howMuchIsLeft - 1, unsavedRequests[selectedRequest][selectedInd])
+    deleteRequest()
 }
 
-/**
- * Ошибка при сохранении на сервер, предлагаем отредактировать перед сохранением
- */
-
-function showAndEditRequest() {
-    ElMessageBox.confirm(`'Сохранить не получилось. Редактировать?`, 'Ошибка',
-        {confirmButtonText: 'Да', cancelButtonText: 'Нет', showClose: false, type: 'error',})
-        .then(() => {
-            if (selectedRequest === 'desktopStore.saveAppeal') cb(howMuchIsLeft, unsavedRequests[selectedRequest][selectedInd])
-            else ElMessage({duration: 0, showClose: true, message: 'Восстановление Комиссия и Через салон не доработаны. Удалено', type: 'warning'})
-            deleteRequest()
-        }).catch(() => refuseRequest())
-}
 
 /**
  *  дожидается удаления и запускает поиск нового несохраненного
  */
 function refuseRequest() {
     deleteRequest().then(() => {
-        ElMessage({type: 'info', message: 'Не сохраненное обращение удалено'})
-        setTimeout(() => saveUnSaved(), 730)
+        ElMessage({type: 'info', message: 'Удалено из кэша'})
+        setTimeout(() => saveUnSaved(cb), 730)
     })
 }
 
 /**
  * Удаляет из локалстоража
  */
-
 function deleteRequest() {
     return new Promise(resolve => {
+        // @ts-ignore
         unsavedRequests[selectedRequest].pop()
         localStorage.setItem('UnsavedRequests', JSON.stringify(unsavedRequests))
         resolve(true)

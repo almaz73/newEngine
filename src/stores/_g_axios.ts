@@ -15,11 +15,11 @@ axios.interceptors.response.use(resp => resp
         if (!err.request.status && err.code === "ERR_NETWORK") {
             // возможно у токена вышел срок, перекидываем на cтраницу авторизации
             useGlobalStore().isAuthorized = false
-            router.push('login')
+            !navigator.onLine && router.push('login')
         }
 
         if (err.request.status === 500) {
-             ElMessage({message: 'Ошибка 500. Возможно нет связи!', type: 'warning',})
+            ElMessage({message: 'Ошибка 500. Возможно нет связи!', type: 'warning',})
         }
         return err
     })

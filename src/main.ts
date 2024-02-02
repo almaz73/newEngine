@@ -16,9 +16,7 @@ setTimeout(() => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .register('sw.js')
-            .then(e => {
-                console.log('ServiceWorker заработал')
-            })
+            .then(() => console.log('SW started'))
     }
 }, 3000)
 

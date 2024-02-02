@@ -346,6 +346,7 @@ const places = ref([])
 const managers = ref([])
 const treatmentSources = ref([])
 const organizations = ref([])
+let isNeedCheckUnSaved = false
 const sources = computed(() => {
   return treatmentSources.value.filter(el => el.communicationType === appeal.communication.type)
 })
@@ -397,6 +398,7 @@ const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
   formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
+  isNeedCheckUnSaved && saveUnSaved(cbForEdit)
 }
 
 function changeWorkflow(val) {
@@ -466,6 +468,7 @@ function prepareAndSave() {
       } else {
         ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
+      isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   } else if (appeal.workflow.workflowLeadType === 10) { // сделка через салон
     var deal = {
@@ -494,6 +497,7 @@ function prepareAndSave() {
       } else {
         ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
+      isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   } else {
     if (!navigator.onLine) {
@@ -508,6 +512,7 @@ function prepareAndSave() {
       } else {
         ElMessage({duration: 0, message: 'Ошибка сохранения. ' + res.message, type: 'error'})
       }
+      isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   }
 }
@@ -519,7 +524,7 @@ function cbForEdit(howMuchIsLeft, fromLocalStorage) {
   window.scrollTo({top: 0, behavior: 'smooth'});
   if (howMuchIsLeft) globalStore.setTitle('Несохраненных: ' + howMuchIsLeft)
   else globalStore.setTitle('Новое обращение')
-
+  isNeedCheckUnSaved = !!howMuchIsLeft
   if (fromLocalStorage) Object.assign(appeal, JSON.parse(JSON.stringify(fromLocalStorage)));
 }
 
