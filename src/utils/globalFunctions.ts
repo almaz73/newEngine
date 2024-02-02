@@ -146,7 +146,7 @@ export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
     })
 }
 
-export const formattingPhone = function (val: string) {
+export const formattingPhone = function (val: string, fn: any) {
     let txt = val.replace(/\D/g, ''),
         res = "";
 
@@ -161,9 +161,9 @@ export const formattingPhone = function (val: string) {
         if (txt.length >= 8) res += '-' + txt.substring(7, 9);
         if (txt.length >= 10) res += '-' + txt.substring(9, 11);
     } else {
-        res = '+' + txt.substring(0, 16);
+        res = '+' + txt.substring(0, 11);
     }
-
+    fn(res)
     return res
 }
 
@@ -249,7 +249,7 @@ export const weblink = function (link: string) {
 }
 
 
-function findCarAndModel(brand:any[], model:any[]) {
+function findCarAndModel(brand: any[], model: any[]) {
     return new Promise((resolve) => {
         let foundBrand = brands.find(el => el.name.toUpperCase() === brand)
         if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))

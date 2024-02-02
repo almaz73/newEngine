@@ -4,30 +4,33 @@ import axios from 'axios'
 export const useDesktopStore = defineStore('desktopStore', {
     state: () => ({}),
     actions: {
-        async saveAppeal(obj) {
-            const res = await saveAppeal(obj)
-            return res
+        async saveAppeal(obj: any) {
+            return await saveAppeal(obj)
         },
-        async saveAppealComission(obj) {
-            const res = await saveAppealComission(obj)
-            return res
-        }
-        ,
-        async saveAppealSalon(obj) {
-            const res = await saveAppealSalon(obj)
-            return res
+        async saveAppealComission(obj: any) {
+            return await saveAppealComission(obj)
+        },
+        async saveAppealSalon(obj: any) {
+            return await saveAppealSalon(obj)
+        },
+        async getLeadsByPhone(tel: string) {
+            return await getLeadsByPhone(tel)
         }
     }
 })
 
-function saveAppeal(obj) {
+function saveAppeal(obj: any) {
     return axios.post(`api/communication/callCenterCommunication`, obj).then((res) => res)
 }
 
-function saveAppealComission(obj) {
+function saveAppealComission(obj: any) {
     return axios.post(`api/commission/add`, obj).then((res) => res)
 }
 
-function saveAppealSalon(obj) {
+function saveAppealSalon(obj: any) {
     return axios.post(`api/salon-deal/add`, obj).then((res) => res)
+}
+
+function getLeadsByPhone(val: string) {
+    return axios.get(`api/lead/GetLeadsByPhone/` + val).then((res) => res.data)
 }

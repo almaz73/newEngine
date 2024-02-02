@@ -1,9 +1,9 @@
 <template>
   <div class="root">
-    <LeftMenu v-if="globalStore.isAuthorized"/>
+    <LeftMenu/>
 
     <div class="content" :class="globalStore.isNarrowPanel ? 'narrow' : 'wide'">
-      <HeadMenu v-if="globalStore.isAuthorized"/>
+      <HeadMenu/>
       <RouterView :style="{ padding: globalStore.isMobileView ? '' : '25px' }"/>
     </div>
 

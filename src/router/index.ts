@@ -17,11 +17,11 @@ const router = createRouter({
         }, {
             path: '/desktop',
             name: 'desktop',
-            component: () => import('@/desktop/DeskTopPage.vue').catch(val => fail(val))
+            component: () => import('@/pages/desktop/DeskTopPage.vue').catch(val => fail(val))
         }, {
             path: '/example',
             name: 'example',
-            component: () => import('@/desktop/ExampleForm.vue').catch(val => fail(val))
+            component: () => import('@/pages/desktop/ExampleForm.vue').catch(val => fail(val))
         },{
             path: '/appeal',
             name: 'appeal',

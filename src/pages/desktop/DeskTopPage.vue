@@ -40,7 +40,8 @@
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Основной телефон"
-                            :formatter="(value) =>formattingPhone(value)"
+                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
+                            @input="telChanged(appeal.lead.person.phone)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
 
@@ -391,6 +392,25 @@ globalStore.getUsers().then(res => {
 globalStore.getTreatmentSources().then(res => {
   treatmentSources.value = res.items
 })
+
+let telRequestList = {}
+const telChanged = (value) => {
+  setTimeout(() => {
+    value = value.replace(/\D/g, '')
+    let t = value.length > 11 ? value.slice(0, -1) : value
+    if (t.length < 10) telRequestList = {}
+    if (t.length === 11 && !telRequestList[t]) {
+      telRequestList[t] = true
+      if (t[0] === '7') t = '8' + t.slice(1)
+      desktopStore.getLeadsByPhone(t).then(res => showAppeals(res.items))
+    }
+  })
+}
+
+// показ вариантов кто с телефоном
+function showAppeals(appeals){
+  console.log('appeals', appeals)
+}
 
 
 const changeBrand = id => id && globalStore.getModels(id).then((res) => models.value = res)
