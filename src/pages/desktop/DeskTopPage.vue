@@ -321,6 +321,11 @@
       </div>
     </el-form>
 
+    <ModalParams :listAppeals="listAppeals"
+                 :isOpen="isOpen"
+                 :clients="clientsPhone"
+                 :tel="appeal.lead.person.phone"
+                 @closeModal="closeModal"/>
   </main>
 </template>
 <style>
@@ -335,6 +340,7 @@ import {useDesktopStore} from "@/stores/desktopStore";
 import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
 import {formattingPhone, emailValidate, vetRegNumber, weblink} from "@/utils/globalFunctions";
 import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
+import ModalParams from "@/pages/desktop/ModalParams.vue";
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -347,6 +353,10 @@ const places = ref([])
 const managers = ref([])
 const treatmentSources = ref([])
 const organizations = ref([])
+const isOpen = ref(false)
+const listAppeals = ref([])
+let clientsPhone = ref([])
+
 let isNeedCheckUnSaved = false
 const sources = computed(() => {
   return treatmentSources.value.filter(el => el.communicationType === appeal.communication.type)
@@ -402,15 +412,24 @@ const telChanged = (value) => {
     if (t.length === 11 && !telRequestList[t]) {
       telRequestList[t] = true
       if (t[0] === '7') t = '8' + t.slice(1)
-      desktopStore.getLeadsByPhone(t).then(res => showAppeals(res.items))
+      desktopStore.getLeadsByPhone(t).then(res => openPhoneModal(res.items))
     }
   })
 }
 
 // показ вариантов кто с телефоном
-function showAppeals(appeals){
-  console.log('appeals', appeals)
+function openPhoneModal(appeals) {
+  clientsPhone.value = []
+  appeals.forEach(el => {
+    if (!clientsPhone.value.find(item => item.name === el.leadName)) {
+      clientsPhone.value.push({name: el.leadName, leadId: el.leadId})
+    }
+  })
+  listAppeals.value = appeals
+  if (appeals.length) isOpen.value = true
 }
+
+const closeModal = () => isOpen.value = false
 
 
 const changeBrand = id => id && globalStore.getModels(id).then((res) => models.value = res)
