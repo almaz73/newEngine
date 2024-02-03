@@ -325,6 +325,7 @@
                  :isOpen="isOpen"
                  :clients="clientsPhone"
                  :tel="appeal.lead.person.phone"
+                 @setFoundClient="setFoundClient"
                  @closeModal="closeModal"/>
   </main>
 </template>
@@ -430,6 +431,14 @@ function openPhoneModal(appeals) {
 }
 
 const closeModal = () => isOpen.value = false
+
+function setFoundClient(val, appeals) {
+  closeModal()
+  let findAppeal = appeals.find(el => el.leadId === val.leadId)
+  appeal.lead.person.firstName = findAppeal.lead.person.firstName
+  appeal.lead.person.middleNAme = findAppeal.lead.person.middleNAme
+  appeal.lead.person.lastName = findAppeal.lead.person.lastName
+}
 
 
 const changeBrand = id => id && globalStore.getModels(id).then((res) => models.value = res)
