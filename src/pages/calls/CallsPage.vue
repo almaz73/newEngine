@@ -98,7 +98,7 @@
 <script setup>
 import {reactive, ref, computed, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
-import {useCallsStore} from '@/stores/callsStore'
+import {useCallsStore} from '@/stores/adminStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'

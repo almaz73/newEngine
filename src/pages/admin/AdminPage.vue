@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="admin">
-      <el-button-group class="group-button" style="border: 1px solid blue">
+      <el-button-group class="left-admin group-button">
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
                    @click="clickBotton(el)"
@@ -23,24 +23,12 @@
 
 
       <div class="admin__Filed">
-          <component :is="tab" style="border: 1px solid red; width: 100%"></component>
+        <component :is="tab"></component>
       </div>
     </div>
 
   </main>
 </template>
-<style>
-.admin{
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20px;
-  background: white;
-}
-.admin__Filed{
-  display: inline-block;
-
-}
-</style>
 
 
 <script setup lang="ts">
@@ -106,7 +94,6 @@ function clickBotton(val) {
   directory.value = val
   tab.value = markRaw(AdminDirectories[val])
 }
-
 
 
 </script>

@@ -1,0 +1,28 @@
+.admin {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: white;
+}
+
+.left-admin {
+    margin-right: 60px;
+    margin-bottom: 8px;
+}
+
+.admin__Filed {
+    display: inline-block;
+    margin-left: -10px;
+    min-width: 308px;
+}
+
+@media (width > 500px) {
+    .admin__Filed {
+        width: calc(100% - 260px);
+    }
+}
+
+.classBt {
+    padding: 30px;
+    border-radius: 5px;
+}

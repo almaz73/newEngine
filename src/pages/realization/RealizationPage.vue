@@ -135,8 +135,8 @@ const filter = {
 let filterOld; // кучковый способ запросов
 
 function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#0187af'}
-  if (txt === 'В работе') return {background: '#308a5a'}
+  if (txt === 'Новый') return {background: '#0187af', color: 'white'}
+  if (txt === 'В работе') return {background: '#308a5a', color: 'white'}
 
 }
 
