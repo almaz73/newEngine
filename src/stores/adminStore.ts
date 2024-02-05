@@ -13,6 +13,14 @@ export const useAdminStore = defineStore("adminStore", {
         async getColors() {
             const res = await getColors()
             return res.data
+        },
+        async addColor(row) {
+            const res = await addColor(row)
+            return res.data
+        },
+        async deleteColor(row) {
+            const res = await deleteColor(row)
+            return res.data
         }
     }
 })
@@ -25,6 +33,17 @@ function getUsers(filter: any) {
 function getColors() {
     const url: string = 'api/bodycolor/getbytype/10'
     return axios.get(url).then(res => res)
+}
+
+
+function addColor(row) {
+    let params = {entityType: '10'}
+    Object.assign(params, row)
+    return axios.post('api/bodycolor', params).then(res => res)
+}
+
+function deleteColor(id) {
+    return axios.delete('api/bodycolor/' + id).then(res => res)
 }
 
 
