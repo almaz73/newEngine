@@ -52,34 +52,32 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const total = ref('')
-const rowsPerPage = ref(null)
+const rowsPerPage = ref(5)
 const pageDescription = ref('')
-const params = {offset: 0, limit: 5}
+const filter = {offset: 0, limit: 5}
 const search = ref('')
 
-function changePageSize() {
-  console.log('changePageSize')
+function find() {
+  filter.search = search.value
+  getData()
 }
 
-function changePage() {
-  console.log('changePage')
+function changePageSize(val) {
+  filter.limit=rowsPerPage.value
+  getData()
+}
+
+function changePage(val) {
+  filter.offset = (val - 1) * rowsPerPage.value
+  getData()
 }
 
 function getData() {
-  adminStore.getUsers(params).then(res => {
+  adminStore.getUsers(filter).then(res => {
     tableData.value = res.items
     total.value = res.count
   })
 }
 
 getData()
-
-function find() {
-  console.log('search.value', search.value)
-  params.offset = 0
-  params.search = search.value
-  getData()
-}
-
-
 </script>
