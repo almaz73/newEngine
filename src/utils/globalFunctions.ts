@@ -215,7 +215,7 @@ export const weblink = function (link: string) {
             car.pop()
         }
 
-        if (car.length > 2) brand = car.splice(0, 2);
+        if (car.length > 2 && car[0] != 'geely') brand = car.splice(0, 2);
         else brand = car.splice(0, 1);
 
         let model = car;
@@ -228,7 +228,7 @@ export const weblink = function (link: string) {
                 brands = JSON.parse(JSON.stringify(res))
                 brands.map(el => { // нормализация списка автомобилей
                     el.name = [...el.name].map(item => translitRu2En(item)).join('')
-                    el.name = el.name.replace('(', '').replace(')', '').replace(' ', '').toUpperCase()
+                    el.name = el.name.replace('(', '').replace(')', '').replace(/ /g, '').toUpperCase()
                 })
                 getCar()
             })
@@ -255,7 +255,7 @@ function findCarAndModel(brand: any[], model: any[]) {
         if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))
         foundBrand && useGlobalStore().getModels(foundBrand.id).then(res => {
             const models = JSON.parse(JSON.stringify(res))
-            let foundModel = models.find(el => el.name.replace(' ', '').toUpperCase() == model)
+            let foundModel = models.find(el => el.name.replace(/ /g, '').replace('(', '').replace(')', '').toUpperCase() == model)
             if (!foundModel) {
                 foundModel = models.find(el => {
                     el.name = [...el.name].map(item => translitRu2En(item.toUpperCase())).join('')

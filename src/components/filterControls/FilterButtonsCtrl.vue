@@ -7,7 +7,7 @@
     </el-button>
 
   </div>
-  <div class="a-search" :style="searchInputStyle">
+  <div class="a-search custom" :style="searchInputStyle">
     <input
         type="search"
         :placeholder="placeholder"

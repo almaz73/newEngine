@@ -41,35 +41,35 @@ li.el-menu-item {
 /**
 кнопки
  */
-
-.root .el-button {
+.custom .el-button {
+    background: #666666;
     color: #e8e6e3;
     font-size: 14px;
-    background: #666666;
     height: 36px;
     border-radius: 4px;
 }
 
-.root .el-button + .el-button {
+
+.custom .el-button + .el-button {
     margin-left: 10px;
 }
 
-.root .el-button:hover, .root .el-button:focus {
+.custom .el-button:hover, .custom .el-button:focus {
     color: white;
     background: #555;
 }
 
-.root .el-button.edit {
+.custom .el-button.edit {
     padding-left: 40px;
     background: #666666 url('../icons/icon-edit.png') no-repeat bottom 10px left 12px;
 }
 
-.root .el-button.exit {
+.custom .el-button.exit {
     padding-left: 40px;
     background: #666666 url('../icons/icon-exit.png') no-repeat bottom 10px left 12px;
 }
 
-.root .el-button.active {
+.custom .el-button.active {
     background: var(--main-color);
     color: white;
 }

@@ -1,7 +1,7 @@
 <template>
   <main>
     <el-form ref="form" :model="appeal">
-      <div class="main__flex">
+      <div class="main__flex custom">
         <div>
           <div class="desk" style="margin-bottom: -40px;">
             <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType===10"/>

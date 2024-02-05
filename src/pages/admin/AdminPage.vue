@@ -1,7 +1,7 @@
 <template>
   <main>
-    <div class="admin">
-      <el-button-group class="left-admin group-button">
+    <div class="admin ">
+      <el-button-group class="left-admin group-button custom">
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
                    @click="clickBotton(el)"
@@ -36,18 +36,19 @@
 import {markRaw, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import ClientsDir from "@/pages/admin/ClientsDir.vue";
-import UsersDir from "@/pages/admin/UsersDir.vue";
-import MarksDir from "@/pages/admin/MarksDir.vue";
+import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
+import MarksDir from "@/pages/admin/dirs/MarksDir.vue";
+import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
 const AdminDirectories = {
-  'Пользователи': UsersDir,
+  'Пользователи >>': UsersDir,
   'Орг. структура': UsersDir,
-  'Марки': MarksDir,
+  'Марки >>': MarksDir,
   'Марки по ПТС': ClientsDir,
-  'Цвета кузова': ClientsDir,
+  'Цвета кузова >>': ColorsDir,
   'Цвета кузова по ПТС': ClientsDir,
   'Лист осмотра': ClientsDir,
   'Виды работ': ClientsDir,
@@ -78,6 +79,7 @@ const AdminDirectories = {
 const directories = Object.keys(AdminDirectories)
 
 let lastUsedDirectories = ref(JSON.parse(localStorage.getItem('LastUsedDirectories')) || [])
+if (!lastUsedDirectories.value.length) lastUsedDirectories.value.push('Пользователи >>')
 const directory = ref(lastUsedDirectories.value[0])
 
 function found(val) {
