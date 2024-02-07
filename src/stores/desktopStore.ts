@@ -15,6 +15,9 @@ export const useDesktopStore = defineStore('desktopStore', {
         },
         async getLeadsByPhone(tel: string) {
             return await getLeadsByPhone(tel)
+        },
+        async getAutoVIN(vin: string) {
+            return await getAutoVIN(vin)
         }
     }
 })
@@ -33,4 +36,8 @@ function saveAppealSalon(obj: any) {
 
 function getLeadsByPhone(val: string) {
     return axios.get(`api/lead/GetLeadsByPhone/` + val).then((res) => res.data)
+}
+
+function getAutoVIN(val: string) {
+    return axios.get(`api/auto/vin/` + val).then((res) => res.data)
 }

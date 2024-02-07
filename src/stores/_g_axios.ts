@@ -9,13 +9,14 @@ axios.interceptors.response.use(resp => resp
         console.log(" err.request.status = ", err.request.status)
 
         if (!navigator.onLine) {
-            return ElMessage({message: 'Связи нет, сайт работает офлайн!', type: 'warning',})
+            console.log('Связи нет, сайт работает офлайн!')
+            // return ElMessage({message: 'Связи нет, сайт работает офлайн!', type: 'warning',})
         }
 
         if (!err.request.status && err.code === "ERR_NETWORK") {
             // возможно у токена вышел срок, перекидываем на cтраницу авторизации
             useGlobalStore().isAuthorized = false
-            !navigator.onLine && router.push('login')
+            navigator.onLine && router.push('login')
         }
 
         if (err.request.status === 500) {

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <el-form ref="form" :model="appeal">
+    <el-form ref="form" :model="appeal" @change="isDirty=true">
       <div class="main__flex custom">
         <div>
           <div class="desk" style="margin-bottom: -40px;">
@@ -147,8 +147,9 @@
                 <el-form-item
                     v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)"
                     prop="workflow.auto['vin']"
-                    :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur', 'change']}]">
-                  <el-input placeholder="VIN 17 символов" v-model="appeal.workflow.auto.vin"/>
+                    :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
+                  <el-input placeholder="VIN 17 символов" @change="getAutoWithVIN()"
+                            v-model="appeal.workflow.auto.vin"/>
                 </el-form-item>
 
                 <el-form-item v-if="[1,2,3,4,8,9].includes(appeal.workflow.workflowLeadType)">
@@ -313,9 +314,9 @@
           <el-input placeholder="Описание" v-model="appeal.communication.description"/>
 
           <br><br><br>
-          <el-button @click="save()">+ Сохранить новое обращение</el-button>
+          <el-button @click="save()" :disabled="!isDirty">+ Сохранить новое обращение</el-button>
           <br><br>
-          <el-button @click="resetForm(form)">Сброс</el-button>
+          <el-button @click="resetForm(form)" :disabled="!isDirty">Сброс</el-button>
         </div>
 
       </div>
@@ -357,6 +358,7 @@ const organizations = ref([])
 const isOpen = ref(false)
 const listAppeals = ref([])
 let clientsPhone = ref([])
+const isDirty = ref(false)
 
 let isNeedCheckUnSaved = false
 const sources = computed(() => {
@@ -563,6 +565,18 @@ function prepareAndSave() {
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   }
+}
+
+function getAutoWithVIN() {
+  desktopStore.getAutoVIN(appeal.workflow.auto.vin).then(el => {
+    if (el.carBrandId) {
+      appeal.workflow.brandId = el.carBrandId
+      changeBrand(el.carBrandId)
+    }
+    if (el.carModelId) appeal.workflow.carModelId = el.carModelId
+    if (el.bodyColorId) appeal.workflow.bodyColorId = el.bodyColorId
+    if (el.yearReleased) appeal.workflow.yearReleased = el.yearReleased
+  })
 }
 
 globalStore.setTitle('Новое обращение')
