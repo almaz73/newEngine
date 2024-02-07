@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div  style="margin-bottom: 30px">
+    <div style="margin-bottom: 30px">
       <el-input v-model="search"
                 :prefix-icon="Search"
                 @clear="find"
@@ -8,7 +8,8 @@
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
                 @keydown.enter="find()"/>
-      <el-button @click="find()" n type="danger" :icon="Plus">{{globalStore.isMobileView?'':'Добавить'}}</el-button>
+      <el-button @click="find()" n type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+      </el-button>
     </div>
 
     <el-table
@@ -23,6 +24,20 @@
       <el-table-column label="Место выкупа" prop="locationTitle"/>
       <el-table-column label="Логин" prop="login"/>
       <el-table-column label="Роль" prop="roleTitle"/>
+      <el-table-column prop="roleTitle" width="100px">
+
+        <template #default="scope">
+          <div style="" class="admin-table-editors">
+            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" src="@/assets/icons/icon-unblocked-gray.png">
+            <img v-else @click="switchuser(scope.row)" src="@/assets/icons/icon-blocked-red.png">
+            <img src="@/assets/icons/copy.gif">
+            <img src="@/assets/icons/icon-pencil-gray.png">
+            <img src="@/assets/icons/icon-cross-gray.png">
+          </div>
+        </template>
+      </el-table-column>
+
+
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
@@ -53,7 +68,7 @@ import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
-import { Plus, Search } from '@element-plus/icons-vue'
+import {Plus, Search} from '@element-plus/icons-vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -83,10 +98,16 @@ function changePage(val) {
 function getData() {
   adminStore.getUsers(filter).then(res => {
     tableData.value = res.items
+    tableData.value = tableData.value.sort((a, b) => a.id - b.id)
     total.value = res.count
   })
 }
 
+function switchuser(row) {
+  adminStore.switchuser(row.id).then(getData)
+}
+
 globalStore.setTitle('Пользователи')
+globalStore.steps = []
 getData()
 </script>

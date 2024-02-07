@@ -27,8 +27,8 @@
     >
       <el-table-column label="Название">
         <template #default="scope">
-          <span v-if="selectedBrand">  - - {{ scope.row.name }}</span>
-          <span v-else> {{ scope.row.name }}</span>
+          <span v-if="selectedBrand && selectedBrand.name"> - - {{ scope.row.name }}</span>
+          <span v-else>   {{ scope.row.name }}</span>
         </template>
       </el-table-column>
     </el-table>

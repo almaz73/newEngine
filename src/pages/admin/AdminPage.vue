@@ -4,9 +4,9 @@
       <el-button-group class="left-admin group-button custom">
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
-                   @click="clickBotton(el)"
+                   @click="found(el)"
                    :style="{width: globalStore.isMobileView?'203px':'222px'}"
-                   :class="{active:el === directory}">
+                   :class="{active:el === currentDirectory}">
           {{ el }}
         </el-button>
 
@@ -37,63 +37,62 @@ import {markRaw, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import ClientsDir from "@/pages/admin/ClientsDir.vue";
 import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
-import MarksDir from "@/pages/admin/dirs/MarksDir.vue";
+import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
 const AdminDirectories = {
-  'Пользователи >>': UsersDir,
-  'Орг. структура': UsersDir,
-  'Марки >>': MarksDir,
-  'Марки по ПТС': ClientsDir,
-  'Цвета кузова >>': ColorsDir,
-  'Цвета кузова по ПТС': ClientsDir,
-  'Лист осмотра': ClientsDir,
-  'Виды работ': ClientsDir,
-  'Ремонтируемые элементы': ClientsDir,
-  'Запчасти': ClientsDir,
-  'Место хранения': ClientsDir,
-  'Шины': ClientsDir,
-  'Банки': ClientsDir,
-  'Кредитные программы': ClientsDir,
-  'Тарифы': ClientsDir,
-  'Акции': ClientsDir,
-  'Тарифы страховых компаний': ClientsDir,
-  'Доп. оборудование': ClientsDir,
-  'Агентские услуги': ClientsDir,
-  'Источник': ClientsDir,
-  'СМС шаблоны': ClientsDir,
-  'Политики': ClientsDir,
-  'Шаблоны причин': ClientsDir,
-  'Подпись документов': ClientsDir,
-  'Договора': ClientsDir,
-  'Шаблоны документов': ClientsDir,
-  'Клиенты': ClientsDir,
-  'Программы сертификации': ClientsDir,
-  'Возможные неисправности': ClientsDir
+  'Пользователи': UsersDir,
+  '🚧 Орг. структура': UsersDir,
+  'Марки': BrendsDir,
+  '🚧Марки по ПТС': ClientsDir,
+  'Цвета кузова': ColorsDir,
+  '🚧Цвета кузова по ПТС': ClientsDir,
+  '🚧Лист осмотра': ClientsDir,
+  '🚧Виды работ': ClientsDir,
+  '🚧Ремонтируемые элементы': ClientsDir,
+  '🚧Запчасти': ClientsDir,
+  '🚧Место хранения': ClientsDir,
+  '🚧Шины': ClientsDir,
+  '🚧Банки': ClientsDir,
+  '🚧Кредитные программы': ClientsDir,
+  '🚧Тарифы': ClientsDir,
+  '🚧Акции': ClientsDir,
+  '🚧Тарифы страховых компаний': ClientsDir,
+  '🚧Доп. оборудование': ClientsDir,
+  '🚧Агентские услуги': ClientsDir,
+  '🚧Источник': ClientsDir,
+  '🚧СМС шаблоны': ClientsDir,
+  '🚧Политики': ClientsDir,
+  '🚧Шаблоны причин': ClientsDir,
+  '🚧Подпись документов': ClientsDir,
+  '🚧Договора': ClientsDir,
+  '🚧Шаблоны документов': ClientsDir,
+  '🚧Клиенты': ClientsDir,
+  '🚧Программы сертификации': ClientsDir,
+  '🚧Возможные неисправности': ClientsDir
 }
-
-
 const directories = Object.keys(AdminDirectories)
 
 let lastUsedDirectories = ref(JSON.parse(localStorage.getItem('LastUsedDirectories')) || [])
-if (!lastUsedDirectories.value.length) lastUsedDirectories.value.push('Пользователи >>')
-const directory = ref(lastUsedDirectories.value[0])
+if (!lastUsedDirectories.value.length) lastUsedDirectories.value.push('Пользователи')
+const currentDirectory = ref(lastUsedDirectories.value[0])
+selectDir(currentDirectory.value)
 
-function found(val) {
+function found(val:string) {
   let count = globalStore.isMobileView ? 3 : 5;
   lastUsedDirectories.value = lastUsedDirectories.value && lastUsedDirectories.value.filter(el => el != val)
   lastUsedDirectories.value.unshift(val)
   if (lastUsedDirectories.value.length > count) lastUsedDirectories.value.length = count
   localStorage.setItem('LastUsedDirectories', JSON.stringify(lastUsedDirectories.value))
-
-  clickBotton(val)
+  selectDir(val)
 }
 
-function clickBotton(val) {
-  directory.value = val
+
+function selectDir(val:string) {
+  currentDirectory.value = val
   tab.value = markRaw(AdminDirectories[val])
 }
 
