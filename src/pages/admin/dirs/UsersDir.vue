@@ -28,11 +28,20 @@
 
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" src="@/assets/icons/icon-unblocked-gray.png">
-            <img v-else @click="switchuser(scope.row)" src="@/assets/icons/icon-blocked-red.png">
-            <img src="@/assets/icons/copy.gif">
-            <img src="@/assets/icons/icon-pencil-gray.png">
-            <img src="@/assets/icons/icon-cross-gray.png">
+            <img v-if="scope.row.isActive" @click="switchuser(scope.row)"
+                 title="Активный"
+                 src="@/assets/icons/icon-unblocked-gray.png">
+            <img v-else @click="switchuser(scope.row)"
+                 title="Нeактивный"
+                 src="@/assets/icons/icon-blocked-red.png">
+            <img src="@/assets/icons/copy.gif"
+                 title="Создать новый на основе этого"
+            >
+            <img @click="openUserModal(scope.row)"
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">
           </div>
         </template>
       </el-table-column>
@@ -62,6 +71,11 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
+  <UsersDirModal
+      :isOpen="isOpenUsersDirModal"
+      :userId="currentRow.id"
+      @closeModal="closeModal"/>
+  />
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
@@ -69,6 +83,7 @@ import {ref} from "vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
+import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -78,6 +93,13 @@ const rowsPerPage = ref(5)
 const pageDescription = ref('')
 const filter = {offset: 0, limit: 5, search: ''}
 const search = ref('')
+const currentRow = ref(null)
+const isOpenUsersDirModal = ref(false)
+
+
+
+openUserModal({"id":152,"login":"timur","password":null,"role":21,"roleTitle":"Выкупщик менеджер","position":"Руководитель закамского региона","isActive":true,"createDate":"2017-06-09T19:03:13.015","firstName":"Тимур","middleName":"Мавлетдинович","lastName":"Абдулнасыров","fullName":"Абдулнасыров Тимур","phone":"09593553121","email":"t2901513@mail.ru","orgElementId":44,"orgTitle":"Выкуп (Нижнекамск)","orgelementTitle":null,"storageId":27,"timeZone":10,"typeDocumentSignature":null,"numberDocumentSignature":null,"dateDocumentSignature":"0001-01-01T00:00:00","signAuthority":null,"avatarId":null,"sendEmail":false,"lastEditUser":null,"lastEditDate":null,"locationTitle":"KIA на Спортивной (НК)","groups":[],"changePassDate":null,"needChangePass":false,"avatarUrl":null})
+
 
 function find() {
   console.log('find')
@@ -106,6 +128,13 @@ function getData() {
 function switchuser(row) {
   adminStore.switchuser(row.id).then(getData)
 }
+
+function openUserModal(row:any) {
+  currentRow.value = row
+  isOpenUsersDirModal.value = true
+}
+
+const closeModal = () => isOpenUsersDirModal.value = false
 
 globalStore.setTitle('Пользователи')
 globalStore.steps = []

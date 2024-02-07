@@ -11,7 +11,6 @@
           <span> {{ subtitle }}</span>
         </div>
         <div class="close_cross" @click="emits('closeModal')">❌</div>
-        <button class="modal__сhangeN">Сменить номер</button>
         <div class="modal__info">
           <slot/>
         </div>
@@ -51,21 +50,6 @@
   margin-top: -20px;
   margin-left: 12px;
   margin-bottom: 45px;
-}
-
-.modal__сhangeN {
-  position: absolute;
-  right: 12px;
-  top: 57px;
-  padding: 3px 24px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-}
-
-.modal__сhangeN:hover {
-  background: #ecf5ff;
-  color: #409eff;
 }
 
 .modal__title span {

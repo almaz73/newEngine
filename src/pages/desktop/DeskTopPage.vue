@@ -47,7 +47,7 @@
 
                 <el-form-item>
                   <el-input placeholder="Подменный телефон"
-                            :formatter="(value) =>formattingPhone(value)"
+                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.workflow.swapPhone"/>
                 </el-form-item>
 
@@ -78,7 +78,7 @@
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
-                            :formatter="(value) =>formattingPhone(value)"
+                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
 
@@ -96,7 +96,7 @@
                 <el-form-item prop="buyLead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
-                            :formatter="(value) =>formattingPhone(value)"
+                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.buyLead.person.phone"/>
                 </el-form-item>
 

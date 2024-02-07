@@ -25,6 +25,10 @@ export const useAdminStore = defineStore("adminStore", {
         async switchuser(id: number) {
             const res = await switchuser(id)
             return res.data
+        },
+        async getUserForModal(id: number) {
+            const res = await getUserForModal(id)
+            return res.data
         }
     }
 })
@@ -54,4 +58,7 @@ function switchuser(id: number) {
     return axios.post(`api/user/${id}/switchuser`).then(res => res)
 }
 
+function getUserForModal(id: number) {
+    return axios.get(`api/user/get?id=${id}`).then(res => res)
+}
 
