@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import {ElMessageBox, ElTable} from "element-plus";
+import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {EditPen, CloseBold, Search, Plus} from '@element-plus/icons-vue'
 
@@ -85,18 +85,24 @@ function edit(row) {
 
 function save() {
   let row = tableData.value.find(el => !el.id)
-  adminStore.addColor(row)
-  getData()
+  adminStore.addColor(row).then(() => {
+    ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
+    getData()
+  })
 }
 
-function deleteRow(row) {
-  console.log('row', row)
-  ElMessageBox.confirm('Действительно хотите удалить?')
+function deleteRow(row: any) {
+  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
       .then(() => {
-        adminStore.deleteColor(row.id)
-        isEdit.value = false
-        selectedRow.value = false
-        getData()
+        adminStore.deleteColor(row.id).then(res => {
+          ElMessage({message: 'Цвет удален.', type: 'success'})
+          getData()
+          isEdit.value = false
+          selectedRow.value = false
+        })
       })
       .catch(() => {
       })

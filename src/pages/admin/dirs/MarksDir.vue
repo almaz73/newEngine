@@ -9,8 +9,9 @@
     </span>
     <h4 style="color: #999">
       {{
-        (selectedBrand && selectedBrand.name) ? 'Автомобильный бренд: ' + selectedBrand.name +
-            '.   (моделей: ' + modelsTotal + ' )' : 'Все бренды ( ' + brandsTotal + ')'
+        (selectedBrand && selectedBrand.name) ?
+            'Автомобильный бренд: ' + selectedBrand.name + '.   (моделей: ' + modelsTotal + ' )' :
+            'Все бренды ( ' + brandsTotal + ')'
       }}
     </h4>
     <br>
@@ -24,7 +25,12 @@
         highlight-current-row
         style="cursor: pointer"
     >
-      <el-table-column label="Название" prop="name"/>
+      <el-table-column label="Название">
+        <template #default="scope">
+          <span v-if="selectedBrand">  - - {{ scope.row.name }}</span>
+          <span v-else> {{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData"
@@ -57,11 +63,6 @@ function find() {
     tableData.value = brandsMemory
     return
   }
-
-  console.log('word', word)
-  console.log('selectedBrand.value', selectedBrand.value)
-
-  console.log('brandsMemory', brandsMemory)
 
   if (!selectedBrand.value) {
     tableData.value = brandsMemory.filter(el => el.name.toUpperCase().includes(word))
