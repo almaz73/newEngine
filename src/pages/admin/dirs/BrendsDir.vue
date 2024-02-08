@@ -36,7 +36,8 @@
       <div v-for="(row, ind) in tableData"
            @click="showModel(row)"
            :key="ind" style="border-top:5px double #ddd">
-        <span>{{ row.name }}</span>
+        <span v-if="selectedBrand && selectedBrand.name"> - - {{ row.name }}</span>
+        <span v-else>{{ row.name }}</span>
       </div>
     </div>
 

@@ -29,12 +29,7 @@
 
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" alt=""
-                 title="Активный"
-                 src="@/assets/icons/icon-unblocked-gray.png">
-            <img v-else @click="switchuser(scope.row)" alt=""
-                 title="Нeактивный"
-                 src="@/assets/icons/icon-blocked-red.png">
+
             <img src="@/assets/icons/copy.gif" alt=""
                  title="Создать новый на основе этого"
             >
@@ -51,7 +46,19 @@
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-        <span>{{ row.login }} </span>
+        <span>{{ row.login }}
+           <el-button><img @click="openModalUserDir(row)" alt=""
+                title="Редактировать"
+                src="@/assets/icons/icon-pencil-gray.png">
+             </el-button>
+          &nbsp;
+           <img v-if="row.isActive" @click="switchuser(row)" alt=""
+                title="Активный"
+                src="@/assets/icons/icon-unblocked-gray.png">
+            <img v-else @click="switchuser(row)" alt=""
+                 title="Нeактивный"
+                 src="@/assets/icons/icon-blocked-red.png">
+        </span>
         <div><small>ФИО:</small> {{ row.fullName }}</div>
         <div><small>Место:</small> {{ row.locationTitle }}</div>
         <div><small>Роль:</small> {{ row.roleTitle }}</div>

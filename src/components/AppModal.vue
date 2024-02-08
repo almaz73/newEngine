@@ -52,6 +52,10 @@
   margin-bottom: 45px;
 }
 
+.modal__title h3 {
+  color: #f56c6c
+}
+
 .modal__title span {
   position: absolute;
   margin-top: -18px;

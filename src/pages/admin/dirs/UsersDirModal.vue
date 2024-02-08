@@ -8,90 +8,95 @@
             draggable
             resizable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
+
       <span class="modal-fields">
-        <img class="photo-place" v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"
-             alt="Фото пользователя">
-        <img src="@/assets/icons/icon-face.png" alt="" v-else class="photo-place"/>
-        <el-input placeholder="Логин" title="Логин" v-model="user.login"/>
-        <el-input placeholder="Пароль" title="Пароль" type="password" v-model="user.password"/>
-        <hr>
-        <el-input placeholder="Фамилия" title="Фамилия" v-model="user.person.lastName"/>
-        <el-input placeholder="Имя" title="Имя" v-model="user.person.firstName"/>
-        <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
-        <el-input placeholder="Email" title="Email" v-model="user.person.email"/>
-        <el-input placeholder="Телефон" title="Телефон" v-model="user.person.phone"/>
-        <el-input placeholder="Доп.телефон" title="Доп.телефон" v-model="user.person.phone2"/>
-        <hr>
-        <el-select
-            title="Организация"
-            placeholder="Введи организацию"
-            v-model="user.organization.id"
-            filterable
-            clearable>
-            <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
+        <el-form ref="form" :model="user" @change="isDirty=true">
+          <img class="photo-place" v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"
+               alt="Фото пользователя">
+          <img src="@/assets/icons/icon-face.png" alt="" v-else class="photo-place"/>
+          <el-input
+              readonly
+              onfocus="this.removeAttribute('readonly')"
+              placeholder="Логин"
+              title="Логин"
+              autocomplete="off" v-model="user.login"/>
+          <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
+          &nbsp; &nbsp;
+          <hr>
+          <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
+          <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
+          <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
+          <el-input placeholder="Email" title="Email" v-model="user.person.email"/>
+          <el-input placeholder="Телефон" title="Телефон" v-model="user.person.phone"/>
+          <el-input placeholder="Доп.телефон" title="Доп.телефон" v-model="user.person.phone2"/>
+          <hr>
+          <el-select
+              title="Организация"
+              placeholder="Введи организацию"
+              v-model="user.organization.id"
+              filterable
+              clearable>
+              <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
 
-        <el-select
-            title="Отдел"
-            placeholder="Введи Отдел"
-            v-model="user.department.id"
-            filterable
-            clearable>
-            <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
+          <el-select
+              title="Отдел"
+              placeholder="Введи Отдел"
+              v-model="user.department.id"
+              filterable
+              clearable>
+              <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
 
-        <el-select
-            title="Место хранения/выкупа"
-            placeholder="Введи место хранения/выкупа"
-            v-model="user.location.id"
-            filterable
-            clearable>
-            <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
-        </el-select>
+          <el-select
+              title="Место хранения/выкупа"
+              placeholder="Введи место хранения/выкупа"
+              v-model="user.location.id"
+              filterable
+              clearable>
+              <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
 
-        <el-select
-            title="Часовой пояс"
-            placeholder="Введи часовой пояс"
-            v-model="user.timeZone"
-            filterable
-            clearable>
-            <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
-        </el-select>
+          <el-select
+              title="Часовой пояс"
+              placeholder="Введи часовой пояс"
+              v-model="user.timeZone"
+              filterable
+              clearable>
+              <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
 
-        <el-input placeholder="Должность" :title="'Должность: '+user.position" v-model="user.position"/>
-        <hr>
-        <el-select
-            title="Категория"
-            placeholder="Введи категорию"
-            v-model="user.roleCategory"
-            @change="roleChanged()"
-            filterable
-            clearable>
-            <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
-        </el-select>
+          <el-input placeholder="Должность" :title="'Должность: '+user.position" v-model="user.position"/>
+          <hr>
+          <el-select
+              title="Категория"
+              placeholder="Введи категорию"
+              v-model="user.roleCategory"
+              @change="roleChanged()"
+              filterable
+              clearable>
+              <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
+          </el-select>
 
-        <el-select
-            title="Роль"
-            placeholder="Введи роль"
-            v-model="user.role.value"
-            filterable
-            clearable>
-            <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
-        </el-select>
-
-        <div style="text-align: right">
-          <el-button type="danger" :icon="Plus">Сохранить</el-button>
-          <el-button title="История изменений">Отменить</el-button>
-          <el-button>⟲ </el-button>
-        </div>
+          <el-select
+              title="Роль"
+              placeholder="Введи роль"
+              v-model="user.role.value"
+              filterable
+              clearable>
+              <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
+          </el-select>
+        </el-form>
+      <div style="text-align: right">
+        <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+        <el-button type="info" @click="isOpen = false">Отменить</el-button>
+        <el-button type="info" title="История изменений">⟲</el-button>
+      </div>
       </span>
     </el-scrollbar>
   </AppModal>
 </template>
 <style>
-.modal-fields img {
-
-}
 
 .modal-fields .el-input {
   margin: 2px 12px;
@@ -111,6 +116,8 @@
   max-height: 120px;
   height: 120px;
   margin-bottom: -10px;
+  margin-left: 20px;
+  border-radius: 8px;
 }
 
 </style>
@@ -121,6 +128,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
+import {ElMessage} from "element-plus";
 
 const globalStore = useGlobalStore()
 
@@ -148,6 +156,8 @@ const timeZones = ref([])
 let userGroupRolesMemory = ref([])
 const userRoleGroups = ref({})
 const userRoles = ref({})
+const form = ref(null)
+const isDirty = ref(false)
 const subtitle = computed(() => {
   let fio = ''
   if (user.value.person.firstName) fio += user.value.person.firstName + ' '
@@ -187,6 +197,19 @@ function open(id) {
     findGruop()
 
   })
+}
+
+function checking() {
+  if (!user.value.person.lastName) {
+    return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
+  }
+  if (!user.value.person.firstName) {
+    return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
+  }
+}
+
+function save() {
+  checking()
 }
 
 defineExpose({open})
