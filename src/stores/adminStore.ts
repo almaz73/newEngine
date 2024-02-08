@@ -29,6 +29,10 @@ export const useAdminStore = defineStore("adminStore", {
         async getUserForModal(id: number) {
             const res = await getUserForModal(id)
             return res.data
+        },
+        async getDepartments() {
+            const res = await getDepartments()
+            return res.data
         }
     }
 })
@@ -50,7 +54,7 @@ function addColor(row: any) {
     return axios.post('api/bodycolor', params).then(res => res)
 }
 
-function deleteColor(id:number) {
+function deleteColor(id: number) {
     return axios.delete('api/bodycolor/' + id).then(res => res)
 }
 
@@ -60,5 +64,9 @@ function switchuser(id: number) {
 
 function getUserForModal(id: number) {
     return axios.get(`api/user/get?id=${id}`).then(res => res)
+}
+
+function getDepartments() {
+    return axios.get('api/user/get/departmens').then(res => res)
 }
 

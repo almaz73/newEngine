@@ -8,7 +8,9 @@
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
                 @keydown.enter="find()"/>
-      <el-button @click="find()" n type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+      <el-button @click="openModalUserDir()" n type="danger" :icon="Plus">{{
+          globalStore.isMobileView ? '' : 'Добавить'
+        }}
       </el-button>
     </div>
 
@@ -37,7 +39,7 @@
             <img src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого"
             >
-            <img @click="openUserModal(scope.row)"
+            <img @click="openModalUserDir(scope.row)"
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
             <img src="@/assets/icons/icon-cross-gray.png"
@@ -94,11 +96,43 @@ const pageDescription = ref('')
 const filter = {offset: 0, limit: 5, search: ''}
 const search = ref('')
 const currentRow = ref(null)
-const isOpenUsersDirModal = ref(false)
+const isOpenUsersDirModal = ref({id:null})
 
 
-
-openUserModal({"id":152,"login":"timur","password":null,"role":21,"roleTitle":"Выкупщик менеджер","position":"Руководитель закамского региона","isActive":true,"createDate":"2017-06-09T19:03:13.015","firstName":"Тимур","middleName":"Мавлетдинович","lastName":"Абдулнасыров","fullName":"Абдулнасыров Тимур","phone":"09593553121","email":"t2901513@mail.ru","orgElementId":44,"orgTitle":"Выкуп (Нижнекамск)","orgelementTitle":null,"storageId":27,"timeZone":10,"typeDocumentSignature":null,"numberDocumentSignature":null,"dateDocumentSignature":"0001-01-01T00:00:00","signAuthority":null,"avatarId":null,"sendEmail":false,"lastEditUser":null,"lastEditDate":null,"locationTitle":"KIA на Спортивной (НК)","groups":[],"changePassDate":null,"needChangePass":false,"avatarUrl":null})
+openModalUserDir({
+  "id": 152,
+  "login": "timur",
+  "password": null,
+  "role": 21,
+  "roleTitle": "Выкупщик менеджер",
+  "position": "Руководитель закамского региона",
+  "isActive": true,
+  "createDate": "2017-06-09T19:03:13.015",
+  "firstName": "Тимур",
+  "middleName": "Мавлетдинович",
+  "lastName": "Абдулнасыров",
+  "fullName": "Абдулнасыров Тимур",
+  "phone": "09593553121",
+  "email": "t2901513@mail.ru",
+  "orgElementId": 44,
+  "orgTitle": "Выкуп (Нижнекамск)",
+  "orgelementTitle": null,
+  "storageId": 27,
+  "timeZone": 10,
+  "typeDocumentSignature": null,
+  "numberDocumentSignature": null,
+  "dateDocumentSignature": "0001-01-01T00:00:00",
+  "signAuthority": null,
+  "avatarId": null,
+  "sendEmail": false,
+  "lastEditUser": null,
+  "lastEditDate": null,
+  "locationTitle": "KIA на Спортивной (НК)",
+  "groups": [],
+  "changePassDate": null,
+  "needChangePass": false,
+  "avatarUrl": null
+})
 
 
 function find() {
@@ -129,8 +163,8 @@ function switchuser(row) {
   adminStore.switchuser(row.id).then(getData)
 }
 
-function openUserModal(row:any) {
-  currentRow.value = row
+function openModalUserDir(row: any | null) {
+  if (row) currentRow.value = row
   isOpenUsersDirModal.value = true
 }
 

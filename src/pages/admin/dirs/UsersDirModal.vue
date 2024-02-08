@@ -9,31 +9,38 @@
             resizable>
     <el-scrollbar maxHeight="400px">
       <span class="modal-fields">
-
-          <span><img :src="user && user.avatar.url"></span>
-          <span><el-input placeholder="Логин" title="Логин"/></span>
-          <span><el-input placeholder="Пароль" title="Пароль"/></span>
+         <img :src="user && user.avatar.url" alt="Фото пользователя">
+         <el-input placeholder="Логин" title="Логин" v-model="user.login"/>
+         <el-input placeholder="Пароль" title="Пароль" type="password" v-model="user.password"/>
         <hr>
 
-          <span><el-input placeholder="Фамилия" title="Фамилия"/></span>
-          <span><el-input placeholder="Имя" title="Имя"/></span>
-          <span><el-input placeholder="Отчество" title="Отчество"/></span>
-          <span> <el-input placeholder="Email" title="Email"/></span>
-          <span><el-input placeholder="Телефон" title="Телефон"/></span>
-          <span><el-input placeholder="Доп.телефон" title="Доп.телефон"/></span>
-        <hr>
-
-
-          <span><el-input placeholder="Организация" title="Организация"/></span>
-          <span><el-input placeholder="Отдел" title="Отдел"/></span>
-          <span><el-input placeholder="Место хранения/выкупа" title="Место хранения/выкупа"/></span>
-          <span> <el-input placeholder="Часовой пояс" title="Часовой пояс"/></span>
-          <span><el-input placeholder="Должность" title="Должность"/></span>
+         <el-input placeholder="Фамилия" title="Фамилия" v-model="user.person.lastName"/>
+         <el-input placeholder="Имя" title="Имя" v-model="user.person.firstName"/>
+         <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
+          <el-input placeholder="Email" title="Email" v-model="user.person.email"/>
+         <el-input placeholder="Телефон" title="Телефон" v-model="user.person.phone"/>
+         <el-input placeholder="Доп.телефон" title="Доп.телефон" v-model="user.person.phone2"/>
         <hr>
 
 
-          <span><el-input placeholder="Категория" title="Категория"/></span>
-          <span><el-input placeholder="Роль" title="Роль"/></span>
+          <el-input placeholder="Организация" title="Организация" v-model="user.organization.name"/>
+          <el-select
+              placeholder="Введи организацию"
+              v-model="user.department.id"
+              filterable
+              clearable>
+        <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"/>
+      </el-select>
+            <el-input placeholder="Отдел" title="Отдел" v-model="user.department"/>
+
+         <el-input placeholder="Место хранения/выкупа" title="Место хранения/выкупа" v-model="user.department"/>
+          <el-input placeholder="Часовой пояс" title="Часовой пояс"/>
+         <el-input placeholder="Должность" title="Должность" v-model="user.position"/>
+        <hr>
+
+
+         <el-input placeholder="Категория" title="Категория"/>
+         <el-input placeholder="Роль" title="Роль"/>
 
       </span>
     </el-scrollbar>
@@ -50,10 +57,14 @@
   border: 1px solid #ddd;
 }
 
-.modal-fields span {
-  display: inline-block;
-  white-space: nowrap;
-  margin: 4px 8px;
+.dark .modal-fields hr {
+  border: 1px solid #444;
+}
+
+.modal-fields .el-input__wrapper {
+  border: 1px solid red;
+
+
 }
 
 
@@ -70,10 +81,23 @@ const globalStore = useGlobalStore()
 
 const {isOpen, userId} = defineProps(['isOpen', 'userId'])
 const emits = defineEmits(['closeModal', 'setFoundClient'])
-const user = ref(null)
-
-useAdminStore().getUserForModal(userId).then(res => {
-  user.value = res
+const user = ref({
+  login: '',
+  person: {firstName: '', middleName: '', lastName: ''},
+  avatar: {url: ''},
+  organization: {name: ''},
+  department: {}
 })
+const adminStore = useAdminStore()
+const departments = ref([])
+
+
+
+adminStore.getUserForModal(userId).then(res =>user.value = res)
+adminStore.getDepartments().then(res =>{
+  departments.value = res.items
+  console.log('departments', departments.value)
+})
+
 
 </script>

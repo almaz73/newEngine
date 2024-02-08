@@ -81,7 +81,7 @@ if (!lastUsedDirectories.value.length) lastUsedDirectories.value.push('Поль�
 const currentDirectory = ref(lastUsedDirectories.value[0])
 selectDir(currentDirectory.value)
 
-function found(val:string) {
+function found(val: string) {
   let count = globalStore.isMobileView ? 3 : 5;
   lastUsedDirectories.value = lastUsedDirectories.value && lastUsedDirectories.value.filter(el => el != val)
   lastUsedDirectories.value.unshift(val)
@@ -91,9 +91,9 @@ function found(val:string) {
 }
 
 
-function selectDir(val:string) {
+function selectDir(val: string) {
   currentDirectory.value = val
-  tab.value = markRaw(AdminDirectories[val])
+  if (AdminDirectories[val]) tab.value = markRaw(AdminDirectories[val])
 }
 
 

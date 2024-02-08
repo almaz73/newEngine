@@ -5,6 +5,10 @@
     background: white;
 }
 
+.dark .admin {
+    background: #222222;
+}
+
 .left-admin {
     margin-right: 60px;
     margin-bottom: 8px;
