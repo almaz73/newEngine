@@ -47,10 +47,6 @@ const router = createRouter({
             name: 'bayerhelp',
             component: () => import('../documentation/bayerhelp.vue').catch(val => fail(val))
         }, {
-            path: '/calls',
-            name: 'calls',
-            component: () => import('@/pages/calls/CallsPage.vue').catch(val => fail(val))
-        }, {
             path: '/admin',
             name: 'admin',
             component: () => import('@/pages/admin/AdminPage.vue').catch(val => fail(val))

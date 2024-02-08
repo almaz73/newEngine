@@ -8,9 +8,8 @@
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
                 @keydown.enter="find()"/>
-      <el-button @click="openModalUserDir()" n type="danger" :icon="Plus">{{
-          globalStore.isMobileView ? '' : 'Добавить'
-        }}
+      <el-button @click="openModalUserDir()" type="danger" :icon="Plus">
+        {{ globalStore.isMobileView ? '' : 'Добавить' }}
       </el-button>
     </div>
 
@@ -30,19 +29,19 @@
 
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img v-if="scope.row.isActive" @click="switchuser(scope.row)"
+            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" alt=""
                  title="Активный"
                  src="@/assets/icons/icon-unblocked-gray.png">
-            <img v-else @click="switchuser(scope.row)"
+            <img v-else @click="switchuser(scope.row)" alt=""
                  title="Нeактивный"
                  src="@/assets/icons/icon-blocked-red.png">
-            <img src="@/assets/icons/copy.gif"
+            <img src="@/assets/icons/copy.gif" alt=""
                  title="Создать новый на основе этого"
             >
-            <img @click="openModalUserDir(scope.row)"
+            <img @click="openModalUserDir(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img src="@/assets/icons/icon-cross-gray.png"
+            <img src="@/assets/icons/icon-cross-gray.png" alt=""
                  title="Удалить">
           </div>
         </template>
@@ -73,11 +72,7 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
-  <UsersDirModal
-      :isOpen="isOpenUsersDirModal"
-      :userId="currentRow.id"
-      @closeModal="closeModal"/>
-  />
+  <UsersDirModal ref="UserModal"/>
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
@@ -89,50 +84,14 @@ import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
+const UserModal = ref(null)
 const tableData = ref([])
 const total = ref('')
 const rowsPerPage = ref(5)
 const pageDescription = ref('')
 const filter = {offset: 0, limit: 5, search: ''}
 const search = ref('')
-const currentRow = ref(null)
-const isOpenUsersDirModal = ref({id:null})
-
-
-openModalUserDir({
-  "id": 152,
-  "login": "timur",
-  "password": null,
-  "role": 21,
-  "roleTitle": "Выкупщик менеджер",
-  "position": "Руководитель закамского региона",
-  "isActive": true,
-  "createDate": "2017-06-09T19:03:13.015",
-  "firstName": "Тимур",
-  "middleName": "Мавлетдинович",
-  "lastName": "Абдулнасыров",
-  "fullName": "Абдулнасыров Тимур",
-  "phone": "09593553121",
-  "email": "t2901513@mail.ru",
-  "orgElementId": 44,
-  "orgTitle": "Выкуп (Нижнекамск)",
-  "orgelementTitle": null,
-  "storageId": 27,
-  "timeZone": 10,
-  "typeDocumentSignature": null,
-  "numberDocumentSignature": null,
-  "dateDocumentSignature": "0001-01-01T00:00:00",
-  "signAuthority": null,
-  "avatarId": null,
-  "sendEmail": false,
-  "lastEditUser": null,
-  "lastEditDate": null,
-  "locationTitle": "KIA на Спортивной (НК)",
-  "groups": [],
-  "changePassDate": null,
-  "needChangePass": false,
-  "avatarUrl": null
-})
+const currentRow = ref({id: null})
 
 
 function find() {
@@ -146,7 +105,7 @@ function changePageSize() {
   getData()
 }
 
-function changePage(val) {
+function changePage(val: number) {
   filter.offset = (val - 1) * rowsPerPage.value
   getData()
 }
@@ -159,16 +118,15 @@ function getData() {
   })
 }
 
-function switchuser(row) {
+function switchuser(row: any) {
   adminStore.switchuser(row.id).then(getData)
 }
 
 function openModalUserDir(row: any | null) {
   if (row) currentRow.value = row
-  isOpenUsersDirModal.value = true
+  UserModal.value.open(row && row.id)
 }
 
-const closeModal = () => isOpenUsersDirModal.value = false
 
 globalStore.setTitle('Пользователи')
 globalStore.steps = []

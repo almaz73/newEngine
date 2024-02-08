@@ -33,6 +33,18 @@ export const useAdminStore = defineStore("adminStore", {
         async getDepartments() {
             const res = await getDepartments()
             return res.data
+        },
+        async getUserLocarions() {
+            const res = await getUserLocarions()
+            return res.data
+        },
+        async getTimeZones() {
+            const res = await getTimeZones()
+            return res.data
+        },
+        async getUserRoles() {
+            const res = await getUserRoles()
+            return res.data
         }
     }
 })
@@ -70,3 +82,14 @@ function getDepartments() {
     return axios.get('api/user/get/departmens').then(res => res)
 }
 
+function getUserLocarions() {
+    return axios.get('api/user/get/locations').then(res => res)
+}
+
+function getTimeZones() {
+    return axios.get('api/user/get/time-zones').then(res => res)
+}
+
+function getUserRoles() {
+    return axios.get('api/user/get/roles').then(res => res)
+}
