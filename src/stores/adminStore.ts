@@ -14,11 +14,11 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await getColors()
             return res.data
         },
-        async addColor(row) {
+        async addColor(row: any) {
             const res = await addColor(row)
             return res.data
         },
-        async deleteColor(row) {
+        async deleteColor(row: any) {
             const res = await deleteColor(row)
             return res.data
         },
@@ -45,7 +45,16 @@ export const useAdminStore = defineStore("adminStore", {
         async getUserRoles() {
             const res = await getUserRoles()
             return res.data
-        }
+        },
+        async saveUser(obj: any) {
+            const res = await saveUser(obj)
+            return res.data
+        },
+        async getUserHistory(id: number) {
+            const res = await getUserHistory(id)
+            return res.data
+        },
+
     }
 })
 
@@ -93,3 +102,12 @@ function getTimeZones() {
 function getUserRoles() {
     return axios.get('api/user/get/roles').then(res => res)
 }
+
+function saveUser(obj: any) {
+    return axios.post(`api/user/save`, obj).then(res => res)
+}
+
+function getUserHistory(id: number) {
+    return axios.get(`api/user/get/audit?id=${id}`).then(res => res)
+}
+

@@ -90,11 +90,12 @@
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отменить</el-button>
-        <el-button type="info" title="История изменений">⟲</el-button>
+        <el-button type="info" @click="showHistory()" title="История изменений">⟲</el-button>
       </div>
       </span>
     </el-scrollbar>
   </AppModal>
+  <UsersDirModal_History ref="modalHistory"/>
 </template>
 <style>
 
@@ -129,6 +130,7 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
+import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 
 const globalStore = useGlobalStore()
 
@@ -146,6 +148,7 @@ const userInit = {
 const user = ref(userInit)
 
 const closeModal = () => isOpen.value = false
+const modalHistory = ref(null)
 const adminStore = useAdminStore()
 const organizations = ref([])
 const departments = ref([])
@@ -158,6 +161,7 @@ const userRoleGroups = ref({})
 const userRoles = ref({})
 const form = ref(null)
 const isDirty = ref(false)
+let cb;
 const subtitle = computed(() => {
   let fio = ''
   if (user.value.person.firstName) fio += user.value.person.firstName + ' '
@@ -189,14 +193,18 @@ function findGruop() {
   roleChanged()
 }
 
-function open(id) {
+function open(row, cbModal) {
+  cb = cbModal
   isOpen.value = true
-  if (!id) user.value = userInit
-  else adminStore.getUserForModal(id).then(res => {
+  if (!row) user.value = userInit
+  else adminStore.getUserForModal(row.id).then(res => {
     user.value = res
     findGruop()
-
   })
+}
+
+function showHistory() {
+  modalHistory.value.open(user.value)
 }
 
 function checking() {
@@ -209,7 +217,15 @@ function checking() {
 }
 
 function save() {
-  checking()
+  console.log('user.value=', user.value)
+  if (checking()) return false
+  adminStore.saveUser(user.value).then(res => {
+    console.log(res)
+    if (res.ok) alert()
+    ElMessage({message: 'Успешно', type: 'success'})
+    isOpen.value = false
+    cb()
+  })
 }
 
 defineExpose({open})

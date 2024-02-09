@@ -131,7 +131,11 @@ function switchuser(row: any) {
 
 function openModalUserDir(row: any | null) {
   if (row) currentRow.value = row
-  UserModal.value.open(row && row.id)
+  UserModal.value.open(row, cbModal)
+}
+
+function cbModal() {
+  getData()
 }
 
 
