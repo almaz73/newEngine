@@ -27,7 +27,9 @@
     >
       <el-table-column label="Название">
         <template #default="scope">
-          <span v-if="selectedBrand && selectedBrand.name"> - - {{ scope.row.name }}</span>
+          <span v-if="selectedBrand && selectedBrand.name"> - - {{ scope.row.name }}
+            <el-button @click.stop="showPicture(scope.row.name)" style="float: right">Посмотреть</el-button>
+          </span>
           <span v-else>   {{ scope.row.name }}</span>
         </template>
       </el-table-column>
@@ -91,11 +93,16 @@ function showModel(val) {
 
 
 function getData() {
-  useGlobalStore().getBrands().then(res => {
+  globalStore.getBrands().then(res => {
     tableData.value = res
     brandsMemory = JSON.parse(JSON.stringify(res))
     brandsTotal.value = res.length
   })
+}
+
+function showPicture(model:string) {
+  let url = `https://www.google.com/search?q=${selectedBrand.value.name}+${model}+foto`
+  window.open(url)
 }
 
 getData()
