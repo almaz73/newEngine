@@ -18,8 +18,8 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await addColor(row)
             return res.data
         },
-        async deleteColor(row: any) {
-            const res = await deleteColor(row)
+        async deleteColor(id: number) {
+            const res = await deleteColor(id)
             return res.data
         },
         async switchuser(id: number) {
@@ -54,7 +54,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await getUserHistory(id)
             return res.data
         },
-
+        async deleteUser(id: number) {
+            const res = await deleteUser(id)
+            return res.data
+        },
     }
 })
 
@@ -109,5 +112,9 @@ function saveUser(obj: any) {
 
 function getUserHistory(id: number) {
     return axios.get(`api/user/get/audit?id=${id}`).then(res => res)
+}
+
+function deleteUser(id: number) {
+    return axios.delete('api/user/' + id).then(res => res)
 }
 

@@ -13,6 +13,7 @@
       </el-button>
       <span v-if="globalStore.isMobileView && isEdit"><br><br></span>
       <el-button v-if="isEdit" @click="save()">Сохранить</el-button>
+      <el-button v-if="isEdit" @click="selectedRow = isEdit = false">Сброс</el-button>
     </div>
 
     <el-table

@@ -53,7 +53,7 @@
 }
 
 .modal__title h3 {
-  color: #f56c6c
+  color: #f13d03;
 }
 
 .modal__title span {

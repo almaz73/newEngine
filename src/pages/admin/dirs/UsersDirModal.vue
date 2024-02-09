@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 330: 930"
             :top="40"
-            :title="'Настройки пользователя'"
+            :title="title"
             :subtitle="subtitle"
             draggable
             resizable>
@@ -148,6 +148,7 @@ const userInit = {
 const user = ref(userInit)
 
 const closeModal = () => isOpen.value = false
+const title = ref('')
 const modalHistory = ref(null)
 const adminStore = useAdminStore()
 const organizations = ref([])
@@ -193,12 +194,22 @@ function findGruop() {
   roleChanged()
 }
 
-function open(row, cbModal) {
+function open(row, cbModal, copy) {
   cb = cbModal
   isOpen.value = true
+  title.value = 'Создание нового пользователя'
   if (!row) user.value = userInit
   else adminStore.getUserForModal(row.id).then(res => {
     user.value = res
+    title.value = 'Редактирование пользователя'
+
+    if (copy) {
+      user.value.id = 0
+      user.value.login = null
+      user.value.person.id = 0
+      title.value = 'Копирование пользователя'
+    }
+
     findGruop()
   })
 }

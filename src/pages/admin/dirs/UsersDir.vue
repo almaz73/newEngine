@@ -25,18 +25,25 @@
       <el-table-column label="Место выкупа" prop="locationTitle"/>
       <el-table-column label="Логин" prop="login"/>
       <el-table-column label="Роль" prop="roleTitle"/>
-      <el-table-column prop="roleTitle" width="100px">
+      <el-table-column prop="roleTitle" width="120px">
 
         <template #default="scope">
           <div style="" class="admin-table-editors">
-
-            <img src="@/assets/icons/copy.gif" alt=""
+            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" alt=""
+                 title="Активный"
+                 src="@/assets/icons/icon-unblocked-gray.png">
+            <img v-else @click="switchuser(scope.row)" alt=""
+                 title="Нeактивный"
+                 src="@/assets/icons/icon-blocked-red.png">
+            <img @click="openModalUserDir(scope.row, 'copy')" alt=""
+                 src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого"
             >
             <img @click="openModalUserDir(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img src="@/assets/icons/icon-cross-gray.png" alt=""
+            <img @click="deleteUser(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
         </template>
@@ -48,8 +55,8 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.login }}
            <el-button><img @click="openModalUserDir(row)" alt=""
-                title="Редактировать"
-                src="@/assets/icons/icon-pencil-gray.png">
+                           title="Редактировать"
+                           src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
           &nbsp;
            <img v-if="row.isActive" @click="switchuser(row)" alt=""
@@ -84,7 +91,7 @@
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import {ElTable} from "element-plus";
+import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
@@ -129,9 +136,22 @@ function switchuser(row: any) {
   adminStore.switchuser(row.id).then(getData)
 }
 
-function openModalUserDir(row: any | null) {
+function openModalUserDir(row: any | null, copy: string | null) {
   if (row) currentRow.value = row
-  UserModal.value.open(row, cbModal)
+  UserModal.value.open(row, cbModal, copy)
+}
+
+function deleteUser(id: number) {
+  ElMessageBox.confirm('Вы действительно хотите удалить пользователя?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+      .then((res) => {
+        res && adminStore.deleteUser(id).then(() => {
+          ElMessage({message: 'Пользователь успешно удален', type: 'success'})
+          getData()
+        })
+      })
 }
 
 function cbModal() {
