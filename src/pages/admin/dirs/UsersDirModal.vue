@@ -22,6 +22,7 @@
               autocomplete="off" v-model="user.login"/>
           <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
           &nbsp; &nbsp;
+          <a @click="signingLikeAnother()">Прикинуться</a>
           <hr>
           <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
           <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
@@ -131,6 +132,7 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
+import {decryptPassword} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
 
@@ -188,9 +190,8 @@ function roleChanged() {
 }
 
 function findGruop() {
-  user.value.roleCategory = userGroupRolesMemory.value.find(el => el.roles.find(item => {
-    return item.value === user.value.role.value
-  })).group.value;
+  let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
+  user.value.roleCategory = elem && elem.group.value;
   roleChanged()
 }
 
@@ -216,6 +217,18 @@ function open(row, cbModal, copy) {
 
 function showHistory() {
   modalHistory.value.open(user.value)
+}
+
+function signingLikeAnother() {
+  let mk = localStorage.getItem('myKey')
+  let myKey = mk && decryptPassword(mk)
+
+  globalStore.signOut().then(() => {
+    globalStore.signIn(user.value.login, myKey).then(res => {
+      localStorage.setItem('account', JSON.stringify(res.data))
+      location.reload()
+    })
+  })
 }
 
 function checking() {

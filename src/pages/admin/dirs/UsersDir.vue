@@ -5,12 +5,20 @@
                 :prefix-icon="Search"
                 @clear="find"
                 clearable
+                readonly
+                onfocus="this.removeAttribute('readonly')"
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
                 @keydown.enter="find()"/>
       <el-button @click="openModalUserDir()" type="danger" :icon="Plus">
         {{ globalStore.isMobileView ? '' : 'Добавить' }}
       </el-button>
+      &nbsp;
+      <el-input v-model="myKey"
+                :style="{opacity:isMyKey?1:0}"
+                @click="isMyKey = true"
+                @blur="saveHashMyKey(); isMyKey = false"
+                class="myKey"/>
     </div>
 
     <el-table
@@ -95,6 +103,7 @@ import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
+import {encryptPassword} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -106,7 +115,13 @@ const pageDescription = ref('')
 const filter = {offset: 0, limit: 5, search: ''}
 const search = ref('')
 const currentRow = ref({id: null})
+const myKey = ref(null)
+const isMyKey = ref(false)
 
+function saveHashMyKey() {
+  let hash = myKey.value && encryptPassword(myKey.value)
+  localStorage.setItem('myKey', hash)
+}
 
 function find() {
   console.log('find')

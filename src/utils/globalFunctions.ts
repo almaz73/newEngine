@@ -282,3 +282,24 @@ function translitRu2En(value: string, short: boolean) {
     value = /^[А-Я]*$/.test(value) ? translate[value] : value;
     return value;
 }
+
+// start проостое хеширование
+export function encryptPassword(password: string): string {
+    let encryptedPassword: string = "";
+    const alphabet: string = "abcdefghijklmnopqrstuvwxyz";
+    for (let i = 0; i < password.length; i++) {
+        encryptedPassword += alphabet[i % alphabet.length] + "2" + password[i];
+    }
+    return encryptedPassword.split("").reverse().join("");
+}
+
+export function decryptPassword(encryptedPassword: string): string {
+    let decryptedPassword = "";
+    const reversedEncryptedPassword: string = encryptedPassword.split("").reverse().join("");
+    for (let i = 0; i < reversedEncryptedPassword.length; i += 3) {
+        decryptedPassword += reversedEncryptedPassword[i + 2];
+    }
+    return decryptedPassword;
+}
+
+// end проостое хкширование
