@@ -134,3 +134,9 @@ a:hover {
     align-items: center;
     cursor: pointer
 }
+.admin-filter-field {
+    display: flex;
+    gap: 10px 50px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}

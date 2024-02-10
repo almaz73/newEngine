@@ -58,6 +58,11 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await deleteUser(id)
             return res.data
         },
+        async getAllOrganizations() {
+            const res = await getAllOrganizations()
+            console.log(' - - - - - - ', res)
+            return res.data
+        },
     }
 })
 
@@ -116,5 +121,9 @@ function getUserHistory(id: number) {
 
 function deleteUser(id: number) {
     return axios.delete('api/user/' + id).then(res => res)
+}
+
+function getAllOrganizations() {
+    return axios.get('api/orgElement/0').then(res => res)
 }
 

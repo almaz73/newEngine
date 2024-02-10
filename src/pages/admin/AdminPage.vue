@@ -39,13 +39,14 @@ import ClientsDir from "@/pages/admin/ClientsDir.vue";
 import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
 import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
+import OrgsDir from "@/pages/admin/dirs/OrgsDir.vue";
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
 const AdminDirectories = {
   'Пользователи': UsersDir,
-  '🚧 Орг. структура': UsersDir,
+  'Орг. структура': OrgsDir,
   'Марки': BrendsDir,
   '🚧Марки по ПТС': ClientsDir,
   'Цвета кузова': ColorsDir,

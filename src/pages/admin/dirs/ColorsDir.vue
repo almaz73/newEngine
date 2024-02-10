@@ -119,6 +119,7 @@ function getData() {
 }
 
 globalStore.setTitle('Цвета кузова')
+globalStore.steps = []
 getData()
 
 

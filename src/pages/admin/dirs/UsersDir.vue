@@ -18,7 +18,6 @@
     </div>
 
     <div class="admin-filter-field">
-      фильтры:
       <el-select
           placeholder="Статус"
           v-model="filterStatus"
@@ -131,15 +130,6 @@
   </div>
   <UsersDirModal ref="UserModal"/>
 </template>
-
-<style>
-.admin-filter-field {
-  display: flex;
-  gap: 10px 50px;
-  flex-wrap: wrap;
-  margin: 12px 0;
-}
-</style>
 
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";

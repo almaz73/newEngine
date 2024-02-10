@@ -107,4 +107,5 @@ function showPicture(model:string) {
 
 getData()
 globalStore.setTitle('Автомобильные бренды')
+globalStore.steps = []
 </script>

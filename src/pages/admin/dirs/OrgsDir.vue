@@ -1,0 +1,114 @@
+<template>
+  <div>
+    <el-table
+        :data="tableData"
+        style="width: 100%; margin-bottom: 20px"
+        row-key="id"
+        :tree-props="{ children: 'nodes', hasChildren: 'hasChildren' }"
+        default-expand-all
+        highlight-current-row>
+      <el-table-column label="Организация">
+        <template #default="scope">
+          <span :style="{color:scope.row.orgElementType===10?'#f13d03':''}">
+            {{ scope.row.title }}
+            </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="city" label="Город"/>
+      <el-table-column prop="roleTitle" width="120px">
+
+        <template #default="scope">
+          <div style="" class="admin-table-editors">
+            <img v-if="scope.row.isActive" @click="switchuser(scope.row)" alt=""
+                 title="Активный"
+                 src="@/assets/icons/icon-unblocked-gray.png">
+            <img v-else @click="switchuser(scope.row)" alt=""
+                 title="Нeактивный"
+                 src="@/assets/icons/icon-blocked-red.png">
+
+            <img @click="switchuser(scope.row)" alt=""
+                 title="Нeактивный"
+                 src="@/assets/icons/icon-plus-gray-row.png">
+
+            <img @click="openModalUserDir(scope.row)" alt=""
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img @click="deleteUser(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">
+          </div>
+        </template>
+      </el-table-column>
+
+    </el-table>
+  </div>
+</template>
+<script setup lang="ts">
+import {useAdminStore} from "@/stores/adminStore";
+import {ref} from "vue";
+import {ElMessage, ElMessageBox, ElTable} from "element-plus";
+import {useGlobalStore} from "@/stores/globalStore";
+import {EditPen, CloseBold, Search, Plus} from '@element-plus/icons-vue'
+
+const globalStore = useGlobalStore()
+const adminStore = useAdminStore()
+const tableData = ref([])
+let tableDataMemory = []
+const like = ref('')
+const isEdit = ref(false)
+const selectedRow = ref(false)
+
+
+function add() {
+  tableData.value.unshift({colorName: '', colorCode: '#ddd'})
+  isEdit.value = true
+}
+
+
+function edit(row) {
+  selectedRow.value = row
+  isEdit.value = true
+}
+
+function save() {
+  let row = tableData.value.find(el => !el.id)
+  adminStore.addColor(row).then(() => {
+    ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
+    getData()
+  })
+}
+
+function deleteRow(row: any) {
+  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+      .then(() => {
+        adminStore.deleteColor(row.id).then(res => {
+          ElMessage({message: 'Цвет удален.', type: 'success'})
+          getData()
+          isEdit.value = false
+          selectedRow.value = false
+        })
+      })
+      .catch(() => {
+      })
+}
+
+function getData() {
+  isEdit.value = false
+  selectedRow.value = false
+
+  adminStore.getAllOrganizations().then(res => {
+    console.log(' - -res', res)
+    tableData.value = res.items
+    tableDataMemory = JSON.parse(JSON.stringify(res.items))
+  })
+}
+
+globalStore.setTitle('Организационная структура')
+globalStore.steps = []
+getData()
+
+
+</script>
