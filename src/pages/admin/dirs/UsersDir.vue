@@ -1,24 +1,59 @@
 <template>
   <div>
-    <div style="margin-bottom: 30px">
+    <div class="admin-filter-field" style="column-gap: 22px">
       <el-input v-model="search"
                 :prefix-icon="Search"
-                @clear="find"
+                placeholder="Поиск"
+                @clear="search=''"
                 clearable
-                readonly
-                onfocus="this.removeAttribute('readonly')"
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
-                @keydown.enter="find()"/>
-      <el-button @click="openModalUserDir()" type="danger" :icon="Plus">
-        {{ globalStore.isMobileView ? '' : 'Добавить' }}
-      </el-button>
-      &nbsp;
+                @keydown.enter="getData()"/>
+      <el-button @click="openModalUserDir()" type="danger" :icon="Plus"> Добавить</el-button>
       <el-input v-model="myKey"
                 :style="{opacity:isMyKey?1:0}"
                 @click="isMyKey = true"
                 @blur="saveHashMyKey(); isMyKey = false"
                 class="myKey"/>
+    </div>
+
+    <div class="admin-filter-field">
+      фильтры:
+      <el-select
+          placeholder="Статус"
+          v-model="filterStatus"
+          @change="getData()"
+          multiple
+          clearable>
+        <el-option v-for="(item, ind) in statuses"
+                   :key="ind" :label="item.name"
+                   :value="item.type"/>
+      </el-select>
+
+
+      <el-select
+          placeholder="Организация"
+          v-model="filter.Organizations"
+          @change="getData()"
+          multiple
+          clearable
+          filterable>
+        <el-option v-for="(item, ind) in organizations"
+                   :key="ind" :label="item.name"
+                   :value="item.id"/>
+      </el-select>
+      <el-select
+          placeholder="Роль"
+          v-model="filter.role"
+          @change="getData()"
+          clearable
+          filterable>
+        <el-option v-for="(item, ind) in roles"
+                   :key="ind" :label="item.title"
+                   :value="item.value"/>
+      </el-select>
+
+      <el-button>Искать</el-button>
     </div>
 
     <el-table
@@ -96,6 +131,16 @@
   </div>
   <UsersDirModal ref="UserModal"/>
 </template>
+
+<style>
+.admin-filter-field {
+  display: flex;
+  gap: 10px 50px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+</style>
+
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
@@ -112,22 +157,29 @@ const tableData = ref([])
 const total = ref('')
 const rowsPerPage = ref(5)
 const pageDescription = ref('')
-const filter = {offset: 0, limit: 5, search: ''}
 const search = ref('')
 const currentRow = ref({id: null})
 const myKey = ref(null)
 const isMyKey = ref(false)
+const filter = {offset: 0, limit: 5, search: '', Organizations: [], role: null}
+const organizations = ref([])
+const filterStatus = ref([])
+const statuses = [
+  {name: 'Активные', type: 'IsActive', value: false},
+  {name: 'Заблокированные', type: 'Blocked', value: false},
+  {name: 'Удаленные', type: 'deleted', value: false}
+]
+const roles = ref([])
+
+
+globalStore.getOrganizations().then(res => organizations.value = res.items)
+adminStore.getUserRoles().then(res => res.items.forEach(item => roles.value.push(...item.roles)))
 
 function saveHashMyKey() {
-  let hash = myKey.value && encryptPassword(myKey.value)
-  localStorage.setItem('myKey', hash)
+  let hash: null | string = myKey.value && encryptPassword(myKey.value)
+  hash && localStorage.setItem('myKey', hash)
 }
 
-function find() {
-  console.log('find')
-  filter.search = search.value
-  getData()
-}
 
 function changePageSize() {
   filter.limit = rowsPerPage.value
@@ -139,7 +191,15 @@ function changePage(val: number) {
   getData()
 }
 
+function prepareFilter() {
+  if (filterStatus.value.length) {
+    ['deleted', "IsActive", "Blocked"].forEach(type => filter[type] = filterStatus.value.includes(type))
+  }
+  filter.search = search.value
+}
+
 function getData() {
+  prepareFilter()
   adminStore.getUsers(filter).then(res => {
     tableData.value = res.items
     tableData.value = tableData.value.sort((a, b) => a.id - b.id)

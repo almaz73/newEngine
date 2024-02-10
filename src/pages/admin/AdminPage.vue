@@ -5,7 +5,7 @@
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
                    @click="found(el)"
-                   :style="{width: globalStore.isMobileView?'203px':'222px'}"
+                   :style="{width: globalStore.isMobileView?'243px':'212px'}"
                    :class="{active:el === currentDirectory}">
           {{ el }}
         </el-button>

@@ -138,8 +138,8 @@ const filter = {
 let filterOld; // кучковый способ запросов
 
 function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#0187af', color:'white'}
-  if (txt === 'В работе') return {background: '#308a5a', color:'white'}
+  if (txt === 'Новый') return {background: '#0187af', color: 'white'}
+  if (txt === 'В работе') return {background: '#308a5a', color: 'white'}
 }
 
 function openFilter() {
@@ -178,26 +178,23 @@ const pageDescription = computed(() => {
 })
 
 function validateFilter() {
-
   filter.search = searchText.value
 
   let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
     let val = searchFilter.value[el]
-    if (!val) return false
+    if (!val) return true
     if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
     else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
-  filterOld = Object.assign({}, filter, easy) // filter.filter = JSON.stringify(easy)
+  filterOld = Object.assign({}, filter, easy)
 
   if (globalRef.tags.length) localStorage.setItem('appealFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('appealFilters')
-
-  return true
 }
 
 function getData() {
-  if (!validateFilter()) return false;
+  if (validateFilter()) return false;
   globalStore.isWaiting = true
   appealStore.getAppeals(filterOld).then((res) => {
     globalStore.isWaiting = false

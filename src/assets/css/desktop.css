@@ -22,12 +22,12 @@
 
 @media (width < 500px) {
     .group-button {
-        width: 130px;
+        /*width: 130px;*/
         margin-left: -10px;
     }
 
     .group-button button {
-        width: 130px;
+        /*width: 130px;*/
         opacity: 0.4;
     }
 }

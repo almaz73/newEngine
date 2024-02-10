@@ -22,7 +22,7 @@
               autocomplete="off" v-model="user.login"/>
           <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
           &nbsp; &nbsp;
-          <a @click="signingLikeAnother()">Прикинуться</a>
+          <a @click="signingLikeAnother()" v-if="isMyKey|| title === 'Создание нового пользователя'">Прикинуться</a>
           <hr>
           <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
           <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
@@ -33,7 +33,7 @@
           <hr>
           <el-select
               title="Организация"
-              placeholder="Введи организацию"
+              placeholder="Организация"
               v-model="user.organization.id"
               filterable
               clearable>
@@ -42,7 +42,7 @@
 
           <el-select
               title="Отдел"
-              placeholder="Введи Отдел"
+              placeholder="Отдел *"
               v-model="user.department.id"
               filterable
               clearable>
@@ -51,7 +51,7 @@
 
           <el-select
               title="Место хранения/выкупа"
-              placeholder="Введи место хранения/выкупа"
+              placeholder="Место хранения/выкупа *"
               v-model="user.location.id"
               filterable
               clearable>
@@ -60,18 +60,18 @@
 
           <el-select
               title="Часовой пояс"
-              placeholder="Введи часовой пояс"
+              placeholder="Часовой пояс"
               v-model="user.timeZone"
               filterable
               clearable>
               <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
           </el-select>
 
-          <el-input placeholder="Должность" :title="'Должность: '+user.position" v-model="user.position"/>
+          <el-input placeholder="Должность *" :title="'Должность: '+user.position" v-model="user.position"/>
           <hr>
           <el-select
               title="Категория"
-              placeholder="Введи категорию"
+              placeholder="Категория"
               v-model="user.roleCategory"
               @change="roleChanged()"
               filterable
@@ -81,7 +81,7 @@
 
           <el-select
               title="Роль"
-              placeholder="Введи роль"
+              placeholder="Роль"
               v-model="user.role.value"
               filterable
               clearable>
@@ -134,10 +134,9 @@ import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import {decryptPassword} from "@/utils/globalFunctions";
 
+const isMyKey = ref(null)
 const globalStore = useGlobalStore()
-
 const isOpen = ref(false)
-
 const userInit = {
   login: '',
   person: {firstName: '', middleName: '', lastName: ''},
@@ -148,7 +147,6 @@ const userInit = {
   role: {}
 }
 const user = ref(userInit)
-
 const closeModal = () => isOpen.value = false
 const title = ref('')
 const modalHistory = ref(null)
@@ -185,7 +183,6 @@ adminStore.getUserRoles().then(res => {
 
 
 function roleChanged() {
-  console.log('user.value.roleCategory', user.value.roleCategory)
   userRoles.value = userGroupRolesMemory.value.find(el => el.group.value === user.value.roleCategory).roles
 }
 
@@ -212,6 +209,8 @@ function open(row, cbModal, copy) {
     }
 
     findGruop()
+    let myKey = localStorage.getItem('myKey')
+    isMyKey.value = myKey && myKey !== 'null'
   })
 }
 
@@ -232,20 +231,29 @@ function signingLikeAnother() {
 }
 
 function checking() {
+  if (!user.value.login || !user.value.password) {
+    return ElMessage({message: 'Поля "Логин"/"Пароль" обязательны для заполнения', type: 'warning'})
+  }
   if (!user.value.person.lastName) {
     return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
   }
   if (!user.value.person.firstName) {
     return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
   }
+  if (!user.value.department.id) {
+    return ElMessage({message: 'Поле "Отдел" обязателен для заполнения', type: 'warning'})
+  }
+  if (!user.value.location.id) {
+    return ElMessage({message: 'Поле "Место хранение/выкупа" обязателен для заполнения', type: 'warning'})
+  }
+  if (!user.value.position) {
+    return ElMessage({message: 'Поле "Должность" обязателен для заполнения', type: 'warning'})
+  }
 }
 
 function save() {
-  console.log('user.value=', user.value)
   if (checking()) return false
-  adminStore.saveUser(user.value).then(res => {
-    console.log(res)
-    if (res.ok) alert()
+  adminStore.saveUser(user.value).then(() => {
     ElMessage({message: 'Успешно', type: 'success'})
     isOpen.value = false
     cb()

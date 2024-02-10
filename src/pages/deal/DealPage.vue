@@ -185,7 +185,7 @@ function validateFilter() {
   let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
     let val = searchFilter.value[el]
-    if (!val) return false
+    if (!val) return true
     if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
     else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
@@ -193,12 +193,10 @@ function validateFilter() {
 
   if (globalRef.tags.length) localStorage.setItem('dealFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('dealFilters')
-
-  return true
 }
 
 function getData() {
-  if (!validateFilter()) return false;
+  if (validateFilter()) return false;
   globalStore.isWaiting = true
   dealStore.getDeal(filter).then((res) => {
     globalStore.isWaiting = false
