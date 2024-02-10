@@ -30,7 +30,7 @@
                  title="Нeактивный"
                  src="@/assets/icons/icon-plus-gray-row.png">
 
-            <img @click="openModalUserDir(scope.row)" alt=""
+            <img @click="openUrgsModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
             <img @click="deleteUser(scope.row.id)" alt=""
@@ -42,13 +42,14 @@
 
     </el-table>
   </div>
+  <OrgsDirModal ref="orgsModal"/>
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import {ElMessage, ElMessageBox, ElTable} from "element-plus";
+import { ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
-import {EditPen, CloseBold, Search, Plus} from '@element-plus/icons-vue'
+import OrgsDirModal from "@/pages/admin/dirs/OrgsDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -57,43 +58,21 @@ let tableDataMemory = []
 const like = ref('')
 const isEdit = ref(false)
 const selectedRow = ref(false)
+const orgsModal = ref(null)
 
-
-function add() {
-  tableData.value.unshift({colorName: '', colorCode: '#ddd'})
-  isEdit.value = true
+function openUrgsModal(row){
+  orgsModal.value.open(row, getData)
 }
 
-
-function edit(row) {
-  selectedRow.value = row
-  isEdit.value = true
-}
 
 function save() {
-  let row = tableData.value.find(el => !el.id)
-  adminStore.addColor(row).then(() => {
-    ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
-    getData()
-  })
+  // let row = tableData.value.find(el => !el.id)
+  // adminStore.addColor(row).then(() => {
+  //   ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
+  //   getData()
+  // })
 }
 
-function deleteRow(row: any) {
-  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
-    confirmButtonText: 'Да',
-    cancelButtonText: 'Нет'
-  })
-      .then(() => {
-        adminStore.deleteColor(row.id).then(res => {
-          ElMessage({message: 'Цвет удален.', type: 'success'})
-          getData()
-          isEdit.value = false
-          selectedRow.value = false
-        })
-      })
-      .catch(() => {
-      })
-}
 
 function getData() {
   isEdit.value = false

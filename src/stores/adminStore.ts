@@ -60,9 +60,13 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getAllOrganizations() {
             const res = await getAllOrganizations()
-            console.log(' - - - - - - ', res)
             return res.data
         },
+        async getOrganization(id: number) {
+          const res = await getOrganization(id)
+          return res.data
+        },
+
     }
 })
 
@@ -127,3 +131,6 @@ function getAllOrganizations() {
     return axios.get('api/orgElement/0').then(res => res)
 }
 
+function getOrganization(id: number) {
+    return axios.get('api/orgelement/get?id=' + id).then(res => res)
+}

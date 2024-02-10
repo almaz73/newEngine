@@ -148,7 +148,6 @@ const total = ref('')
 const rowsPerPage = ref(5)
 const pageDescription = ref('')
 const search = ref('')
-const currentRow = ref({id: null})
 const myKey = ref(null)
 const isMyKey = ref(false)
 const filter = {offset: 0, limit: 5, search: '', Organizations: [], role: null}
@@ -202,8 +201,7 @@ function switchuser(row: any) {
 }
 
 function openModalUserDir(row: any | null, copy: string | null) {
-  if (row) currentRow.value = row
-  UserModal.value.open(row, cbModal, copy)
+  UserModal.value.open(row, getData, copy)
 }
 
 function deleteUser(id: number) {
@@ -219,9 +217,6 @@ function deleteUser(id: number) {
       })
 }
 
-function cbModal() {
-  getData()
-}
 
 
 globalStore.setTitle('Пользователи')
