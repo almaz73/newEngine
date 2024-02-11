@@ -78,13 +78,10 @@ export const useAdminStore = defineStore("adminStore", {
             return (cach.getPolicy = res.data)
         },
         async getInspection(id: number | null) {
-            if (!id) {
-                const res = await axios.get('api/inspectionitemtype').then(q => q)
-                return res.data
-            } else {
-                const res = await axios.get('api/inspectionitemtype/' + id).then(q => q)
-                return res.data
-            }
+            let url = 'api/inspectionitemtype'
+            if (id) url += id
+            const res = await axios.get(url).then(q => q)
+            return res.data
         },
         async saveInspection(obj: any) {
             const res = await axios.post(`api/inspectionitemtype`, obj).then(q => q)
@@ -98,6 +95,24 @@ export const useAdminStore = defineStore("adminStore", {
             if (cach.getDomage) return cach.getDomage
             const res = await axios.get('api/damageitem').then(q => q)
             return (cach.getDomage = res.data)
+        },
+        async getWork(id: number | null) {
+            let url = 'api/work'
+            if (id) url += '/' + id
+            const res = await axios.get(url).then(q => q)
+            return res.data
+        },
+        async saveWork(obj: any) {
+            const res = await axios.post(`api/work`, obj).then(q => q)
+            return res.data
+        },
+        async getRepaired(type = 10) {
+            const res = await axios.get('api/repairedItem/getByType/' + type).then(q => q)
+            return res.data
+        },
+        async deleteWork(id: number) {
+            const res = await axios.delete(`api/work/` + id).then(q => q)
+            return res.data
         },
 
     }

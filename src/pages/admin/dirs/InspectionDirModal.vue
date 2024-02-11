@@ -70,16 +70,7 @@ import {inspectionItemCategories, inspectionUiType} from "@/utils/globalConstant
 
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
-const userInit = {
-  login: "",
-  person: {firstName: "", middleName: "", lastName: ""},
-  avatar: {url: ""},
-  organization: {},
-  department: {},
-  location: {},
-  role: {}
-};
-const insp = ref(userInit);
+const insp = ref({});
 const closeModal = () => isOpen.value = false;
 
 const modalHistory = ref(null);
@@ -91,7 +82,7 @@ const damages = ref([])
 function open(row, cbModal) {
   cb = cbModal;
   isOpen.value = true;
-  if (!row) insp.value = userInit;
+  if (!row) insp.value = {};
   else adminStore.getInspection(row.id).then(res => insp.value = res);
 
   adminStore.getDomage().then(res => damages.value = res.items);

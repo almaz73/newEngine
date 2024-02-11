@@ -163,6 +163,14 @@ export const inspectionUiType = [
     {id: 40, name: 'IsNecessary'},
 ]
 
+export const WorkType = [
+    {id: 10, name: 'ПСО'},
+    {id: 20, name: 'СТО замена'},
+    {id: 30, name: 'СТО ремонт'},
+    {id: 40, name: 'СТО шиномонтаж'},
+    {id: 50, name: 'СТОК'}
+]
+
 
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {
