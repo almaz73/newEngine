@@ -172,7 +172,7 @@ const subtitle = computed(() => {
 })
 
 
-adminStore.getUserLocarions().then(res => locations.value = res.items)
+adminStore.getUserLocations().then(res => locations.value = res.items)
 globalStore.getOrganizations().then(res => organizations.value = res.items)
 adminStore.getDepartments().then(res => departments.value = res.items)
 adminStore.getTimeZones().then(res => timeZones.value = res.items)

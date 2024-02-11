@@ -40,6 +40,8 @@ import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
 import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
 import OrgsDir from "@/pages/admin/dirs/OrgsDir.vue";
+import InspectionDir from "@/pages/admin/dirs/InspectionDir.vue";
+
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
@@ -51,7 +53,7 @@ const AdminDirectories = {
   '🚧Марки по ПТС': ClientsDir,
   'Цвета кузова': ColorsDir,
   '🚧Цвета кузова по ПТС': ClientsDir,
-  '🚧Лист осмотра': ClientsDir,
+  'Лист осмотра': InspectionDir,
   '🚧Виды работ': ClientsDir,
   '🚧Ремонтируемые элементы': ClientsDir,
   '🚧Запчасти': ClientsDir,

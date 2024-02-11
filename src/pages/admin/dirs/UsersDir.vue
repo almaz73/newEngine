@@ -197,7 +197,7 @@ function getData() {
 }
 
 function switchuser(row: any) {
-  adminStore.switchuser(row.id).then(getData)
+  adminStore.switchUser(row.id).then(getData)
 }
 
 function openModalUserDir(row: any | null, copy: string | null) {

@@ -36,7 +36,7 @@
         <div v-for="(row, ind) in tableData"
              :key="ind" style="border-top:5px double #ddd">
           <div>{{ formatDMY_hm(row.createDate) }}</div>
-          <div style="color:#f13d03">{{ row.user.person.lastName + ' ' + row.user.person.firstName }}</div>
+          <div style="color:#d34338">{{ row.user.person.lastName + ' ' + row.user.person.firstName }}</div>
           <div v-html="listChange(row.differences)"/>
         </div>
       </div>

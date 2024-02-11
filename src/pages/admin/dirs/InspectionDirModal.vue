@@ -1,50 +1,51 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 930"
+            :width="globalStore.isMobileView? 330: 480"
             :top="40"
-            :title="title"
-            :subtitle="subtitle"
+            :title="'Элемент осмотра'"
             draggable
             resizable>
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
+    <el-scrollbar maxHeight="480px">
 
       <span class="modal-fields">
         <el-form ref="form" :model="org" @change="isDirty=true">
-          <el-tabs v-model="activeName" class="demo-tabs">
-              <el-tab-pane label="Организация" name="first">
-<!--:::::::::::::-->
+
                 <el-input placeholder="Название *" title="Название" v-model="org.parentName"/>
-                <el-input placeholder="Тип" title="Тип" v-model="org.type"/>
-                 <el-select
-                     title="Статус партнерства"
-                     placeholder="Статус партнерства"
-                     v-model="org.isActive"
-                     filterable
-                     clearable>
-                    <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
-                 </el-select>
-                 <el-input placeholder="Город" title="Город" v-model="org.city"/>
-                <hr>
-              </el-tab-pane>
-              <el-tab-pane label="Права">
-<!--:::::::::::::-->
+
                 <el-select
-                    title="Статус партнерства"
-                    placeholder="Статус партнерства"
+                    title="Категория осмотра"
+                    placeholder="Категория осмотра"
                     v-model="org.isActive"
                     filterable
-                    multiple
                     clearable>
-                    <el-option v-for="item in policies" :key="item.id" :label="item.title" :value="item.id"/>
+                    <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
                  </el-select>
-              </el-tab-pane>
-            <el-tab-pane label="Настройки">
 
-<!--:::::::::::::-->
-              333
-              </el-tab-pane>
-          </el-tabs>
+                <el-select
+                    title="Провреждения"
+                    placeholder="Провреждения"
+                    v-model="org.isActive"
+                    filterable
+                    clearable>
+                    <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+
+                <el-select
+                    title="Интерфейс"
+                    placeholder="Интерфейс"
+                    v-model="org.isActive"
+                    filterable
+                    clearable>
+                    <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+                <hr>
+                <el-input placeholder="Порядок" title="Порядок" v-model="org.city"/><br>
+                <el-checkbox label="Толщина ЛКП"/>
+
+                <el-checkbox label="Блокировка выгрузки в 1С"/>
+                <hr>
+
 
 
         </el-form>
@@ -58,7 +59,6 @@
   <UsersDirModal_History ref="modalHistory"/>
 </template>
 <style>
-
 
 
 </style>
@@ -87,17 +87,14 @@ const userInit = {
 const org = ref(userInit);
 const closeModal = () => isOpen.value = false;
 
-const policies=ref([])
+const policies = ref([])
 const title = ref("");
 const modalHistory = ref(null);
 const adminStore = useAdminStore();
 const organizations = ref([]);
 const isDirty = ref(false);
 let cb;
-const subtitle = computed(() => {
-  let fio = "";
-  return fio || "Новый  пользователь";
-});
+
 
 
 function open(row, cbModal) {
@@ -110,7 +107,8 @@ function open(row, cbModal) {
     // org.value = res.view;
   });
 
-  adminStore.getPolicy().then(res=>{
+
+  adminStore.getPolicy().then(res => {
     console.log('res', res)
     policies.value = res.items
   })

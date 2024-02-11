@@ -1,9 +1,9 @@
 <template>
   <div class="root">
-    <LeftMenu/>
+    <LeftMenu v-if="globalStore.isAuthorized"/>
 
     <div class="content" :class="globalStore.isNarrowPanel ? 'narrow' : 'wide'">
-      <HeadMenu/>
+      <HeadMenu v-if="globalStore.isAuthorized"/>
       <RouterView :style="{ padding: globalStore.isMobileView ? '' : '25px' }"/>
     </div>
 
@@ -37,6 +37,7 @@ onMounted(() => {
   let account = localStorage.getItem('account')
   if (account && account !== 'undefined') {
     globalStore.account = JSON.parse(account)
+    globalStore.isAuthorized = true
   } else {
     globalStore.isAuthorized = false
     !navigator.onLine && router.push('login')

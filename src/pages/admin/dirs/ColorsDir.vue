@@ -112,7 +112,7 @@ function deleteRow(row: any) {
 function getData() {
   isEdit.value = false
   selectedRow.value = false
-  adminStore.getColors().then(res => {
+  globalStore.getColors().then(res => {
     tableData.value = res.items
     tableDataMemory = JSON.parse(JSON.stringify(res.items))
   })

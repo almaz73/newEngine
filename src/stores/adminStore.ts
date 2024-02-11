@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
+import cach from "@/utils/globalCach";
 
 export const useAdminStore = defineStore("adminStore", {
     state: () => ({
@@ -7,130 +8,79 @@ export const useAdminStore = defineStore("adminStore", {
     }),
     actions: {
         async getUsers(filter: any) {
-            const res = await getUsers(filter)
-            return res.data
-        },
-        async getColors() {
-            const res = await getColors()
+            const url: string = 'api/user/GetUsers?filter=' + JSON.stringify(filter)
+            const res = await axios.get(url).then(res => res)
             return res.data
         },
         async addColor(row: any) {
-            const res = await addColor(row)
+            const params = {entityType: '10'}
+            Object.assign(params, row)
+            const res = await axios.post('api/bodycolor', params).then(q => q)
             return res.data
         },
         async deleteColor(id: number) {
-            const res = await deleteColor(id)
+            const res = await axios.delete('api/bodycolor/' + id).then(q => q)
             return res.data
         },
-        async switchuser(id: number) {
-            const res = await switchuser(id)
+        async switchUser(id: number) {
+            const res = await axios.post(`api/user/${id}/switchuser`).then(q => q)
             return res.data
         },
         async getUserForModal(id: number) {
-            const res = await getUserForModal(id)
+            const res = await axios.get(`api/user/get?id=${id}`).then(res => res)
             return res.data
         },
         async getDepartments() {
-            const res = await getDepartments()
-            return res.data
+            if (cach.getDepartments) return cach.getDepartments
+            const res = await axios.get('api/user/get/departmens').then(q => q)
+            return (cach.getDepartments = res.data)
         },
-        async getUserLocarions() {
-            const res = await getUserLocarions()
-            return res.data
+        async getUserLocations() {
+            if (cach.getUserLocations) return cach.getUserLocations
+            const res = await axios.get('api/user/get/locations').then(q => q)
+            return (cach.getUserLocations = res.data)
         },
         async getTimeZones() {
-            const res = await getTimeZones()
-            return res.data
+            if (cach.getTimeZones) return cach.getTimeZones
+            const res = await axios.get('api/user/get/time-zones').then(res => res)
+            return (cach.getTimeZones = res.data)
         },
         async getUserRoles() {
-            const res = await getUserRoles()
-            return res.data
+            if (cach.getUserRoles) return cach.getUserRoles
+            const res = await axios.get('api/user/get/roles').then(q => q)
+            return (cach.getUserRoles = res.data)
         },
         async saveUser(obj: any) {
-            const res = await saveUser(obj)
+            const res = await axios.post(`api/user/save`, obj).then(q => q)
             return res.data
         },
         async getUserHistory(id: number) {
-            const res = await getUserHistory(id)
+            const res = await axios.get(`api/user/get/audit?id=${id}`).then(q => q)
             return res.data
         },
         async deleteUser(id: number) {
-            const res = await deleteUser(id)
+            const res = await axios.delete('api/user/' + id).then(q => q)
             return res.data
         },
         async getAllOrganizations() {
-            const res = await getAllOrganizations()
-            return res.data
+            if (cach.getAllOrganizations) return cach.getAllOrganizations
+            const res = await axios.get('api/orgElement/0').then(q => q)
+            return (cach.getAllOrganizations = res.data)
         },
         async getOrganization(id: number) {
-          const res = await getOrganization(id)
-          return res.data
+            if (cach.getOrganization) return cach.getOrganization
+            const res = await axios.get('api/orgelement/get?id=' + id).then(q => q)
+            return (cach.getOrganization = res.data)
         },
-
+        async getPolicy() {
+            if (cach.getPolicy) return cach.getPolicy
+            const res = await axios.get('api/policy/getPolicyList').then(q => q)
+            return (cach.getPolicy = res.data)
+        },
+        async getInspection() {
+            if (cach.getInspection) return cach.getInspection
+            const res = await axios.get('api/inspectionitemtype').then(q => q)
+            return (cach.getInspection = res.data)
+        },
     }
 })
-
-function getUsers(filter: any) {
-    const url: string = 'api/user/GetUsers?filter=' + JSON.stringify(filter)
-    return axios.get(url).then(res => res)
-}
-
-function getColors() {
-    const url: string = 'api/bodycolor/getbytype/10'
-    return axios.get(url).then(res => res)
-}
-
-
-function addColor(row: any) {
-    const params = {entityType: '10'}
-    Object.assign(params, row)
-    return axios.post('api/bodycolor', params).then(res => res)
-}
-
-function deleteColor(id: number) {
-    return axios.delete('api/bodycolor/' + id).then(res => res)
-}
-
-function switchuser(id: number) {
-    return axios.post(`api/user/${id}/switchuser`).then(res => res)
-}
-
-function getUserForModal(id: number) {
-    return axios.get(`api/user/get?id=${id}`).then(res => res)
-}
-
-function getDepartments() {
-    return axios.get('api/user/get/departmens').then(res => res)
-}
-
-function getUserLocarions() {
-    return axios.get('api/user/get/locations').then(res => res)
-}
-
-function getTimeZones() {
-    return axios.get('api/user/get/time-zones').then(res => res)
-}
-
-function getUserRoles() {
-    return axios.get('api/user/get/roles').then(res => res)
-}
-
-function saveUser(obj: any) {
-    return axios.post(`api/user/save`, obj).then(res => res)
-}
-
-function getUserHistory(id: number) {
-    return axios.get(`api/user/get/audit?id=${id}`).then(res => res)
-}
-
-function deleteUser(id: number) {
-    return axios.delete('api/user/' + id).then(res => res)
-}
-
-function getAllOrganizations() {
-    return axios.get('api/orgElement/0').then(res => res)
-}
-
-function getOrganization(id: number) {
-    return axios.get('api/orgelement/get?id=' + id).then(res => res)
-}

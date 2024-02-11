@@ -1,6 +1,7 @@
 :root {
     /*--main-color: #d34439; старый вариант*/
-    --main-color: #f13d03;
+    --main-color: #d34338;
+    --darkreader-bg--el-color-danger: #d34338 !important;
 }
 
 

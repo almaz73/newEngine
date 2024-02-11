@@ -9,7 +9,7 @@
         highlight-current-row>
       <el-table-column label="Организация">
         <template #default="scope">
-          <span :style="{color:scope.row.orgElementType===10?'#f13d03':''}">
+          <span :style="{color:scope.row.orgElementType===10?'#d34338':''}">
             {{ scope.row.title }}
             </span>
         </template>
@@ -55,7 +55,6 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 let tableDataMemory = []
-const like = ref('')
 const isEdit = ref(false)
 const selectedRow = ref(false)
 const orgsModal = ref(null)
@@ -65,13 +64,6 @@ function openUrgsModal(row){
 }
 
 
-function save() {
-  // let row = tableData.value.find(el => !el.id)
-  // adminStore.addColor(row).then(() => {
-  //   ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
-  //   getData()
-  // })
-}
 
 
 function getData() {
