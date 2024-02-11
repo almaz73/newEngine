@@ -14,7 +14,8 @@ const cach = {
     getAllOrganizations: null,
     getUserRoles: null,
     getTimeZones: null,
-    getUserLocations:null,
-    getDepartments:null
+    getUserLocations: null,
+    getDepartments: null,
+    getDomage: null
 }
 export default cach

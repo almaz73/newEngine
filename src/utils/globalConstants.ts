@@ -144,6 +144,25 @@ export const EngineType = [
     {id: 40, name: 'Гибрид'}
 ]
 
+export const inspectionItemCategories = [
+    {id: 30, name: 'Внеш. Осмотр кузова'},
+    {id: 40, name: 'Внутренний осмотр'},
+    {id: 20, name: 'Комплектация'},
+    {id: 50, name: 'Под капотом'},
+    {id: 60, name: 'Тест-драйв'},
+    {id: 70, name: 'Подъёмник'},
+    {id: 10, name: 'Комплектность'},
+    {id: 80, name: 'Прочие работы'},
+    {id: 90, name: 'Юридическая проверка'}
+]
+
+export const inspectionUiType = [
+    {id: 10, name: 'IsStock'},
+    {id: 20, name: 'IsRepaired'},
+    {id: 30, name: 'IsNorm'},
+    {id: 40, name: 'IsNecessary'},
+]
+
 
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {

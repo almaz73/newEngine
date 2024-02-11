@@ -71,7 +71,6 @@ function getData() {
   selectedRow.value = false
 
   adminStore.getAllOrganizations().then(res => {
-    console.log(' - -res', res)
     tableData.value = res.items
     tableDataMemory = JSON.parse(JSON.stringify(res.items))
   })

@@ -77,10 +77,28 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('api/policy/getPolicyList').then(q => q)
             return (cach.getPolicy = res.data)
         },
-        async getInspection() {
-            if (cach.getInspection) return cach.getInspection
-            const res = await axios.get('api/inspectionitemtype').then(q => q)
-            return (cach.getInspection = res.data)
+        async getInspection(id: number | null) {
+            if (!id) {
+                const res = await axios.get('api/inspectionitemtype').then(q => q)
+                return res.data
+            } else {
+                const res = await axios.get('api/inspectionitemtype/' + id).then(q => q)
+                return res.data
+            }
         },
+        async saveInspection(obj: any) {
+            const res = await axios.post(`api/inspectionitemtype`, obj).then(q => q)
+            return res.data
+        },
+        async deleteInspection(id: number) {
+            const res = await axios.delete(`api/inspectionitemtype/` + id).then(q => q)
+            return res.data
+        },
+        async getDomage() {
+            if (cach.getDomage) return cach.getDomage
+            const res = await axios.get('api/damageitem').then(q => q)
+            return (cach.getDomage = res.data)
+        },
+
     }
 })
