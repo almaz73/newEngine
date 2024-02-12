@@ -51,8 +51,6 @@
                    :key="ind" :label="item.title"
                    :value="item.value"/>
       </el-select>
-
-      <el-button>Искать</el-button>
     </div>
 
     <el-table

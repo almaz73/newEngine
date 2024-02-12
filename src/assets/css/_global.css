@@ -141,3 +141,7 @@ a:hover {
     flex-wrap: wrap;
     margin: 12px 0;
 }
+
+.nowrap{
+    white-space: nowrap;
+}

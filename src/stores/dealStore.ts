@@ -34,7 +34,7 @@ function getDeal(params: any) {
     let url = path + 'GetBuyWorkflows';
     if (filter) url += '?filter=' + filter
     if (offset) url += '&offset=' + offset
-    if (search) url += '&quickSearch=' + search
+    if (search) url += '&search=' + search
     if (mainFilter) url += '&mainFilter=' + mainFilter
     if (limit) url += '&limit=' + limit
     return axios.get(url).then(res => res)

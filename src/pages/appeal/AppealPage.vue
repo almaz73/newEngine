@@ -31,15 +31,18 @@
         empty-text="Нет данных"
         highlight-current-row
     >
-      <el-table-column label="Обращение">
+      <el-table-column label="Обращение" width="150">
         <template #default="scope">
-          <div :style="colorBox(scope.row.statusTitle)"> {{ scope.row.statusTitle }}</div>
+          <div :style="colorBox(scope.row.statusTitle)"
+               style="display: inline-block; padding: 0 12px; border-radius: 3px"
+          > {{ scope.row.statusTitle }}
+          </div>
           <div class="red-text">{{ scope.row.id }}</div>
           <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="Клиент">
+      <el-table-column label="Клиент" width="150">
         <template #default="scope">
           <div><b> {{ scope.row.leadName }}</b></div>
           <div> {{ scope.row.leadPhone }}</div>
@@ -49,28 +52,43 @@
 
       <el-table-column label="Менеджер">
         <template #default="scope">
-          <div><b> {{ scope.row.createUserName }}</b></div>
-          <div> {{ scope.row.locationName }}</div>
+          <div class="nowrap"><i> {{ scope.row.createUserName }}</i></div>
+          <div class="nowrap"> {{ scope.row.locationName }}</div>
           <div class="red-text">{{ scope.row.city }}</div>
         </template>
       </el-table-column>
 
       <el-table-column label="Автомобиль">
         <template #default="scope">
-          <div><b> {{ scope.row.carBrandModel }}</b></div>
-          <div> {{ scope.row.carBrandModel }}</div>
-          <div class="red-text">{{ scope.row.vin }}</div>
+          <div class="nowrap"><b> {{ getButType(scope.row.buyWorkflowDealType) }}</b></div>
+          <div class="nowrap"> 🚗 {{ scope.row.carBrandModel }}</div>
+          <div class="red-text nowrap">{{ scope.row.vin }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column>
+        <template #default="scope">
+          <div>{{ scope.row.treatmentSourceTitle }}</div>
+          <span class="red-text" :title="scope.row.lastTaskTitle "> {{ scope.row.appealTitle }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="120">
+        <template #default="scope">
+          <img :src="scope.row.smallPhoto[0]"
+               v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
+               style="height:60px; border-radius: 4px"/>
         </template>
       </el-table-column>
 
       <el-table-column label="Событие">
         <template #default="scope">
-          <span class="red-text"> {{ scope.row.lastTaskTitle }} </span><br/>
-          {{ formatDate(scope.row.lastTaskDate) }}<br/>
+          <span class="red-text"
+                :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </span><br/>
+          {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label=""/>
     </el-table>
 
     <!-- для мобилки таблица -->
@@ -85,6 +103,10 @@
 
         <div><small>Менеджер:</small> {{ row.createUserName }}</div>
         <div><small>Место: </small> {{ row.locationName }}</div>
+        <div><small>Событие: </small> {{ EventType[row.workflowLeadType] }} {{ formatDMY_hm(row.lastTaskDate) }}</div>
+        <div style="text-align: center">
+          <img :src="row.smallPhoto[0]" v-if="row.smallPhoto && row.smallPhoto[0]"/>
+        </div>
       </div>
       <div v-if="!appealStore.list.length" style="text-align: center">Нет данных</div>
     </div>
@@ -102,7 +124,7 @@
   </main>
 </template>
 <script setup>
-import {formatDate, gotoTop} from "@/utils/globalFunctions";
+import {formatDate, formatDMY_hm, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
 import AppealFilter from "@/pages/appeal/AppealFilter.vue";
@@ -111,6 +133,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
 import {reactive, ref, computed, onMounted} from 'vue'
 import {globalRef} from '@/components/filterControls/FilterGlobalRef.js';
+import {buyTypes, EventType} from '@/utils/globalConstants';
 
 
 const globalStore = useGlobalStore()
@@ -138,8 +161,13 @@ const filter = {
 let filterOld; // кучковый способ запросов
 
 function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#0187af', color: 'white'}
-  if (txt === 'В работе') return {background: '#308a5a', color: 'white'}
+  if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
+  if (txt === 'В работе') return {background: '#3cac71', color: 'white'}
+}
+
+function getButType(buyWorkflowDealType) {
+  let bt = buyTypes.find(el => el.id === buyWorkflowDealType)
+  return bt && bt.name
 }
 
 function openFilter() {
@@ -178,7 +206,7 @@ const pageDescription = computed(() => {
 })
 
 function validateFilter() {
-  filter.search = searchText.value
+  filter.quickSearch = searchText.value
 
   let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
