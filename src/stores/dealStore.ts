@@ -19,8 +19,8 @@ export const useDealStore = defineStore("dealStore", {
         }]
     }),
     actions: {
-        async getDeal(params: any) {
-            const res = await getDeal(params)
+        async getDeals(params: any) {
+            const res = await getDeals(params)
 
             if (res.data) this.list = res.data.deals
             else this.list = []
@@ -29,7 +29,7 @@ export const useDealStore = defineStore("dealStore", {
     }
 })
 
-function getDeal(params: any) {
+function getDeals(params: any) {
     const {filter, limit, mainFilter, offset, search} = params
     let url = path + 'GetBuyWorkflows';
     if (filter) url += '?filter=' + filter

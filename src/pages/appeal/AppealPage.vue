@@ -28,6 +28,7 @@
         v-if="!globalStore.isMobileView"
         :data="appealStore.list"
         ref="singleTableRef"
+        @row-dblclick="openModal"
         empty-text="Нет данных"
         highlight-current-row
     >
@@ -75,7 +76,7 @@
 
       <el-table-column width="120">
         <template #default="scope">
-          <img :src="scope.row.smallPhoto[0]"
+          <img :src="scope.row.smallPhoto[0]" alt=""
                v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
                style="height:60px; border-radius: 4px"/>
         </template>
@@ -83,6 +84,7 @@
 
       <el-table-column label="Событие">
         <template #default="scope">
+          <span class="edit-table-row" @click="openModal(scope.row)"/>
           <span class="red-text"
                 :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </span><br/>
           {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
@@ -94,7 +96,9 @@
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
       <div v-for="(row, ind) in appealStore.list" :key="ind">
-        <div class="head mobile-row-head" :style="colorBox(row.statusTitle)">
+        <div class="head mobile-row-head"
+             @click="openModal(row)"
+             :style="colorBox(row.statusTitle)">
           <span> {{ row.statusTitle }}. &nbsp; &nbsp; {{ formatDate(row.lastTaskDate) }}</span>
         </div>
         <div><small>Авто:</small> {{ row.carBrandModel }} {{ row.yearReleased }}</div>
@@ -105,7 +109,7 @@
         <div><small>Место: </small> {{ row.locationName }}</div>
         <div><small>Событие: </small> {{ EventType[row.workflowLeadType] }} {{ formatDMY_hm(row.lastTaskDate) }}</div>
         <div style="text-align: center">
-          <img :src="row.smallPhoto[0]" v-if="row.smallPhoto && row.smallPhoto[0]"/>
+          <img :src="row.smallPhoto[0]" v-if="row.smallPhoto && row.smallPhoto[0]" alt=""/>
         </div>
       </div>
       <div v-if="!appealStore.list.length" style="text-align: center">Нет данных</div>
@@ -121,6 +125,7 @@
       />
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
+    <AppealPageModal ref="appealModal"/>
   </main>
 </template>
 <script setup>
@@ -134,6 +139,7 @@ import {useAppealStore} from "@/stores/appealStore";
 import {reactive, ref, computed, onMounted} from 'vue'
 import {globalRef} from '@/components/filterControls/FilterGlobalRef.js';
 import {buyTypes, EventType} from '@/utils/globalConstants';
+import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
 
 
 const globalStore = useGlobalStore()
@@ -159,6 +165,7 @@ const filter = {
   search: ''
 }
 let filterOld; // кучковый способ запросов
+const appealModal = ref(null)
 
 function colorBox(txt) {
   if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
@@ -226,14 +233,20 @@ function getData() {
   globalStore.isWaiting = true
   appealStore.getAppeals(filterOld).then((res) => {
     globalStore.isWaiting = false
-    if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
   })
 }
 
+function openModal(row) {
+  console.log('row', row)
+
+  appealModal.value.open(row, getData)
+}
+
 onMounted(() => {
   globalStore.setTitle('Обращения')
+  globalStore.steps = []
   let appealFilters = localStorage.getItem('appealFilters') || ''
   if (appealFilters) {
     appealFilters = JSON.parse(appealFilters)

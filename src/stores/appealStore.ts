@@ -14,6 +14,21 @@ export const useAppealStore = defineStore("appealStore", {
             else this.list = []
             return res.data
         },
+        async getAppeal(id: number) {
+            const res = await axios.get('api/workflow/' + id)
+            return res.data
+        },
+        async getEventAppeal(id: number) {
+            const res = await axios.get('api/event/get/items/appeal?id=' + id)
+            return res.data
+        },
+        async getHistoryAppeal(id: number, type: number) {
+            console.log('? ?  ?id, type', id, type)
+            const res = await axios.get(`api/History/getHistory/${id}/${type}`)
+            console.log('  0 000 00res', res)
+            return res.data
+        }
+
     }
 })
 

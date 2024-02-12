@@ -198,7 +198,7 @@ function validateFilter() {
 function getData() {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
-  dealStore.getDeal(filter).then((res) => {
+  dealStore.getDeals(filter).then((res) => {
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
