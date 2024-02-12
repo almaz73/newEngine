@@ -91,7 +91,9 @@
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отменить</el-button>
-        <el-button type="info" @click="showHistory()" title="История изменений">⟲</el-button>
+        <el-button type="info"
+                   v-if="title === 'Редактирование пользователя'"
+                   @click="showHistory()" title="История изменений">⟲</el-button>
       </div>
       </span>
     </el-scrollbar>

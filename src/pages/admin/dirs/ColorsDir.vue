@@ -18,7 +18,6 @@
 
     <el-table
         :data="tableData"
-        ref="singleTableRef"
         empty-text="Нет данных"
         highlight-current-row>
       <el-table-column label="Цвет" prop="colorName">
@@ -32,9 +31,7 @@
 
       <el-table-column>
         <template #default="scope">
-          <div style="width: 20px; height: 20px; border: 1px solid #ddd; display: inline-block"
-               :style="{background:scope.row.colorCode}"></div>
-          <el-input v-if="isEdit  && selectedRow.id===scope.row.id" v-model="scope.row.colorCode"></el-input>
+          <el-color-picker v-model="scope.row.colorCode"/>
         </template>
       </el-table-column>
 
@@ -101,8 +98,6 @@ function deleteRow(row: any) {
         adminStore.deleteColor(row.id).then(res => {
           ElMessage({message: 'Цвет удален.', type: 'success'})
           getData()
-          isEdit.value = false
-          selectedRow.value = false
         })
       })
       .catch(() => {

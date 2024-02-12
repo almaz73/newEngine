@@ -71,8 +71,7 @@ function open(user) {
   if (user.person.lastName) subtitle.value += user.person.lastName + ' '
 
   adminStore.getUserHistory(user.id).then(res => {
-    console.log(res)
-    tableData.value = res.items
+    tableData.value = res && res.items
   })
 }
 

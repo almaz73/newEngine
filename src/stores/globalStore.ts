@@ -76,9 +76,8 @@ export const useGlobalStore = defineStore('globalStore', {
             return (cach.getTeatments = res.data)
         },
         async getColors() {
-            if (cach.getColors) return cach.getColors
             const res = await axios.get('api/bodycolor/getbytype/10').then(res => res)
-            return (cach.getColors = res.data)
+            return res.data
         },
         async getAppeals() {
             if (cach.getAppeals) return cach.getAppeals // список статичный - кэшируем
