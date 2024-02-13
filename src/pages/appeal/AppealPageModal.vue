@@ -41,13 +41,9 @@
                       style="cursor: pointer">
         </span>
         <span v-else>
-          <el-select
-              v-model="appeal.managerId"
-              @change="toChangeManager"
-              clearable
-          >
-        <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
-      </el-select>
+          <el-select v-model="appeal.managerId" @change="toChangeManager">
+            <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
         </span>
       </div>
       <br>
@@ -69,17 +65,42 @@
         </span>
       </small>
 
-      <el-divider/>
+      <br>
 
       <div class="demo-collapse">
         <el-collapse @change="openCollapse">
-          <el-collapse-item title="Клиент" name="1">
-            <div>
-
+          <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+appeal.leadPhone" name="1">
+            <div style="padding: 0 30px">
+              <span v-if="appeal.leadName">Фио:   {{ appeal.leadName }}
+                &nbsp;
+                <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="()=>{}" style="cursor: pointer">
+                <br></span>
+              <span v-if="appeal.leadPhone">Номер телефона:   {{ appeal.leadPhone }}<br></span>
+              <span v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}<br></span>
+              <span v-if="appeal.lead && appeal.lead.person.phone2">Доп. телефон:   {{ appeal.lead.person.phone2 }}<br></span>
+              <span v-if="appeal.email">Эл. почта:   {{ appeal.email }}<br></span>
+              <span v-if="appeal.leadSourceTitle">Источник: {{ appeal.leadSourceTitle }}<br></span>
+              <br>
+              <u>Отправить сообщение клиенту<br></u>
             </div>
           </el-collapse-item>
-          <el-collapse-item title="Автомобиль" name="2">
-            <div>
+          <el-collapse-item :title="'&nbsp; Автомобиль: &nbsp; '+appeal.carBrandModel" name="2">
+            <div style="padding: 0 30px">
+              <span v-if="appeal.brand">Бренд:   {{ appeal.brand }}
+                 &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                             @click="()=>{}"
+                             style="cursor: pointer">
+                <br>
+              </span>
+              <span v-if="appeal.carModel">Модель:   {{ appeal.carModel }}<br></span>
+
+              <span v-if="appeal.auto && appeal.auto.bodyColorName">
+                Цвет: {{ appeal.auto.bodyColorName }}<br></span>
+              <span v-if="appeal.auto && appeal.auto.certificateNumber">
+                Гос.номер: {{ appeal.auto.certificateNumber }}<br></span>
+              <span v-if="appeal.auto && appeal.auto.vin">
+                VIN номер: {{ appeal.auto.vin }}<br></span>
+
 
             </div>
           </el-collapse-item>
