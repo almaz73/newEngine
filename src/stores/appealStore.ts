@@ -4,14 +4,10 @@ import axios from "axios";
 const path = 'api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
     state: () => ({
-        list: [{}]
     }),
     actions: {
         async getAppeals(params: any) {
             const res = await getAppeals(params)
-
-            if (res.data) this.list = res.data.appeals
-            else this.list = []
             return res.data
         },
         async getAppeal(id: number) {
@@ -23,12 +19,17 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getHistoryAppeal(id: number, type: number) {
-            console.log('? ?  ?id, type', id, type)
             const res = await axios.get(`api/History/getHistory/${id}/${type}`)
-            console.log('  0 000 00res', res)
+            return res.data
+        },
+        async getStatuses(id: number) {
+            const res = await axios.get(`api/deal/${id}/getStatuses`)
+            return res.data
+        },
+        async getRoles(id: number) {
+            const res = await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
             return res.data
         }
-
     }
 })
 

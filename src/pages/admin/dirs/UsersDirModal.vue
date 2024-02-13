@@ -101,19 +101,6 @@
   <UsersDirModal_History ref="modalHistory"/>
 </template>
 <style>
-
-.modal-fields .el-input {
-  margin: 2px 12px;
-}
-
-.modal-fields hr {
-  border: 1px solid #ddd;
-}
-
-.dark .modal-fields hr {
-  border: 1px solid #444;
-}
-
 .photo-place {
   max-width: 120px;
   object-fit: cover;
@@ -123,7 +110,6 @@
   margin-left: 20px;
   border-radius: 8px;
 }
-
 </style>
 
 <script setup>

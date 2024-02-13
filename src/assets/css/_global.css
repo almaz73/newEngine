@@ -22,6 +22,10 @@ body {
     color: #999;
 }
 
+.dark body{
+    color: #999;
+}
+
 .pusher {
     flex-grow: 1;
 }
@@ -159,3 +163,36 @@ a:hover {
 .edit-table-row:hover {
     box-shadow: 0 0 10px;
 }
+
+
+.modal-fields .el-input {
+    margin: 2px 12px;
+}
+
+.label-red {
+    color: var(--main-color);
+}
+
+.label-right {
+    width: 200px;
+    text-align: right;
+    margin-right: 12px;
+    display: inline-block;
+    color: var(--main-color);
+}
+
+@media (width < 500px) {
+    .label-right {
+        width: 100px;
+    }
+}
+
+.modal-fields hr {
+    border: 1px solid #ddd;
+}
+
+.dark .modal-fields hr {
+    border: 1px solid #444;
+}
+
+

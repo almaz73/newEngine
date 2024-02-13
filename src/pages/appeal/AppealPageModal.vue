@@ -1,68 +1,128 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 680"
+            :width="globalStore.isMobileView? 330: 730"
             :top="40"
             :title="'Обращение '+appeal.id+'. '+appeal.workflowLeadTypeTitle"
             :subtitle="subtitle"
             draggable
             resizable>
-    <el-scrollbar maxHeight="480px">
+    <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
+      <div>
+        <small class="label-right">Статус</small>
 
+        <el-dropdown style="margin-bottom: 4px">
+          <el-button type="primary">
+            {{ appeal.statusTitle }}
 
-      <div>Статус
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                  @click="clickDropDown(item)"
+                  v-for="(item, ind) in AppealStatusTypes" :key="ind">{{ item.name }}
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
 
-        <el-select
-            title="Статус"
-            placeholder="Статус"
-            v-model="appeal.type"
-            filterable
-            clearable>
-          <el-option v-for="(item, ind) in statusTypes" :key="ind" :label="item"
-                     :value="item"/>
-        </el-select>
       </div>
 
-      <hr>
-      <div>Результаты и действия</div>
+      <div>
+        <small class="label-right" v-if="appeal.workflowLeadType === 1">Продавец</small>
+        <small class="label-right" v-if="appeal.workflowLeadType === 2">Выкупщик</small>
+        <small class="label-right" v-if="![1,2].includes(appeal.workflowLeadType)">Ответственный</small>
 
-      <div>Выкупщик
+        <span v-if="!isEditManagerName">
+          <small v-if="appeal.managerName">{{ appeal.managerName }}</small>
+          <small v-if="!appeal.managerName">Прикрепить менеджера</small>
+          &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                      @click="toGetManagers()"
+                      style="cursor: pointer">
+        </span>
+        <span v-else>
+          <el-select
+              v-model="appeal.managerId"
+              @change="toChangeManager"
+              clearable
+          >
+        <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
+      </el-select>
+        </span>
+      </div>
+      <br>
 
-        <el-select
-            title="Статус"
-            placeholder="Статус"
-            v-model="appeal.type"
-            filterable
-            clearable>
-          <el-option v-for="(item, ind) in statusTypes" :key="ind" :label="item"
-                     :value="item"/>
-        </el-select>
+      <small style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span class="nowrap">
+          <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
+        </span>
+        <span class="nowrap">
+          <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
+        </span>
+        <span class="nowrap">
+          <span class="label-red" v-if="appeal.tradeInDirectionTypeTitle">
+            Тип направления: {{ appeal.tradeInDirectionTypeTitle }}
+          </span>
+        </span>
+        <span class="nowrap">
+          <span class="label-red ">Источник:</span> {{ appeal.treatmentSourceTitle }}
+        </span>
+      </small>
+
+      <el-divider/>
+
+      <div class="demo-collapse">
+        <el-collapse @change="openCollapse">
+          <el-collapse-item title="Клиент" name="1">
+            <div>
+
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="Автомобиль" name="2">
+            <div>
+
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </div>
 
+      <el-divider/>
 
-      <el-tabs v-model="activeName"
-               class="demo-tabs"
-               @tab-click="handleClick">
+      <el-tabs v-model="activeName" class="demo-tabs">
         <el-tab-pane label="События" name="first">
 
-          <div v-for="event in events" :key="event.id" style="margin: 12px 0; background: white; padding: 8px">
-            {{ event.title }}
 
-            {{ event.dateStart }} до {{ event.dateEnd }}
-
-            {{ event.description }}
-
-            ===
-            {{ event.responsible.person.lastName }} {{ event.responsible.person.firstName }}
-          </div>
-
+          <el-table :data="events"
+                    highlight-current-row
+                    :size="'small'">
+            <!--              <el-table-column>-->
+            <!--                <template #default="scope">-->
+            <!--                  <span style="">{{ scope.row.action }}: <b>{{ scope.row.comment }}</b></span>-->
+            <!--                </template>-->
+            <!--              </el-table-column>-->
+            <el-table-column prop="title"/>
+            <el-table-column prop="dateStart"/>
+            <el-table-column prop="person.lastName"/>
+          </el-table>
 
         </el-tab-pane>
         <el-tab-pane label="СМС">
           смс
         </el-tab-pane>
         <el-tab-pane label="История">
-          исто
+
+          <el-timeline>
+            <el-timeline-item
+
+                v-for="(hist, index) in histories"
+                :key="index"
+                :hollow="true"
+                :timestamp="hist.createDate"
+            >
+              {{ hist.action }}: <b>{{ hist.comment }}</b> <span style="float: right">{{ hist.userTitle }}</span>
+            </el-timeline-item>
+          </el-timeline>
+
         </el-tab-pane>
         <el-tab-pane label="Комментарии">
           Комментарии
@@ -73,9 +133,9 @@
       <span class="modal-fields">
         <span>
 
-          <hr>
+      <br>
+      </span>
 
-        </span>
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отменить</el-button>
@@ -85,6 +145,9 @@
   </AppModal>
 </template>
 
+<style>
+
+</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
@@ -92,6 +155,8 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStore} from "@/stores/appealStore";
+import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
+import {ElTable} from "element-plus";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -99,26 +164,44 @@ const isOpen = ref(false);
 const appeal = ref({});
 const closeModal = () => isOpen.value = false;
 const subtitle = ref('')
-const statusTypes = [
-  'Новый',
-  'Обращение. В работу',
-  'Передать на комиссию',
-  'Передать на выкуп',
-  'Передать на Трейд-ин',
-  'Обращение. Отказ',
-  'Обращение. Контракт',
-  'Обращение. Запрос архивирования',
-  'Обращение. Архивировать',
-  'Обращение. Оформление',
-  'Создание обращения с типом "Продажа"'
-]
+const appealAvailableStatuses = ref([])
 const events = ref([])
 const activeName = ref('first')
+const AppealStatusTypes = ref([])
 let cb;
+const histories = ref([])
+const isEditManagerName = ref(false)
+const responsibles = ref([])
+
+const clickDropDown = (val) => {
+  appeal.value.status = val.id
+  appeal.value.statusTitle = val.name
+}
 
 
-function handleClick() {
-  console.log('handleClick')
+function workFlowType(type) {
+  let el = appeal.value.workflowLeadType && Workflows.find(el => el.id === type)
+  return el && el.title
+}
+
+function openCollapse(val) {
+  console.log('val', val)
+}
+
+function toGetManagers() {
+
+  isEditManagerName.value = true
+
+  isEditManagerName.value = true
+  appealStore.getRoles(appeal.value.workflowLeadType).then(res => {
+    responsibles.value = res.items;
+  })
+}
+
+function toChangeManager(row) {
+  let item = responsibles.value.find(el => el.id === row)
+  if (item) appeal.value.managerName = item.title
+  isEditManagerName.value = false
 }
 
 
@@ -127,18 +210,28 @@ function open(row, cbModal) {
   isOpen.value = true;
 
   appealStore.getAppeal(row.id).then(res => {
-    console.log(res)
     appeal.value = res
     subtitle.value = res.city + ' -- ' + res.locationName
   })
 
+  histories.value = []
+  appealStore.getHistoryAppeal(row.id, 20).then(res => histories.value = res.models)
+
+  events.value = []
   appealStore.getEventAppeal(row.id).then(res => {
-    console.log('res', res)
+    console.log('events', res)
     events.value = res.items
   })
 
-  appealStore.getHistoryAppeal(row.id, 20).then(res => {
-    console.log('22 res', res)
+
+  AppealStatusTypes.value = []
+  appealStore.getStatuses(row.id).then(res => {
+    appealAvailableStatuses.value = res.items
+
+    res.items.forEach(el => {
+      let item = AppealStatusTable.find(item => item.id === el)
+      item && AppealStatusTypes.value.push(item)
+    })
   })
 }
 

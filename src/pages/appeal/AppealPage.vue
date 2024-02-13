@@ -26,7 +26,7 @@
     <el-table
         style="margin-top: 24px"
         v-if="!globalStore.isMobileView"
-        :data="appealStore.list"
+        :data="tableData"
         ref="singleTableRef"
         @row-dblclick="openModal"
         empty-text="Нет данных"
@@ -95,11 +95,13 @@
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
-      <div v-for="(row, ind) in appealStore.list" :key="ind">
+      <div v-for="(row, ind) in tableData" :key="ind">
         <div class="head mobile-row-head"
              @click="openModal(row)"
              :style="colorBox(row.statusTitle)">
           <span> {{ row.statusTitle }}. &nbsp; &nbsp; {{ formatDate(row.lastTaskDate) }}</span>
+          <img src="@/assets/icons/icon-pencil-gray.png" alt=""/>
+
         </div>
         <div><small>Авто:</small> {{ row.carBrandModel }} {{ row.yearReleased }}</div>
         <div><small>Клиент:</small> {{ row.leadName }}</div>
@@ -112,9 +114,9 @@
           <img :src="row.smallPhoto[0]" v-if="row.smallPhoto && row.smallPhoto[0]" alt=""/>
         </div>
       </div>
-      <div v-if="!appealStore.list.length" style="text-align: center">Нет данных</div>
+      <div v-if="!tableData.length" style="text-align: center">Нет данных</div>
     </div>
-    <template v-if="appealStore.list.length>2">
+    <template v-if="tableData.length>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
           :page-sizes="[5, 10, 20, 50]"
@@ -142,6 +144,7 @@ import {buyTypes, EventType} from '@/utils/globalConstants';
 import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
 
 
+const tableData = ref([])
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const total = ref(0)
@@ -226,15 +229,24 @@ function validateFilter() {
 
   if (globalRef.tags.length) localStorage.setItem('appealFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('appealFilters')
+  return false
+}
+
+function tmp() {
+  tableData.value=[{"id":392078,"carBrandModel":"ВАЗ (LADA) 4x4 (Нива)","managerName":"Стажер Менеджер Стажер Менеджер","leadName":" Анатолий","leadPhone":"89061157748","createUserName":"Стажер Менеджер Стажер Менеджер","workflowLeadType":2,"locationName":"Выкуп (Ульяновск)","createDate":"2024-02-09T10:15:32.260322","statusId":10,"statusTitle":"Новый","leadId":252075,"communicationTaskCount":0,"lastTaskType":2,"lastTaskDate":"2024-02-09T10:18:40.526402","lastTaskTitle":"Создано автоматически при добавлении осмотра автомобиля","autoId":124513,"dealId":392079,"dealStatus":0,"smallPhoto":["https://dev.autonet.pro/api/file/3479403"],"vin":"XTA212140F2218002","appealStatusId":10,"responsibleRole":21,"buyWorkflowDealType":40,"clientStatusTitle":"Первичный","city":"Ульяновск","selectedCar":false,"credit":false,"franchiseClientType":null,"franchiseClientTypeTitle":null,"lastComment":null,"communication":null,"bodyColorCode":null,"swapPhone":null,"hiddenVin":null,"yearReleasedAppeal":null,"mileageAppeal":null,"salon":null,"treatmentSourceTitle":"Свободный выкуп","appealTitle":"Выкуп","callCount":0,"tradeInAppealId":null}]
+  appealModal.value.open(tableData.value[0], getData)
 }
 
 function getData() {
+  // return tmp()
+  //
   if (validateFilter()) return false;
   globalStore.isWaiting = true
   appealStore.getAppeals(filterOld).then((res) => {
     globalStore.isWaiting = false
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
+    tableData.value = res.appeals
   })
 }
 
