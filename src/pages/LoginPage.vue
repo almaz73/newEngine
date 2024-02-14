@@ -42,7 +42,8 @@ function signIn(): void {
         break
       case 200:
         globalStore.isAuthorized = true
-        router.push('/deal')
+        router.push(globalStore.oldPath ? globalStore.oldPath : '/deal')
+        globalStore.oldPath = ''
         break;
       default:
         authMessage.value = 'Произошла ошибка';

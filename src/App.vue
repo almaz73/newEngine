@@ -40,7 +40,7 @@ onMounted(() => {
     globalStore.isAuthorized = true
   } else {
     globalStore.isAuthorized = false
-    !navigator.onLine && router.push('login')
+    navigator.onLine && router.push('login')
   }
 
   globalStore.isMobileView = document.body.clientWidth < widthMobile

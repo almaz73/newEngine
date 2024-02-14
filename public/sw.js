@@ -1,4 +1,4 @@
-const CacheKey = "cache-2";
+const CacheKey = "cache-3";
 
 // const STATIC_ASSETS = [
 //     "/src/App.vue",

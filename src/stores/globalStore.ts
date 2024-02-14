@@ -12,6 +12,7 @@ export const useGlobalStore = defineStore('globalStore', {
         isNarrowPanel: true, // Когда панель не раскрывается с описанием
         isWaiting: false, // для ромашки ожидания
         isNeedTop: false, // показ кнопки прокрутки наверх
+        oldPath: '', // запоминаем перед переходом на страницу логирования, чтобы вернуться
         account: {
             // настройки аккаунта
             lastName: '',

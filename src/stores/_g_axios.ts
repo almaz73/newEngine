@@ -14,7 +14,8 @@ axios.interceptors.response.use(resp => resp
         }
 
         if (!err.request.status && err.code === "ERR_NETWORK") {
-            // возможно у токена вышел срок, перекидываем на cтраницу авторизации
+            // возможно у токена вышел срок, перекидываем на страницу авторизации
+            useGlobalStore().oldPath = location.pathname != '/login' ? location.pathname : useGlobalStore().oldPath
             useGlobalStore().isAuthorized = false
             navigator.onLine && router.push('login')
         }
