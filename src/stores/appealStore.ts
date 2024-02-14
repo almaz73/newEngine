@@ -3,8 +3,7 @@ import axios from "axios";
 
 const path = 'api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
-    state: () => ({
-    }),
+    state: () => ({}),
     actions: {
         async getAppeals(params: any) {
             const res = await getAppeals(params)
@@ -29,7 +28,22 @@ export const useAppealStore = defineStore("appealStore", {
         async getRoles(id: number) {
             const res = await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
             return res.data
-        }
+        },
+        async sendSMS(obj: any) {
+            const res = await axios.post('api/sms/', obj).then(q => q)
+            return res.data
+        },
+        async getSMS(id: number) {
+            const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
+            return res.data
+        },
+        async getSmsTemplates(id: number) {
+            const res = await axios.get('api/sms/getTemplates').then(q => q)
+            return res.data
+        },
+
+
+
     }
 })
 

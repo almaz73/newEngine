@@ -149,7 +149,7 @@ const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const total = ref(0)
 const searchText = ref('')
-const rowsPerPage = ref(5)
+const rowsPerPage = ref(10)
 const currentPage = ref(1)
 const filterButtons = reactive([
   {type: 'appealsCount', count: 0, name: 'Обращения:', code: 10, active: true},

@@ -1,7 +1,7 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 730"
+            :width="globalStore.isMobileView? 330: 900"
             :top="40"
             :title="'Обращение '+appeal.id+'. '+appeal.workflowLeadTypeTitle"
             :subtitle="subtitle"
@@ -70,18 +70,51 @@
       <div class="demo-collapse">
         <el-collapse @change="openCollapse">
           <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+appeal.leadPhone" name="1">
-            <div style="padding: 0 30px">
-              <span v-if="appeal.leadName">Фио:   {{ appeal.leadName }}
-                &nbsp;
-                <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="()=>{}" style="cursor: pointer">
-                <br></span>
-              <span v-if="appeal.leadPhone">Номер телефона:   {{ appeal.leadPhone }}<br></span>
-              <span v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}<br></span>
-              <span v-if="appeal.lead && appeal.lead.person.phone2">Доп. телефон:   {{ appeal.lead.person.phone2 }}<br></span>
-              <span v-if="appeal.email">Эл. почта:   {{ appeal.email }}<br></span>
-              <span v-if="appeal.leadSourceTitle">Источник: {{ appeal.leadSourceTitle }}<br></span>
-              <br>
-              <u>Отправить сообщение клиенту<br></u>
+            <div class="carusel" style="">
+              <div class="carusel-left">
+
+                <span> Статус клиента: {{ appeal.clientStatus }}<br></span>
+                <span v-if="appeal.leadName">Фио:   {{ appeal.leadName }}
+                  &nbsp;
+                  <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                       @click="()=>{}" style="cursor: pointer">
+                  <br></span>
+                <span v-if="appeal.leadPhone">Номер телефона:   {{ appeal.leadPhone }}<br></span>
+                <span v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}<br></span>
+                <span v-if="appeal.lead && appeal.lead.person.phone2">
+                  Доп. телефон:   {{ appeal.lead.person.phone2 }}<br></span>
+                <span v-if="appeal.email">Эл. почта:   {{ appeal.email }}<br></span>
+                <span v-if="appeal.leadSourceTitle">Источник: {{ appeal.leadSourceTitle }}<br></span>
+                <br>
+              </div>
+              <div class="carusel-right">
+                <el-button size="small" @click="isOpenSMS=true"> Создать СМС-сообщение клиенту</el-button>
+                <div v-if="isOpenSMS">
+                  <el-select
+                      size="small"
+                      v-model="smsTemplate"
+                      :filterable="!globalStore.isMobileView"
+                      clearable
+                  >
+                    <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
+                  </el-select>
+
+                  <el-date-picker
+                      size="small"
+                      v-model="smsDate"
+                      type="datetime"
+                      placeholder="Выберите время"
+                      format="YYYY-MM-DD HH:mm:ss"
+                      date-format="MMM DD, YYYY"
+                      time-format="HH:mm"
+                  />
+
+                  <el-input v-model="smsText" type="textarea"/>
+                  <br>
+                  <el-button size="small" @click="sendSMS()"> Отправить СМС</el-button>
+                  <br>
+                </div>
+              </div>
             </div>
           </el-collapse-item>
           <el-collapse-item :title="'&nbsp; Автомобиль: &nbsp; '+appeal.carBrandModel" name="2">
@@ -128,7 +161,15 @@
 
         </el-tab-pane>
         <el-tab-pane label="СМС">
-          смс
+          <el-scrollbar maxHeight="180px">
+            <div v-for="sms in listSMS" :key="sms.id" class="carusel-blocks">
+              <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
+              <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
+              <span class="label-red label-right">Статус:</span> {{ sms.statusText }}<br>
+              <span class="label-red label-right">Комментарий:</span> {{ sms.comment }}<br>
+            </div>
+          </el-scrollbar>
+
         </el-tab-pane>
         <el-tab-pane label="История">
 
@@ -167,7 +208,35 @@
 </template>
 
 <style>
+.carusel {
+  padding: 0 30px;
+  display: flex;
+  flex-wrap: wrap;
+}
 
+@media (width < 500px) {
+  .carusel {
+    padding: 0 12px;
+  }
+
+  .carusel textarea {
+    width: 280px;
+  }
+}
+
+.carusel-left, .carusel-right {
+  width: 49%;
+  min-width: 300px;
+}
+
+.carusel-blocks {
+  background: white;
+  margin: 10px;
+  margin-left: -80px;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 4px 0;
+}
 </style>
 
 <script setup>
@@ -177,6 +246,7 @@ import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
+import {formatDMY_hm} from "@/utils/globalFunctions";
 import {ElTable} from "element-plus";
 
 const globalStore = useGlobalStore();
@@ -193,10 +263,32 @@ let cb;
 const histories = ref([])
 const isEditManagerName = ref(false)
 const responsibles = ref([])
+const isOpenSMS = ref(false)
+const smsText = ref('')
+const listSMS = ref([])
+const smsTemplates = ref([])
+const smsTemplate = ref({})
+const smsDate = ref(null)
 
 const clickDropDown = (val) => {
   appeal.value.status = val.id
   appeal.value.statusTitle = val.name
+}
+
+function sendSMS() {
+  isOpenSMS.value = false
+  console.log('smsText', smsText.value)
+  console.log('smsTemplate', smsTemplate.value)
+  console.log('smsDate', smsDate.value)
+  let param = {
+    appealId: appeal.value.id,
+    comment: smsText.value,
+    meetDate: smsDate.value.toLocaleString(), //"15.02.2024 20:45",
+    templateId: smsTemplate.value.id
+  }
+  appealStore.sendSMS(param).then(res => {
+    console.log('res', res)
+  })
 }
 
 
@@ -206,7 +298,7 @@ function workFlowType(type) {
 }
 
 function openCollapse(val) {
-  console.log('val', val)
+  console.log('openCollapse val', val)
 }
 
 function toGetManagers() {
@@ -253,6 +345,15 @@ function open(row, cbModal) {
       let item = AppealStatusTable.find(item => item.id === el)
       item && AppealStatusTypes.value.push(item)
     })
+  })
+
+  appealStore.getSMS(row.id).then(res => {
+    listSMS.value = res.items
+  })
+
+  appealStore.getSmsTemplates().then(res => {
+    console.log('res', res)
+    smsTemplates.value = res.items
   })
 }
 
