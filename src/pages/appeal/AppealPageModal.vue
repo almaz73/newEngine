@@ -70,8 +70,8 @@
       <div class="demo-collapse">
         <el-collapse @change="openCollapse">
           <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+appeal.leadPhone" name="1">
-            <div class="carusel" style="">
-              <div class="carusel-left">
+            <div class="collapse" style="">
+              <div class="collapse-left">
 
                 <span> Статус клиента: {{ appeal.clientStatus }}<br></span>
                 <span v-if="appeal.leadName">Фио:   {{ appeal.leadName }}
@@ -87,7 +87,7 @@
                 <span v-if="appeal.leadSourceTitle">Источник: {{ appeal.leadSourceTitle }}<br></span>
                 <br>
               </div>
-              <div class="carusel-right">
+              <div class="collapse-right">
                 <el-button size="small" @click="smsSender.open()">Создать СМС-сообщение клиенту</el-button>
                 <SmsSender ref="smsSender" :appealId="appeal.id"/>
               </div>
@@ -118,54 +118,7 @@
 
       <el-divider/>
 
-      <el-tabs v-model="activeName" class="demo-tabs">
-        <el-tab-pane label="События" name="first">
-
-
-          <el-table :data="events"
-                    highlight-current-row
-                    :size="'small'">
-            <!--              <el-table-column>-->
-            <!--                <template #default="scope">-->
-            <!--                  <span style="">{{ scope.row.action }}: <b>{{ scope.row.comment }}</b></span>-->
-            <!--                </template>-->
-            <!--              </el-table-column>-->
-            <el-table-column prop="title"/>
-            <el-table-column prop="dateStart"/>
-            <el-table-column prop="person.lastName"/>
-          </el-table>
-
-        </el-tab-pane>
-        <el-tab-pane label="СМС">
-          <el-scrollbar maxHeight="180px">
-            <div v-for="sms in listSMS" :key="sms.id" class="carusel-blocks">
-              <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
-              <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
-              <span class="label-red label-right">Статус:</span> {{ sms.statusText }}<br>
-              <span class="label-red label-right">Комментарий:</span> {{ sms.comment }}<br>
-            </div>
-          </el-scrollbar>
-
-        </el-tab-pane>
-        <el-tab-pane label="История">
-
-          <el-timeline>
-            <el-timeline-item
-
-                v-for="(hist, index) in histories"
-                :key="index"
-                :hollow="true"
-                :timestamp="hist.createDate"
-            >
-              {{ hist.action }}: <b>{{ hist.comment }}</b> <span style="float: right">{{ hist.userTitle }}</span>
-            </el-timeline-item>
-          </el-timeline>
-
-        </el-tab-pane>
-        <el-tab-pane label="Комментарии">
-          Комментарии
-        </el-tab-pane>
-      </el-tabs>
+      <AppealTabs :appealId="appeal.id"/>
 
 
       <span class="modal-fields">
@@ -184,35 +137,7 @@
 </template>
 
 <style>
-.carusel {
-  padding: 0 30px;
-  display: flex;
-  flex-wrap: wrap;
-}
 
-@media (width < 500px) {
-  .carusel {
-    padding: 0 12px;
-  }
-
-  .carusel textarea {
-    width: 280px;
-  }
-}
-
-.carusel-left, .carusel-right {
-  width: 49%;
-  min-width: 300px;
-}
-
-.carusel-blocks {
-  background: white;
-  margin: 10px;
-  margin-left: -80px;
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 4px 0;
-}
 </style>
 
 <script setup>
@@ -222,9 +147,8 @@ import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
-import {formatDMY_hm} from "@/utils/globalFunctions";
-import {ElTable} from "element-plus";
 import SmsSender from "@/components/appalCtrl/SmsSender.vue";
+import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -233,16 +157,11 @@ const appeal = ref({});
 const closeModal = () => isOpen.value = false;
 const subtitle = ref('')
 const appealAvailableStatuses = ref([])
-const events = ref([])
-const activeName = ref('first')
 const AppealStatusTypes = ref([])
 let cb;
-const histories = ref([])
 const isEditManagerName = ref(false)
 const responsibles = ref([])
 const smsSender = ref(null)
-
-const listSMS = ref([])
 
 
 const clickDropDown = (val) => {
@@ -278,21 +197,13 @@ function toChangeManager(row) {
 
 
 function open(row, cbModal) {
+  appeal.value.id = row.id
   cb = cbModal;
   isOpen.value = true;
 
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
     subtitle.value = res.city + ' -- ' + res.locationName
-  })
-
-  histories.value = []
-  appealStore.getHistoryAppeal(row.id, 20).then(res => histories.value = res.models)
-
-  events.value = []
-  appealStore.getEventAppeal(row.id).then(res => {
-    console.log('events', res)
-    events.value = res.items
   })
 
 
@@ -304,10 +215,6 @@ function open(row, cbModal) {
       let item = AppealStatusTable.find(item => item.id === el)
       item && AppealStatusTypes.value.push(item)
     })
-  })
-
-  appealStore.getSMS(row.id).then(res => {
-    listSMS.value = res.items
   })
 
 

@@ -195,4 +195,41 @@ a:hover {
     border: 1px solid #444;
 }
 
+.collapse {
+    padding: 0 30px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (width < 500px) {
+    .collapse {
+        padding: 0 12px;
+    }
+
+    .collapse textarea {
+        width: 280px;
+    }
+}
+
+.collapse-left, .collapse-right {
+    width: 49%;
+    min-width: 300px;
+}
+
+.collapse-blocks {
+    background: white;
+    margin: 10px;
+
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 8px;
+}
+.dark .collapse-blocks{
+    background: black;
+}
+
+.collapse-blocks.sms{
+    margin-left: -80px;
+}
+
 

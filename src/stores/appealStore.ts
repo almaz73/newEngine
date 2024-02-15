@@ -17,8 +17,8 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get('api/event/get/items/appeal?id=' + id)
             return res.data
         },
-        async getHistoryAppeal(id: number, type: number) {
-            const res = await axios.get(`api/History/getHistory/${id}/${type}`)
+        async getHistory(id: number) {
+            const res = await axios.get(`api/History/getHistory/${id}/20`)
             return res.data
         },
         async getStatuses(id: number) {
@@ -37,11 +37,14 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
             return res.data
         },
-        async getSmsTemplates(id: number) {
+        async getSmsTemplates() {
             const res = await axios.get('api/sms/getTemplates').then(q => q)
             return res.data
         },
-
+        async getComments(id: number) {
+            const res = await axios.get(`api/comment/20/${id}`)
+            return res.data
+        },
 
 
     }

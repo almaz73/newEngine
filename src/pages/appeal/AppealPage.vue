@@ -238,7 +238,7 @@ function tmp() {
 }
 
 function getData() {
-  // return tmp()
+  return tmp()
   //
   if (validateFilter()) return false;
   globalStore.isWaiting = true

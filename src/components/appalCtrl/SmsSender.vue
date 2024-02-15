@@ -8,7 +8,7 @@
     >
       <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
     </el-select>
-&nbsp; &nbsp;
+    &nbsp; &nbsp;
     <el-date-picker
         size="small"
         v-model="smsDate"
@@ -27,6 +27,7 @@
                :type="isReady?'danger':''">
       Отправить СМС
     </el-button>
+    <el-button size="small" @click="clear()"> Отмена</el-button>
     <br>
   </div>
 </template>
