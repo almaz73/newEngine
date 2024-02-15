@@ -88,35 +88,8 @@
                 <br>
               </div>
               <div class="carusel-right">
-                <el-button size="small" @click="isOpenSMS=true"> Создать СМС-сообщение клиенту</el-button>
-
-                <SmsSender />
-
-                <div v-if="isOpenSMS">
-                  <el-select
-                      size="small"
-                      v-model="smsTemplate"
-                      :filterable="!globalStore.isMobileView"
-                      clearable
-                  >
-                    <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-                  </el-select>
-
-                  <el-date-picker
-                      size="small"
-                      v-model="smsDate"
-                      type="datetime"
-                      placeholder="Выберите время"
-                      format="YYYY-MM-DD HH:mm:ss"
-                      date-format="MMM DD, YYYY"
-                      time-format="HH:mm"
-                  />
-
-                  <el-input v-model="smsText" type="textarea"/>
-                  <br>
-                  <el-button size="small" @click="sendSMS()"> Отправить СМС</el-button>
-                  <br>
-                </div>
+                <el-button size="small" @click="smsSender.open()">Создать СМС-сообщение клиенту</el-button>
+                <SmsSender ref="smsSender" :appealId="appeal.id"/>
               </div>
             </div>
           </el-collapse-item>
@@ -267,32 +240,14 @@ let cb;
 const histories = ref([])
 const isEditManagerName = ref(false)
 const responsibles = ref([])
-const isOpenSMS = ref(false)
-const smsText = ref('')
+const smsSender = ref(null)
+
 const listSMS = ref([])
-const smsTemplates = ref([])
-const smsTemplate = ref({})
-const smsDate = ref(null)
+
 
 const clickDropDown = (val) => {
   appeal.value.status = val.id
   appeal.value.statusTitle = val.name
-}
-
-function sendSMS() {
-  isOpenSMS.value = false
-  console.log('smsText', smsText.value)
-  console.log('smsTemplate', smsTemplate.value)
-  console.log('smsDate', smsDate.value)
-  let param = {
-    appealId: appeal.value.id,
-    comment: smsText.value,
-    meetDate: smsDate.value.toLocaleString(), //"15.02.2024 20:45",
-    templateId: smsTemplate.value.id
-  }
-  appealStore.sendSMS(param).then(res => {
-    console.log('res', res)
-  })
 }
 
 
@@ -355,10 +310,7 @@ function open(row, cbModal) {
     listSMS.value = res.items
   })
 
-  appealStore.getSmsTemplates().then(res => {
-    console.log('res', res)
-    smsTemplates.value = res.items
-  })
+
 }
 
 
