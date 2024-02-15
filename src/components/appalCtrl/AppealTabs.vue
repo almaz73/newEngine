@@ -1,24 +1,32 @@
 <template>
   <el-tabs v-model="activeName" class="demo-tabs" @tab-change="tabChange">
-    <el-tab-pane :label="'События '+(countEvents?`(${countEvents})`:'')" name="eventsTab">
+    <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
+      <el-scrollbar maxHeight="220px">
+        <el-button :icon="Plus" size="small" @click="setEvent()" style="margin: 0 8px">Создать событие</el-button>
 
-
-      <el-table :data="events"
-                highlight-current-row
-                :size="'small'">
-        <!--              <el-table-column>-->
-        <!--                <template #default="scope">-->
-        <!--                  <span style="">{{ scope.row.action }}: <b>{{ scope.row.comment }}</b></span>-->
-        <!--                </template>-->
-        <!--              </el-table-column>-->
-        <el-table-column prop="title"/>
-        <el-table-column prop="dateStart"/>
-        <el-table-column prop="person.lastName"/>
-      </el-table>
-
+        <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
+          <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
+            <u><a @click="closeEvent(ev)" v-if="canCloseEvent(ev)">
+              ❌ Закрыть
+            </a></u>
+            <div style="float: right" v-html="getPeriods(ev)"/>
+          </div>
+          <div><span class="label-right">Описание:</span> {{ ev.description }}</div>
+          <div><span class="label-right">Ответственный:</span> {{ ev.responsible.person.lastName }}
+            {{ ev.responsible.person.firstName }}
+          </div>
+          <div><span class="label-right">Составитель:</span> {{ ev.createdUser.person.lastName }}
+            {{ ev.createdUser.person.firstName }}
+          </div>
+          <!--          <div><span class="label-right">Создано:</span> {{ formatDMY_hm(ev.createDate) }}</div>-->
+          <div><span class="label-right">Статус:</span> {{ ev.statusTitle }}</div>
+          <div>{{ ev.text }}</div>
+        </div>
+      </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'SMS '+(countSms?`(${countSms})`:'')" name="smsTab">
-      <el-scrollbar maxHeight="180px">
+    <el-tab-pane :label="'SMS '+(countSms?`( ${countSms} )`:'')" name="smsTab">
+      <el-scrollbar maxHeight="220px">
+        <el-button size="small" @click="openSmsModal()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
         <div v-for="sms in listSMS" :key="sms.id" class="collapse-blocks sms">
           <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
           <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
@@ -29,38 +37,50 @@
 
     </el-tab-pane>
 
-    <el-tab-pane :label="'История '+(countHistory?`(${countHistory})`:'')" name="historyTab">
-      <el-timeline>
-        <el-timeline-item
+    <el-tab-pane :label="'История '+(countHistory?`( ${countHistory} )`:'')" name="historyTab">
+      <el-scrollbar maxHeight="220px">
+        <el-timeline>
+          <el-timeline-item
 
-            v-for="(hist, index) in history"
-            :key="index"
-            :hollow="true"
-            :timestamp="hist.createDate"
-        >
-          {{ hist.action }}: <b>{{ hist.comment }}</b> <span style="float: right">{{ hist.userTitle }}</span>
-        </el-timeline-item>
-      </el-timeline>
-
+              v-for="(hist, index) in history"
+              :key="index"
+              :hollow="true"
+              :timestamp="hist.createDate"
+          >
+            {{ hist.action }}: <b>{{ hist.comment }}</b> <span style="float: right">{{ hist.userTitle }}</span>
+          </el-timeline-item>
+        </el-timeline>
+      </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'Комментарии '+(countComments?`(${countComments})`:'')" name="commentsTab">
-      <div v-for="com in comments" :key="com.id" class="collapse-blocks">
-        <div><span class="label-red">{{com.userName}} </span>
-          <span style="float: right">{{ formatDMY_hm(com.createDate) }}</span></div>
-        <div>{{com.text}}</div>
-      </div>
+    <el-tab-pane :label="'Комментарии '+(countComments?`( ${countComments} )`:'')" name="commentsTab">
+      <el-scrollbar maxHeight="220px">
+        <div v-for="com in comments" :key="com.id" class="collapse-blocks">
+          <div><span class="label-red">{{ com.userName }} </span>
+            <span style="float: right">{{ formatDMY_hm(com.createDate) }}</span></div>
+          <div>{{ com.text }}</div>
+        </div>
+      </el-scrollbar>
+    </el-tab-pane>
+    <el-tab-pane label="Фото автомобиля" name="photoTab" v-if="carPhoto">
+      <img style="width:500px; padding-left: calc(50% - 250px)" :src="carPhoto" alt=""/>
     </el-tab-pane>
   </el-tabs>
+  <SendEventModal ref="sendEventModal"/>
+  <SendSmsModal ref="sendSmsModal"/>
 </template>
 <script setup>
-import {formatDMY_hm} from "@/utils/globalFunctions";
-import {ElTable} from "element-plus";
+import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
+import {Plus} from "@element-plus/icons-vue";
+import SendEventModal from "@/components/appalCtrl/SendEventModal.vue";
+import SendSmsModal from "@/components/appalCtrl/SendSmsModal.vue";
+import {useGlobalStore} from "@/stores/globalStore";
+import {EventStatusEnums} from "@/utils/globalConstants";
 
 
-const {appealId} = defineProps(['appealId'])
-
+const globalStore = useGlobalStore()
+const {carPhoto} = defineProps(['carPhoto'])
 const appealStore = useAppealStore()
 const activeName = ref('eventsTab')
 const listSMS = ref([])
@@ -71,33 +91,67 @@ const events = ref([])
 const countEvents = ref(0)
 const comments = ref([])
 const countComments = ref(0)
+const sendEventModal = ref(null)
+const sendSmsModal = ref(null)
+const appeal = ref(null)
 
-getEvents()
+
+function getPeriods(ev) {
+  let startTime = new Date(ev.dateStart).getHours() + ':' + new Date(ev.dateStart).getMinutes()
+  let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
+
+  return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
+}
 
 function getEvents() {
-  appealStore.getEventAppeal(appealId).then(res => {
-    console.log('events', res)
+  appealStore.getEventAppeal(appeal.value.id).then(res => {
     events.value = res.items
     countEvents.value = res.items.length
   })
 }
 
+
+function closeEvent() {
+  appealStore.closeComment(event.id)
+}
+
+function canCloseEvent(event) {
+  if ((event.status !== EventStatusEnums['Закрыта'] && appeal.value.status !== 17 &&
+          event.responsible.id === globalStore.account.id && globalStore.account.id !== appeal.value.responsibleUser.id) ||
+      (event.status !== EventStatusEnums['Закрыта'] && globalStore.account.role === 'Admin')) return true
+}
+
+function openSmsModal() {
+  sendSmsModal.value.open(appeal.value)
+}
+
+function setEvent() {
+  sendEventModal.value.open()
+  // let param = {
+  //   templateId: smsTemplate.value,
+  //   appealId: props.appeal.id,
+  //   comment: smsText.value,
+  //   meetDate: smsDate.value.toLocaleString().replace(',', ''),
+  // }
+  // appealStore.setEvent(param).then(clear)
+}
+
 function getSms() {
-  appealStore.getSMS(appealId).then(res => {
+  appealStore.getSMS(appeal.value.id).then(res => {
     listSMS.value = res.items
     countSms.value = res.items.length
   })
 }
 
 function getHistory() {
-  appealStore.getHistory(appealId).then(res => {
+  appealStore.getHistory(appeal.value.id).then(res => {
     history.value = res.models
     countHistory.value = res.models.length
   })
 }
 
 function getComments() {
-  appealStore.getComments(appealId).then(res => {
+  appealStore.getComments(appeal.value.id).then(res => {
     comments.value = res.items
     countComments.value = res.count
   })
@@ -109,7 +163,12 @@ function tabChange(val) {
   if (val === 'smsTab') getSms()
   if (val === 'historyTab') getHistory()
   if (val === 'commentsTab') getComments()
-  console.log('tabChange', val)
 }
 
+function open(val) {
+  appeal.value = val
+  getEvents()
+}
+
+defineExpose({open})
 </script>

@@ -32,21 +32,6 @@
   </div>
 </template>
 
-<style>
-.smsPanel {
-  height: 0;
-  overflow: hidden;
-  transition: height 300ms ease;
-}
-
-.smsPanel.show {
-  height: 110px;
-}
-
-.smsPanel .el-textarea__inner {
-  resize: none;
-}
-</style>
 
 <script setup>
 

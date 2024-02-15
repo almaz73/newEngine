@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
+import cach from "@/utils/globalCach";
 
 const path = 'api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
@@ -34,15 +35,25 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getSMS(id: number) {
+            if (cach.getSMS) return cach.getSMS
             const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
-            return res.data
+            return (cach.getSMS = res.data)
         },
         async getSmsTemplates() {
+            if (cach.getSmsTemplates) return cach.getSmsTemplates
             const res = await axios.get('api/sms/getTemplates').then(q => q)
-            return res.data
+            return (cach.getSmsTemplates = res.data)
         },
         async getComments(id: number) {
             const res = await axios.get(`api/comment/20/${id}`)
+            return res.data
+        },
+        async closeComment(id: number) {
+            const res = await axios.get(`api/event/${id}/updateeventstatus`)
+            return res.data
+        },
+        async setEvent(obj: any) { //todo
+            const res = await axios.post('api/event', obj).then(q => q)
             return res.data
         },
 

@@ -118,8 +118,7 @@
 
       <el-divider/>
 
-      <AppealTabs :appealId="appeal.id"/>
-
+      <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
 
       <span class="modal-fields">
         <span>
@@ -135,10 +134,6 @@
     </el-scrollbar>
   </AppModal>
 </template>
-
-<style>
-
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
@@ -162,6 +157,8 @@ let cb;
 const isEditManagerName = ref(false)
 const responsibles = ref([])
 const smsSender = ref(null)
+const carPhoto = ref(null)
+const appealTabs = ref(null)
 
 
 const clickDropDown = (val) => {
@@ -197,13 +194,15 @@ function toChangeManager(row) {
 
 
 function open(row, cbModal) {
-  appeal.value.id = row.id
+  carPhoto.value = row.smallPhoto[0]
+
   cb = cbModal;
   isOpen.value = true;
 
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
     subtitle.value = res.city + ' -- ' + res.locationName
+    appealTabs.value.open(res)
   })
 
 

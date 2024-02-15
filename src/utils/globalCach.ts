@@ -17,6 +17,8 @@ const cach = {
     getUserLocations: null,
     getDepartments: null,
     getDomage: null,
-    getRepaired: null
+    getRepaired: null,
+    getSmsTemplates: null,
+    getSMS: null
 }
 export default cach

@@ -22,7 +22,7 @@ body {
     color: #999;
 }
 
-.dark body{
+.dark body {
     color: #999;
 }
 
@@ -224,12 +224,19 @@ a:hover {
     line-height: 1.5;
     padding: 8px;
 }
-.dark .collapse-blocks{
+
+.dark .collapse-blocks {
     background: black;
 }
 
-.collapse-blocks.sms{
+.collapse-blocks.sms {
     margin-left: -80px;
+}
+
+@media (width < 500px) {
+    .collapse-blocks.sms {
+        margin-left: 0;
+    }
 }
 
 
