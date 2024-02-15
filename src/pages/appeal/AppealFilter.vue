@@ -16,9 +16,9 @@
 import {computed, ref, watch} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses, Years} from '@/utils/globalConstants'
-import {globalRef} from "@/components/filterControls/FilterGlobalRef";
-import FilterFieldsCtrl from "@/components/filterControls/FilterFieldsCtrl.vue";
-import {getTags} from "@/components/filterControls/FilterGetTags";
+import {globalRef} from "@/components/filterCtrl/FilterGlobalRef";
+import FilterFieldsCtrl from "@/components/filterCtrl/FilterFieldsCtrl.vue";
+import {getTags} from "@/components/filterCtrl/FilterGetTags";
 import {tagsControl} from "@/utils/globalFunctions";
 
 const emit = defineEmits(['update:modelValue', 'changeFilter', 'getData'])

@@ -104,14 +104,14 @@
 </template>
 <script setup>
 import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
-import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
-import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
+import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
+import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import RealizationFilter from "@/pages/realization/RealizationFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useRealizationStore} from "@/stores/realizationStore";
 import {reactive, ref, computed, onMounted} from 'vue'
-import {globalRef} from '@/components/filterControls/FilterGlobalRef.js';
+import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 
 
 const globalStore = useGlobalStore()

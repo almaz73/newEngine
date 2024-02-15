@@ -89,6 +89,9 @@
               </div>
               <div class="carusel-right">
                 <el-button size="small" @click="isOpenSMS=true"> Создать СМС-сообщение клиенту</el-button>
+
+                <SmsSender />
+
                 <div v-if="isOpenSMS">
                   <el-select
                       size="small"
@@ -248,6 +251,7 @@ import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
 import {formatDMY_hm} from "@/utils/globalFunctions";
 import {ElTable} from "element-plus";
+import SmsSender from "@/components/appalCtrl/SmsSender.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()

@@ -103,9 +103,9 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {carColor, formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
 import {ElTable} from 'element-plus'
 import DealFilter from '@/pages/deal/DealFilter.vue'
-import FilterButtonsCtrl from "@/components/filterControls/FilterButtonsCtrl.vue";
-import FilterTagsCtrl from "@/components/filterControls/FilterTagsCtrl.vue";
-import {globalRef} from '@/components/filterControls/FilterGlobalRef';
+import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
+import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
+import {globalRef} from '@/components/filterCtrl/FilterGlobalRef';
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
