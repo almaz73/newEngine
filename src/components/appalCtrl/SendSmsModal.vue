@@ -7,33 +7,44 @@
             :subtitle="' Клиент: '+ appeal.leadName "
             draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
-      <el-select
-          v-model="smsTemplate"
-          :filterable="!globalStore.isMobileView"
-          clearable
-      >
-        <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-      </el-select>
-      &nbsp; &nbsp;
-      <el-date-picker
-          v-model="smsDate"
-          type="datetime"
-          placeholder="Выберите время"
-          format="YYYY-MM-DD HH:mm:ss"
-          date-format="MMM DD, YYYY"
-          time-format="HH:mm"
-      />
-
-      <el-input v-model="smsText" type="textarea"/>
+      <small>
+        <span class="label-red label-right">Шаблон сообщения:</span>
+        <el-select
+            v-model="smsTemplate"
+            :filterable="!globalStore.isMobileView"
+            clearable
+            @change="changeTeplate()"
+        >
+          <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
+        </el-select>
+      </small>
       <br>
-      <el-button :disabled='!isReady'
-                 @click="sendSMS()"
-                 :type="isReady?'danger':''">
-        Отправить СМС
-      </el-button>
-      <el-button @click="clear()"> Отмена</el-button>
+      <small>
+        <span class="label-red label-right">Текст отправляемой смс:</span><br>
+        <el-input v-model="txtSms" readonly type="textarea" rows="4" resize="none" placeholder="Комментарий"/>
+      </small>
+      <br><br>
+      <small>
+        <span class="label-red label-right">Дата встречи:</span>
+        <el-date-picker
+            v-model="smsDate"
+            type="datetime"
+            @change="checkDate()"
+            placeholder="Выберите время"
+            format="DD.MM.YYYY HH:mm"
+            date-format="DD.MM.YYYY"
+            time-format="HH:mm"
+        />
+      </small>
+      <div>
+        <el-input v-model="smsText" type="textarea" placeholder="Комментарий"/>
+      </div>
       <br>
     </el-scrollbar>
+    <div style="text-align: right">
+      <el-button type="danger" :disabled='!isReady' @click="sendSMS()" :icon="Plus">Отправить СМС</el-button>
+      <el-button type="info" @click="clear()">Отменить</el-button>
+    </div>
   </AppModal>
 </template>
 
@@ -44,6 +55,8 @@ import {computed, ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ElMessage} from "element-plus";
+import {Plus} from "@element-plus/icons-vue";
+import {formatDMY_hm} from "@/utils/globalFunctions";
 
 const props = defineProps(['appealId'])
 const closeModal = () => isOpen.value = false
@@ -58,16 +71,37 @@ const isOpen = ref(false)
 const appeal = ref(null)
 let cb;
 
+const txtSms = ref('')
+
 
 function clear() {
   smsTemplate.value = null
   smsText.value = ''
   smsDate.value = null
   isOpen.value = false
+  txtSms.value =''
+}
+
+
+function changeTeplate() {
+  console.log('smsTemplate.value', smsTemplate.value)
+  console.log('smsTemplates.value[smsTemplate.value]', smsTemplates.value[smsTemplate.value])
+  txtSms.value = smsTemplates.value[smsTemplate.value].text
+  txtSms.value = txtSms.value.replace('[appealId]', appeal.value.id)
+  txtSms.value = txtSms.value.replace('[meetDate]',  formatDMY_hm(smsDate.value))
+  txtSms.value = txtSms.value.replace('[appealManagerName]',  appeal.value.managerName)
+
+
+  console.log('txtSms.value.', txtSms.value)
+}
+
+function checkDate() {
+  if (smsDate.value < new Date()) return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
+  changeTeplate()
 }
 
 function sendSMS() {
-  if (smsDate.value < new Date()) return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
+  if (checkDate()) return false
 
   let param = {
     templateId: smsTemplate.value,

@@ -138,7 +138,7 @@ function setEvent() {
 
 function getSms() {
   appealStore.getSMS(appeal.value.id).then(res => {
-    listSMS.value = res.items
+    listSMS.value = res.items.reverse()
     countSms.value = res.items.length
   })
 }
@@ -152,7 +152,7 @@ function getHistory() {
 
 function getComments() {
   appealStore.getComments(appeal.value.id).then(res => {
-    comments.value = res.items
+    comments.value = res.items.reverse()
     countComments.value = res.count
   })
 }

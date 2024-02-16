@@ -35,9 +35,8 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getSMS(id: number) {
-            if (cach.getSMS) return cach.getSMS
             const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
-            return (cach.getSMS = res.data)
+            return res.data
         },
         async getSmsTemplates() {
             if (cach.getSmsTemplates) return cach.getSmsTemplates

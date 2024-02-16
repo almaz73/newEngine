@@ -6,7 +6,7 @@
         <div class="modal__head"
              @mouseup="mouseup"
              @mousedown="mousedown"></div>
-        <div class="modal__title">
+        <div class="modal__title" :class="true?'narrow':''">
           <h3>{{ title }}</h3>
           <span> {{ subtitle }}</span>
         </div>
@@ -50,6 +50,10 @@
   margin-top: -20px;
   margin-left: 12px;
   margin-bottom: 45px;
+}
+
+.modal__title.narrow{
+  margin-bottom: 25px;
 }
 
 .modal__title h3 {

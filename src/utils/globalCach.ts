@@ -18,7 +18,6 @@ const cach = {
     getDepartments: null,
     getDomage: null,
     getRepaired: null,
-    getSmsTemplates: null,
-    getSMS: null
+    getSmsTemplates: null
 }
 export default cach
