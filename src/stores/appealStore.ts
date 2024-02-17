@@ -33,16 +33,15 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
             return res.data
         },
-        async sendSMS(obj: any, noCach: boolean) {
-            // @ts-ignore
-            if (!noCach && cach['sendSMS' + obj.appealId]) return cach['sendSMS' + obj.appealId]
-            const res = await axios.post('api/sms/', obj).then(q => q)
-            // @ts-ignore
-            return (cach['sendSMS' + obj.appealId] = res.data)
+        async sendSMS(obj: any) {
+            return await axios.post('api/sms/', obj).then(q => q, err => err)
         },
-        async getSMS(id: number) {
+        async getSMS(id: number, noCach: boolean) {
+            // @ts-ignore
+            if (!noCach && cach['getSMS' + id]) return cach['getSMS' + id]
             const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
-            return res.data
+            // @ts-ignore
+            return (cach['getSMS' + id] = res.data)
         },
         async getSmsTemplates() {
             if (cach.getSmsTemplates) return cach.getSmsTemplates
@@ -53,6 +52,9 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`api/comment/20/${id}`)
             return res.data
         },
+        async saveComment(obj: any) {
+            return await axios.post('api/comment', obj).then(q => q)
+        },
         async closeComment(id: number) {
             const res = await axios.get(`api/event/${id}/updateeventstatus`)
             return res.data
@@ -61,8 +63,6 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.post('api/event', obj).then(q => q)
             return res.data
         }
-
-
     }
 })
 

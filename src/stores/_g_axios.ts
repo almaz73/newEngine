@@ -5,8 +5,8 @@ import {ElMessage} from "element-plus";
 
 axios.interceptors.response.use(resp => resp
     , err => {
-        console.log('Перехватываею все ошибкиь err=', err)
-        console.log(" err.request.status = ", err.request.status)
+        console.error('Перехватываю все ошибки')
+        console.warn(" err.request.status = ", err.request.status)
 
         if (!navigator.onLine) {
             console.log('Связи нет, сайт работает офлайн!')

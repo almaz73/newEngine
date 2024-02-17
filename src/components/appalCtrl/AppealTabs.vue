@@ -2,7 +2,7 @@
   <el-tabs v-model="activeName" class="demo-tabs" @tab-change="tabChange">
     <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
       <el-scrollbar maxHeight="220px">
-        <el-button :icon="Plus" @click="setEvent()" style="margin: 0 8px">Создать событие</el-button>
+        <el-button :icon="Plus" @click="openModalEvent()" style="margin: 0 8px">Создать событие</el-button>
 
         <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
@@ -26,7 +26,7 @@
     </el-tab-pane>
     <el-tab-pane :label="'SMS '+(countSms?`( ${countSms} )`:'')" name="smsTab">
       <el-scrollbar maxHeight="220px">
-        <el-button @click="openSmsModal()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
+        <el-button @click="openModalSms()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
         <div v-for="sms in listSMS" :key="sms.id" class="collapse-blocks sms">
           <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
           <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
@@ -53,7 +53,14 @@
       </el-scrollbar>
     </el-tab-pane>
     <el-tab-pane :label="'Комментарии '+(countComments?`( ${countComments} )`:'')" name="commentsTab">
+
       <el-scrollbar maxHeight="220px">
+        <div>
+          <el-input type="textarea" rows="1" style="width: 600px; margin:0 8px"
+                    placeholder="Добавьте комментарий"
+                    v-model="commentTxt"/>
+          <el-button @click="sendComment()" :icon="Plus" v-if="commentTxt">Добавить комментарий</el-button>
+        </div>
         <div v-for="com in comments" :key="com.id" class="collapse-blocks">
           <div><span class="label-red">{{ com.userName }} </span>
             <span style="float: right">{{ formatDMY_hm(com.createDate) }}</span></div>
@@ -94,6 +101,7 @@ const countComments = ref(0)
 const sendEventModal = ref(null)
 const sendSmsModal = ref(null)
 const appeal = ref(null)
+const commentTxt = ref('')
 
 
 function getPeriods(ev) {
@@ -121,25 +129,29 @@ function canCloseEvent(event) {
       (event.status !== EventStatusEnums['Закрыта'] && globalStore.account.role === 'Admin')) return true
 }
 
-function openSmsModal() {
-  sendSmsModal.value.open(appeal.value)
+function openModalSms() {
+  sendSmsModal.value.open(appeal.value, getSms)
 }
 
-function setEvent() {
-  sendEventModal.value.open(appeal.value,getEvents, events.value[0])
-  // let param = {
-  //   templateId: smsTemplate.value,
-  //   appealId: props.appeal.id,
-  //   comment: smsText.value,
-  //   meetDate: smsDate.value.toLocaleString().replace(',', ''),
-  // }
-  // appealStore.setEvent(param).then(clear)
+function sendComment() {
+  let params = {
+    EntityId: appeal.value.id,
+    entityType: 20,
+    text: commentTxt.value
+  }
+  appealStore.saveComment(params).then(() => {
+    commentTxt.value = ''
+    getComments()
+  })
+}
 
+function openModalEvent() {
+  sendEventModal.value.open(appeal.value, getEvents, events.value[0])
   getEvents(appeal.value.id, 'noCach')
 }
 
-function getSms() {
-  appealStore.getSMS(appeal.value.id).then(res => {
+function getSms(noCach) {
+  appealStore.getSMS(appeal.value.id, noCach).then(res => {
     listSMS.value = res.items.reverse()
     countSms.value = res.items.length
   })

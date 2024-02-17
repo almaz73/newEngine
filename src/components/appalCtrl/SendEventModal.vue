@@ -255,10 +255,10 @@ function EventCloseTypeChange() {
         }
       }
 
-      event.value.dateStart = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
-      event.value.timeStart = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
-      event.value.dateEnd = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
-      event.value.timeEnd = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+      event.value.dateStart = formatDateDDMMYYYY(dateStart)
+      event.value.timeStart = dateStart.toLocaleTimeString()
+      event.value.dateEnd = formatDateDDMMYYYY(dateStart)
+      event.value.timeEnd = dateStart.toLocaleTimeString()
 
       eventselectedDateTime.value = event.value.dateStart + ' ' + event.value.timeStart;
     } else {

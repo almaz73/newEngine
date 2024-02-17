@@ -78,20 +78,17 @@ function clear() {
   smsText.value = ''
   smsDate.value = null
   isOpen.value = false
-  txtSms.value =''
+  txtSms.value = ''
+  cb('moCach')
 }
 
 
 function changeTeplate() {
-  console.log('smsTemplate.value', smsTemplate.value)
-  console.log('smsTemplates.value[smsTemplate.value]', smsTemplates.value[smsTemplate.value])
-  txtSms.value = smsTemplates.value[smsTemplate.value].text
+  let tx = smsTemplates.value.find(el => el.id === smsTemplate.value)
+  txtSms.value = tx && tx.text
   txtSms.value = txtSms.value.replace('[appealId]', appeal.value.id)
-  txtSms.value = txtSms.value.replace('[meetDate]',  formatDMY_hm(smsDate.value))
-  txtSms.value = txtSms.value.replace('[appealManagerName]',  appeal.value.managerName)
-
-
-  console.log('txtSms.value.', txtSms.value)
+  txtSms.value = txtSms.value.replace('[meetDate]', formatDMY_hm(smsDate.value))
+  txtSms.value = txtSms.value.replace('[appealManagerName]', appeal.value.managerName)
 }
 
 function checkDate() {
@@ -108,7 +105,12 @@ function sendSMS() {
     comment: smsText.value,
     meetDate: smsDate.value.toLocaleString().replace(',', ''),
   }
-  appealStore.sendSMS(param).then(clear)
+  appealStore.sendSMS(param).then(res => {
+    if (res.code === "ERR_BAD_REQUEST") {
+      return ElMessage({message: res.response.data.errorText, type: 'warning'})
+    }
+    clear()
+  })
 }
 
 function open(row, cbModal) {
