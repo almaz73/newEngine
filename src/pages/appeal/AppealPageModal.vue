@@ -1,50 +1,59 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 900"
+            :width="globalStore.isMobileView? 330: 1100"
             :top="40"
             :title="'Обращение '+appeal.id+'. '+appeal.workflowLeadTypeTitle"
             :subtitle="subtitle"
             draggable
             resizable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
-      <div>
-        <small class="label-right">Статус</small>
+      <div style="display: flex; align-items: center">
+        <div style="width: 50%">
+          <small class="label-right">Статус</small>
 
-        <el-dropdown style="margin-bottom: 4px">
-          <el-button type="primary">
-            {{ appeal.statusTitle }}
+          <el-dropdown style="margin-bottom: 4px">
+            <el-button type="primary">
+              {{ appeal.statusTitle }}
 
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item
-                  @click="clickDropDown(item)"
-                  v-for="(item, ind) in AppealStatusTypes" :key="ind">{{ item.name }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                    @click="clickDropDown(item)"
+                    v-for="(item, ind) in AppealStatusTypes" :key="ind">{{ item.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <br>
 
-      </div>
+          <small class="label-right" v-if="appeal.workflowLeadType === 1">Продавец</small>
+          <small class="label-right" v-if="appeal.workflowLeadType === 2">Выкупщик</small>
+          <small class="label-right" v-if="![1,2].includes(appeal.workflowLeadType)">Ответственный</small>
 
-      <div>
-        <small class="label-right" v-if="appeal.workflowLeadType === 1">Продавец</small>
-        <small class="label-right" v-if="appeal.workflowLeadType === 2">Выкупщик</small>
-        <small class="label-right" v-if="![1,2].includes(appeal.workflowLeadType)">Ответственный</small>
+          <span v-if="!isEditManagerName">
+            <small v-if="appeal.managerName">{{ appeal.managerName }}</small>
+            <small v-if="!appeal.managerName">Прикрепить менеджера</small>
+            &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                        @click="toGetManagers()"
+                        style="cursor: pointer">
+          </span>
+          <span v-else>
+            <el-select v-model="appeal.managerId" @change="toChangeManager">
+              <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
+            </el-select>
+          </span>
+        </div>
 
-        <span v-if="!isEditManagerName">
-          <small v-if="appeal.managerName">{{ appeal.managerName }}</small>
-          <small v-if="!appeal.managerName">Прикрепить менеджера</small>
-          &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                      @click="toGetManagers()"
-                      style="cursor: pointer">
-        </span>
-        <span v-else>
-          <el-select v-model="appeal.managerId" @change="toChangeManager">
-            <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
-          </el-select>
-        </span>
+        <div style="border-left: 5px solid #d34338; padding-left: 20px">
+          <small>
+            <div class="label-red ">Результаты и действия:</div>
+            <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
+            <div v-if="lastTaskAndResult" v-html="lastTaskAndResult"/>
+            <div>⚡{{ prevTask }}</div>
+          </small>
+        </div>
       </div>
       <br>
 
@@ -63,14 +72,6 @@
         <span class="nowrap">
           <span class="label-red ">Источник:</span> {{ appeal.treatmentSourceTitle }}
         </span>
-      </small>
-
-      <small>
-        <ul>
-          <span class="label-red ">Результаты и действия:</span>
-          <li v-if="lastTaskAndResult">{{ lastTaskAndResult }}</li>
-          <li>{{ prevTask }}</li>
-        </ul>
       </small>
 
       <br>
@@ -251,8 +252,9 @@ function getEvents() {
 
 
     if (result) {
-      lastTaskAndResult.value = result.typeTitle + endPhrase + formatDMY_hm(last.createDate) +
-          (result.comment !== undefined && result.comment !== '' ? ' с результатом: ' + result.comment : '');
+      lastTaskAndResult.value = '⚡' + result.typeTitle + endPhrase
+          + formatDMY_hm(last.createDate) +
+          (result.comment ? ' с результатом: <b>' + result.comment : '</b>');
     }
 
     prevTask.value = 'Следующее действие: ' + events.value[0].typeTitle + ' на ' + formatDMY_hm(events.value[0].dateStart)
