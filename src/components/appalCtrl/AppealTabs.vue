@@ -2,7 +2,7 @@
   <el-tabs v-model="activeName" class="demo-tabs" @tab-change="tabChange">
     <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
       <el-scrollbar maxHeight="220px">
-        <el-button :icon="Plus" size="small" @click="setEvent()" style="margin: 0 8px">Создать событие</el-button>
+        <el-button :icon="Plus" @click="setEvent()" style="margin: 0 8px">Создать событие</el-button>
 
         <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
@@ -26,7 +26,7 @@
     </el-tab-pane>
     <el-tab-pane :label="'SMS '+(countSms?`( ${countSms} )`:'')" name="smsTab">
       <el-scrollbar maxHeight="220px">
-        <el-button size="small" @click="openSmsModal()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
+        <el-button @click="openSmsModal()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
         <div v-for="sms in listSMS" :key="sms.id" class="collapse-blocks sms">
           <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
           <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
@@ -103,8 +103,8 @@ function getPeriods(ev) {
   return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
 }
 
-function getEvents() {
-  appealStore.getEventAppeal(appeal.value.id).then(res => {
+function getEvents(noCach) {
+  appealStore.getEvents(appeal.value.id, noCach).then(res => {
     events.value = res.items
     countEvents.value = res.items.length
   })
@@ -126,7 +126,7 @@ function openSmsModal() {
 }
 
 function setEvent() {
-  sendEventModal.value.open()
+  sendEventModal.value.open(appeal.value,getEvents, events.value[0])
   // let param = {
   //   templateId: smsTemplate.value,
   //   appealId: props.appeal.id,
@@ -134,6 +134,8 @@ function setEvent() {
   //   meetDate: smsDate.value.toLocaleString().replace(',', ''),
   // }
   // appealStore.setEvent(param).then(clear)
+
+  getEvents(appeal.value.id, 'noCach')
 }
 
 function getSms() {

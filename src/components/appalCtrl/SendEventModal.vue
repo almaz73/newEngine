@@ -3,56 +3,64 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 330: 600"
             :top="73"
-            :title="'Создать событие'"
-            :subtitle="subtitle"
+            :title="'Создать событие: '+title"
             draggable>
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
-      <div>
-        <span class="label-red label-right">Результат встречи:</span>
-        <el-select
-            placeholder="Выберите значение"
-            v-model="zzz">
-          <el-option v-for="(item, ind) in lists" :key="ind" :label="item" :value="item"/>
-        </el-select>
-      </div>
+    <small>
+      <span class="label-red label-right">Результат встречи:</span>
+      <el-select
+          placeholder="Выберите значение"
+          v-model="event.closeType">
+        <el-option v-for="item in closeEnums" :key="item.id" :label="item.name" :value="item.id"/>
+      </el-select>
+    </small>
+
+
+    <div style="text-align: center; margin: 12px">
+      <el-button type="success" style="padding: 22px 12px; border: none"
+                 :style="{background: model.id===event.type?'#999':''}"
+                 v-for="(model, ind) in EventTypes" :key="ind">
+        <img :src="'/src/assets/icons/'+eventTypeButtonClass(model)" alt=""
+             @click="changeEventType(model.id)"/>
+      </el-button>
+    </div>
+
+
+    <small>
+
+      <span class="label-red label-right">Ответственный:</span>
+      {{ event.userResponsibleTitle }}
+    </small><br>
+
+    <small>
+      <span class="label-red label-right">Описание:</span>
+      <el-input type="textarea" name="description" v-model="event.description" style="width: 213px"
+                rows="2"
+      ></el-input>
+    </small>
+
+    <small>
+      <span class="label-red label-right">Дата:</span>
+
+      <el-date-picker
+          v-model="eventselectedDateTime"
+          type="datetime"
+          @change="checkDate()"
+          placeholder="Выберите время"
+          format="DD.MM.YYYY HH:mm"
+          date-format="DD.MM.YYYY"
+          time-format="HH:mm"
+      />
 
       <div>
-
-        <span class="label-red label-right">Ответственный:</span>
-        <el-select
-            placeholder="Выберите значение"
-            v-model="userResponsibleId">
-          <el-option v-for="(item, ind) in users" :key="ind" :label="item" :value="item"/>
-        </el-select>
+        <label style="cursor: pointer" @click="checkResponsible()">
+          <el-checkbox :checed="responsible"/>&nbsp; Поставить себя ответственным на событие
+        </label>
       </div>
-
-      <div>
-        <span class="label-red label-right">Описание:</span>
-        <textarea
-            name="description"
-            id="description"
-            v-model="description"
-            type="text"
-        ></textarea>
-      </div>
-
-      <div>
-        <span class="label-red label-right">Дата:</span>
-        <textarea
-            name="description"
-            id="description"
-            v-model="description"
-            type="text"
-        ></textarea>
-
-        <div>
-          <label>
-            <el-checkbox/>
-            Поставить себя ответственным на событие
-          </label>
-        </div>
-      </div>
-    </el-scrollbar>
+    </small>
+    <div style="text-align: right">
+      <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+      <el-button type="info" @click="isOpen = false">Отменить</el-button>
+    </div>
   </AppModal>
 </template>
 
@@ -63,22 +71,340 @@
 <script setup>
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
+import {Plus} from "@element-plus/icons-vue";
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {ElMessage} from "element-plus";
+import {EventType} from "@/utils/globalConstants";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
 const isOpen = ref(false);
 const appeal = ref({});
 const closeModal = () => isOpen.value = false;
-const subtitle = ref('')
 let cb;
+const responsible = ref(false)
+const closeEnums = ref([])
+const commentLabel = ref(null)
+const EventTypes = ref([]); // кнокп с рисунками
+const eventselectedDateTime = ref(null)
+const title = computed(() => {
+  let elem = event.value.type && EventTypes.value.find(el => el.id === event.value.type)
+  return elem ? elem.value : ''
+})
+
+const event = ref({
+  closeType: null,
+  userResponsibleTitle: '',
+  type: '',
+  userResponsibleId: ''
+})
+const lastTaskType = ref(null)
+const account = globalStore.account
+
+const EventClosePhoneEnums = [
+  {id: 10, name: 'Не доступен'},
+  {id: 11, name: 'Не берет трубку'},
+  {id: 12, name: 'Звонок завершен'},
+]
+const EventCloseConfirmationMeetingEnums = [
+  {id: 20, name: 'Подтверждено'},
+  {id: 21, name: 'Перенесено'},
+  {id: 22, name: 'Отклонено'},
+]
+const MeetingConfirmEnums = [
+  {id: 30, name: 'Встреча состоялась'},
+  {id: 31, name: 'Встреча перенесена'}
+]
+
+const DefaultEvents = [
+  {id: 1, value: 'Звонок'},
+  {id: 141, value: 'Видеозвонок'},
+  {id: 2, value: 'Встреча'},
+  {id: 142, value: 'Франшиза. Сделка'},
+]
+const BuyerEvents = [
+  {id: 1, value: 'Звонок'},
+  {id: 2, value: 'Встреча'},
+  {id: 8, value: 'Осмотр'},
+  {id: 5, value: 'Оформление'},
+]
+const SalesEvents = [
+  {id: 1, value: 'Звонок'},
+  {id: 2, value: 'Встреча'},
+  //{id: 4, value: 'Тест драйв'},
+  {id: 120, value: 'Предоплата'},
+  {id: 90, value: 'Оформление'},
+]
+const HostessEvents = [
+  {id: 1, value: 'Звонок'},
+  {id: 2, value: 'Встреча'},
+  {id: 4, value: 'Тест драйв'},
+  {id: 120, value: 'Предоплата'},
+  {id: 90, value: 'Оформление'},
+]
+
+const CallCenterEventsConfirm = [
+  {id: 1, value: 'Звонок'},
+  {id: 130, value: 'Подтверждение встречи'},
+]
+const CallCenterEventsMeet = [
+  {id: 1, value: 'Звонок'},
+  {id: 2, value: 'Встреча'},
+]
 
 
-function open(row, cbModal) {
+function getSelects() {
+  switch (lastTaskType.value) {
+      // звонок
+    case 1:
+      closeEnums.value = EventClosePhoneEnums;
+      commentLabel.value = 'Результат звонка';
+      break;
+      // звонок вежливости
+    case 145:
+      closeEnums.value = EventClosePhoneEnums;
+      commentLabel.value = 'Результат звонка';
+      break;
+      // подтверждение встречи
+    case 130:
+      closeEnums.value = EventCloseConfirmationMeetingEnums;
+      commentLabel.value = 'Результат подтверждения встречи';
+      break;
+      // встреча
+    case 2:
+      closeEnums.value = MeetingConfirmEnums;
+      commentLabel.value = 'Результат встречи';
+      break;
+    default:
+      commentLabel.value = 'Результат события';
+      break;
+  }
+
+
+  switch (account.role) {
+    case 'BuyerEmployee':
+      EventTypes.value = BuyerEvents;
+      break;
+    case 'BuyerManager':
+      EventTypes.value = BuyerEvents;
+      break;
+    case 'SalesEmployee':
+      EventTypes.value = SalesEvents;
+      break;
+    case 'SalesManager':
+      EventTypes.value = SalesEvents;
+      break;
+    case 'CallEmployee':
+      EventTypes.value = CallCenterEventsConfirm;
+      break;
+    case 'CallManager':
+      EventTypes.value = CallCenterEventsConfirm;
+      break;
+    case 'LocalCallEmployee':
+      EventTypes.value = CallCenterEventsConfirm;
+      break;
+    case 'LocalCallManager':
+      EventTypes.value = CallCenterEventsConfirm;
+      break;
+    case 'Hostess':
+      EventTypes.value = HostessEvents;
+      break;
+    case 'SimpleEmployee':
+      EventTypes.value = DefaultEvents;
+      break;
+    default:
+      EventTypes.value = DefaultEvents;
+      break;
+  }
+
+}
+
+
+function changeEventType(key) {
+  eventselectedDateTime.value = null;
+  event.value.type = parseInt(key);
+  EventCloseTypeChange();
+}
+
+function checkDate() {
+  if (eventselectedDateTime.value < new Date())
+    return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
+}
+
+function EventCloseTypeChange() {
+  if (
+      account.role === 'CallManager' ||
+      account.role === 'CallEmployee' ||
+      account.role === 'LocalCallManager' ||
+      account.role === 'LocalCallEmployee'
+  ) {
+    if ((event.value.closeType === 10 || event.value.closeType === 11) && event.value.type === 1) {
+      var currentDate = new Date();
+      var timeDay = new Date(new Date(new Date().setHours(14)).setMinutes(30));
+      var dateStart = null;
+
+      if (currentDate < timeDay) {
+        dateStart = new Date((new Date().setHours(new Date().getHours() + 3)));
+      } else if (currentDate > timeDay) {
+        dateStart = new Date(new Date(new Date(new Date().setDate(new Date().getDate() + 1)).setHours(10),).setMinutes(0))
+
+        if (dateStart.getDay() === 6 || dateStart.getDay() === 0) {
+          dateStart = new Date(new Date(dateStart).setDate(new Date(dateStart).getDate() + 2));
+        }
+      }
+
+      event.value.dateStart = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
+      event.value.timeStart = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+      event.value.dateEnd = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
+      event.value.timeEnd = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+
+      eventselectedDateTime.value = event.value.dateStart + ' ' + event.value.timeStart;
+    } else {
+      eventselectedDateTime.value = null;
+    }
+
+    // зачем?
+    if (event.value.closeType === 20) {
+      EventTypes.value = CallCenterEventsMeet;
+    } else {
+      // зачем?
+      // EventTypes.value = CallCenterEventsConfirm;
+    }
+  } else {
+    dateStart = new Date()
+    event.value.dateStart = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
+    event.value.timeStart = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+    event.value.dateEnd = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
+    event.value.timeEnd = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+  }
+}
+
+function eventTypeButtonClass(button) {
+  let url = ''
+  switch (button.id) {
+    case 1:
+      url = 'eventCallWhite.png'
+      break;
+    case 2:
+      url = 'eventMeetingWhite.png'
+      break;
+    case 5:
+      url = 'eventFormalizationWhite.png'
+      break;
+    case 8:
+      url = 'eventInspectionWhite.png'
+      break;
+    case 120:
+      url = 'eventAdvancePaymentWhite.png'
+      break;
+    case 4:
+      url = 'eventTestDriveWhite.png'
+      break;
+    case 90:
+      url = 'eventFormalizationWhite.png'
+      break;
+    case 130:
+      url = 'eventConfirmationMeetingWhite.png'
+      break;
+    case 141:
+      url = 'eventVideoCall.png'
+      break;
+    case 142:
+      url = 'eventFranchiseDeal.png'
+      break;
+  }
+  return url
+}
+
+function checkResponsible() {
+  responsible.value = !responsible.value;
+  event.value.userResponsibleId = responsible.value ? account.id : appeal.value.managerId;
+}
+
+function open(row, cbModal, lastTask) {
   cb = cbModal
-  console.log('row', row)
+  appeal.value = row
+  lastTaskType.value = lastTask.type
   isOpen.value = true
+  event.value.userResponsibleTitle = appeal.value.managerName
+  event.value.userResponsibleId = appeal.value.managerId
+  console.log('?appeal.value', appeal.value)
+  getSelects()
+
+
+}
+
+function getDateTime(myDate, time) {
+  var splitDate = myDate.split('.');
+  var splitTime = time.split(':');
+  var date = new Date(
+      Date.UTC(
+          splitDate[2],
+          parseInt(splitDate[1]) - 1,
+          splitDate[0],
+          splitTime[0],
+          splitTime[1],
+      ),
+  );
+
+  var minutes = date.getMinutes();
+  var month = date.getMonth() + 1;
+  var dateOfmonth = date.getUTCDate();
+
+  if (minutes < 10) {
+    minutes = '0' + minutes;
+  }
+  if (month < 10) {
+    month = '0' + month;
+  }
+  if (dateOfmonth < 10) {
+    dateOfmonth = '0' + dateOfmonth;
+  }
+
+  return (
+      date.getFullYear() +
+      '.' +
+      month +
+      '.' +
+      dateOfmonth +
+      ' ' +
+      date.getUTCHours() +
+      ':' +
+      minutes
+  );
+}
+
+function save() {
+  if (checkDate()) return false
+
+  event.value.status = 10;
+
+  var dateTimeStart = getDateTime(event.value.dateStart, event.value.timeStart);
+  var dateTimeEnd = getDateTime(event.value.dateEnd, event.value.timeEnd);
+
+  var newEvent = {
+    // id: event.value.id,
+    title: EventType[event.value.type],
+    type: event.value.type,
+    status: event.value.status,
+    userResponsibleId: event.value.userResponsibleId,
+    dateStart: dateTimeStart,  // тут нужно разбираться todo
+    dateEnd: dateTimeEnd,  // тут нужно разбираться todo
+    // dealId: event.value.dealId,
+    // deleted: event.value.deleted,
+    description: event.value.description,
+    // created: event.value.created,
+    entityId: appeal.value.id,
+    entityType: 20, // тут нужно разбираться todo
+    // typeEntityId: event.value.typeEntityId,
+  };
+  appealStore.saveEvent(newEvent).then(() => {
+    isOpen.value = false
+    cb('noCach')
+
+  })
 }
 
 defineExpose({open});

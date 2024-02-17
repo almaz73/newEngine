@@ -14,9 +14,12 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get('api/workflow/' + id)
             return res.data
         },
-        async getEventAppeal(id: number) {
+        async getEvents(id: number, noCach: boolean) {
+            // @ts-ignore
+            if (!noCach && cach['getEventsAppeal' + id]) return cach['getEventsAppeal' + id]
             const res = await axios.get('api/event/get/items/appeal?id=' + id)
-            return res.data
+            // @ts-ignore
+            return (cach['getEventsAppeal' + id] = res.data)
         },
         async getHistory(id: number) {
             const res = await axios.get(`api/History/getHistory/${id}/20`)
@@ -30,9 +33,12 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
             return res.data
         },
-        async sendSMS(obj: any) {
+        async sendSMS(obj: any, noCach: boolean) {
+            // @ts-ignore
+            if (!noCach && cach['sendSMS' + obj.appealId]) return cach['sendSMS' + obj.appealId]
             const res = await axios.post('api/sms/', obj).then(q => q)
-            return res.data
+            // @ts-ignore
+            return (cach['sendSMS' + obj.appealId] = res.data)
         },
         async getSMS(id: number) {
             const res = await axios.get(`api/sms/getSMSItems/${id}`).then(q => q)
@@ -51,10 +57,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`api/event/${id}/updateeventstatus`)
             return res.data
         },
-        async setEvent(obj: any) { //todo
+        async saveEvent(obj: any) {
             const res = await axios.post('api/event', obj).then(q => q)
             return res.data
-        },
+        }
 
 
     }

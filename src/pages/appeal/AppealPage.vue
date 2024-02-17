@@ -238,7 +238,7 @@ function tmp() {
 }
 
 function getData() {
-  return tmp()
+   // return tmp()
   //
   if (validateFilter()) return false;
   globalStore.isWaiting = true
@@ -251,7 +251,7 @@ function getData() {
 }
 
 function openModal(row) {
-  console.log('row', row)
+  console.log('APPEAL =', row)
 
   appealModal.value.open(row, getData)
 }

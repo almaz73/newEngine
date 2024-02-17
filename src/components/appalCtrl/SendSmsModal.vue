@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 330: 600"
             :top="73"
-            :title="'Отправить sms на номер: '+appeal.leadPhone"
+            :title="'Отправить СМС на номер: '+appeal.leadPhone"
             :subtitle="' Клиент: '+ appeal.leadName "
             draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
@@ -21,7 +21,7 @@
       <br>
       <small>
         <span class="label-red label-right">Текст отправляемой смс:</span><br>
-        <el-input v-model="txtSms" readonly type="textarea" rows="4" resize="none" placeholder="Комментарий"/>
+        <el-input v-model="txtSms" readonly type="textarea" rows="4" resize="none"/>
       </small>
       <br><br>
       <small>
@@ -58,7 +58,6 @@ import {ElMessage} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import {formatDMY_hm} from "@/utils/globalFunctions";
 
-const props = defineProps(['appealId'])
 const closeModal = () => isOpen.value = false
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()

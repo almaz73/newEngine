@@ -65,6 +65,14 @@
         </span>
       </small>
 
+      <small>
+        <ul>
+          <span class="label-red ">Результаты и действия:</span>
+          <li v-if="lastTaskAndResult">{{ lastTaskAndResult }}</li>
+          <li>{{ prevTask }}</li>
+        </ul>
+      </small>
+
       <br>
 
       <div class="demo-collapse">
@@ -144,23 +152,26 @@ import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
 import SmsSender from "@/components/appalCtrl/SmsSender.vue";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
+import {formatDMY_hm} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
 const isOpen = ref(false);
+let cb;
 const appeal = ref({});
-const closeModal = () => isOpen.value = false;
 const subtitle = ref('')
 const appealAvailableStatuses = ref([])
 const AppealStatusTypes = ref([])
-let cb;
 const isEditManagerName = ref(false)
 const responsibles = ref([])
 const smsSender = ref(null)
 const carPhoto = ref(null)
 const appealTabs = ref(null)
+const lastTaskAndResult = ref('')
+const prevTask = ref('')
+const events = ref([])
 
-
+const closeModal = () => isOpen.value = false;
 const clickDropDown = (val) => {
   appeal.value.status = val.id
   appeal.value.statusTitle = val.name
@@ -202,6 +213,7 @@ function open(row, cbModal) {
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
     subtitle.value = res.city + ' -- ' + res.locationName
+    getEvents()
     appealTabs.value.open(res)
   })
 
@@ -217,6 +229,34 @@ function open(row, cbModal) {
   })
 
 
+}
+
+function getEvents() {
+  lastTaskAndResult.value = ''
+  prevTask.value = ''
+  appealStore.getEvents(appeal.value.id).then(res => {
+    events.value = res.items
+    let last = events.value[0];
+    let result = events.value[1];
+    let endPhrase = ' завершено в ';
+    switch (result && result.type) {
+      case 1:
+        endPhrase = ' завершен в ';
+        break;
+      case 2:
+      case 120:
+        endPhrase = ' завершена в ';
+        break;
+    }
+
+
+    if (result) {
+      lastTaskAndResult.value = result.typeTitle + endPhrase + formatDMY_hm(last.createDate) +
+          (result.comment !== undefined && result.comment !== '' ? ' с результатом: ' + result.comment : '');
+    }
+
+    prevTask.value = 'Следующее действие: ' + events.value[0].typeTitle + ' на ' + formatDMY_hm(events.value[0].dateStart)
+  })
 }
 
 
