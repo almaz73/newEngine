@@ -1,9 +1,21 @@
 <template>
-  <div
-      class="left-menu-logo"
-      :class="{ small: globalStore.isNarrowPanel, show: globalStore.isShowPanel }"
-      @click="globalStore.isShowPanel = false"
-  ></div>
+  <el-popover
+      placement="bottom"
+      :title="`Версия ${globalStore.version}`"
+      :width="200"
+      :trigger="globalStore.isMobileView?'hover':''"
+  >
+    <template #reference>
+      <div
+          class="left-menu-logo"
+          :class="{ small: globalStore.isNarrowPanel, show: globalStore.isShowPanel }"
+          @click="globalStore.isShowPanel = false;"
+      ></div>
+    </template>
+    <template #default>
+      <RouterLink to="/version">Детальнее..</RouterLink>
+    </template>
+  </el-popover>
 
   <div v-if="globalStore.isMobileView && globalStore.isShowPanel"
        style="width: 100%; height: 100vh; position: fixed; z-index: 10"

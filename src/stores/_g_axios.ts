@@ -21,7 +21,7 @@ axios.interceptors.response.use(resp => resp
         }
 
         if (err.request.status === 500) {
-            ElMessage({message: 'Ошибка 500. Возможно нет связи!', type: 'warning',})
+            ElMessage({message: 'Ошибка 500. Внутрення ошибка сервера', type: 'warning',})
         }
         return err
     })

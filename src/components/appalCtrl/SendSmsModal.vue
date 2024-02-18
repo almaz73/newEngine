@@ -8,7 +8,7 @@
             draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
       <small>
-        <span class="label-red label-right">Шаблон сообщения:</span>
+        <span class="label-red"> &nbsp; &nbsp; &nbsp; &nbsp; Шаблон сообщения:</span>
         <el-select
             v-model="smsTemplate"
             :filterable="!globalStore.isMobileView"
@@ -20,7 +20,7 @@
       </small>
       <br>
       <small>
-        <span class="label-red label-right">Текст отправляемой смс:</span><br>
+        <span class="label-red">Текст отправляемой смс:</span><br>
         <el-input v-model="txtSms" readonly type="textarea" rows="4" resize="none"/>
       </small>
       <br><br>

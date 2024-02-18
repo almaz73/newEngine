@@ -1,5 +1,5 @@
 <template>
-  <el-tabs v-model="activeName" class="demo-tabs" @tab-change="tabChange">
+  <el-tabs v-model="activeName" @tab-change="tabChange" style="padding-right: 8px">
     <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
       <el-scrollbar maxHeight="220px">
         <el-button :icon="Plus" @click="openModalEvent()" style="margin: 0 8px">Создать событие</el-button>
@@ -26,7 +26,9 @@
     </el-tab-pane>
     <el-tab-pane :label="'SMS '+(countSms?`( ${countSms} )`:'')" name="smsTab">
       <el-scrollbar maxHeight="220px">
-        <el-button @click="openModalSms()" :icon="Plus">Отправить СМС-сообщение клиенту</el-button>
+        <el-button @click="openModalSms()" :icon="Plus" style="margin: 0 8px">Отправить СМС-сообщение клиенту
+        </el-button>
+        <el-button @click="printDocSms()"> ✍ Скачать "Согласие на обработку персональных данных и получения смс"</el-button>
         <div v-for="sms in listSMS" :key="sms.id" class="collapse-blocks sms">
           <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
           <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>
@@ -131,6 +133,10 @@ function canCloseEvent(event) {
 
 function openModalSms() {
   sendSmsModal.value.open(appeal.value, getSms)
+}
+
+function printDocSms() {
+  appeal.value && window.location.assign('/api/print/appeal/personal-data-consent/' + appeal.value.id);
 }
 
 function sendComment() {

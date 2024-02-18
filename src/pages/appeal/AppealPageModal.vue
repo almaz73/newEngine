@@ -40,7 +40,7 @@
                         style="cursor: pointer">
           </span>
           <span v-else>
-            <el-select v-model="appeal.managerId" @change="toChangeManager">
+            <el-select v-model="appeal.managerId" @change="toChangeManager" filterable>
               <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </span>
@@ -137,7 +137,7 @@
 
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-        <el-button type="info" @click="isOpen = false">Отменить</el-button>
+        <el-button type="info" @click="closeModal()">Отменить</el-button>
       </div>
       </span>
     </el-scrollbar>
@@ -172,7 +172,10 @@ const lastTaskAndResult = ref('')
 const prevTask = ref('')
 const events = ref([])
 
-const closeModal = () => isOpen.value = false;
+const closeModal = () => {
+  isOpen.value = false;
+  isEditManagerName.value = false
+}
 const clickDropDown = (val) => {
   appeal.value.status = val.id
   appeal.value.statusTitle = val.name
@@ -189,12 +192,9 @@ function openCollapse(val) {
 }
 
 function toGetManagers() {
-
-  isEditManagerName.value = true
-
-  isEditManagerName.value = true
   appealStore.getRoles(appeal.value.workflowLeadType).then(res => {
-    responsibles.value = res.items;
+    responsibles.value = res.data.items;
+    isEditManagerName.value = true
   })
 }
 

@@ -224,7 +224,7 @@ a:hover {
 }
 
 .collapse-blocks.sms {
-    margin-left: -80px;
+    margin-left: 20px;
 }
 
 @media (width < 500px) {

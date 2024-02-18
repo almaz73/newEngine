@@ -23,6 +23,9 @@
       <el-button class="exit" @click="signOut()">Выйти</el-button>
     </div>
     <div class="account_window__buttons">
+      <span  >ver : {{globalStore.version}}
+        <RouterLink to="/version">more..</RouterLink>
+      </span>
       <el-button v-if="globalStore.isMobileView" @click="clearCash()">Очистить кэш</el-button>
     </div>
     <div class="under_window" @click="emits('closeLoginPanel')"></div>

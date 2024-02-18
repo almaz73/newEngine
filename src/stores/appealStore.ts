@@ -30,11 +30,10 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getRoles(id: number) {
-            const res = await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
-            return res.data
+            return await axios.get(`api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
         },
         async sendSMS(obj: any) {
-            return await axios.post('api/sms/', obj).then(q => q, err => err)
+            return await axios.post('api/sms/', obj).then(q => q)
         },
         async getSMS(id: number, noCach: boolean) {
             // @ts-ignore

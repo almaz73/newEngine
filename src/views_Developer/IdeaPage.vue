@@ -4,8 +4,6 @@
     <h3 style="">Сборник идей по редизайну сайта</h3>
 
     <el-tabs v-model="activeName"
-             acti
-             class="demo-tabs"
              @tab-click="handleClick">
 
       <el-tab-pane label="Что сделано" name="first">

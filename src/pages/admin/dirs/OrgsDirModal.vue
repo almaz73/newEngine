@@ -11,7 +11,7 @@
 
       <span class="modal-fields">
         <el-form ref="form" :model="org" @change="isDirty=true">
-          <el-tabs v-model="activeName" class="demo-tabs">
+          <el-tabs v-model="activeName">
               <el-tab-pane label="Организация" name="first">
 <!--:::::::::::::-->
                 <el-input placeholder="Название *" title="Название" v-model="org.parentName"/>

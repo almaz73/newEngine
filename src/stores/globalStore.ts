@@ -6,6 +6,7 @@ export const useGlobalStore = defineStore('globalStore', {
     state: () => ({
         /** @type {{boolean}} */
         title: '#### NEW ENGINE',
+        version:'0.9.4',
         isAuthorized: false,
         isMobileView: false, // мобильный режим
         isShowPanel: false, // при узких экранах, гамбургер открывает левую панель

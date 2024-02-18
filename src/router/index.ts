@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
+import VersionPage from "@/pages/VersionPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,10 @@ const router = createRouter({
             name: 'login',
             component: LoginPage
         }, {
+            path: '/version',
+            name: 'version',
+            component: VersionPage
+        }, {
             path: '/desktop',
             name: 'desktop',
             component: () => import('@/pages/desktop/DeskTopPage.vue').catch(val => fail(val))
@@ -22,7 +27,7 @@ const router = createRouter({
             path: '/example',
             name: 'example',
             component: () => import('@/pages/desktop/ExampleForm.vue').catch(val => fail(val))
-        },{
+        }, {
             path: '/appeal',
             name: 'appeal',
             component: () => import('@/pages/appeal/AppealPage.vue').catch(val => fail(val))
