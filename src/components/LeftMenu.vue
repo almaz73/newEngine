@@ -3,7 +3,8 @@
       placement="bottom"
       :title="`Версия ${globalStore.version}`"
       :width="200"
-      :trigger="globalStore.isMobileView?'hover':''"
+      :show-after="2000"
+      :trigger="!globalStore.isMobileView?'hover':''"
   >
     <template #reference>
       <div
@@ -13,7 +14,7 @@
       ></div>
     </template>
     <template #default>
-      <RouterLink to="/version">Детальнее..</RouterLink>
+      <RouterLink to="/version" @click="changeMenu({data:'73'})">Детальнее..</RouterLink>
     </template>
   </el-popover>
 
@@ -230,6 +231,7 @@
 <script lang="ts" setup>
 import {useGlobalStore} from '@/stores/globalStore'
 import {ref} from "vue";
+import EventBus from "@/utils/eventBus";
 
 const globalStore = useGlobalStore()
 const activeIndex = ref('')
@@ -237,6 +239,14 @@ const select = (val: string) => {
   globalStore.isShowPanel = false
   sessionStorage.setItem('menuIndex', '' + val)
 }
+
+EventBus.addEventListener('changeMenu', changeMenu)
+
+function changeMenu(a: any) {
+  sessionStorage.setItem('menuIndex', a.data)
+  activeIndex.value = a.data+1
+}
+
 
 // нужно вычислить по адресу, что открыто и высветить меню
 const storage = sessionStorage.getItem('menuIndex')
