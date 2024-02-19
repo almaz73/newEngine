@@ -23,8 +23,8 @@
       <el-button class="exit" @click="signOut()">Выйти</el-button>
     </div>
     <div class="account_window__buttons">
-      <span  >ver : {{globalStore.version}}
-        <RouterLink to="/version">more..</RouterLink>
+      <span>ver : {{ globalStore.version }}
+        <RouterLink to="/version" @click="emits('closeLoginPanel'); EventBus.emit('changeMenu', '73')">more..</RouterLink>
       </span>
       <el-button v-if="globalStore.isMobileView" @click="clearCash()">Очистить кэш</el-button>
     </div>
@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import router from "@/router";
+import EventBus from '@/utils/eventBus'
 
 const emits = defineEmits(['closeLoginPanel'])
 const globalStore = useGlobalStore()
