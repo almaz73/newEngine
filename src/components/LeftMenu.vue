@@ -244,7 +244,7 @@ EventBus.addEventListener('changeMenu', changeMenu)
 
 function changeMenu(a: any) {
   sessionStorage.setItem('menuIndex', a.data)
-  activeIndex.value = a.data+1
+  activeIndex.value = a.data
 }
 
 
