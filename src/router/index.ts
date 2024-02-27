@@ -31,6 +31,11 @@ const router = createRouter({
             path: '/appeal',
             name: 'appeal',
             component: () => import('@/pages/appeal/AppealPage.vue').catch(val => fail(val))
+        },
+        {
+            path: '/appeal/:id',
+            name: 'appealId',
+            component: () => import('@/pages/appeal/AppealEditor.vue').catch(val => fail(val))
         }, {
             path: '/deal',
             name: 'deal',
@@ -46,11 +51,11 @@ const router = createRouter({
         }, {
             path: '/ideas',
             name: 'ideas',
-            component: () => import('../views_Developer/IdeaPage.vue').catch(val => fail(val))
+            component: () => import('@/views_Developer/IdeaPage.vue').catch(val => fail(val))
         }, {
             path: '/bayerhelp',
             name: 'bayerhelp',
-            component: () => import('../documentation/bayerhelp.vue').catch(val => fail(val))
+            component: () => import('@/documentation/BayerHelp.vue').catch(val => fail(val))
         }, {
             path: '/admin',
             name: 'admin',

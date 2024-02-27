@@ -1,5 +1,10 @@
 <template>
   <main>
+    <ul>
+      <li><router-link to="/appeal/1123121">Product 1</router-link></li>
+      <li><router-link to="/appeal/2">Product 2 dsd</router-link></li>
+    </ul>
+
     <FilterButtonsCtrl
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
@@ -232,10 +237,10 @@ function validateFilter() {
   return false
 }
 
-function tmp() {
-  tableData.value=[{"id":392078,"carBrandModel":"ВАЗ (LADA) 4x4 (Нива)","managerName":"Стажер Менеджер Стажер Менеджер","leadName":" Анатолий","leadPhone":"89061157748","createUserName":"Стажер Менеджер Стажер Менеджер","workflowLeadType":2,"locationName":"Выкуп (Ульяновск)","createDate":"2024-02-09T10:15:32.260322","statusId":10,"statusTitle":"Новый","leadId":252075,"communicationTaskCount":0,"lastTaskType":2,"lastTaskDate":"2024-02-09T10:18:40.526402","lastTaskTitle":"Создано автоматически при добавлении осмотра автомобиля","autoId":124513,"dealId":392079,"dealStatus":0,"smallPhoto":["https://dev.autonet.pro/api/file/3479403"],"vin":"XTA212140F2218002","appealStatusId":10,"responsibleRole":21,"buyWorkflowDealType":40,"clientStatusTitle":"Первичный","city":"Ульяновск","selectedCar":false,"credit":false,"franchiseClientType":null,"franchiseClientTypeTitle":null,"lastComment":null,"communication":null,"bodyColorCode":null,"swapPhone":null,"hiddenVin":null,"yearReleasedAppeal":null,"mileageAppeal":null,"salon":null,"treatmentSourceTitle":"Свободный выкуп","appealTitle":"Выкуп","callCount":0,"tradeInAppealId":null}]
-  appealModal.value.open(tableData.value[0], getData)
-}
+// function tmp() {
+//   tableData.value=[{"id":392078,"carBrandModel":"ВАЗ (LADA) 4x4 (Нива)","managerName":"Стажер Менеджер Стажер Менеджер","leadName":" Анатолий","leadPhone":"89061157748","createUserName":"Стажер Менеджер Стажер Менеджер","workflowLeadType":2,"locationName":"Выкуп (Ульяновск)","createDate":"2024-02-09T10:15:32.260322","statusId":10,"statusTitle":"Новый","leadId":252075,"communicationTaskCount":0,"lastTaskType":2,"lastTaskDate":"2024-02-09T10:18:40.526402","lastTaskTitle":"Создано автоматически при добавлении осмотра автомобиля","autoId":124513,"dealId":392079,"dealStatus":0,"smallPhoto":["https://dev.autonet.pro/api/file/3479403"],"vin":"XTA212140F2218002","appealStatusId":10,"responsibleRole":21,"buyWorkflowDealType":40,"clientStatusTitle":"Первичный","city":"Ульяновск","selectedCar":false,"credit":false,"franchiseClientType":null,"franchiseClientTypeTitle":null,"lastComment":null,"communication":null,"bodyColorCode":null,"swapPhone":null,"hiddenVin":null,"yearReleasedAppeal":null,"mileageAppeal":null,"salon":null,"treatmentSourceTitle":"Свободный выкуп","appealTitle":"Выкуп","callCount":0,"tradeInAppealId":null}]
+//   appealModal.value.open(tableData.value[0], getData)
+// }
 
 function getData() {
    // return tmp()
