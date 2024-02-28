@@ -158,12 +158,15 @@ a:hover {
     background-image: url("../icons/icon-pencil-gray.png");
     width: 12px;
     height: 12px;
+    top: 20px;
 }
 
-.edit-table-row:hover {
-    box-shadow: 0 0 10px;
+.edit-table-page {
+    top: 50px;
+    position: absolute;
+    right: 20px;
+    cursor: pointer;
 }
-
 
 .modal-fields .el-input {
     margin: 2px 12px;

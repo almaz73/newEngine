@@ -12,6 +12,9 @@ import ElementPlus from 'element-plus'
 import ru from 'element-plus/dist/locale/ru.min.mjs'
 import 'element-plus/dist/index.css'
 
+
+/*** Для работы без интернета, например Байеры смогут на телефоне создать обращение, сфоткать и загрузить фотки
+// Не удалять
 setTimeout(() => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
@@ -19,6 +22,8 @@ setTimeout(() => {
             .then(() => console.log('SW started'))
     }
 }, 3000)
+*/
+
 
 const app = createApp(App)
 

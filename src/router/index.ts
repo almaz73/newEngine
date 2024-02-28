@@ -34,7 +34,8 @@ const router = createRouter({
         },
         {
             path: '/appeal/:id',
-            name: 'appealId',
+            name: 'appealEdit',
+            props: true,
             component: () => import('@/pages/appeal/AppealEditor.vue').catch(val => fail(val))
         }, {
             path: '/deal',

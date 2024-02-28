@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-const path = 'api/realization/get/list'
+const path = '/api/realization/get/list'
 export const useRealizationStore = defineStore("realizationStore", {
     state: () => ({
         list: [{}]

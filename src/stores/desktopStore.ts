@@ -23,21 +23,21 @@ export const useDesktopStore = defineStore('desktopStore', {
 })
 
 function saveAppeal(obj: any) {
-    return axios.post(`api/communication/callCenterCommunication`, obj).then((res) => res)
+    return axios.post(`/api/communication/callCenterCommunication`, obj).then((res) => res)
 }
 
 function saveAppealComission(obj: any) {
-    return axios.post(`api/commission/add`, obj).then((res) => res)
+    return axios.post(`/api/commission/add`, obj).then((res) => res)
 }
 
 function saveAppealSalon(obj: any) {
-    return axios.post(`api/salon-deal/add`, obj).then((res) => res)
+    return axios.post(`/api/salon-deal/add`, obj).then((res) => res)
 }
 
 function getLeadsByPhone(val: string) {
-    return axios.get(`api/lead/GetLeadsByPhone/` + val).then((res) => res.data)
+    return axios.get(`/api/lead/GetLeadsByPhone/` + val).then((res) => res.data)
 }
 
 function getAutoVIN(val: string) {
-    return axios.get(`api/auto/vin/` + val).then((res) => res.data)
+    return axios.get(`/api/auto/vin/` + val).then((res) => res.data)
 }

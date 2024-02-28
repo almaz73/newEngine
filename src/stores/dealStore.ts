@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-const path = 'api/workflow/'
+const path = '/api/workflow/'
 export const useDealStore = defineStore("dealStore", {
     state: () => ({
         list: [{
