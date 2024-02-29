@@ -14,7 +14,7 @@ import 'element-plus/dist/index.css'
 
 
 /*** Для работы без интернета, например Байеры смогут на телефоне создать обращение, сфоткать и загрузить фотки
-// Не удалять
+*/
 setTimeout(() => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker
@@ -22,7 +22,6 @@ setTimeout(() => {
             .then(() => console.log('SW started'))
     }
 }, 3000)
-*/
 
 
 const app = createApp(App)
