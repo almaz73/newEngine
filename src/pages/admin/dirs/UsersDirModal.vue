@@ -11,9 +11,11 @@
 
       <span class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
-          <img class="photo-place" v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"
-               alt="Фото пользователя">
-          <img src="@/assets/icons/icon-face.png" alt="" v-else class="photo-place"/>
+          <div class="photo-place">
+            <img  v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"
+                 alt="Фото пользователя">
+            <img src="@/assets/icons/icon-face.png" alt="" v-else/>
+          </div>
           <el-input
               readonly
               onfocus="this.removeAttribute('readonly')"
@@ -31,62 +33,80 @@
           <el-input placeholder="Телефон" title="Телефон" v-model="user.person.phone"/>
           <el-input placeholder="Доп.телефон" title="Доп.телефон" v-model="user.person.phone2"/>
           <hr>
-          <el-select
-              title="Организация"
-              placeholder="Организация"
-              v-model="user.organization.id"
-              filterable
-              clearable>
-              <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
+          <br>
+          <div class="line">
+            <label >Организация</label>
+            <el-select
+                placeholder="Введите организацию"
+                v-model="user.organization.id"
+                filterable
+                clearable>
+                <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </div>
 
-          <el-select
-              title="Отдел"
-              placeholder="Отдел *"
-              v-model="user.department.id"
-              filterable
-              clearable>
-              <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
-          </el-select>
+          <div class="line">
+            <label >Отдел</label>
+            <el-select
+                placeholder="Введите отдел *"
+                v-model="user.department.id"
+                filterable
+                clearable>
+                <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
+          </div>
 
-          <el-select
-              title="Место хранения/выкупа"
-              placeholder="Место хранения/выкупа *"
-              v-model="user.location.id"
-              filterable
-              clearable>
-              <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
-          </el-select>
+          <div class="line">
+            <label >Место хранения/выкупа</label>
+            <el-select
+                placeholder="Введите место хранения/выкупа *"
+                v-model="user.location.id"
+                filterable
+                clearable>
+                <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
+            </el-select>
+          </div>
 
-          <el-select
-              title="Часовой пояс"
-              placeholder="Часовой пояс"
-              v-model="user.timeZone"
-              filterable
-              clearable>
-              <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
-          </el-select>
+          <div class="line">
+            <label >Часовой пояс</label>
+            <el-select
+                title="Часовой пояс"
+                placeholder="Введите часовой пояс"
+                v-model="user.timeZone"
+                filterable
+                clearable>
+                <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
+            </el-select>
+          </div>
 
-          <el-input placeholder="Должность *" :title="'Должность: '+user.position" v-model="user.position"/>
+          <div class="line">
+            <label >Должность</label>
+            <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position" v-model="user.position"/>
+          </div>
           <hr>
-          <el-select
-              title="Категория"
-              placeholder="Категория"
-              v-model="user.roleCategory"
-              @change="roleChanged()"
-              filterable
-              clearable>
-              <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
-          </el-select>
 
-          <el-select
-              title="Роль"
-              placeholder="Роль"
-              v-model="user.role.value"
-              filterable
-              clearable>
-              <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
-          </el-select>
+          <div class="line">
+            <label >Категория</label>
+            <el-select
+                placeholder="Введите категорию"
+                v-model="user.roleCategory"
+                @change="roleChanged()"
+                filterable
+                clearable>
+                <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
+            </el-select>
+          </div>
+
+          <div class="line">
+            <label >Роль</label>
+            <el-select
+                placeholder="Введите роль"
+                v-model="user.role.value"
+                filterable
+                clearable>
+                <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
+            </el-select>
+          </div>
         </el-form>
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
@@ -102,13 +122,28 @@
 </template>
 <style>
 .photo-place {
-  max-width: 120px;
+  height: 150px;
+  width: 150px;
+  display: inline-block;
+  float: left;
+  margin: 0 12px;
+  position: relative;
+}
+.photo-place img{
   object-fit: cover;
-  max-height: 120px;
-  height: 120px;
-  margin-bottom: -10px;
-  margin-left: 20px;
   border-radius: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.line{
+  display: flex;
+}
+.line label{
+  min-width: 230px;
+  text-align: right;
+  margin-right: 12px;
+  align-self: center;
 }
 </style>
 
