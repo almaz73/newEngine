@@ -57,6 +57,7 @@
         v-if="!globalStore.isMobileView"
         :data="tableData"
         ref="singleTableRef"
+        @row-dblclick="openModalUserDir"
         empty-text="Нет данных"
         highlight-current-row
     >

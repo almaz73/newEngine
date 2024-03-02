@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="account_window__buttons">
-      <el-button class="edit">Редактировать</el-button>
+      <el-button class="edit" @click="edit()">Редактировать</el-button>
       <el-button class="exit" @click="signOut()">Выйти</el-button>
     </div>
     <div class="account_window__buttons">
@@ -35,6 +35,7 @@
     </div>
     <div class="under_window" @click="emits('closeLoginPanel')"></div>
   </div>
+  <UsersDirModal ref="UserModal"/>
 </template>
 <style>
 .settings {
@@ -48,9 +49,13 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import router from "@/router";
 import EventBus from '@/utils/eventBus'
+import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
+import { ref } from "vue";
+
 
 const emits = defineEmits(['closeLoginPanel'])
 const globalStore = useGlobalStore()
+const UserModal = ref(null)
 
 function clearCash() {
   localStorage.clear()
@@ -62,5 +67,9 @@ function signOut() {
     globalStore.isAuthorized = false
     router.push('login')
   })
+}
+
+function edit() {
+  UserModal.value.open({id:globalStore.account.id})
 }
 </script>
