@@ -24,9 +24,14 @@
     </div>
     <div class="account_window__buttons">
       <span>ver : {{ globalStore.version }}
-        <RouterLink to="/version" @click="emits('closeLoginPanel'); EventBus.emit('changeMenu', '73')">more..</RouterLink>
+        <RouterLink to="/version" @click="emits('closeLoginPanel'); EventBus.emit('changeMenu', '73')">
+          more..
+        </RouterLink>
       </span>
       <el-button v-if="globalStore.isMobileView" @click="clearCash()">Очистить кэш</el-button>
+    </div>
+    <div class="account_window__buttons">
+      <RouterLink to="/feedback">➽ Страница обратной связи</RouterLink>
     </div>
     <div class="under_window" @click="emits('closeLoginPanel')"></div>
   </div>

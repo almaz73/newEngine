@@ -65,7 +65,11 @@ const router = createRouter({
             path: '/map',
             name: 'map',
             component: () => import('@/components/MapCtrl.vue').catch(val => fail(val))
-        },{
+        }, {
+            path: '/feedback',
+            name: 'feedback',
+            component: () => import('@/pages/feedback/FeedBackPage.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },
