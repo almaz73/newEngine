@@ -12,9 +12,21 @@
       <span class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
           <div class="photo-place">
-            <img  v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"
-                 alt="Фото пользователя">
-            <img src="@/assets/icons/icon-face.png" alt="" v-else/>
+<!--            <img  v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"-->
+<!--                 alt="Фото пользователя">-->
+<!--            <img src="@/assets/icons/icon-face.png" alt="" v-else/>-->
+
+            <el-upload
+              class="avatar-uploader"
+              action="imageAction"
+              accept="image/png, image/gif, image/jpeg"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img alt="" v-if="user.avatar && user.avatar.url" :src="user.avatar.url" class="avatar" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
           </div>
           <el-input
               readonly
@@ -29,9 +41,16 @@
           <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
           <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
           <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
-          <el-input placeholder="Email" title="Email" v-model="user.person.email"/>
-          <el-input placeholder="Телефон" title="Телефон" v-model="user.person.phone"/>
-          <el-input placeholder="Доп.телефон" title="Доп.телефон" v-model="user.person.phone2"/>
+          <el-input placeholder="Email"
+                    @change="emailValidate(user.person.email)"
+                    title="Email" v-model="user.person.email"/>
+          <el-input placeholder="Телефон" title="Телефон"
+                    :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone=val)"
+                    v-model="user.person.phone"/>
+          <el-input placeholder="Доп.телефон" title="Доп.телефон"
+                    :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone2=val)"
+                    v-model="user.person.phone2"/>
+
           <hr>
           <br>
           <div class="line">
@@ -120,10 +139,38 @@
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
 </template>
-<style>
-.photo-place {
-  height: 150px;
+<style scoped>
+.avatar-uploader .avatar {
   width: 150px;
+  height: 150px;
+  display: block;
+}
+</style>
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 126px;
+  height: 126px;
+  text-align: center;
+}
+
+.photo-place {
+  height: 126px;
+  width: 126px;
   display: inline-block;
   float: left;
   margin: 0 12px;
@@ -155,7 +202,7 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import {decryptPassword} from "@/utils/globalFunctions";
+import { decryptPassword, emailValidate, formattingPhone } from "@/utils/globalFunctions";
 
 const isMyKey = ref(null)
 const globalStore = useGlobalStore()
@@ -207,6 +254,27 @@ adminStore.getUserRoles().then(res => {
 
 function roleChanged() {
   userRoles.value = userGroupRolesMemory.value.find(el => el.group.value === user.value.roleCategory).roles
+}
+
+const beforeAvatarUpload = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg') {
+    ElMessage.error('Avatar picture must be JPG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!')
+    return false
+  }
+  return true
+}
+
+function imageAction() {
+  console.log('imageAction');
+}
+
+function handleAvatarSuccess(response,      uploadFile) {
+  console.log("response,uploadFile", response, uploadFile);
+
+  //user.avatar.url.value = URL.createObjectURL(uploadFile.raw!)
 }
 
 function findGruop() {
