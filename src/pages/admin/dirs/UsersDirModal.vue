@@ -16,17 +16,8 @@
 <!--                 alt="Фото пользователя">-->
 <!--            <img src="@/assets/icons/icon-face.png" alt="" v-else/>-->
 
-            <el-upload
-              class="avatar-uploader"
-              action="imageAction"
-              accept="image/png, image/gif, image/jpeg"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img alt="" v-if="user.avatar && user.avatar.url" :src="user.avatar.url" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
+
+              <UploadPicture/>
           </div>
           <el-input
               readonly
@@ -139,35 +130,8 @@
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
 </template>
-<style scoped>
-.avatar-uploader .avatar {
-  width: 150px;
-  height: 150px;
-  display: block;
-}
-</style>
+
 <style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 126px;
-  height: 126px;
-  text-align: center;
-}
-
 .photo-place {
   height: 126px;
   width: 126px;
@@ -203,6 +167,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import { decryptPassword, emailValidate, formattingPhone } from "@/utils/globalFunctions";
+import UploadPicture from "@/components/UploadPicture.vue";
 
 const isMyKey = ref(null)
 const globalStore = useGlobalStore()
@@ -256,28 +221,7 @@ function roleChanged() {
   userRoles.value = userGroupRolesMemory.value.find(el => el.group.value === user.value.roleCategory).roles
 }
 
-const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
-  }
-  return true
-}
-
-function imageAction() {
-  console.log('imageAction');
-}
-
-function handleAvatarSuccess(response,      uploadFile) {
-  console.log("response,uploadFile", response, uploadFile);
-
-  //user.avatar.url.value = URL.createObjectURL(uploadFile.raw!)
-}
-
-function findGruop() {
+function findGroup() {
   let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
   user.value.roleCategory = elem && elem.group.value;
   roleChanged()
@@ -299,7 +243,7 @@ function open(row, cbModal, copy) {
       title.value = 'Копирование пользователя'
     }
 
-    findGruop()
+    findGroup()
     let myKey = localStorage.getItem('myKey')
     isMyKey.value = myKey && myKey !== 'null'
   })
