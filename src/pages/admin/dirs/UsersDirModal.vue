@@ -16,6 +16,7 @@
 <!--                 alt="Фото пользователя">-->
 <!--            <img src="@/assets/icons/icon-face.png" alt="" v-else/>-->
 
+             <UploadPicture/>
             <el-upload
               class="avatar-uploader"
               action="imageAction"
@@ -203,6 +204,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import { decryptPassword, emailValidate, formattingPhone } from "@/utils/globalFunctions";
+import UploadPicture from "@/components/UploadPicture.vue";
 
 const isMyKey = ref(null)
 const globalStore = useGlobalStore()
@@ -282,6 +284,7 @@ function handleAvatarSuccess(response,      uploadFile) {
 }
 
 function findGruop() {
+function findGroup() {
   let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
   user.value.roleCategory = elem && elem.group.value;
   roleChanged()
@@ -293,8 +296,6 @@ function open(row, cbModal, copy) {
   title.value = 'Создание нового пользователя'
   if (!row) user.value = userInit
   else adminStore.getUserForModal(row.id).then(res => {
-    console.log('res', res)
-
     user.value = res
     title.value = 'Редактирование пользователя'
 
@@ -305,7 +306,7 @@ function open(row, cbModal, copy) {
       title.value = 'Копирование пользователя'
     }
 
-    findGruop()
+    findGroup()
     let myKey = localStorage.getItem('myKey')
     isMyKey.value = myKey && myKey !== 'null'
   })
