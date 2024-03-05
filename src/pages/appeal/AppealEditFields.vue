@@ -49,12 +49,15 @@
   <br>
 
   <small style="display: flex; flex-wrap: wrap; gap: 8px">
-        <span class="nowrap">
-          <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
-        </span>
     <span class="nowrap">
-          <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
-        </span>
+      <span class="label-red ">Место выкупа:</span> {{ appeal.locationName }}
+    </span>
+    <span class="nowrap">
+      <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
+    </span>
+    <span class="nowrap">
+      <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
+    </span>
     <span class="nowrap">
           <span class="label-red" v-if="appeal.tradeInDirectionTypeTitle">
             Тип направления: {{ appeal.tradeInDirectionTypeTitle }}
@@ -68,47 +71,54 @@
   <br>
 
   <div class="demo-collapse">
-    <el-collapse @change="openCollapse">
+    <el-collapse>
       <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+appeal.leadPhone" name="1">
         <div class="collapse" style="">
           <div class="collapse-left">
 
-            <span> Статус клиента: {{ appeal.clientStatus }}<br></span>
-            <span v-if="appeal.leadName">Фио:   {{ appeal.leadName }}
-                  &nbsp;
-                  <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                       @click="()=>{}" style="cursor: pointer">
-                  <br></span>
-            <span v-if="appeal.leadPhone">Номер телефона:   {{ appeal.leadPhone }}<br></span>
-            <span v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}<br></span>
-            <span v-if="appeal.lead && appeal.lead.person.phone2">
-                  Доп. телефон:   {{ appeal.lead.person.phone2 }}<br></span>
-            <span v-if="appeal.email">Эл. почта:   {{ appeal.email }}<br></span>
-            <span v-if="appeal.leadSourceTitle">Источник: {{ appeal.leadSourceTitle }}<br></span>
-            <br>
+            <div> <span class="label">Статус клиента: </span>  {{ appeal.clientStatus }} </div>
+            <div> <span class="label">Тип клиента: </span>  {{ appeal.clientStatus }} </div>
+            <div v-if="appeal.leadName"><span class="label">ФИО:</span>
+              {{ appeal.lead.person.firstName }} {{ appeal.lead.person.middleName}} {{ appeal.lead.person.lastName}}
+              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="()=>{}" style="cursor: pointer">
+            </div>
+
+            <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>  {{ appeal.leadPhone }}</div>
+            <div v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}</div>
+            <div v-if="appeal.lead && appeal.lead.person.phone2"><span class="label">
+              Доп. телефон: </span>  {{ appeal.lead.person.phone2 }}</div>
+            <div v-if="appeal.email"><span class="label">Эл. почта: </span>  {{ appeal.email }}</div>
+            <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
+
           </div>
-          <div class="collapse-right">
-            <el-button size="small" @click="smsSender.open()">Создать СМС-сообщение клиенту</el-button>
-            <SmsSender ref="smsSender" :appealId="appeal.id"/>
+          <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
+            <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}</div>
+            <div><span class="label">Пол:</span> {{ appeal.lead.person.gender===10?'муж.':'жен.' }}</div>
+            <div><span class="label">Место проживания:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
+            <div><span class="label">Место регистрации:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
+            <br>☀☀☀ <a @click="infoAboutClient.open(appeal)">Более подробно  о клиенте  ➣➣➣</a>
           </div>
         </div>
       </el-collapse-item>
       <el-collapse-item :title="'&nbsp; Автомобиль: &nbsp; '+appeal.carBrandModel" name="2">
         <div style="padding: 0 30px">
-              <span v-if="appeal.brand">Бренд:   {{ appeal.brand }}
+          <span v-if="appeal.brand"><span class="label">Бренд:</span>  {{ appeal.brand }}
                  &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
                              @click="()=>{}"
                              style="cursor: pointer">
                 <br>
               </span>
-          <span v-if="appeal.carModel">Модель:   {{ appeal.carModel }}<br></span>
+          <span v-if="appeal.carModel"><span class="label"> Модель:</span>   {{ appeal.carModel }}<br></span>
 
           <span v-if="appeal.auto && appeal.auto.bodyColorName">
-                Цвет: {{ appeal.auto.bodyColorName }}<br></span>
+            <span class="label"> Цвет: </span>{{ appeal.auto.bodyColorName }}<br></span>
           <span v-if="appeal.auto && appeal.auto.certificateNumber">
-                Гос.номер: {{ appeal.auto.certificateNumber }}<br></span>
+            <span class="label"> Гос.номер: </span>{{ appeal.auto.certificateNumber }}<br></span>
           <span v-if="appeal.auto && appeal.auto.vin">
-                VIN номер: {{ appeal.auto.vin }}<br></span>
+            <span class="label">  VIN номер: </span>{{ appeal.auto.vin }}<br></span>
+
+          <span v-if="appeal.yearReleased">
+            <span class="label">  Год: </span>{{ appeal.yearReleased }}<br></span>
 
 
         </div>
@@ -119,6 +129,7 @@
   <el-divider/>
 
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
+  <InfoAboutClientModal ref="infoAboutClient"/>
 </template>
 <script setup>
 
@@ -126,9 +137,9 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
-import SmsSender from "@/components/appalCtrl/SmsSender.vue";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
-import {formatDMY_hm} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
+import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -138,15 +149,14 @@ const appealAvailableStatuses = ref([])
 const AppealStatusTypes = ref([])
 const isEditManagerName = ref(false)
 const responsibles = ref([])
-const smsSender = ref(null)
 const carPhoto = ref(null)
 const appealTabs = ref(null)
 const lastTaskAndResult = ref('')
 const prevTask = ref('')
 const events = ref([])
+const infoAboutClient = ref(null)
 
 
-let {id} = defineProps(['id'])
 const clickDropDown = (val) => {
   appeal.value.status = val.id
   appeal.value.statusTitle = val.name
@@ -157,9 +167,6 @@ function workFlowType(type) {
   return el && el.title
 }
 
-function openCollapse(val) {
-  console.log('openCollapse val', val)
-}
 
 function toGetManagers() {
   appealStore.getRoles(appeal.value.workflowLeadType).then(res => {

@@ -257,10 +257,14 @@ function roleChanged() {
 }
 
 const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
+  console.log('rawFile.type', rawFile.type)
+  if (!rawFile.type.includes('image')) {
+    ElMessage.error('Тип файла не подходит')
     return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
+  }
+
+  console.log('rawFile.size', rawFile.size)
+  if (rawFile.size / 1024 / 1024 > 2) {
     ElMessage.error('Avatar picture size can not exceed 2MB!')
     return false
   }
@@ -289,6 +293,8 @@ function open(row, cbModal, copy) {
   title.value = 'Создание нового пользователя'
   if (!row) user.value = userInit
   else adminStore.getUserForModal(row.id).then(res => {
+    console.log('res', res)
+
     user.value = res
     title.value = 'Редактирование пользователя'
 

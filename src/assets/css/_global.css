@@ -176,6 +176,14 @@ a:hover {
     color: var(--main-color);
 }
 
+.label {
+    width: 130px;
+    text-align: right;
+    margin-right: 12px;
+    display: inline-block;
+    color: var(--main-color);
+}
+
 .label-right {
     width: 100px;
     text-align: right;

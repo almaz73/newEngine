@@ -117,6 +117,9 @@ export const Workflows = [
     {id: 8, value: 8, title: 'Комиссия'},
     {id: 9, value: 9, title: 'Подбор авто'},
     {id: 10, value: 10, title: 'Сделка через салон'},
+    {id: 11, value: 11, title: 'Трейд-ин'},
+    {id: 12, value: 12, title: 'Поддержание контакта'},
+    {id: 13, value: 13, title: 'Претензии'}
 ]
 // export const WorkflowStatus = {
 //     8: 'Отказ',
