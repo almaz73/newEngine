@@ -283,7 +283,7 @@ function handleAvatarSuccess(response,      uploadFile) {
   //user.avatar.url.value = URL.createObjectURL(uploadFile.raw!)
 }
 
-function findGruop() {
+
 function findGroup() {
   let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
   user.value.roleCategory = elem && elem.group.value;

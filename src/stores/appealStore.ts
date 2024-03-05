@@ -63,6 +63,10 @@ export const useAppealStore = defineStore("appealStore", {
         async saveEvent(obj: any) {
             const res = await axios.post('/api/event', obj).then(q => q)
             return res.data
+        },
+        async getLead(id: number) {
+            const res = await axios.get(`/api/lead/${id}`).then(q => q)
+            return res.data
         }
     }
 })

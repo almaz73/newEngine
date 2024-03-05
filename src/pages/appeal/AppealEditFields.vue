@@ -96,7 +96,7 @@
             <div><span class="label">Пол:</span> {{ appeal.lead.person.gender===10?'муж.':'жен.' }}</div>
             <div><span class="label">Место проживания:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
             <div><span class="label">Место регистрации:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
-            <br>☀☀☀ <a @click="infoAboutClient.open(appeal)">Более подробно  о клиенте  ➣➣➣</a>
+            <br> <a @click="infoAboutClient.open(appeal)" style="float: right">Более подробно о клиенте ➣ ➣ ➣</a>
           </div>
         </div>
       </el-collapse-item>

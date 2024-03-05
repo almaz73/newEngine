@@ -183,6 +183,9 @@ a:hover {
     display: inline-block;
     color: var(--main-color);
 }
+.label.l_200{
+    width: 200px;
+}
 
 .label-right {
     width: 100px;
