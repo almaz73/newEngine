@@ -63,6 +63,11 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/orgelement/get/organizations`).then(q => q)
             return (cach.getOrganizations = res.data)
         },
+        async getTreatments() {
+            if (cach.getTreatments) return cach.getTreatments // список статичный - кэшируем
+            const res = await axios.get(`/api/treatmentsource/get/list`).then(q => q)
+            return (cach.getTreatments = res.data)
+        },
         async getRoles(roles: any) {
             // @ts-ignore
             if (cach['getModels' + roles.join('-')]) return cach['getModels' + roles.join('-')] // список статичный - кэшируем

@@ -35,7 +35,7 @@
 
 import {markRaw, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import ClientsDir from "@/pages/admin/ClientsDir.vue";
+import ClientsDir from "@/pages/admin/dirs/ClientsDir.vue";
 import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
 import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
@@ -74,7 +74,7 @@ const AdminDirectories = {
   '🚧Подпись документов': ClientsDir,
   '🚧Договора': ClientsDir,
   '🚧Шаблоны документов': ClientsDir,
-  '🚧Клиенты': ClientsDir,
+  'Клиенты': ClientsDir,
   '🚧Программы сертификации': ClientsDir,
   '🚧Возможные неисправности': ClientsDir
 }

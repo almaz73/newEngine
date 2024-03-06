@@ -11,22 +11,32 @@
 
       <span class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
-          <div class="photo-place">
-             <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
+          <div class="line">
+            <label>Источник</label>
+            <el-select
+                placeholder="Введите источник"
+                v-model="user.treatmentSourceId"
+                filterable
+                clearable>
+                <el-option v-for="item in treatments" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
           </div>
-          <el-input
-              readonly
-              onfocus="this.removeAttribute('readonly')"
-              placeholder="Логин"
-              title="Логин"
-              autocomplete="off" v-model="user.login"/>
-          <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
-          &nbsp; &nbsp;
-          <a @click="signingLikeAnother()" v-if="isMyKey|| title === 'Создание нового пользователя'">Прикинуться</a>
+
           <hr>
           <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
           <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
           <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
+
+          <span><small style="padding-right: 30px">Пол: </small><el-select
+              placeholder="Пол"
+              v-model="user.person.gender"
+              style="width:160px"
+          >
+                  <el-option v-for="item in [{id:10, name:'мужской'}, {id:20, name:'женский'}]" :key="item.id"
+                             :label="item.name" :value="item.id"/>
+              </el-select>
+           </span>
+
           <el-input placeholder="Email"
                     @change="emailValidate(user.person.email)"
                     title="Email" v-model="user.person.email"/>
@@ -37,13 +47,22 @@
                     :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone2=val)"
                     v-model="user.person.phone2"/>
 
+
+
+           <span><small>День/р:</small>
+             <el-date-picker
+                 style="width: 160px; overflow: hidden"
+                 placeholder="День рождения" title="День рождения"
+                 v-model="user.person.dateOfBirth"/>
+           </span>
+
           <hr>
           <br>
           <div class="line">
             <label>Организация</label>
             <el-select
                 placeholder="Введите организацию"
-                v-model="user.organization.id"
+                v-model="user.organization"
                 filterable
                 clearable>
                 <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
@@ -51,68 +70,32 @@
           </div>
 
           <div class="line">
-            <label>Отдел</label>
-            <el-select
-                placeholder="Введите отдел *"
-                v-model="user.department.id"
-                filterable
-                clearable>
-                <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+            <label>ИНН (физ. лица)</label>
+            <el-input placeholder="ИНН" v-model="user.person.inn"/>
           </div>
 
           <div class="line">
-            <label>Место хранения/выкупа</label>
-            <el-select
-                placeholder="Введите место хранения/выкупа *"
-                v-model="user.location.id"
-                filterable
-                clearable>
-                <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
-            </el-select>
+            <label>Согласие на обработку персональных данных</label>
+            <el-checkbox v-model="user.person.personalDataAgree"/>
           </div>
 
-          <div class="line">
-            <label>Часовой пояс</label>
-            <el-select
-                title="Часовой пояс"
-                placeholder="Введите часовой пояс"
-                v-model="user.timeZone"
-                filterable
-                clearable>
-                <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
-            </el-select>
+           <div class="line">
+            <label>Согласие на получение смc</label>
+            <el-checkbox v-model="user.person.smsReceivingAgree"/>
           </div>
 
-          <div class="line">
-            <label>Должность</label>
-            <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position"
-                      v-model="user.position"/>
-          </div>
-          <hr>
-
-          <div class="line">
-            <label>Категория</label>
-            <el-select
-                placeholder="Введите категорию"
-                v-model="user.roleCategory"
-                @change="roleChanged()"
-                filterable
-                clearable>
-                <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
-            </el-select>
+          <div class="line" v-if="user.person.registrationAddress">
+            <label>Адрес регистрации</label>
+            <el-input placeholder="Адрес регистрации" v-model="user.person.registrationAddress.text"/>
           </div>
 
-          <div class="line">
-            <label>Роль</label>
-            <el-select
-                placeholder="Введите роль"
-                v-model="user.role.value"
-                filterable
-                clearable>
-                <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
-            </el-select>
+          <div class="line" v-if="user.person.homeAddress">
+            <label>Фактический адрес</label>
+            <el-input placeholder="Фактический адрес" v-model="user.person.homeAddress.text"/>
           </div>
+
+
+
         </el-form>
       <div style="text-align: right; margin-top: 12px">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
@@ -126,50 +109,9 @@
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
 </template>
-<style scoped>
-.avatar-uploader .avatar {
-  width: 150px;
-  height: 150px;
-  display: block;
-}
-</style>
+
 <style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
 
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 126px;
-  height: 126px;
-  text-align: center;
-}
-
-.photo-place {
-  height: 126px;
-  width: 126px;
-  display: inline-block;
-  float: left;
-  margin: 0 12px;
-  position: relative;
-}
-
-.photo-place img {
-  object-fit: cover;
-  border-radius: 8px;
-  width: 100%;
-  height: 100%;
-}
 
 .line {
   display: flex;
@@ -191,14 +133,11 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
-import UploadPhoto from "@/components/UploadPhoto.vue";
+import {emailValidate, formattingPhone} from "@/utils/globalFunctions";
 
-const isMyKey = ref(null)
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
 const userInit = {
-  login: '',
   person: {firstName: '', middleName: '', lastName: ''},
   avatar: {url: ''},
   organization: {},
@@ -212,6 +151,7 @@ const title = ref('')
 const modalHistory = ref(null)
 const adminStore = useAdminStore()
 const organizations = ref([])
+const treatments = ref([])
 const departments = ref([])
 const departmentsChosen = computed(() => departments.value.filter(el => el.organization.id === user.value.organization.id))
 const locations = ref([])
@@ -234,6 +174,9 @@ const subtitle = computed(() => {
 
 adminStore.getUserLocations().then(res => locations.value = res.items)
 globalStore.getOrganizations().then(res => organizations.value = res.items)
+globalStore.getTreatments().then(res => treatments.value = res.items)
+
+
 adminStore.getDepartments().then(res => departments.value = res.items)
 adminStore.getTimeZones().then(res => timeZones.value = res.items)
 adminStore.getUserRoles().then(res => {
@@ -247,31 +190,19 @@ function roleChanged() {
 }
 
 
-function findGroup() {
-  let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
-  user.value.roleCategory = elem && elem.group.value;
-  roleChanged()
-}
+function open(row, cbModal) {
+  console.log('id', row)
 
-function open(row, cbModal, copy) {
   cb = cbModal
   isOpen.value = true
   title.value = 'Создание нового пользователя'
   if (!row) user.value = userInit
-  else adminStore.getUserForModal(row.id).then(res => {
-    user.value = res
+  else adminStore.getClientForModal(row.leadId).then(res => {
+    console.log('>>> res', res)
+
+    user.value = res.item
     title.value = 'Редактирование пользователя'
 
-    if (copy) {
-      user.value.id = 0
-      user.value.login = null
-      user.value.person.id = 0
-      title.value = 'Копирование пользователя'
-    }
-
-    findGroup()
-    let myKey = localStorage.getItem('myKey')
-    isMyKey.value = myKey && myKey !== 'null'
   })
 }
 
@@ -279,22 +210,11 @@ function showHistory() {
   modalHistory.value.open(user.value)
 }
 
-function signingLikeAnother() {
-  let mk = localStorage.getItem('myKey')
-  let myKey = mk && decryptPassword(mk)
-
-  globalStore.signOut().then(() => {
-    globalStore.signIn(user.value.login, myKey).then(res => {
-      localStorage.setItem('account', JSON.stringify(res.data))
-      location.reload()
-    })
-  })
-}
 
 function checking() {
-  if (!user.value.login) {
-    return ElMessage({message: 'Поле "Логин" обязателен для заполнения', type: 'warning'})
-  }
+  // if (!user.value.login) {
+  //   return ElMessage({message: 'Поле "Логин" обязателен для заполнения', type: 'warning'})
+  // }
   if (!user.value.person.lastName) {
     return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
   }
@@ -312,10 +232,6 @@ function checking() {
   }
 }
 
-function setNewPhoto(file) {
-  user.value.avatar.file = file.fbase64.split('base64,')[1]
-  user.value.avatar.name = file.name
-}
 
 function save() {
   if (checking()) return false

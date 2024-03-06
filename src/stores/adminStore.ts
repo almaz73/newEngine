@@ -39,6 +39,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/user/get?id=${id}`).then(res => res)
             return res.data
         },
+        async getClientForModal(id: number) {
+            const res = await axios.get(`/api/lead/get/individual?id=${id}`).then(res => res)
+            return res.data
+        },
         async getDepartments() {
             if (cach.getDepartments) return cach.getDepartments
             const res = await axios.get('/api/user/get/departmens').then(q => q)

@@ -87,7 +87,7 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
-  <UsersDirModal ref="UserModal"/>
+  <ClientsDirModal ref="UserModal"/>
 </template>
 
 <script setup lang="ts">
@@ -96,7 +96,7 @@ import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
-import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
+import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -140,8 +140,8 @@ function getData() {
 }
 
 
-function openModalUserDir(row: any | null, copy: string | null) {
-  UserModal.value.open(row, getData, copy)
+function openModalUserDir(row: any | null) {
+  UserModal.value.open(row, getData)
 }
 
 function deleteUser(id: number) {
