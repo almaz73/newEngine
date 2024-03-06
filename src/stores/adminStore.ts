@@ -12,6 +12,15 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(url).then(res => res)
             return res.data
         },
+        async getClients(filter: any) {
+            const {quickSearch, offset, limit} = filter
+            let url ='/api/lead/get/individuals';
+            url += '?offset=' + offset
+            if (limit) url += '&limit=' + limit
+            if (quickSearch) url += '&quickSearch=' + quickSearch
+            return await axios.get(url).then(res => res)
+        },
+
         async addColor(row: any) {
             const params = {entityType: '10'}
             Object.assign(params, row)
