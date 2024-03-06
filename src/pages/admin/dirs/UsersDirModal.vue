@@ -12,22 +12,7 @@
       <span class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
           <div class="photo-place">
-<!--            <img  v-if="user.avatar  && user.avatar.url" :src="user && user.avatar.url"-->
-<!--                 alt="Фото пользователя">-->
-<!--            <img src="@/assets/icons/icon-face.png" alt="" v-else/>-->
-
-             <UploadPicture/>
-            <el-upload
-              class="avatar-uploader"
-              action="imageAction"
-              accept="image/png, image/gif, image/jpeg"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <img alt="" v-if="user.avatar && user.avatar.url" :src="user.avatar.url" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
+             <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
           </div>
           <el-input
               readonly
@@ -55,7 +40,7 @@
           <hr>
           <br>
           <div class="line">
-            <label >Организация</label>
+            <label>Организация</label>
             <el-select
                 placeholder="Введите организацию"
                 v-model="user.organization.id"
@@ -66,7 +51,7 @@
           </div>
 
           <div class="line">
-            <label >Отдел</label>
+            <label>Отдел</label>
             <el-select
                 placeholder="Введите отдел *"
                 v-model="user.department.id"
@@ -77,7 +62,7 @@
           </div>
 
           <div class="line">
-            <label >Место хранения/выкупа</label>
+            <label>Место хранения/выкупа</label>
             <el-select
                 placeholder="Введите место хранения/выкупа *"
                 v-model="user.location.id"
@@ -88,7 +73,7 @@
           </div>
 
           <div class="line">
-            <label >Часовой пояс</label>
+            <label>Часовой пояс</label>
             <el-select
                 title="Часовой пояс"
                 placeholder="Введите часовой пояс"
@@ -100,13 +85,14 @@
           </div>
 
           <div class="line">
-            <label >Должность</label>
-            <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position" v-model="user.position"/>
+            <label>Должность</label>
+            <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position"
+                      v-model="user.position"/>
           </div>
           <hr>
 
           <div class="line">
-            <label >Категория</label>
+            <label>Категория</label>
             <el-select
                 placeholder="Введите категорию"
                 v-model="user.roleCategory"
@@ -118,7 +104,7 @@
           </div>
 
           <div class="line">
-            <label >Роль</label>
+            <label>Роль</label>
             <el-select
                 placeholder="Введите роль"
                 v-model="user.role.value"
@@ -177,17 +163,19 @@
   margin: 0 12px;
   position: relative;
 }
-.photo-place img{
+
+.photo-place img {
   object-fit: cover;
   border-radius: 8px;
   width: 100%;
   height: 100%;
 }
 
-.line{
+.line {
   display: flex;
 }
-.line label{
+
+.line label {
   min-width: 230px;
   text-align: right;
   margin-right: 12px;
@@ -203,8 +191,8 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import { decryptPassword, emailValidate, formattingPhone } from "@/utils/globalFunctions";
-import UploadPicture from "@/components/UploadPicture.vue";
+import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import UploadPhoto from "@/components/UploadPhoto.vue";
 
 const isMyKey = ref(null)
 const globalStore = useGlobalStore()
@@ -258,31 +246,6 @@ function roleChanged() {
   userRoles.value = userGroupRolesMemory.value.find(el => el.group.value === user.value.roleCategory).roles
 }
 
-const beforeAvatarUpload = (rawFile) => {
-  console.log('rawFile.type', rawFile.type)
-  if (!rawFile.type.includes('image')) {
-    ElMessage.error('Тип файла не подходит')
-    return false
-  }
-
-  console.log('rawFile.size', rawFile.size)
-  if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
-  }
-  return true
-}
-
-function imageAction() {
-  console.log('imageAction');
-}
-
-function handleAvatarSuccess(response,      uploadFile) {
-  console.log("response,uploadFile", response, uploadFile);
-
-  //user.avatar.url.value = URL.createObjectURL(uploadFile.raw!)
-}
-
 
 function findGroup() {
   let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
@@ -329,8 +292,8 @@ function signingLikeAnother() {
 }
 
 function checking() {
-  if (!user.value.login || !user.value.password) {
-    return ElMessage({message: 'Поля "Логин"/"Пароль" обязательны для заполнения', type: 'warning'})
+  if (!user.value.login) {
+    return ElMessage({message: 'Поле "Логин" обязателен для заполнения', type: 'warning'})
   }
   if (!user.value.person.lastName) {
     return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
@@ -347,6 +310,11 @@ function checking() {
   if (!user.value.position) {
     return ElMessage({message: 'Поле "Должность" обязателен для заполнения', type: 'warning'})
   }
+}
+
+function setNewPhoto(file) {
+  user.value.avatar.file = file.fbase64.split('base64,')[1]
+  user.value.avatar.name = file.name
 }
 
 function save() {

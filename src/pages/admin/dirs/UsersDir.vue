@@ -190,7 +190,7 @@ function getData() {
   prepareFilter()
   adminStore.getUsers(filter).then(res => {
     tableData.value = res.items
-    tableData.value = tableData.value.sort((a, b) => a.id - b.id)
+    // tableData.value = tableData.value.sort((a, b) => a.id - b.id)
     total.value = res.count
   })
 }

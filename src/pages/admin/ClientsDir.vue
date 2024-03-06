@@ -125,7 +125,10 @@ function getData() {
   adminStore.getClients(filter).then(res => {
     globalStore.isWaiting = false
     res.data.individuals.map(el => {
-      if (el.person.homeAddress && (el.person.homeAddress.text || el.person.homeAddress.fias.value)) el.isHomeAddress = true
+      if (el.person.homeAddress && el.person.homeAddress.fias &&
+          (el.person.homeAddress.text || el.person.homeAddress.fias.value)
+      ) el.isHomeAddress = true
+
       if (el.person.registrationAddress &&
           (el.person.registrationAddress.text || el.person.registrationAddress.fias.value)
       ) el.isRegistrationAddress = true
