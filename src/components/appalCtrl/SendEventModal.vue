@@ -53,7 +53,7 @@
 
       <div>
         <label style="cursor: pointer" @click="checkResponsible()">
-          <el-checkbox :checed="responsible"/>&nbsp; Поставить себя ответственным на событие
+          <el-checkbox :checked="responsible"/>&nbsp; Поставить себя ответственным на событие
         </label>
       </div>
     </small>

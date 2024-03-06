@@ -24,12 +24,27 @@
       <el-table-column label="Фамилия" prop="person.lastName"/>
       <el-table-column label="Имя" prop="person.firstName"/>
       <el-table-column label="Отчество" prop="person.middleName"/>
-      <el-table-column label="Дата рождения" prop="person.dateOfBirth"/>
-      <el-table-column label="Телефон" prop="person.phone"/>
+      <el-table-column label="Дата рождения" prop="person.dateOfBirth" maxWidth="100"/>
+      <el-table-column label="Телефон" prop="person.phone" maxWidth="110"/>
       <el-table-column label="ИНН" prop="person.inn"/>
-      <el-table-column label="Адрес регистрации" prop="person.registrationAddress.text"/>
-      <el-table-column label="Фактический адрес" prop="person.homeAddress.text"/>
-      <el-table-column label="Счет" prop="bills.length"/>
+      <el-table-column label="Адрес регистрации">
+        <template #default="scope">
+          <el-checkbox style="pointer-events: none"
+                       :checked="scope.row.isRegistrationAddress"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="Фактический адрес">
+        <template #default="scope">
+          <el-checkbox style="pointer-events: none"
+                       :checked="scope.row.isHomeAddress"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="Счет">
+        <template #default="scope">
+          <el-checkbox style="pointer-events: none"
+                       :checked="scope.row.bills.length>0"/>
+        </template>
+      </el-table-column>
       <el-table-column label="Документы" prop="clientDocumentType"/>
       <el-table-column prop="roleTitle" width="120px">
 
@@ -55,9 +70,6 @@
                            src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
         </span>
-<!--        <div><small>ФИО:</small> {{ row.fullName }}</div>-->
-<!--        <div><small>Место:</small> {{ row.locationTitle }}</div>-->
-<!--        <div><small>Роль:</small> {{ row.roleTitle }}</div>-->
 
 
       </div>
@@ -91,13 +103,10 @@ const adminStore = useAdminStore()
 const UserModal = ref(null)
 const tableData = ref([])
 const total = ref('')
-const rowsPerPage = ref(5)
+const rowsPerPage = ref(10)
 const pageDescription = ref('')
 const search = ref('')
-const filter = {offset: 0, limit: 5, quickSearch: ''}
-const organizations = ref([])
-
-globalStore.getOrganizations().then(res => organizations.value = res.items)
+const filter = {offset: 0, limit: 10, quickSearch: ''}
 
 
 function changePageSize() {
@@ -112,10 +121,18 @@ function changePage(val: number) {
 
 
 function getData() {
+  globalStore.isWaiting = true
   adminStore.getClients(filter).then(res => {
-    console.log('res', res)
+    globalStore.isWaiting = false
+    res.data.individuals.map(el => {
+      if (el.person.homeAddress && (el.person.homeAddress.text || el.person.homeAddress.fias.value)) el.isHomeAddress = true
+      if (el.person.registrationAddress &&
+          (el.person.registrationAddress.text || el.person.registrationAddress.fias.value)
+      ) el.isRegistrationAddress = true
+    })
+
     tableData.value = res.data.individuals
-    total.value = res.totalCount
+    total.value = res.data.totalCount
   })
 }
 
