@@ -114,6 +114,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('/api/bank/get/list').then(q => q)
             return (cach.getBanks = res.data)
         },
+        async getBankFilials(id: number | null) {
+            const res = await axios.get(`/api/bankitem/get/list?bankId=${id}`).then(q => q)
+            return res.data
+        },
         async getWork(id: number | null) {
             let url = '/api/work'
             if (id) url += '/' + id
