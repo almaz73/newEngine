@@ -59,14 +59,13 @@
           <hr>
           <br>
           <div class="line">
-            <label>Организация</label>
-            <el-select
-                placeholder="Введите организацию"
-                v-model="user.organization"
-                filterable
-                clearable>
-                <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+            <label>Место рождения</label>
+            <el-input  v-model="user.person.placeOfBirth"/>
+          </div>
+
+          <div class="line">
+            <label> Ссылка на соц.сети</label>
+            <el-input v-model="user.person.socialNetworksAddress"/>
           </div>
 
           <div class="line">
@@ -94,6 +93,16 @@
             <el-input placeholder="Фактический адрес" v-model="user.person.homeAddress.text"/>
           </div>
 
+          <p>Счет</p>
+          <label>Банк</label>
+<!--            <el-select-->
+<!--                v-if="user.bills.length"-->
+<!--                placeholder="Введите банк"-->
+<!--                v-model="user.bills[0]"-->
+<!--                filterable-->
+<!--                clearable>-->
+<!--                <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>-->
+<!--            </el-select>-->
 
 
         </el-form>
@@ -153,14 +162,12 @@ const adminStore = useAdminStore()
 const organizations = ref([])
 const treatments = ref([])
 const departments = ref([])
-const departmentsChosen = computed(() => departments.value.filter(el => el.organization.id === user.value.organization.id))
 const locations = ref([])
-const locationsChosen = computed(() => locations.value.filter(el => el.department.id === user.value.department.id))
 const timeZones = ref([])
 let userGroupRolesMemory = ref([])
 const userRoleGroups = ref({})
-const userRoles = ref({})
 const form = ref(null)
+const banks = ref([])
 const isDirty = ref(false)
 let cb;
 const subtitle = computed(() => {
@@ -178,6 +185,10 @@ globalStore.getTreatments().then(res => treatments.value = res.items)
 
 
 adminStore.getDepartments().then(res => departments.value = res.items)
+adminStore.getBanks().then(res => {
+  console.log(' - - - ', res)
+  banks.value = res.result
+})
 adminStore.getTimeZones().then(res => timeZones.value = res.items)
 adminStore.getUserRoles().then(res => {
   userRoleGroups.value = res.items.map(el => el.group)
@@ -185,9 +196,6 @@ adminStore.getUserRoles().then(res => {
 })
 
 
-function roleChanged() {
-  userRoles.value = userGroupRolesMemory.value.find(el => el.group.value === user.value.roleCategory).roles
-}
 
 
 function open(row, cbModal) {

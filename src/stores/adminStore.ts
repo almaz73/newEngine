@@ -14,7 +14,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getClients(filter: any) {
             const {quickSearch, offset, limit} = filter
-            let url ='/api/lead/get/individuals';
+            let url = '/api/lead/get/individuals';
             url += '?offset=' + offset
             if (limit) url += '&limit=' + limit
             if (quickSearch) url += '&quickSearch=' + quickSearch
@@ -92,7 +92,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getInspection(id: number | null) {
             let url = '/api/inspectionitemtype'
-            if (id) url +='/'+ id
+            if (id) url += '/' + id
             const res = await axios.get(url).then(q => q)
             return res.data
         },
@@ -108,6 +108,11 @@ export const useAdminStore = defineStore("adminStore", {
             if (cach.getDomage) return cach.getDomage
             const res = await axios.get('/api/damageitem').then(q => q)
             return (cach.getDomage = res.data)
+        },
+        async getBanks() {
+            if (cach.getBanks) return cach.getBanks
+            const res = await axios.get('/api/bank/get/list').then(q => q)
+            return (cach.getBanks = res.data)
         },
         async getWork(id: number | null) {
             let url = '/api/work'
