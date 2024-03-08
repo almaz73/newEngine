@@ -18,7 +18,7 @@
                 v-model="client.treatmentSourceId"
                 filterable
                 clearable>
-                <el-option v-for="item in treatments" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in treatments" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </div>
 
@@ -48,8 +48,7 @@
                     v-model="client.person.phone2"/>
 
 
-
-           <span><small>День/р:</small>
+          <span><small>День/р.:</small>
              <el-date-picker
                  style="width: 160px; overflow: hidden"
                  placeholder="День рождения" title="День рождения"
@@ -58,76 +57,87 @@
 
           <hr>
           <br>
-          <div class="line">
-            <label>Место рождения</label>
-            <el-input v-model="client.person.placeOfBirth"/>
-          </div>
+          <div style="display: flex">
+            <div>
+              <div class="line">
+                <label>Место рождения</label>
+                <el-input v-model="client.person.placeOfBirth"/>
+              </div>
 
-          <div class="line">
-            <label> Ссылка на соц.сети</label>
-            <el-input v-model="client.person.socialNetworksAddress"/>
-          </div>
+              <div class="line">
+                <label> Ссылка на соц.сети</label>
+                <el-input v-model="client.person.socialNetworksAddress"/>
+              </div>
 
-          <div class="line">
-            <label>ИНН (физ. лица)</label>
-            <el-input placeholder="ИНН" v-model="client.person.inn"/>
-          </div>
+              <div class="line">
+                <label>ИНН (физ. лица)</label>
+                <el-input placeholder="ИНН" v-model="client.person.inn"/>
+              </div>
 
-          <div class="line">
-            <label>Согласие на обработку персональных данных</label>
-            <el-checkbox v-model="client.person.personalDataAgree"/>
-          </div>
+              <div class="line">
+                <label>Согласие на обработку персональных данных</label>
+                <el-checkbox v-model="client.person.personalDataAgree"/>
+              </div>
 
-           <div class="line">
-            <label>Согласие на получение смc</label>
-            <el-checkbox v-model="client.person.smsReceivingAgree"/>
-          </div>
+              <div class="line">
+                <label>Согласие на получение смc</label>
+                <el-checkbox v-model="client.person.smsReceivingAgree"/>
+              </div>
 
-          <div class="line" v-if="client.person.registrationAddress">
-            <label>Адрес регистрации</label>
-            <el-input placeholder="Адрес регистрации" v-model="client.person.registrationAddress.text"/>
-          </div>
+              <div class="line" v-if="client.person.registrationAddress">
+                <label>Адрес регистрации</label>
+                <el-input placeholder="Адрес регистрации" v-model="client.person.registrationAddress.text"/>
+              </div>
 
-          <div class="line" v-if="client.person.homeAddress">
-            <label>Фактический адрес</label>
-            <el-input placeholder="Фактический адрес" v-model="client.person.homeAddress.text"/>
-          </div>
-
-          <label class="label">{{ client.bills.length ? 'Счет' : 'Банковский счет не представлен'}}</label>
-          <div v-for="bill in client.bills" :key="bill.id">
-            <div class="line">
-              <label>Банк</label>
-              <el-select
-                  style="width: 200px; margin: 0 12px;"
-                  placeholder="Выберите банк"
-                  v-model="bankId"
-                  filterable
-                  @change="bankChanged()"
-                  clearable>
-                  <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <div class="line" v-if="client.person.homeAddress">
+                <label>Фактический адрес</label>
+                <el-input placeholder="Фактический адрес" v-model="client.person.homeAddress.text"/>
+              </div>
             </div>
+            <div v-if="client.bills && client.bills.length">
+              <div v-for="bill in client.bills" :key="bill.id">
+                <div class="line">
+                  <label style="min-width: 100px">Банк</label>
+                  <el-select
+                      style="width: 200px; margin: 0 12px;"
+                      placeholder="Выберите банк"
+                      v-model="bill.bankId"
+                      filterable
+                      @change="bankChanged(bill.bankId)"
+                      clearable>
+                    <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
+                  </el-select>
+                </div>
 
-            <div class="line">
-              <label>Филиал</label>
-              <el-select
-                  placeholder="Выберите филиал"
-                  style="width: 200px; margin: 0 12px;"
-                  v-model="filialId"
-                  filterable
-                  clearable>
-                  <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+                <div class="line">
+                  <label style="min-width: 100px">Филиал</label>
+                  <el-select
+                      placeholder="Выберите филиал"
+                      style="width: 200px; margin: 0 12px;"
+                      v-model="bill.bankItemId"
+                      filterable
+                      clearable>
+                    <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
+                  </el-select>
+                </div>
+
+                <div class="line">
+                  <label style="min-width: 100px">Расч.счет</label>
+                  <el-input placeholder="Email"
+                            title="Email" v-model="bill.personalAccount"/>
+                </div>
+                <el-divider/>
+              </div>
             </div>
           </div>
-
         </el-form>
         <div style="text-align: right; margin-top: 12px">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отменить</el-button>
           <el-button type="info"
                      v-if="title === 'Редактирование пользователя'"
-                     @click="showHistory()" title="История изменений">⟲</el-button>
+                     @click="showHistory()" title="История изменений">⟲
+          </el-button>
         </div>
       </div>
     </el-scrollbar>
@@ -180,9 +190,7 @@ const treatments = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const bankId = ref(null)
 const filials = ref([])
-const filialId = ref(null)
 const isDirty = ref(false)
 let cb;
 const subtitle = computed(() => {
@@ -194,29 +202,19 @@ const subtitle = computed(() => {
 })
 
 
-
-
-function bankChanged() {
-  console.log('bank.value', bankId.value)
-  adminStore.getBankFilials(bankId.value).then(res => {
-    console.log('res', res)
-    filials.value = res.items
-  })
+function bankChanged(id) {
+  adminStore.getBankFilials(id).then(res => filials.value = res.items)
 }
 
 function open(row, cbModal) {
-  console.log('id', row)
-
   cb = cbModal
   isOpen.value = true
   title.value = 'Создание нового пользователя'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
-    console.log('>>> res', res)
 
     client.value = res.item
     title.value = 'Редактирование пользователя'
-
   })
 
   // adminStore.getUserLocations().then(res => locations.value = res.items)
