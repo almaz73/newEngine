@@ -64,13 +64,13 @@
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-        <span>{{ row.login }}
-           <el-button><img @click="openModalUserDir(row)" alt=""
-                           title="Редактировать"
-                           src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
-        </span>
+        <div><small>Клиент:</small> {{ row.person.lastName }} {{ row.person.firstName }} {{ row.person.middleName }}
 
+          <el-button><img @click="openModalUserDir(row)" alt=""
+                          title="Редактировать"
+                          src="@/assets/icons/icon-pencil-gray.png">
+          </el-button>
+        </div>
 
       </div>
       <div v-if="!total" style="text-align: center">Нет данных</div>

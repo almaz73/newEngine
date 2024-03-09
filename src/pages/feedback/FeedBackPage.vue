@@ -49,7 +49,8 @@
 
       <el-table-column width="40">
         <template #default="scope">
-          <span class="edit-table-row" @click="openModal(scope.row)"/>
+          <span class="edit-table-row" style="top:10px" @click="openModal(scope.row)"/>
+          <span class="edit-table-page" style="top:30px" @click="sound(scope.row)">🔱</span>
         </template>
       </el-table-column>
     </el-table>
@@ -125,6 +126,11 @@ window.addEventListener("paste", e => {
     }
   }
 })
+
+function sound(row) {
+  const utterance2 = new SpeechSynthesisUtterance('Автор: ' + row.fio + ' Пишет : ' + row.message)
+  window.speechSynthesis.speak(utterance2)
+}
 
 function toBase64(file) {
   let reader = new FileReader();
