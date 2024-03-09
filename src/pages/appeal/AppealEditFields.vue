@@ -94,8 +94,8 @@
           <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
             <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}</div>
             <div><span class="label">Пол:</span> {{ appeal.lead.person.gender===10?'муж.':'жен.' }}</div>
-            <div><span class="label">Место проживания:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
-            <div><span class="label">Место регистрации:</span> {{ appeal.lead.person.homeAddress.fiasAddress.value }}</div>
+            <div><span class="label">Место проживания:</span> {{ appeal.lead.person.homeAddress.fiasAddress && appeal.lead.person.homeAddress.fiasAddress.value }}</div>
+            <div><span class="label">Место регистрации:</span> {{ appeal.lead.person.registrationAddress.fiasAddress && appeal.lead.person.registrationAddress.fiasAddress.value }}</div>
             <br> <a @click="infoAboutClient.open(appeal)" style="float: right">Более подробно о клиенте ➣ ➣ ➣</a>
           </div>
         </div>

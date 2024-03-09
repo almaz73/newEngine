@@ -1,16 +1,16 @@
 <template>
   <Teleport to="body">
     <div class="modal">
-      <div class="modal__fon" @click="emits('closeModal')"></div>
+      <div class="modal__fon" @click="closeModal()"></div>
       <div class="modal__content draggable" :class="{resizable}">
         <div class="modal__head"
              @mouseup="mouseup"
              @mousedown="mousedown"></div>
-        <div class="modal__title" :class="true?'narrow':''">
+        <div class="modal__title">
           <h3>{{ title }}</h3>
           <span> {{ subtitle }}</span>
         </div>
-        <div class="close_cross" @click="emits('closeModal')">❌</div>
+        <div class="close_cross" @click="closeModal()">❌</div>
         <div class="modal__info">
           <slot/>
         </div>
@@ -49,12 +49,9 @@
 .modal__title {
   margin-top: -20px;
   margin-left: 12px;
-  margin-bottom: 45px;
-}
-
-.modal__title.narrow{
   margin-bottom: 25px;
 }
+
 
 .modal__title h3 {
   color: #d34338;
@@ -112,7 +109,8 @@
 </style>
 
 <script setup lang="ts">
-import {computed} from "vue";
+import {computed, onMounted, onUnmounted} from "vue";
+import {useGlobalStore} from "@/stores/globalStore";
 
 interface Props {
   title?: string,
@@ -125,6 +123,7 @@ interface Props {
 
 const {width, top, title, draggable, resizable} = defineProps<Props>()
 const emits = defineEmits(['closeModal'])
+const globalStore = useGlobalStore()
 
 const defaultWidth = 400
 const panelWidth = computed(() => width ? (width + 'px') : (defaultWidth + 'px'))
@@ -155,4 +154,25 @@ const mouseup = () => {
   dragObject.elem = {}
   document.onmousemove = null
 }
+
+
+function closeModal() {
+  globalStore.listOpenModals.pop()
+  emits('closeModal')
+}
+
+let id = Math.floor(Math.random() * 100000); // для правильного закрытия по ESC
+
+function escapeHandler(e) {
+  if (e.key === 'Escape') {
+    let currentId = globalStore.listOpenModals[globalStore.listOpenModals.length-1]
+    if (currentId === id) closeModal()
+  }
+}
+onMounted(()=>{
+  globalStore.listOpenModals.push(id)
+  document.addEventListener('keydown', escapeHandler);
+})
+onUnmounted(()=>document.removeEventListener('keydown', escapeHandler))
+
 </script>

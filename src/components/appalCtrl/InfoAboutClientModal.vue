@@ -21,9 +21,9 @@
           <p>Контакты</p>
           <div><span class="label l_200">Телефон:</span> {{ appeal.person.phone }}</div>
           <div><span class="label l_200">
-        Адрес регистрации:</span> {{ appeal.person.registrationAddress.fiasAddress.value }}
+        Адрес регистрации:</span> {{ appeal.person.registrationAddress.fiasAddress && appeal.person.registrationAddress.fiasAddress.value }}
           </div>
-          <div><span class="label l_200">Фактический адрес:</span> {{ appeal.person.homeAddress.fiasAddress.value }}
+          <div><span class="label l_200">Фактический адрес:</span> {{ appeal.person.homeAddress.fiasAddress && appeal.person.homeAddress.fiasAddress.value }}
           </div>
 
           <p>Паспортные данные</p>

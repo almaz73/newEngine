@@ -6,7 +6,7 @@ export const useGlobalStore = defineStore('globalStore', {
     state: () => ({
         /** @type {{boolean}} */
         title: '#### NEW ENGINE',
-        version:'0.9.7',
+        version: '0.9.8',
         isAuthorized: false,
         isMobileView: false, // мобильный режим
         isShowPanel: false, // при узких экранах, гамбургер открывает левую панель
@@ -14,6 +14,7 @@ export const useGlobalStore = defineStore('globalStore', {
         isWaiting: false, // для ромашки ожидания
         isNeedTop: false, // показ кнопки прокрутки наверх
         oldPath: '', // запоминаем перед переходом на страницу логирования, чтобы вернуться
+        listOpenModals: [], // для закрытия по esc
         account: {
             // настройки аккаунта
             lastName: '',
