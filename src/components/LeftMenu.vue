@@ -114,7 +114,7 @@
       </el-sub-menu>
 
 
-      <RouterLink to="/map">
+      <RouterLink to="/calendar">
         <el-menu-item index="8">
           <el-icon>
             <img alt="Cобытия" src="@/assets/icons/ic-done-all-black-18-px.png" height="34" width="34"/>
@@ -123,12 +123,14 @@
         </el-menu-item>
       </RouterLink>
 
-      <el-menu-item index="9">
-        <el-icon>
-          <img alt="Аналитика" src="@/assets/icons/ic-trending-up-black-18-px.png" height="34" width="34"/>
-        </el-icon>
-        <template #title>Аналитика</template>
-      </el-menu-item>
+      <RouterLink to="/map">
+        <el-menu-item index="9">
+          <el-icon>
+            <img alt="Аналитика" src="@/assets/icons/ic-trending-up-black-18-px.png" height="34" width="34"/>
+          </el-icon>
+          <template #title>Аналитика</template>
+        </el-menu-item>
+      </RouterLink>
 
       <RouterLink to="/">
         <el-menu-item index="10">

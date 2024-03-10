@@ -62,6 +62,10 @@ const router = createRouter({
             name: 'admin',
             component: () => import('@/pages/admin/AdminPage.vue').catch(val => fail(val))
         }, {
+            path: '/calendar',
+            name: 'calendar',
+            component: () => import('@/pages/calendar/CalendarPage.vue').catch(val => fail(val))
+        },{
             path: '/map',
             name: 'map',
             component: () => import('@/components/MapCtrl.vue').catch(val => fail(val))
