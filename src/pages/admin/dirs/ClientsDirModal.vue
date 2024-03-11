@@ -241,23 +241,20 @@ function checking() {
   if (!client.value.person.firstName) {
     return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
   }
-  if (!client.value.department.id) {
-    return ElMessage({message: 'Поле "Отдел" обязателен для заполнения', type: 'warning'})
-  }
-  if (!client.value.location.id) {
-    return ElMessage({message: 'Поле "Место хранение/выкупа" обязателен для заполнения', type: 'warning'})
-  }
-  if (!client.value.position) {
-    return ElMessage({message: 'Поле "Должность" обязателен для заполнения', type: 'warning'})
-  }
 }
 
 
 function save() {
   if (checking()) return false
-  adminStore.saveUser(client.value).then(() => {
+  adminStore.saveClient(client.value).then((res) => {
+    if(res.code === "ERR_BAD_REQUEST"){
+      ElMessage({message:  res.response.data.errorText, type: 'error', duration: 7000})
+      return false
+    }
+
     ElMessage({message: 'Успешно', type: 'success'})
     isOpen.value = false
+    client.value = clientInit
     cb()
   })
 }

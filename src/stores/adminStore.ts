@@ -67,6 +67,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.post(`/api/user/save`, obj).then(q => q)
             return res.data
         },
+        async saveClient(obj: any) {
+            const res = await axios.post(`/api/lead/add/individual`, obj).then(q => q)
+            return res
+        },
         async getUserHistory(id: number) {
             const res = await axios.get(`/api/user/get/audit?id=${id}`).then(q => q)
             return res.data

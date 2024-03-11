@@ -121,6 +121,7 @@ function changePage(val: number) {
 
 
 function getData() {
+  filter.quickSearch = search.value
   globalStore.isWaiting = true
   adminStore.getClients(filter).then(res => {
     globalStore.isWaiting = false
@@ -130,7 +131,8 @@ function getData() {
       ) el.isHomeAddress = true
 
       if (el.person.registrationAddress &&
-          (el.person.registrationAddress.text || el.person.registrationAddress.fias.value)
+          (el.person.registrationAddress.text ||
+              (el.person.registrationAddress.fia && el.person.registrationAddress.fias.value))
       ) el.isRegistrationAddress = true
     })
 
