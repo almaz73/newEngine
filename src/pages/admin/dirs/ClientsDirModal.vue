@@ -13,12 +13,19 @@
         <el-form ref="form" :model="client" @change="isDirty=true">
           <div class="line">
             <label>Источник</label>
-            <el-select
-                placeholder="Введите источник"
-                v-model="client.treatmentSourceId"
-                filterable
-                clearable>
-              <el-option v-for="item in treatments" :key="item.id" :label="item.name" :value="item.id"/>
+            <el-select v-model="client.treatmentSourceId" placeholder="Выберите источник">
+              <el-option-group
+                  v-for="group in treatmentsGroup"
+                  :key="group.id"
+                  :label="group.name"
+              >
+                <el-option
+                    v-for="item in group.groups"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"
+                />
+              </el-option-group>
             </el-select>
           </div>
 
@@ -158,6 +165,11 @@
   margin-right: 12px;
   align-self: center;
 }
+
+.el-select-group .el-select-dropdown__item {
+  margin-left: 30px;
+}
+
 </style>
 
 <script setup>
@@ -174,19 +186,13 @@ const globalStore = useGlobalStore()
 const isOpen = ref(false)
 const clientInit = {
   person: {firstName: '', middleName: '', lastName: ''},
-  avatar: {url: ''},
-  organization: {},
-  department: {},
-  location: {},
-  role: {}
 }
 const client = ref(clientInit)
 const closeModal = () => isOpen.value = false
 const title = ref('')
 const modalHistory = ref(null)
 const adminStore = useAdminStore()
-const organizations = ref([])
-const treatments = ref([])
+const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
@@ -217,14 +223,20 @@ function open(row, cbModal) {
     title.value = 'Редактирование пользователя'
   })
 
-  // adminStore.getUserLocations().then(res => locations.value = res.items)
-  globalStore.getOrganizations().then(res => organizations.value = res.items)
-  globalStore.getTreatments().then(res => treatments.value = res.items)
+
+  globalStore.getTreatments().then(res => {
+    treatmentsGroup.value = res.items.filter(el => !el.parentName)
+    treatmentsGroup.value.map(el => {
+      el.groups = []
+      res.items.forEach(item => {
+        if (item.parentName === el.name) el.groups.push(item)
+      })
+    })
+  })
 
 
   adminStore.getDepartments().then(res => departments.value = res.items)
   adminStore.getBanks().then(res => {
-    console.log(' - - - ', res)
     banks.value = res.result
   })
 }
@@ -246,9 +258,13 @@ function checking() {
 
 function save() {
   if (checking()) return false
+
+  // телефон должен состоять только из цифр
+  client.value.person.phone = client.value.person.phone.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
+
   adminStore.saveClient(client.value).then((res) => {
-    if(res.code === "ERR_BAD_REQUEST"){
-      ElMessage({message:  res.response.data.errorText, type: 'error', duration: 7000})
+    if (res.code === "ERR_BAD_REQUEST") {
+      ElMessage({message: res.response.data.errorText, type: 'error', duration: 7000})
       return false
     }
 

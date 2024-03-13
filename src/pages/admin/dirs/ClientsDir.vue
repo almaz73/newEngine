@@ -53,9 +53,6 @@
             <img @click="openModalUserDir(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteUser(scope.row.id)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
           </div>
         </template>
       </el-table-column>
@@ -93,7 +90,7 @@
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import {ElMessage, ElMessageBox, ElTable} from "element-plus";
+import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
@@ -102,7 +99,7 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const UserModal = ref(null)
 const tableData = ref([])
-const total = ref('')
+const total = ref(0)
 const rowsPerPage = ref(10)
 const pageDescription = ref('')
 const search = ref('')
@@ -144,19 +141,6 @@ function getData() {
 
 function openModalUserDir(row: any | null) {
   UserModal.value.open(row, getData)
-}
-
-function deleteUser(id: number) {
-  ElMessageBox.confirm('Вы действительно хотите удалить пользователя?', 'Внимание', {
-    confirmButtonText: 'Да',
-    cancelButtonText: 'Нет'
-  })
-      .then((res) => {
-        res && adminStore.deleteUser(id).then(() => {
-          ElMessage({message: 'Пользователь успешно удален', type: 'success'})
-          getData()
-        })
-      })
 }
 
 
