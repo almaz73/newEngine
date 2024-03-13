@@ -9,7 +9,7 @@
             resizable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
-      <span class="modal-fields">
+      <div class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
           <div class="photo-place">
              <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
@@ -114,74 +114,18 @@
             </el-select>
           </div>
         </el-form>
-      <div style="text-align: right; margin-top: 12px">
-        <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-        <el-button type="info" @click="isOpen = false">Отменить</el-button>
-        <el-button type="info"
-                   v-if="title === 'Редактирование пользователя'"
-                   @click="showHistory()" title="История изменений">⟲</el-button>
+        <div style="text-align: right; margin-top: 12px">
+          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+          <el-button type="info" @click="isOpen = false">Отменить</el-button>
+          <el-button type="info"
+                     v-if="title === 'Редактирование пользователя'"
+                     @click="showHistory()" title="История изменений">⟲</el-button>
+        </div>
       </div>
-      </span>
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
 </template>
-<style scoped>
-.avatar-uploader .avatar {
-  width: 150px;
-  height: 150px;
-  display: block;
-}
-</style>
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 126px;
-  height: 126px;
-  text-align: center;
-}
-
-.photo-place {
-  height: 126px;
-  width: 126px;
-  display: inline-block;
-  float: left;
-  margin: 0 12px;
-  position: relative;
-}
-
-.photo-place img {
-  object-fit: cover;
-  border-radius: 8px;
-  width: 100%;
-  height: 100%;
-}
-
-.line {
-  display: flex;
-}
-
-.line label {
-  min-width: 230px;
-  text-align: right;
-  margin-right: 12px;
-  align-self: center;
-}
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";

@@ -57,7 +57,7 @@
 
           <span><small>День/р.:</small>
              <el-date-picker
-                 style="width: 160px; overflow: hidden"
+                 style="width: 150px; overflow: hidden"
                  placeholder="День рождения" title="День рождения"
                  v-model="client.person.dateOfBirth"/>
            </span>
@@ -81,13 +81,13 @@
                 <el-input placeholder="ИНН" v-model="client.person.inn"/>
               </div>
 
-              <div class="line">
-                <label>Согласие на обработку персональных данных</label>
+              <div>
+                <label>Согласие на обработку персональных данных</label> &nbsp;
                 <el-checkbox v-model="client.person.personalDataAgree"/>
               </div>
 
-              <div class="line">
-                <label>Согласие на получение смc</label>
+              <div>
+                <label>Согласие на получение смc</label> &nbsp;
                 <el-checkbox v-model="client.person.smsReceivingAgree"/>
               </div>
 
@@ -101,76 +101,64 @@
                 <el-input placeholder="Фактический адрес" v-model="client.person.homeAddress.text"/>
               </div>
             </div>
-            <div v-if="client.bills && client.bills.length">
-              <div v-for="bill in client.bills" :key="bill.id">
-                <div class="line">
-                  <label style="min-width: 100px">Банк</label>
-                  <el-select
-                      style="width: 200px; margin: 0 12px;"
-                      placeholder="Выберите банк"
-                      v-model="bill.bankId"
-                      filterable
-                      @change="bankChanged(bill.bankId)"
-                      clearable>
-                    <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
-                  </el-select>
-                </div>
-
-                <div class="line">
-                  <label style="min-width: 100px">Филиал</label>
-                  <el-select
-                      placeholder="Выберите филиал"
-                      style="width: 200px; margin: 0 12px;"
-                      v-model="bill.bankItemId"
-                      filterable
-                      clearable>
-                    <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
-                  </el-select>
-                </div>
-
-                <div class="line">
-                  <label style="min-width: 100px">Расч.счет</label>
-                  <el-input placeholder="Email"
-                            title="Email" v-model="bill.personalAccount"/>
-                </div>
-                <el-divider/>
+            <el-scrollbar :maxHeight="250" style="width: 100%">
+              <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
+                <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
               </div>
-            </div>
+
+              <div v-if="client.bills && client.bills.length">
+                <div v-for="bill in client.bills" :key="bill.id"
+                     :style="{'fontWeight': !bill.personalAccount?'600':''}">
+                  <div v-if="!bill.deleted">
+                    <div class="line">
+                      <label style="min-width: 180px">Банк</label>
+                      <el-select
+                          style="width: 200px; margin: 0 12px;"
+                          placeholder=""
+                          v-model="bill.bankId"
+                          filterable
+                          @change="bankChanged(bill.bankId)"
+                          clearable>
+                        <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
+                      </el-select>
+                    </div>
+
+                    <div class="line">
+                      <label style="min-width: 180px">Филиал</label>
+                      <el-select
+                          placeholder=""
+                          style="width: 200px; margin: 0 12px;"
+                          v-model="bill.bankItemId"
+                          filterable
+                          clearable>
+                        <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
+                      </el-select>
+                    </div>
+
+                    <div class="line">
+                      <label style="min-width: 180px">Расчетный счет</label>
+                      <el-input maxlength="20"
+                                v-model="bill.personalAccount"/>
+                      <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)">✖</span>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+
+              </div>
+            </el-scrollbar>
           </div>
         </el-form>
         <div style="text-align: right; margin-top: 12px">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отменить</el-button>
-          <el-button type="info"
-                     v-if="title === 'Редактирование клиента'"
-                     @click="showHistory()" title="История изменений">⟲
-          </el-button>
+          <el-button type="info" @click="showHistory()" title="История изменений">⟲</el-button>
         </div>
       </div>
     </el-scrollbar>
   </AppModal>
-  <ClientsDirModal_History  ref="modalHistory"/>
+  <ClientsDirModal_History ref="modalHistory"/>
 </template>
-
-<style>
-
-
-.line {
-  display: flex;
-}
-
-.line label {
-  min-width: 230px;
-  text-align: right;
-  margin-right: 12px;
-  align-self: center;
-}
-
-.el-select-group .el-select-dropdown__item {
-  margin-left: 30px;
-}
-
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
@@ -198,6 +186,7 @@ const form = ref(null)
 const banks = ref([])
 const filials = ref([])
 const isDirty = ref(false)
+const isBankIsAdded = ref(false)
 let cb;
 const subtitle = computed(() => {
   let fio = ''
@@ -212,9 +201,21 @@ function bankChanged(id) {
   adminStore.getBankFilials(id).then(res => filials.value = res.items)
 }
 
+function addBank() {
+  isBankIsAdded.value = true
+  client.value.bills.unshift({personalAccount: '', bankItemId: null, bankId: null})
+}
+
+function deleteBank(bill) {
+  client.value.bills.map(el => {
+    if (el.personalAccount === bill.personalAccount) el.deleted = true
+  })
+}
+
 function open(row, cbModal) {
   cb = cbModal
   isOpen.value = true
+  isBankIsAdded.value = false
   title.value = 'Создание нового пользователя'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
