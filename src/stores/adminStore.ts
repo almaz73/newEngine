@@ -78,6 +78,16 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
             return res.data
         },
+        async getDocumentTypes() {
+            if (cach.getDocumentTypes) return cach.getDocumentTypes
+            const res = await axios.get('/api/client-documents/types').then(q => q)
+            return (cach.getDocumentTypes = res.data)
+        },
+        async getClientDocunets(id: number) {
+            const res = await axios.get(`/api/client-documents/get?personId=${id}`).then(q => q)
+            return res.data
+        },
+
         async deleteUser(id: number) {
             const res = await axios.delete('/api/user/' + id).then(q => q)
             return res.data

@@ -20,6 +20,7 @@ const cach = {
     getRepaired: null,
     getSmsTemplates: null,
     getTreatments: null,
-    getBanks: null
+    getBanks: null,
+    getDocumentTypes: null
 }
 export default cach

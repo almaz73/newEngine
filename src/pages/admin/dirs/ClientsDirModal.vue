@@ -101,56 +101,114 @@
                 <el-input placeholder="Фактический адрес" v-model="client.person.homeAddress.text"/>
               </div>
             </div>
-            <el-scrollbar :maxHeight="250" style="width: 100%">
-              <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
-                <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
-              </div>
 
-              <div v-if="client.bills && client.bills.length">
-                <div v-for="bill in client.bills" :key="bill.id"
-                     :style="{'fontWeight': !bill.personalAccount?'600':''}">
-                  <div v-if="!bill.deleted">
-                    <div class="line">
-                      <label style="min-width: 180px">Банк</label>
-                      <el-select
-                          style="width: 200px; margin: 0 12px;"
-                          placeholder=""
-                          v-model="bill.bankId"
-                          filterable
-                          @change="bankChanged(bill.bankId)"
-                          clearable>
-                        <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
-                      </el-select>
-                    </div>
-
-                    <div class="line">
-                      <label style="min-width: 180px">Филиал</label>
-                      <el-select
-                          placeholder=""
-                          style="width: 200px; margin: 0 12px;"
-                          v-model="bill.bankItemId"
-                          filterable
-                          clearable>
-                        <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
-                      </el-select>
-                    </div>
-
-                    <div class="line">
-                      <label style="min-width: 180px">Расчетный счет</label>
-                      <el-input maxlength="20"
-                                v-model="bill.personalAccount"/>
-                      <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)">✖</span>
-                    </div>
-                    <hr>
+            <el-tabs style="width: 100%" type="border-card" v-model="activeName">
+              <el-tab-pane label="Документы" name="first">
+                <el-scrollbar :maxHeight="250" style="width: 100%">
+                  <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isDocemtntIsAdded">
+                    <el-button type="info" @click="addDocument()" :icon="Plus">Добавить документ</el-button>
                   </div>
-                </div>
 
-              </div>
-            </el-scrollbar>
+                  <div v-if="clientDocuments && clientDocuments.length">
+                    <div v-for="doc in clientDocuments" :key="doc.id"
+                         :style="{'fontWeight': !doc.number?'600':''}">
+                      <div v-if="!doc.deleted">
+                        <div class="line">
+                          <label style="min-width: 150px">Тип документа</label>
+                          <el-select
+                              style="width: 200px; margin: 0 12px;"
+                              placeholder=""
+                              v-model="doc.type"
+                              filterable
+                              clearable>
+                            <el-option v-for="item in documentTypes" :key="item.value" :label="item.title"
+                                       :value="item.value"/>
+                          </el-select>
+                          <span style="cursor: pointer" title="Удалить" @click="deleteDocument(doc)">✖</span>
+                        </div>
+
+                        <div class="line">
+                          <label style="min-width: 150px">Серия</label>
+                          <el-input maxlength="20"
+                                    v-model="doc.serial"/>
+                        </div>
+
+                        <div class="line">
+                          <label style="min-width: 150px">Номер</label>
+                          <el-input maxlength="20"
+                                    v-model="doc.number"/>
+
+                        </div>
+
+                        <div class="line">
+                          <label style="min-width: 150px">Дата выдачи</label>
+                          <el-date-picker
+                              placeholder="" title="День рождения"
+                              v-model="doc.issueDate"/>
+                        </div>
+                        <hr>
+                      </div>
+                    </div>
+
+                  </div>
+                </el-scrollbar>
+
+              </el-tab-pane>
+              <el-tab-pane label="Банковский счет" :maxHeight="250">
+                <el-scrollbar :maxHeight="250" style="width: 100%">
+                  <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
+                    <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
+                  </div>
+
+                  <div v-if="client.bills && client.bills.length">
+                    <div v-for="bill in client.bills" :key="bill.id"
+                         :style="{'fontWeight': !bill.personalAccount?'600':''}">
+                      <div v-if="!bill.deleted">
+                        <div class="line">
+                          <label style="min-width: 150px">Банк</label>
+                          <el-select
+                              style="width: 200px; margin: 0 12px;"
+                              placeholder=""
+                              v-model="bill.bankId"
+                              filterable
+                              @change="bankChanged(bill.bankId)"
+                              clearable>
+                            <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
+                          </el-select>
+                        </div>
+
+                        <div class="line">
+                          <label style="min-width: 150px">Филиал</label>
+                          <el-select
+                              placeholder=""
+                              style="width: 200px; margin: 0 12px;"
+                              v-model="bill.bankItemId"
+                              filterable
+                              clearable>
+                            <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
+                          </el-select>
+                        </div>
+
+                        <div class="line">
+                          <label style="min-width: 150px">Расчетный счет</label>
+                          <el-input maxlength="20"
+                                    v-model="bill.personalAccount"/>
+                          <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)">✖</span>
+                        </div>
+                        <hr>
+                      </div>
+                    </div>
+
+                  </div>
+                </el-scrollbar>
+              </el-tab-pane>
+            </el-tabs>
+
+
           </div>
         </el-form>
         <div style="text-align: right; margin-top: 12px">
-          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+          <el-button type="danger" @click="save()">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отменить</el-button>
           <el-button type="info" @click="showHistory()" title="История изменений">⟲</el-button>
         </div>
@@ -187,6 +245,10 @@ const banks = ref([])
 const filials = ref([])
 const isDirty = ref(false)
 const isBankIsAdded = ref(false)
+const isDocemtntIsAdded = ref(false)
+const clientDocuments = ref([])
+const documentTypes = ref([])
+const activeName = ref('first')
 let cb;
 const subtitle = computed(() => {
   let fio = ''
@@ -199,6 +261,11 @@ const subtitle = computed(() => {
 
 function bankChanged(id) {
   adminStore.getBankFilials(id).then(res => filials.value = res.items)
+}
+
+function addDocument() {
+  isDocemtntIsAdded.value = true
+  clientDocuments.value.unshift({number: '', serial: '', type: 40, issueDate: new Date()})
 }
 
 function addBank() {
@@ -237,9 +304,9 @@ function open(row, cbModal) {
 
 
   adminStore.getDepartments().then(res => departments.value = res.items)
-  adminStore.getBanks().then(res => {
-    banks.value = res.result
-  })
+  adminStore.getBanks().then(res => banks.value = res.result)
+  adminStore.getClientDocunets(row.person.id).then(res => clientDocuments.value = res.items)
+  adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 }
 
 function showHistory() {
