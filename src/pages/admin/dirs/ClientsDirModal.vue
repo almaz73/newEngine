@@ -142,14 +142,14 @@
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отменить</el-button>
           <el-button type="info"
-                     v-if="title === 'Редактирование пользователя'"
+                     v-if="title === 'Редактирование клиента'"
                      @click="showHistory()" title="История изменений">⟲
           </el-button>
         </div>
       </div>
     </el-scrollbar>
   </AppModal>
-  <UsersDirModal_History ref="modalHistory"/>
+  <ClientsDirModal_History  ref="modalHistory"/>
 </template>
 
 <style>
@@ -179,8 +179,8 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import {emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
@@ -220,7 +220,7 @@ function open(row, cbModal) {
   else adminStore.getClientForModal(row.leadId).then(res => {
 
     client.value = res.item
-    title.value = 'Редактирование пользователя'
+    title.value = 'Редактирование клиента'
   })
 
 

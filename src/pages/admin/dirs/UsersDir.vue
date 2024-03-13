@@ -57,7 +57,7 @@
         v-if="!globalStore.isMobileView"
         :data="tableData"
         ref="singleTableRef"
-        @row-dblclick="openModalUserDir"
+        @row-dblclick="doubleClickOpenModal"
         empty-text="Нет данных"
         highlight-current-row
     >
@@ -197,6 +197,10 @@ function getData() {
 
 function switchuser(row: any) {
   adminStore.switchUser(row.id).then(getData)
+}
+
+function doubleClickOpenModal(row: any) {
+  openModalUserDir(row)
 }
 
 function openModalUserDir(row: any | null, copy: string | null) {
