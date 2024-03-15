@@ -261,3 +261,36 @@ for (let z = 800; z <= 6000; z = z + 100) {
     some_capacities.push({name: z})
 }
 export const Capacities = some_capacities
+
+export const leftPanelPermissions ={
+    desktop: [
+        'Admin',
+        'CallManager'
+    ],
+    appeal: [
+        'Admin',
+        'CallManager'
+    ],
+    deal: [
+        'Admin',
+    ],
+    sell: [
+        'Admin',
+    ],
+    calls: [
+        'Admin',
+    ],
+    admin: [
+        'Admin',
+    ],
+    calendar: [
+        'Admin',
+        'CallManager'
+    ],
+    map: [
+        'Admin',
+    ],
+    realization: [
+        'Admin',
+    ],
+}

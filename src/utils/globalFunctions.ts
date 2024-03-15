@@ -1,5 +1,14 @@
 import {ElMessage} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
+import {leftPanelPermissions} from "@/utils/globalConstants";
+
+let role=''
+
+export function permit(menu) {
+    role = role || useGlobalStore().account.role
+    if (role === 'Admin') return true
+    return leftPanelPermissions[menu] && leftPanelPermissions[menu].includes(role)
+}
 
 export const formatDate = (val: string) => {
     // формат: 17 мая 2022 г.
