@@ -127,6 +127,10 @@
     transition: grid-template-rows .73s ease-in-out;
 }
 
+.open-filter .el-select {
+    max-width: 217px;
+}
+
 .open-filter.open {
     grid-template-rows: 1fr;
 }
