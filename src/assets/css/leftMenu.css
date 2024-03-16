@@ -65,8 +65,8 @@
 
 .content {
     position: relative;
-    width: calc(100% - 85px);
     transition: width 0.3s ease-in-out;
+    width: 100%;
 }
 
 .content.wide {
@@ -74,7 +74,6 @@
 }
 
 .content.narrow {
-    width: calc(100% - 85px);
     height: 100%;
 }
 

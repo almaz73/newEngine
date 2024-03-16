@@ -23,13 +23,22 @@
 </template>
 <script setup lang="ts">
 import {ref} from "vue";
-import router from "@/router";
 import {useGlobalStore} from "@/stores/globalStore";
 
 const globalStore = useGlobalStore()
 const login = ref('')
 const password = ref('')
 const authMessage = ref('')
+
+function goMyFirstPage(role) {
+  switch (role) {
+    case "CallManager":
+      location.replace("/appeal")
+      break
+    default:
+      location.replace("/deal")
+  }
+}
 
 function signIn(): void {
   globalStore.signIn(login.value, password.value).then(res => {
@@ -42,8 +51,7 @@ function signIn(): void {
         break
       case 200:
         globalStore.isAuthorized = true
-        router.push(globalStore.oldPath ? globalStore.oldPath : '/deal')
-        globalStore.oldPath = ''
+        goMyFirstPage(res.data.role)
         break;
       default:
         authMessage.value = 'Произошла ошибка';

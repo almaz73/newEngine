@@ -265,32 +265,39 @@ export const Capacities = some_capacities
 export const leftPanelPermissions ={
     desktop: [
         'Admin',
-        'CallManager'
+        'CallManager',
+        'GenManager'
     ],
     appeal: [
         'Admin',
-        'CallManager'
+        'CallManager',
+        'GenManager'
     ],
     deal: [
         'Admin',
+        'GenManager'
     ],
     sell: [
         'Admin',
+        'GenManager'
     ],
     calls: [
-        'Admin',
+        'Admin'
     ],
     admin: [
         'Admin',
+        'GenManager'
     ],
     calendar: [
         'Admin',
-        'CallManager'
+        'CallManager',
+        'GenManager'
     ],
     map: [
-        'Admin',
+        'Admin'
     ],
     realization: [
         'Admin',
+        'GenManager'
     ],
 }

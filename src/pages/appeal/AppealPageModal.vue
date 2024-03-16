@@ -38,18 +38,16 @@ const appealStore = useAppealStore()
 const appealFields = ref(null)
 const isOpen = ref(false);
 let cb;
-const appeal = ref({});
 const subtitle = ref('')
 const isEditManagerName = ref(false)
 const carPhoto = ref(null)
-const events = ref([])
 
 const closeModal = () => {
   isOpen.value = false;
   isEditManagerName.value = false
 }
 
-const save = () =>{
+const save = () => {
   console.log('save')
   cb()
   closeModal()
@@ -57,13 +55,12 @@ const save = () =>{
 
 
 function open(row, cbModal) {
-  carPhoto.value = row.smallPhoto[0]
+  if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
   cb = cbModal;
   isOpen.value = true;
 
   setTimeout(() => appealFields.value.open(row, cbModal))
 }
-
 
 
 defineExpose({open});

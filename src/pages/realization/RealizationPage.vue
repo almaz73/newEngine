@@ -23,7 +23,7 @@
 
     <!-- для компа таблица -->
     <el-table
-        style="margin-top: 24px"
+        class="big-table"
         v-if="!globalStore.isMobileView"
         :data="realizationStore.list"
         ref="singleTableRef"
@@ -183,6 +183,8 @@ function validateFilter() {
 
   if (globalRef.tags.length) localStorage.setItem('realizationFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('realizationFilters')
+
+  return false
 }
 
 function getData() {

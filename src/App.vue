@@ -4,9 +4,10 @@
 
     <div class="content" :class="globalStore.isNarrowPanel ? 'narrow' : 'wide'">
       <HeadMenu v-if="globalStore.isAuthorized"/>
-      <RouterView :style="{ padding: globalStore.isMobileView ? '' : '25px' }"/>
+      <RouterView :style="{ padding: globalStore.isMobileView ? '' : '25px',
+                            overflowY:heightPage>920?'':'auto' }"
+                  class="router-window"/>
     </div>
-
     <img
         class="gototop"
         v-if="globalStore.isNeedTop"
@@ -22,7 +23,7 @@ import {RouterView} from 'vue-router'
 import LeftMenu from '@/components/LeftMenu.vue'
 import HeadMenu from '@/components/HeadMenu.vue'
 import {useGlobalStore} from '@/stores/globalStore'
-import {onMounted} from 'vue'
+import {onMounted, ref} from 'vue'
 import router from '@/router'
 import '@/stores/_g_axios.ts'
 import {widthMobile} from '@/utils/globalConstants'
@@ -32,6 +33,7 @@ import {useDark} from "@vueuse/core";
 useDark()
 
 const globalStore = useGlobalStore()
+const heightPage = ref(0)
 
 onMounted(() => {
   let account = localStorage.getItem('account')
@@ -55,5 +57,7 @@ onMounted(() => {
     if (window.scrollY > 800) globalStore.isShowPanel = false
     globalStore.isNeedTop = window.scrollY > 600
   })
+
+  setTimeout(() => heightPage.value = document.body.scrollHeight)
 })
 </script>

@@ -34,7 +34,7 @@ body {
     width: 73px;
     position: fixed;
     pointer-events: none;
-    right: 22px;
+    right: 12px;
     z-index: 1000;
 }
 
@@ -42,6 +42,10 @@ body {
     .waiter {
         right: inherit;
     }
+}
+
+.router-window {
+    height: calc(100vh - 130px);
 }
 
 .gototop {

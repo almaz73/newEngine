@@ -24,7 +24,7 @@
 
     <!-- для компа таблица -->
     <el-table
-        style="margin-top: 24px"
+        class="big-table"
         v-if="!globalStore.isMobileView"
         :data="dealStore.list"
         ref="singleTableRef"

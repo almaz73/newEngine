@@ -192,3 +192,7 @@
     cursor: pointer;
 }
 
+.big-table {
+    margin-top: 24px;
+    width: calc(100% - 15px) !important
+}
