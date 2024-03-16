@@ -31,7 +31,10 @@
                         style="cursor: pointer">
           </span>
       <span v-else>
-            <el-select v-model="appeal.managerId" @change="toChangeManager" filterable>
+            <el-select
+                style="width: 220px"
+                v-model="appeal.managerId"
+                @change="toChangeManager" filterable>
               <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </span>
@@ -72,30 +75,42 @@
 
   <div class="demo-collapse">
     <el-collapse>
-      <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+appeal.leadPhone" name="1">
+      <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+formattingPhone(appeal.leadPhone)"
+                        name="1">
         <div class="collapse" style="">
           <div class="collapse-left">
 
-            <div> <span class="label">Статус клиента: </span>  {{ appeal.clientStatus }} </div>
-            <div> <span class="label">Тип клиента: </span>  {{ appeal.clientStatus }} </div>
+            <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
+            <div><span class="label">Тип клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
-              {{ appeal.lead.person.firstName }} {{ appeal.lead.person.middleName}} {{ appeal.lead.person.lastName}}
-              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="()=>{}" style="cursor: pointer">
+              {{ appeal.lead.person.firstName }} {{ appeal.lead.person.middleName }} {{ appeal.lead.person.lastName }}
+              &nbsp;
+
+              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
             </div>
 
-            <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>  {{ appeal.leadPhone }}</div>
-            <div v-if="appeal.swapPhone">Подменный номер телефона:   {{ appeal.swapPhone }}</div>
+            <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
+              {{ formattingPhone(appeal.leadPhone) }}
+            </div>
+            <div v-if="appeal.swapPhone">Подменный номер телефона: {{ appeal.swapPhone }}</div>
             <div v-if="appeal.lead && appeal.lead.person.phone2"><span class="label">
-              Доп. телефон: </span>  {{ appeal.lead.person.phone2 }}</div>
-            <div v-if="appeal.email"><span class="label">Эл. почта: </span>  {{ appeal.email }}</div>
+              Доп. телефон: </span> {{ appeal.lead.person.phone2 }}
+            </div>
+            <div v-if="appeal.email"><span class="label">Эл. почта: </span> {{ appeal.email }}</div>
             <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
 
           </div>
           <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
-            <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}</div>
-            <div><span class="label">Пол:</span> {{ appeal.lead.person.gender===10?'муж.':'жен.' }}</div>
-            <div><span class="label">Место проживания:</span> {{ appeal.lead.person.homeAddress.fiasAddress && appeal.lead.person.homeAddress.fiasAddress.value }}</div>
-            <div><span class="label">Место регистрации:</span> {{ appeal.lead.person.registrationAddress.fiasAddress && appeal.lead.person.registrationAddress.fiasAddress.value }}</div>
+            <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}
+            </div>
+            <div><span class="label">Пол:</span> {{ appeal.lead.person.gender === 10 ? 'муж.' : 'жен.' }}</div>
+            <div><span class="label">Место проживания:</span>
+              {{ appeal.lead.person.homeAddress.fiasAddress && appeal.lead.person.homeAddress.fiasAddress.value }}
+            </div>
+            <div><span class="label">Место регистрации:</span> {{
+                appeal.lead.person.registrationAddress.fiasAddress && appeal.lead.person.registrationAddress.fiasAddress.value
+              }}
+            </div>
             <br> <a @click="infoAboutClient.open(appeal)" style="float: right">Более подробно о клиенте ➣ ➣ ➣</a>
           </div>
         </div>
@@ -130,6 +145,7 @@
 
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
+  <ClientsDirModal ref="ClientModal"/>
 </template>
 <script setup>
 
@@ -138,8 +154,9 @@ import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
-import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
+import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -155,6 +172,7 @@ const lastTaskAndResult = ref('')
 const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
+const ClientModal = ref(null)
 
 
 const clickDropDown = (val) => {
@@ -169,9 +187,11 @@ function workFlowType(type) {
 
 
 function toGetManagers() {
+  globalStore.isWaiting = true
   appealStore.getRoles(appeal.value.workflowLeadType).then(res => {
     responsibles.value = res.data.items;
     isEditManagerName.value = true
+    globalStore.isWaiting = false
   })
 }
 
@@ -181,9 +201,12 @@ function toChangeManager(row) {
   isEditManagerName.value = false
 }
 
+function openClient() {
+  ClientModal.value.open(appeal.value)
+}
 
 function open(row) {
-  carPhoto.value = row.smallPhoto[0]
+  if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
 
   isOpen.value = true;
 

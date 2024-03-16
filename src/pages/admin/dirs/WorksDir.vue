@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-filter-field" style="column-gap: 22px">
+  <div class="admin-filter-field">
     <el-input v-model="like"
               :prefix-icon="Search"
               placeholder="Фильтр"

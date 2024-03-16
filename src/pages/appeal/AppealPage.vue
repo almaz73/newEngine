@@ -85,7 +85,7 @@
       <el-table-column label="Событие">
         <template #default="scope">
           <span class="edit-table-row" @click="openModal(scope.row)"/>
-          <span class="edit-table-page" @click="openPage(scope.row)">🡽</span>
+          <span class="edit-table-page" @click="openPage(scope.row)">➤</span>
           <span class="red-text"
                 :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </span><br/>
           {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>

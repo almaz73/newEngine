@@ -149,6 +149,11 @@ a:hover {
     gap: 10px 50px;
     flex-wrap: wrap;
     margin: 12px 0;
+    column-gap: 22px;
+}
+
+.admin-filter-field .el-select {
+    width: 220px;
 }
 
 .nowrap {

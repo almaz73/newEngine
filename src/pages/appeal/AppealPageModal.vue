@@ -48,7 +48,6 @@ const closeModal = () => {
 }
 
 const save = () => {
-  console.log('save')
   cb()
   closeModal()
 }

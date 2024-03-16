@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="admin-filter-field" style="column-gap: 22px">
+    <div class="admin-filter-field">
       <el-input v-model="search"
                 :prefix-icon="Search"
                 placeholder="Поиск"

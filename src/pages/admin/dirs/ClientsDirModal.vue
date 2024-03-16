@@ -305,7 +305,8 @@ function open(row, cbModal) {
 
   adminStore.getDepartments().then(res => departments.value = res.items)
   adminStore.getBanks().then(res => banks.value = res.result)
-  adminStore.getClientDocunets(row.person.id).then(res => clientDocuments.value = res.items)
+  adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
+      .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 }
 

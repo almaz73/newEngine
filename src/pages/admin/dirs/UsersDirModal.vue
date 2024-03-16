@@ -12,7 +12,7 @@
       <div class="modal-fields">
         <el-form ref="form" :model="user" @change="isDirty=true">
           <div class="photo-place">
-             <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
+            <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
           </div>
           <el-input
               readonly
@@ -30,10 +30,10 @@
           <el-input placeholder="Email"
                     @change="emailValidate(user.person.email)"
                     title="Email" v-model="user.person.email"/>
-          <el-input placeholder="Телефон" title="Телефон"
+          <el-input placeholder="Телефон" title="Телефон" clearable
                     :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone=val)"
                     v-model="user.person.phone"/>
-          <el-input placeholder="Доп.телефон" title="Доп.телефон"
+          <el-input placeholder="Доп.телефон" title="Доп.телефон" clearable
                     :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone2=val)"
                     v-model="user.person.phone2"/>
 
@@ -46,7 +46,7 @@
                 v-model="user.organization.id"
                 filterable
                 clearable>
-                <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in organizations" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </div>
 
@@ -57,19 +57,21 @@
                 v-model="user.department.id"
                 filterable
                 clearable>
-                <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </div>
 
           <div class="line">
             <label>Место хранения/выкупа</label>
             <el-select
+                v-if="locationsChosen.length"
                 placeholder="Введите место хранения/выкупа *"
                 v-model="user.location.id"
                 filterable
                 clearable>
-                <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
+              <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
+            <small v-else style="padding: 6px 0 "><i> Не найдено</i></small>
           </div>
 
           <div class="line">
@@ -80,18 +82,18 @@
                 v-model="user.timeZone"
                 filterable
                 clearable>
-                <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
+              <el-option v-for="item in timeZones" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </div>
 
-          <div class="line">
+          <div class="line" v-if="permit()">
             <label>Должность</label>
             <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position"
                       v-model="user.position"/>
           </div>
           <hr>
 
-          <div class="line">
+          <div class="line" v-if="permit()">
             <label>Категория</label>
             <el-select
                 placeholder="Введите категорию"
@@ -99,18 +101,18 @@
                 @change="roleChanged()"
                 filterable
                 clearable>
-                <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
+              <el-option v-for="item in userRoleGroups" :key="item.value" :label="item.title" :value="item.value"/>
             </el-select>
           </div>
 
-          <div class="line">
+          <div class="line" v-if="permit()">
             <label>Роль</label>
             <el-select
                 placeholder="Введите роль"
                 v-model="user.role.value"
                 filterable
                 clearable>
-                <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
+              <el-option v-for="item in userRoles" :key="item.value" :label="item.title" :value="item.value"/>
             </el-select>
           </div>
         </el-form>
@@ -118,8 +120,9 @@
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отменить</el-button>
           <el-button type="info"
-                     v-if="title === 'Редактирование пользователя'"
-                     @click="showHistory()" title="История изменений">⟲</el-button>
+                     v-if="title === 'Редактирование пользователя' && permit()"
+                     @click="showHistory()" title="История изменений">⟲
+          </el-button>
         </div>
       </div>
     </el-scrollbar>
@@ -135,7 +138,7 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import {decryptPassword, emailValidate, formattingPhone, permit} from "@/utils/globalFunctions";
 import UploadPhoto from "@/components/UploadPhoto.vue";
 
 const isMyKey = ref(null)
@@ -181,7 +184,7 @@ globalStore.getOrganizations().then(res => organizations.value = res.items)
 adminStore.getDepartments().then(res => departments.value = res.items)
 adminStore.getTimeZones().then(res => timeZones.value = res.items)
 adminStore.getUserRoles().then(res => {
-  userRoleGroups.value = res.items.map(el => el.group)
+  userRoleGroups.value = res.items && res.items.map(el => el.group)
   userGroupRolesMemory.value = res.items
 })
 
@@ -192,6 +195,7 @@ function roleChanged() {
 
 
 function findGroup() {
+  if (!userGroupRolesMemory.value) return false
   let elem = userGroupRolesMemory.value.find(el => el.roles.find(item => item.value === user.value.role.value))
   user.value.roleCategory = elem && elem.group.value;
   roleChanged()
@@ -245,13 +249,13 @@ function checking() {
   if (!user.value.person.firstName) {
     return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
   }
-  if (!user.value.department.id) {
+  if (!user.value.department.id && permit()) {
     return ElMessage({message: 'Поле "Отдел" обязателен для заполнения', type: 'warning'})
   }
-  if (!user.value.location.id) {
+  if (!user.value.location.id && permit()) {
     return ElMessage({message: 'Поле "Место хранение/выкупа" обязателен для заполнения', type: 'warning'})
   }
-  if (!user.value.position) {
+  if (!user.value.position && permit()) {
     return ElMessage({message: 'Поле "Должность" обязателен для заполнения', type: 'warning'})
   }
 }
@@ -266,7 +270,7 @@ function save() {
   adminStore.saveUser(user.value).then(() => {
     ElMessage({message: 'Успешно', type: 'success'})
     isOpen.value = false
-    cb()
+    cb && cb()
   })
 }
 

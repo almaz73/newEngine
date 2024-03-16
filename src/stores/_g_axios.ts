@@ -19,6 +19,10 @@ axios.interceptors.response.use(resp => resp
             navigator.onLine && router.push('login')
         }
 
+        if (err.code === "ERR_BAD_REQUEST") {
+            return ElMessage({message: err.response.data.errorText, type: 'error',})
+        }
+
         if (err.request.status === 500) {
             ElMessage({message: 'Ошибка 500. Внутрення ошибка сервера', type: 'warning',})
         }

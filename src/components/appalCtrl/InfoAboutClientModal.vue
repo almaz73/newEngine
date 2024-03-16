@@ -4,7 +4,7 @@
             :width="globalStore.isMobileView? 330: 600"
             :top="73"
             :subtitle="appeal.person.lastName + ' '+appeal.person.firstName
-            + ' ' +appeal.person.middleName + ' ( '+appeal.person.phone+' ) ' "
+            + ' ' +appeal.person.middleName"
             :title="'Подробно о клиенте'"
             draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'" v-if="appeal">
@@ -19,7 +19,7 @@
           </div>
 
           <p>Контакты</p>
-          <div><span class="label l_200">Телефон:</span> {{ appeal.person.phone }}</div>
+          <div><span class="label l_200">Телефон:</span> {{ formattingPhone(appeal.person.phone) }}</div>
           <div><span class="label l_200">
         Адрес регистрации:</span> {{ appeal.person.registrationAddress.fiasAddress && appeal.person.registrationAddress.fiasAddress.value }}
           </div>
@@ -54,7 +54,7 @@ import AppModal from "@/components/AppModal.vue";
 import {ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, formattingPhone} from "@/utils/globalFunctions";
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()

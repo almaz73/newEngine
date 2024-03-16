@@ -1,7 +1,7 @@
 <template>
   <el-tabs v-model="activeName" @tab-change="tabChange" style="padding-right: 8px">
     <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
-      <el-scrollbar maxHeight="220px">
+      <el-scrollbar maxHeight="300px">
         <el-button :icon="Plus" @click="openModalEvent()" style="margin: 0 8px">Создать событие</el-button>
 
         <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
@@ -74,7 +74,8 @@
       <img style="width:500px; padding-left: calc(50% - 250px)" :src="carPhoto" alt=""/>
     </el-tab-pane>
   </el-tabs>
-  <SendEventModal ref="sendEventModal"/>
+  <SendEventModal ref="sendModal"/>
+
   <SendSmsModal ref="sendSmsModal"/>
 </template>
 <script setup>
@@ -100,7 +101,7 @@ const events = ref([])
 const countEvents = ref(0)
 const comments = ref([])
 const countComments = ref(0)
-const sendEventModal = ref(null)
+const sendModal = ref(null)
 const sendSmsModal = ref(null)
 const appeal = ref(null)
 const commentTxt = ref('')
@@ -152,7 +153,7 @@ function sendComment() {
 }
 
 function openModalEvent() {
-  sendEventModal.value.open(appeal.value, getEvents, events.value[0])
+  sendModal.value.open(appeal.value, getEvents, events.value[0])
   getEvents(appeal.value.id, 'noCach')
 }
 

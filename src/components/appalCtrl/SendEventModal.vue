@@ -6,8 +6,9 @@
             :title="'Создать событие: '+title"
             draggable>
     <small>
-      <span class="label-red label-right">Результат встречи:</span>
+      <label class="label-red label-right" style="width: 200px">Результат встречи:</label>
       <el-select
+          style="width: 220px"
           placeholder="Выберите значение"
           v-model="event.closeType">
         <el-option v-for="item in closeEnums" :key="item.id" :label="item.name" :value="item.id"/>
@@ -27,19 +28,19 @@
 
     <small>
 
-      <span class="label-red label-right">Ответственный:</span>
+      <label class="label-red label-right" style="width: 200px">Ответственный:</label>
       {{ event.userResponsibleTitle }}
     </small><br>
 
     <small>
-      <span class="label-red label-right">Описание:</span>
+      <label class="label-red label-right" style="width: 200px">Описание:</label>
       <el-input type="textarea" name="description" v-model="event.description" style="width: 213px"
                 rows="2"
       ></el-input>
     </small>
 
     <small>
-      <span class="label-red label-right">Дата:</span>
+      <label class="label-red label-right" style="width: 200px">Дата:</label>
 
       <el-date-picker
           v-model="eventselectedDateTime"
@@ -256,7 +257,7 @@ function EventCloseTypeChange() {
       }
 
       event.value.dateStart = formatDateDDMMYYYY(dateStart)
-      event.value.timeStart = dateStart.toLocaleTimeString()
+      event.value.timeStart = dateStart && dateStart.toLocaleTimeString()
       event.value.dateEnd = formatDateDDMMYYYY(dateStart)
       event.value.timeEnd = dateStart.toLocaleTimeString()
 

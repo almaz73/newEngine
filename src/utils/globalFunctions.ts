@@ -2,12 +2,12 @@ import {ElMessage} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {leftPanelPermissions} from "@/utils/globalConstants";
 
-let role=''
+let role = ''
 
 export function permit(menu) {
     role = role || useGlobalStore().account.role
     if (role === 'Admin') return true
-    return leftPanelPermissions[menu] && leftPanelPermissions[menu].includes(role)
+    return menu && leftPanelPermissions[menu] && leftPanelPermissions[menu].includes(role)
 }
 
 export const formatDate = (val: string) => {
@@ -158,6 +158,8 @@ export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
 }
 
 export const formattingPhone = function (val: string, fn: any) {
+    if (!val) return false
+
     let txt = val.replace(/\D/g, ''),
         res = "";
 
@@ -174,7 +176,7 @@ export const formattingPhone = function (val: string, fn: any) {
     } else {
         res = '+' + txt.substring(0, 11);
     }
-    fn(res)
+    fn && fn(res)
     return res
 }
 
