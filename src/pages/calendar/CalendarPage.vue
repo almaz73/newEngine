@@ -1,13 +1,15 @@
 <template>
   <main class="calendar">
-    <label> Отображать завершенные события
-      <el-checkbox @change="changeDate()" v-model="showExpired"/>
-    </label>
-    <br>
-    <label> Отображать встречи колл-центра
-      <el-checkbox @change="changeDate()" v-model="showVisitEvents"
-      />
-    </label>
+    <div style="margin-bottom: 10px">
+      <label><small> Отображать завершенные события </small>&nbsp;
+        <el-checkbox @change="changeDate()" v-model="showExpired"/>
+      </label> &nbsp; &nbsp; &nbsp; &nbsp;
+      <label><small> Отображать встречи колл-центра</small> &nbsp;
+        <el-checkbox @change="changeDate()" v-model="showVisitEvents"
+        />
+      </label>
+    </div>
+
     <el-calendar ref="calendar" v-model="changedDate" @click="changeDate()">
       <template #header="{ date }">
         <span>Календарь</span>
@@ -39,10 +41,9 @@
 
 <style>
 .calendar .el-calendar-day {
-  min-height: 100px;
+  min-height: 80px;
   height: auto !important;
   float: left;
-
 }
 
 .calendar .date_cell {
@@ -101,7 +102,7 @@ function getEvents(year, month) {
           console.log(' = = el=', el.appealType)
 
           let klass = 'block'
-          if (el.appealType==4) klass += ' grey'
+          if (el.appealType == 4) klass += ' grey'
           if (!days.value[zzz]) days.value[zzz] = ''
 
 

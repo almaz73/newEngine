@@ -197,12 +197,24 @@ a:hover {
     width: 200px;
 }
 
+
+
 .label-right {
     width: 100px;
     text-align: right;
     margin-right: 12px;
     display: inline-block;
     color: var(--main-color);
+}
+
+.label-right.l_150 {
+    width: 170px;
+}
+
+@media (width < 500px) {
+    .label-right.l_150 {
+        width: 100px;
+    }
 }
 
 .modal-fields hr {

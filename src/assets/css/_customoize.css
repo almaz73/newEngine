@@ -22,6 +22,8 @@
     background-color: black !important;
 }
 
+
+
 [role="menubar"].el-menu {
     padding: 75px 0;
 }
@@ -99,6 +101,9 @@ li.el-menu-item {
 @media (width < 500px) {
     .el-pagination__sizes {
         display: none;
+    }
+    .el-menu{
+        border-bottom: solid 1px #bbb;
     }
 }
 

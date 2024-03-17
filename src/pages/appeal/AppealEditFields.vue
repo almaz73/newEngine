@@ -1,12 +1,10 @@
 <template>
-  <div style="display: flex; align-items: center">
-    <div style="width: 50%">
+  <div style="display: flex; align-items: center; flex-wrap: wrap">
+    <div style="width: 50%; white-space: nowrap">
       <small class="label-right">Статус</small>
-
       <el-dropdown style="margin-bottom: 4px">
         <el-button type="primary">
           {{ appeal.statusTitle }}
-
         </el-button>
         <template #dropdown>
           <el-dropdown-menu>
@@ -53,7 +51,7 @@
 
   <small style="display: flex; flex-wrap: wrap; gap: 8px">
     <span class="nowrap">
-      <span class="label-red ">Место выкупа:</span> {{ appeal.locationName }}
+      <span class="label-red ">Место выкупа:</span> {{ appeal.locationName }} ({{ appeal.city }})
     </span>
     <span class="nowrap">
       <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
@@ -117,25 +115,17 @@
       </el-collapse-item>
       <el-collapse-item :title="'&nbsp; Автомобиль: &nbsp; '+appeal.carBrandModel" name="2">
         <div style="padding: 0 30px">
-          <span v-if="appeal.brand"><span class="label">Бренд:</span>  {{ appeal.brand }}
-                 &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                             @click="()=>{}"
-                             style="cursor: pointer">
-                <br>
-              </span>
-          <span v-if="appeal.carModel"><span class="label"> Модель:</span>   {{ appeal.carModel }}<br></span>
+          <span v-if="appeal.carModel"><span class="label">
+            Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
+            <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                 @click="editCar()"
+                 style="cursor: pointer">
+          <br></span>
 
-          <span v-if="appeal.auto && appeal.auto.bodyColorName">
-            <span class="label"> Цвет: </span>{{ appeal.auto.bodyColorName }}<br></span>
-          <span v-if="appeal.auto && appeal.auto.certificateNumber">
-            <span class="label"> Гос.номер: </span>{{ appeal.auto.certificateNumber }}<br></span>
-          <span v-if="appeal.auto && appeal.auto.vin">
-            <span class="label">  VIN номер: </span>{{ appeal.auto.vin }}<br></span>
-
-          <span v-if="appeal.yearReleased">
-            <span class="label">  Год: </span>{{ appeal.yearReleased }}<br></span>
-
-
+          <span class="label">  Год: </span>{{ appeal.yearReleased }}<br>
+          <span class="label">  Статус: </span>
+          {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
+          <br>
         </div>
       </el-collapse-item>
     </el-collapse>
@@ -145,18 +135,20 @@
 
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
-  <ClientsDirModal ref="ClientModal"/>
+  <ClientsDirModal ref="сlientModal"/>
+  <EditCarModal ref="carModal"/>
 </template>
 <script setup>
 
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
-import {AppealStatusTable, Workflows} from "@/utils/globalConstants";
+import {AppealStatusTable, Workflows, statuses} from "@/utils/globalConstants";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
+import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -172,7 +164,8 @@ const lastTaskAndResult = ref('')
 const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
-const ClientModal = ref(null)
+const сlientModal = ref(null)
+const carModal = ref(null)
 
 
 const clickDropDown = (val) => {
@@ -202,14 +195,16 @@ function toChangeManager(row) {
 }
 
 function openClient() {
-  ClientModal.value.open(appeal.value)
+  сlientModal.value.open(appeal.value)
+}
+
+function editCar() {
+  carModal.value.open(appeal.value)
 }
 
 function open(row) {
   if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
-
   isOpen.value = true;
-
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
     getEvents()

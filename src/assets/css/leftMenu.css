@@ -63,6 +63,10 @@
     z-index: 10;
 }
 
+.dark .left-menu-div {
+    background: #000000;
+}
+
 .content {
     position: relative;
     transition: width 0.3s ease-in-out;

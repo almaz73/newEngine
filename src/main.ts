@@ -15,13 +15,13 @@ import 'element-plus/dist/index.css'
 
 /*** Для работы без интернета, например Байеры смогут на телефоне создать обращение, сфоткать и загрузить фотки
 */
-setTimeout(() => {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-            .register('sw.js')
-            .then(() => console.log('SW started'))
-    }
-}, 3000)
+// setTimeout(() => {
+//     if ('serviceWorker' in navigator) {
+//         navigator.serviceWorker
+//             .register('sw.js')
+//             .then(() => console.log('SW started'))
+//     }
+// }, 3000)
 
 
 const app = createApp(App)
