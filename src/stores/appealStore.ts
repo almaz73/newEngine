@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
-import cach from "@/utils/globalCach";
+import cache from "@/utils/globalCach";
 
 const path = '/api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
@@ -18,10 +18,10 @@ export const useAppealStore = defineStore("appealStore", {
         },
         async getEvents(id: number, noCach: boolean) {
             // @ts-ignore
-            if (!noCach && cach['getEventsAppeal' + id]) return cach['getEventsAppeal' + id]
+            if (!noCach && cache['getEventsAppeal' + id]) return cache['getEventsAppeal' + id]
             const res = await axios.get('/api/event/get/items/appeal?id=' + id)
             // @ts-ignore
-            return (cach['getEventsAppeal' + id] = res.data)
+            return (cache['getEventsAppeal' + id] = res.data)
         },
         async getHistory(id: number) {
             const res = await axios.get(`/api/History/getHistory/${id}/20`)
@@ -39,15 +39,15 @@ export const useAppealStore = defineStore("appealStore", {
         },
         async getSMS(id: number, noCach: boolean) {
             // @ts-ignore
-            if (!noCach && cach['getSMS' + id]) return cach['getSMS' + id]
+            if (!noCach && cache['getSMS' + id]) return cache['getSMS' + id]
             const res = await axios.get(`/api/sms/getSMSItems/${id}`).then(q => q)
             // @ts-ignore
-            return (cach['getSMS' + id] = res.data)
+            return (cache['getSMS' + id] = res.data)
         },
         async getSmsTemplates() {
-            if (cach.getSmsTemplates) return cach.getSmsTemplates
+            if (cache.getSmsTemplates) return cache.getSmsTemplates
             const res = await axios.get('/api/sms/getTemplates').then(q => q)
-            return (cach.getSmsTemplates = res.data)
+            return (cache.getSmsTemplates = res.data)
         },
         async getComments(id: number) {
             const res = await axios.get(`/api/comment/20/${id}`)
@@ -66,9 +66,9 @@ export const useAppealStore = defineStore("appealStore", {
         },
         async getEvent(obj: any) {
             const name = obj.filter.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '').replaceAll(':', '').replaceAll(',', '')
-            if (cach[name]) return cach[name] // список статичный - кэшируем
+            if (cache[name]) return cache[name] // список статичный - кэшируем
             const res = await axios.get('/api/event/?filter=' + obj.filter).then(q => q)
-            return (cach[name] = res.data)
+            return (cache[name] = res.data)
         },
         async getLead(id: number) {
             const res = await axios.get(`/api/lead/${id}`).then(q => q)

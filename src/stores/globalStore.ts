@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
-import cach from '@/utils/globalCach'
+import cache from '@/utils/globalCach'
 
 export const useGlobalStore = defineStore('globalStore', {
     state: () => ({
@@ -42,69 +42,69 @@ export const useGlobalStore = defineStore('globalStore', {
             await axios.post(`/api/account/signout`).then(q => q)
         },
         async getBrands() {
-            if (cach.getBrands) return cach.getBrands // список статичный - кэшируем
+            if (cache.getBrands) return cache.getBrands // список статичный - кэшируем
             const res = await axios.get(`/api/auto/getBrands`).then(q => q)
-            return (cach.getBrands = res.data)
+            return (cache.getBrands = res.data)
         },
         async getModels(brandId: number) {
             // @ts-ignore
-            if (cach['getModels' + brandId]) return cach['getModels' + brandId] // список статичный - кэшируем
+            if (cache['getModels' + brandId]) return cache['getModels' + brandId] // список статичный - кэшируем
             const res = await axios.get(`/api/auto/getModels?brandId=${brandId}`).then(q => q)
             // @ts-ignore
-            return (cach['getModels' + brandId] = res.data)
+            return (cache['getModels' + brandId] = res.data)
         },
         async getPlaces() {
-            if (cach.getPlaces) return cach.getPlaces // список статичный - кэшируем
+            if (cache.getPlaces) return cache.getPlaces // список статичный - кэшируем
             const res = await axios.get(`/api/location/get/list`).then(q => q)
-            return (cach.getPlaces = res.data)
+            return (cache.getPlaces = res.data)
         },
         async getOrganizations() {
-            if (cach.getOrganizations) return cach.getOrganizations // список статичный - кэшируем
+            if (cache.getOrganizations) return cache.getOrganizations // список статичный - кэшируем
             const res = await axios.get(`/api/orgelement/get/organizations`).then(q => q)
-            return (cach.getOrganizations = res.data)
+            return (cache.getOrganizations = res.data)
         },
         async getTreatments() {
-            if (cach.getTreatments) return cach.getTreatments // список статичный - кэшируем
+            if (cache.getTreatments) return cache.getTreatments // список статичный - кэшируем
             const res = await axios.get(`/api/treatmentsource/get/list`).then(q => q)
-            return (cach.getTreatments = res.data)
+            return (cache.getTreatments = res.data)
         },
         async getRoles(roles: any) {
             // @ts-ignore
-            if (cach['getModels' + roles.join('-')]) return cach['getModels' + roles.join('-')] // список статичный - кэшируем
+            if (cache['getModels' + roles.join('-')]) return cache['getModels' + roles.join('-')] // список статичный - кэшируем
 
             const params = roles.reduce((acc: string, el: string) => (acc + 'roles=' + el + '&'), '?')
             const res = await axios.get(`/api/user/list/policy${params}`).then(q => q)
             // @ts-ignore
-            return (cach['getModels' + roles.join('-')] = res.data)
+            return (cache['getModels' + roles.join('-')] = res.data)
         },
         async getTeatments() {
-            if (cach.getTeatments) return cach.getTeatments // список статичный - кэшируем
+            if (cache.getTeatments) return cache.getTeatments // список статичный - кэшируем
             const res = await axios.get(`/api/treatmentsource/get/list`).then(q => q)
-            return (cach.getTeatments = res.data)
+            return (cache.getTeatments = res.data)
         },
         async getColors() {
             const res = await axios.get('/api/bodycolor/getbytype/10').then(res => res)
             return res.data
         },
         async getAppeals() {
-            if (cach.getAppeals) return cach.getAppeals // список статичный - кэшируем
+            if (cache.getAppeals) return cache.getAppeals // список статичный - кэшируем
             const res = await axios.get(`/api/appeals/get/types`).then(q => q)
-            return (cach.getAppeals = res.data)
+            return (cache.getAppeals = res.data)
         },
         async getUsers() {
-            if (cach.getUsers) return cach.getUsers // список статичный - кэшируем
+            if (cache.getUsers) return cache.getUsers // список статичный - кэшируем
             const res = await axios.get(`/api/appeals/get/filter/users`).then(q => q)
-            return (cach.getUsers = res.data)
+            return (cache.getUsers = res.data)
         },
         async getClientStatuses() {
-            if (cach.getClientStatuses) return cach.getClientStatuses // список статичный - кэшируем
+            if (cache.getClientStatuses) return cache.getClientStatuses // список статичный - кэшируем
             const res = await axios.get(`/api/lead/get/client/statuses`).then(q => q)
-            return (cach.getClientStatuses = res.data)
+            return (cache.getClientStatuses = res.data)
         },
         async getTreatmentSources() {
-            if (cach.getTreatmentSources) return cach.getTreatmentSources // список статичный - кэшируем
+            if (cache.getTreatmentSources) return cache.getTreatmentSources // список статичный - кэшируем
             const res = await axios.get(`/api/treatmentSource/getTreatmentSources`).then(q => q)
-            return (cach.getTreatmentSources = res.data)
+            return (cache.getTreatmentSources = res.data)
         },
     }
 })

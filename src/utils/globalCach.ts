@@ -1,4 +1,4 @@
-const cach = {
+const cache = {
     getBrands: null,
     getPlaces: null,
     getOrganizations: null,
@@ -23,4 +23,4 @@ const cach = {
     getBanks: null,
     getDocumentTypes: null
 }
-export default cach
+export default cache

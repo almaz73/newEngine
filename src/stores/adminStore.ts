@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
-import cach from "@/utils/globalCach";
+import cache from "@/utils/globalCach";
 
 export const useAdminStore = defineStore("adminStore", {
     state: () => ({
@@ -44,24 +44,24 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getDepartments() {
-            if (cach.getDepartments) return cach.getDepartments
+            if (cache.getDepartments) return cache.getDepartments
             const res = await axios.get('/api/user/get/departmens').then(q => q)
-            return (cach.getDepartments = res.data)
+            return (cache.getDepartments = res.data)
         },
         async getUserLocations() {
-            if (cach.getUserLocations) return cach.getUserLocations
+            if (cache.getUserLocations) return cache.getUserLocations
             const res = await axios.get('/api/user/get/locations').then(q => q)
-            return (cach.getUserLocations = res.data)
+            return (cache.getUserLocations = res.data)
         },
         async getTimeZones() {
-            if (cach.getTimeZones) return cach.getTimeZones
+            if (cache.getTimeZones) return cache.getTimeZones
             const res = await axios.get('/api/user/get/time-zones').then(res => res)
-            return (cach.getTimeZones = res.data)
+            return (cache.getTimeZones = res.data)
         },
         async getUserRoles() {
-            if (cach.getUserRoles) return cach.getUserRoles
+            if (cache.getUserRoles) return cache.getUserRoles
             const res = await axios.get('/api/user/get/roles').then(q => q)
-            return (cach.getUserRoles = res.data)
+            return (cache.getUserRoles = res.data)
         },
         async saveUser(obj: any) {
             const res = await axios.post(`/api/user/save`, obj).then(q => q)
@@ -79,9 +79,9 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getDocumentTypes() {
-            if (cach.getDocumentTypes) return cach.getDocumentTypes
+            if (cache.getDocumentTypes) return cache.getDocumentTypes
             const res = await axios.get('/api/client-documents/types').then(q => q)
-            return (cach.getDocumentTypes = res.data)
+            return (cache.getDocumentTypes = res.data)
         },
         async getClientDocunets(id: number) {
             const res = await axios.get(`/api/client-documents/get?personId=${id}`).then(q => q)
@@ -93,19 +93,19 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getAllOrganizations() {
-            if (cach.getAllOrganizations) return cach.getAllOrganizations
+            if (cache.getAllOrganizations) return cache.getAllOrganizations
             const res = await axios.get('/api/orgElement/0').then(q => q)
-            return (cach.getAllOrganizations = res.data)
+            return (cache.getAllOrganizations = res.data)
         },
         async getOrganization(id: number) {
-            if (cach.getOrganization) return cach.getOrganization
+            if (cache.getOrganization) return cache.getOrganization
             const res = await axios.get('/api/orgelement/get?id=' + id).then(q => q)
-            return (cach.getOrganization = res.data)
+            return (cache.getOrganization = res.data)
         },
         async getPolicy() {
-            if (cach.getPolicy) return cach.getPolicy
+            if (cache.getPolicy) return cache.getPolicy
             const res = await axios.get('/api/policy/getPolicyList').then(q => q)
-            return (cach.getPolicy = res.data)
+            return (cache.getPolicy = res.data)
         },
         async getInspection(id: number | null) {
             let url = '/api/inspectionitemtype'
@@ -122,14 +122,14 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getDomage() {
-            if (cach.getDomage) return cach.getDomage
+            if (cache.getDomage) return cache.getDomage
             const res = await axios.get('/api/damageitem').then(q => q)
-            return (cach.getDomage = res.data)
+            return (cache.getDomage = res.data)
         },
         async getBanks() {
-            if (cach.getBanks) return cach.getBanks
+            if (cache.getBanks) return cache.getBanks
             const res = await axios.get('/api/bank/get/list').then(q => q)
-            return (cach.getBanks = res.data)
+            return (cache.getBanks = res.data)
         },
         async getBankFilials(id: number | null) {
             const res = await axios.get(`/api/bankitem/get/list?bankId=${id}`).then(q => q)
