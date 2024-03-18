@@ -13,13 +13,13 @@
       <span class="modal-fields">
         <span>
 
-      <br>
-      </span>
+        <br>
+        </span>
 
-      <div style="text-align: right">
-        <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-        <el-button type="info" @click="closeModal()">Отменить</el-button>
-      </div>
+        <div style="text-align: right">
+          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+          <el-button type="info" @click="closeModal()">Отмена</el-button>
+        </div>
       </span>
     </el-scrollbar>
   </AppModal>

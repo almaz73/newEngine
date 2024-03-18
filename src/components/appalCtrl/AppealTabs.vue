@@ -2,7 +2,10 @@
   <el-tabs v-model="activeName" @tab-change="tabChange" style="padding-right: 8px">
     <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
       <el-scrollbar maxHeight="300px">
-        <el-button :icon="Plus" @click="openModalEvent()" style="margin: 0 8px">Создать событие</el-button>
+        <el-button :icon="Plus" @click="openModalEvent()"
+                   type="success" style="margin: 0 8px">
+          Создать событие
+        </el-button>
 
         <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
@@ -28,7 +31,8 @@
       <el-scrollbar maxHeight="220px">
         <el-button @click="openModalSms()" :icon="Plus" style="margin: 0 8px">Отправить СМС-сообщение клиенту
         </el-button>
-        <el-button @click="printDocSms()"> ✍ Скачать "Согласие на обработку персональных данных и получения смс"</el-button>
+        <el-button @click="printDocSms()"> ✍ Скачать "Согласие на обработку персональных данных и получения смс"
+        </el-button>
         <div v-for="sms in listSMS" :key="sms.id" class="collapse-blocks sms">
           <span class="label-red label-right">Текст:</span> {{ sms.smsText }}<br>
           <span class="label-red label-right">Дата:</span> {{ formatDMY_hm(sms.sendDate) }}<br>

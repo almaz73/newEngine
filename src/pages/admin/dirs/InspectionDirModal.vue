@@ -44,10 +44,10 @@
           <el-checkbox label="Толщина ЛКП" v-model="insp.isPaintworkAvailable"/>
           <el-checkbox label="Блокировка выгрузки в 1С" v-model="insp.exportBlock"/>
         </span>
-      <div style="text-align: right">
-        <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-        <el-button type="info" @click="isOpen = false">Отменить</el-button>
-      </div>
+        <div style="text-align: right">
+          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+          <el-button type="info" @click="isOpen = false">Отмена</el-button>
+        </div>
       </span>
     </el-scrollbar>
   </AppModal>

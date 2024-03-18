@@ -1,14 +1,14 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 600"
+            :width="globalStore.isMobileView? 350: 600"
             :top="73"
             :title="'Создать событие: '+title"
             draggable>
     <small>
-      <label class="label-red label-right" style="width: 200px">Результат встречи:</label>
+      <label class="label-right l_150">Результат встречи:</label>
       <el-select
-          style="width: 220px"
+          style="width: 210px"
           placeholder="Выберите значение"
           v-model="event.closeType">
         <el-option v-for="item in closeEnums" :key="item.id" :label="item.name" :value="item.id"/>
@@ -28,29 +28,22 @@
 
     <small>
 
-      <label class="label-red label-right" style="width: 200px">Ответственный:</label>
+      <label class="label-right l_150">Ответственный:</label>
       {{ event.userResponsibleTitle }}
     </small><br>
 
     <small>
-      <label class="label-red label-right" style="width: 200px">Описание:</label>
-      <el-input type="textarea" name="description" v-model="event.description" style="width: 213px"
+      <label class="label-right l_150">Описание:</label>
+      <el-input type="textarea" name="description" v-model="event.description"
+                :style="{width:globalStore.isMobileView?'213px':'395px'}"
                 rows="2"
       ></el-input>
-    </small>
+    </small><br>
 
     <small>
-      <label class="label-red label-right" style="width: 200px">Дата:</label>
+      <label class="label-right l_150">Дата:</label>
 
-      <el-date-picker
-          v-model="eventselectedDateTime"
-          type="datetime"
-          @change="checkDate()"
-          placeholder="Выберите время"
-          format="DD.MM.YYYY HH:mm"
-          date-format="DD.MM.YYYY"
-          time-format="HH:mm"
-      />
+      <el-button @click="openHourly()">Календарь</el-button>
 
       <div>
         <label style="cursor: pointer" @click="checkResponsible()">
@@ -60,9 +53,10 @@
     </small>
     <div style="text-align: right">
       <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-      <el-button type="info" @click="isOpen = false">Отменить</el-button>
+      <el-button type="info" @click="isOpen = false">Отмена</el-button>
     </div>
   </AppModal>
+  <HourlyCalendarModal ref="hourlyModal"/>
 </template>
 
 <style>
@@ -78,6 +72,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
 import {EventType} from "@/utils/globalConstants";
+import HourlyCalendarModal from "@/components/calendar/HourlyCalendarModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -90,6 +85,8 @@ const closeEnums = ref([])
 const commentLabel = ref(null)
 const EventTypes = ref([]); // кнокп с рисунками
 const eventselectedDateTime = ref(null)
+const hourlyModal = ref(null)
+
 const title = computed(() => {
   let elem = event.value.type && EventTypes.value.find(el => el.id === event.value.type)
   return elem ? elem.value : ''
@@ -222,6 +219,14 @@ function getSelects() {
 
 }
 
+function openHourly() {
+  hourlyModal.value.open(event.value, backFromHourly)
+}
+
+function backFromHourly() {
+  console.log('back From Hourly')
+}
+
 
 function changeEventType(key) {
   eventselectedDateTime.value = null;
@@ -331,10 +336,7 @@ function open(row, cbModal, lastTask) {
   isOpen.value = true
   event.value.userResponsibleTitle = appeal.value.managerName
   event.value.userResponsibleId = appeal.value.managerId
-  console.log('?appeal.value', appeal.value)
   getSelects()
-
-
 }
 
 function getDateTime(myDate, time) {

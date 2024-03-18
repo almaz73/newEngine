@@ -44,7 +44,7 @@
         </span>
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-        <el-button type="info" @click="isOpen = false">Отменить</el-button>
+        <el-button type="info" @click="isOpen = false">Отмена</el-button>
       </div>
       </span>
     </el-scrollbar>

@@ -209,7 +209,7 @@
         </el-form>
         <div style="text-align: right; margin-top: 12px">
           <el-button type="danger" @click="save()">Сохранить</el-button>
-          <el-button type="info" @click="isOpen = false">Отменить</el-button>
+          <el-button type="info" @click="isOpen = false">Отмена</el-button>
           <el-button type="info" @click="showHistory()" title="История изменений">⟲</el-button>
         </div>
       </div>

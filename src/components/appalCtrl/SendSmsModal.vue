@@ -44,7 +44,7 @@
     </el-scrollbar>
     <div style="text-align: right">
       <el-button type="danger" :disabled='!isReady' @click="sendSMS()" :icon="Plus">Отправить СМС</el-button>
-      <el-button type="info" @click="clear()">Отменить</el-button>
+      <el-button type="info" @click="clear()">Отмена</el-button>
     </div>
   </AppModal>
 </template>
