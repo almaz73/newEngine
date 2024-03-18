@@ -1,6 +1,6 @@
 <template>
   <div class="deal-filters">
-    <a @click="isMoreFilter=!isMoreFilter">Дополнительный фильтер </a>
+    <el-button type="text" @click="isMoreFilter=!isMoreFilter">Дополнительный фильтр ... </el-button>
     <!--    Скрытая часть-->
     <div class="more-filter" :class="{open:isMoreFilter}">
       <div style="min-height: 0; overflow: hidden">

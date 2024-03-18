@@ -32,8 +32,9 @@
       </template>
       <template #date-cell="{ data }">
         <small class="date_cell">{{ parseInt(data.day.split('-')[2]) }}</small><br>
-
-        <div style="float: right" v-html="days[data.day]"/>
+        <div v-for="appeal in days[data.day]" :key="appeal.id"
+             @click.stop="openAppeal(appeal.id)"
+             v-html="appeal.html"/>
       </template>
     </el-calendar>
   </main>
@@ -64,18 +65,19 @@
 </style>
 
 <script setup lang="ts">
-import {ref, onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useCalendarStore} from "@/stores/calendarStore";
 import type {CalendarDateType, CalendarInstance} from 'element-plus'
+import router from "@/router";
 
 const globalStore = useGlobalStore()
 const calendarStore = useCalendarStore()
 const tableData = ref([])
 const changedDate = ref(new Date())
 const calendar = ref<CalendarInstance>()
-const showExpired = ref(false)
-const showVisitEvents = ref(false)
+const showExpired = ref(true)
+const showVisitEvents = ref(true)
 const days = ref({})
 const selectDate = (val: CalendarDateType) => {
   if (!calendar.value) return
@@ -85,49 +87,35 @@ const selectDate = (val: CalendarDateType) => {
 getEvents(new Date().getFullYear(), new Date().getMonth())
 
 function changeDate() {
-  console.log('leadWorkflowId = = = changedDate=', changedDate.value)
   getEvents(changedDate.value.getFullYear(), changedDate.value.getMonth())
 }
 
-function getEvents(year, month) {
-  console.log('year, month', year, month)
-  days.value = {}
+function openAppeal(id: number) {
+  router.push({path: '/appeal/' + id})
+}
+
+function getEvents(year: number, month: number) {
+  days.value = []
 
   calendarStore.getEvents(year, month, showExpired.value, showVisitEvents.value)
       .then(res => {
-        console.log('res', res)
         tableData.value = res.items
         tableData.value.forEach(el => {
-          let zzz = new Date(el.dateStart).toLocaleDateString().split('.').reverse().join('-')
-          console.log(' = = el=', el.appealType)
-
+          let day = new Date(el.dateStart).toLocaleDateString().split('.').reverse().join('-')
           let klass = 'block'
           if (el.appealType == 4) klass += ' grey'
-          if (!days.value[zzz]) days.value[zzz] = ''
+          if (!days.value[day]) days.value[day] = []
 
-
-          days.value[zzz] += `<div class="${klass}">
-              ${el.appealTypeTitle.toUpperCase()}
-              <br> №  ${el.leadWorkflowId}
+          days.value[day].push({
+            html: `<div class="${klass}">
+              ${el.appealTypeTitle.toUpperCase()}  №  ${el.leadWorkflowId}
               <br> ${el.leadFirstName}
-              <br> ☎: ${el.leadPhone}
-              <br> 🏠: ${el.appealCity}
-              </div>`
+              <br> ☎: ${el.leadPhone}  🏠: ${el.appealCity}
+              </div>`, id: el.leadWorkflowId
+          })
         })
-
-        console.log('days', days)
       })
 }
-
-// function getFiled(day) {
-//   console.log('day', day)
-//   if(new Date().toLocaleDateString() === new Date(day).toLocaleDateString()) return '+++'
-//   console.log('tableData.value', tableData.value)
-//
-//
-//
-//   return '999'
-// }
 
 onMounted(() => {
   globalStore.setTitle('Календарь')
