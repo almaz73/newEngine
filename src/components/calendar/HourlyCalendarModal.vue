@@ -3,9 +3,18 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 330: 500"
             :top="5"
-            :title="'Почасовой календарь'"
+            :title="'События : '+days[currentTime.getDay()]"
             draggable>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px">
+      <el-button @click="changeDate(-1)"> < </el-button>
+      {{ formatDate(currentTime) }}
+      <el-button @click="changeDate(1)"> ></el-button>
+
+      <el-date-picker class="narrow-date" v-model="currentTime" @change="changeDate()" :clearable="false"/>
+    </div>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'460px':'680px'">
+
+
       <el-table
           size="small"
           :data="tableData"
@@ -26,25 +35,28 @@
   </AppModal>
 </template>
 
-
 <script setup>
 import AppModal from "@/components/AppModal.vue";
-import {ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ElMessage, ElTable} from "element-plus";
+import {useAppealStore} from "@/stores/appealStore";
+import {formatDate} from "@/utils/globalFunctions";
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
 const tableData = ref([])
+const currentTime = ref(new Date())
+const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 let selectedTime = null
 let cb;
+let userId;
 
 
 function init() {
-  let currentTime = new Date()
-  let minuteStart = parseInt(currentTime.getMinutes() / 15)
-  let startPeriod = currentTime
+  let minuteStart = parseInt(currentTime.value.getMinutes() / 15)
+  let startPeriod = currentTime.value
   startPeriod.setMinutes((minuteStart + 1) * 15)
   startPeriod.setSeconds(0)
 
@@ -61,6 +73,26 @@ function init() {
     })
 
   }
+}
+
+function changeDate(val) {
+  if (val) {
+    currentTime.value.setDate(currentTime.value.getDate() + val)
+    currentTime.value = new Date(currentTime.value)
+  }
+
+  const instance = getCurrentInstance();
+  instance?.proxy?.$forceUpdate();
+
+  let filter = {
+    month: currentTime.value.getMonth() + 1,
+    year: currentTime.value.getFullYear(),
+    assignedTo: userId
+  }
+
+  useAppealStore().getEvent({filter: JSON.stringify(filter)}).then(res => {
+    console.log(' = = res', res)
+  })
 }
 
 function setEvent(value) {
@@ -81,10 +113,11 @@ function save() {
 }
 
 function open(row, cbModal) {
-  console.log('row', row)
   cb = cbModal
   isOpen.value = true
   init()
+  userId = row.userResponsibleId
+  changeDate()
 }
 
 defineExpose({open});

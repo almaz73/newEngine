@@ -64,6 +64,12 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.post('/api/event', obj).then(q => q)
             return res.data
         },
+        async getEvent(obj: any) {
+            const name = obj.filter.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '').replaceAll(':', '').replaceAll(',', '')
+            if (cach[name]) return cach[name] // список статичный - кэшируем
+            const res = await axios.get('/api/event/?filter=' + obj.filter).then(q => q)
+            return (cach[name] = res.data)
+        },
         async getLead(id: number) {
             const res = await axios.get(`/api/lead/${id}`).then(q => q)
             return res.data

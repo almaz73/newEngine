@@ -166,3 +166,14 @@ li.el-menu-item {
 .el-select-group .el-select-dropdown__item {
     margin-left: 30px;
 }
+
+.narrow-date {
+    max-width: 40px;
+}
+
+.narrow-date .el-input__wrapper{
+    width: 0;
+    font-size: 24px;
+    cursor: pointer;
+    padding-right: 4px;
+}
