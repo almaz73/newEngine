@@ -2,12 +2,12 @@
   <AppModal v-if="isOpen"
             :subtitle="subtitle"
             :title="'Обращение '+appealStore.currentRow.id+'. '+appealStore.currentRow.appealTitle"
-            :top="40"
+            :top="0"
             :width="globalStore.isMobileView? 330: 1100"
             draggable
             resizable
             @closeModal="closeModal()">
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
+    <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'730px'">
       <AppealEditFields ref="appealFields"/>
 
       <span class="modal-fields">

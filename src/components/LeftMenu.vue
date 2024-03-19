@@ -177,7 +177,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/reports" v-if="permit('reports')">
         <el-menu-item index="15">
           <el-icon>
             <img alt="отчеты" src="@/assets/icons/icon-reports.png" height="34" width="34"/>

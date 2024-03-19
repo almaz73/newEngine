@@ -284,6 +284,10 @@ export const leftPanelPermissions ={
     calls: [
         'Admin'
     ],
+    reports: [
+        'Admin',
+        'CallManager'
+    ],
     admin: [
         'Admin',
         'GenManager'

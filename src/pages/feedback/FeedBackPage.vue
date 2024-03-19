@@ -61,7 +61,9 @@
 
 <style>
 .feedback {
-  padding: 8px;
+padding: 0;
+margin: 30px  130px;
+  z-index: -1;
 }
 
 .feedback .textarea {
@@ -170,7 +172,7 @@ function openModal(row) {
 }
 
 onMounted(() => {
-  globalStore.setTitle('Форма обратной связи')
+  globalStore.setTitle('Страница обратной связи')
 })
 
 </script>

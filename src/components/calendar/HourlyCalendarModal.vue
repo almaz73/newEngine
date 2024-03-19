@@ -6,9 +6,9 @@
             :title="'События : '+days[currentTime.getDay()]"
             draggable>
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px">
-      <el-button @click="changeDate(-1)"> < </el-button>
+      <el-button @click="changeDate(-1)"> ⊲ </el-button>
       {{ formatDate(currentTime) }}
-      <el-button @click="changeDate(1)"> ></el-button>
+      <el-button @click="changeDate(1)"> ⊳ </el-button>
 
       <el-date-picker class="narrow-date" v-model="currentTime" @change="changeDate()" :clearable="false"/>
     </div>
@@ -68,7 +68,7 @@ function init() {
   for (let time = startPeriod; time < endPeriod; time.setMinutes(time.getMinutes() + 15)) {
     tableData.value.push({
       time: startPeriod,
-      timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' ⌚ ' : ''),
+      timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' 🕗 ' : ''),
       event: ''
     })
 

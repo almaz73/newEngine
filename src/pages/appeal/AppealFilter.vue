@@ -2,7 +2,7 @@
   <div class="deal-filters">
     <FilterFieldsCtrl @changed="changed" :lists="lists" :vModel="vModel" :fields="fields"/>
 
-    <el-button type="text" @click="isMoreFilter=!isMoreFilter">Дополнительный фильтр ... </el-button>
+    <el-button link @click="isMoreFilter=!isMoreFilter">Дополнительный фильтр ... </el-button>
     <!--    Скрытая часть-->
     <div class="more-filter" :class="{open:isMoreFilter}">
       <div style="min-height: 0; overflow: hidden">

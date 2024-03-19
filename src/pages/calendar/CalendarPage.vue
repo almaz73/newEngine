@@ -1,10 +1,10 @@
 <template>
   <main class="calendar">
     <div style="margin-bottom: 10px">
-      <label><small> Отображать завершенные события </small>&nbsp;
+      <label><small style="cursor: pointer"> Отображать завершенные события </small>&nbsp;
         <el-checkbox @change="changeDate()" v-model="showExpired"/>
       </label> &nbsp; &nbsp; &nbsp; &nbsp;
-      <label><small> Отображать встречи колл-центра</small> &nbsp;
+      <label><small style="cursor: pointer"> Отображать встречи колл-центра</small> &nbsp;
         <el-checkbox @change="changeDate()" v-model="showVisitEvents"
         />
       </label>

@@ -45,7 +45,7 @@
         <el-option v-for="item in lists[f.listName]" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
     </div>
-    <div v-if="f.type==='4. Зависимые списки'">
+    <div v-if="f.type==='4. Зависимые списки'"  style="max-width: 673px">
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
         <el-select
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div v-if="f.type==='5. Две даты (годы)'">
+    <div v-if="f.type==='5. Две даты (годы)'" style="max-width: 673px">
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">
         от
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <div v-if="f.type==='6. Два списка'">
+    <div v-if="f.type==='6. Два списка'" style="max-width: 673px">
 
       <span class="label">{{ f.label }}</span>
       <div class="filter-block">

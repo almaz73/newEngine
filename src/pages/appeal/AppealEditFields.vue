@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; align-items: center; flex-wrap: wrap">
-    <div style="width: 50%; white-space: nowrap">
+    <div style="width: 40%; white-space: nowrap">
       <small class="label-right">Статус</small>
       <el-dropdown style="margin-bottom: 4px">
         <el-button type="primary">
@@ -38,7 +38,7 @@
           </span>
     </div>
 
-    <div style="border-left: 5px solid #d34338; padding-left: 20px">
+    <div style="border-left: 5px solid #d34338; padding-left: 20px; width: 50%">
       <small>
         <div class="label-red ">Результаты и действия:</div>
         <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
