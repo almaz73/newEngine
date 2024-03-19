@@ -6,13 +6,13 @@
             :title="'События : '+days[currentTime.getDay()]"
             draggable>
     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px">
-      <el-button @click="changeDate(-1)"> ⊲ </el-button>
+      <el-button @click="changeDate(-1)"> ⊲</el-button>
       {{ formatDate(currentTime) }}
-      <el-button @click="changeDate(1)"> ⊳ </el-button>
+      <el-button @click="changeDate(1)"> ⊳</el-button>
 
       <el-date-picker class="narrow-date" v-model="currentTime" @change="changeDate()" :clearable="false"/>
     </div>
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'460px':'680px'">
+    <el-scrollbar :maxHeight="globalStore.isMobileView?'460px':'600px'">
 
 
       <el-table
@@ -20,12 +20,11 @@
           :data="tableData"
           @rowClick="setEvent"
           :show-header="false"
-          highlight-current-row
-          style="cursor:pointer;"
+          :row-class-name="tableRowClassName"
+          class="hourly"
       >
         <el-table-column label="" prop="timePart" width="70px"/>
         <el-table-column label="" prop="value"/>
-        <el-table-column label="" prop=""/>
       </el-table>
     </el-scrollbar>
     <div style="text-align: right">
@@ -35,9 +34,31 @@
   </AppModal>
 </template>
 
+<style>
+.hourly {
+  cursor: pointer;
+}
+
+.hourly table > tbody .el-table__cell {
+  padding: 0;
+}
+
+.el-table .old-events {
+  --el-table-tr-bg-color: #fdd;
+}
+
+.el-table .new-events {
+  --el-table-tr-bg-color: #b0ffbb;
+}
+
+.el-table .today-event {
+  --el-table-tr-bg-color: #ddf;
+}
+</style>
+
 <script setup>
 import AppModal from "@/components/AppModal.vue";
-import {getCurrentInstance, ref} from "vue";
+import {ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ElMessage, ElTable} from "element-plus";
 import {useAppealStore} from "@/stores/appealStore";
@@ -49,10 +70,17 @@ const isOpen = ref(false)
 const tableData = ref([])
 const currentTime = ref(new Date())
 const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+let eventsArr = []
 let selectedTime = null
 let cb;
 let userId;
 
+function tableRowClassName({row}) {
+  if (row.value === 'Новое событие') return 'new-events'
+  if (row.value === 'Сейчас') return 'today-event'
+  if (row.value) return 'old-events'
+  return ''
+}
 
 function init() {
   let minuteStart = parseInt(currentTime.value.getMinutes() / 15)
@@ -65,13 +93,13 @@ function init() {
   endPeriod.setMinutes(0)
   endPeriod.setHours(24)
 
-  for (let time = startPeriod; time < endPeriod; time.setMinutes(time.getMinutes() + 15)) {
-    tableData.value.push({
-      time: startPeriod,
-      timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' 🕗 ' : ''),
-      event: ''
-    })
-
+  for (let time = new Date(startPeriod.setHours(0)); time < endPeriod; time.setMinutes(time.getMinutes() + 15)) {
+    if (time.getHours() > 5 && time.getHours() < 22) {
+      tableData.value.push({
+        timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' 🕗 ' : ''),
+        event: ''
+      })
+    }
   }
 }
 
@@ -81,9 +109,6 @@ function changeDate(val) {
     currentTime.value = new Date(currentTime.value)
   }
 
-  const instance = getCurrentInstance();
-  instance?.proxy?.$forceUpdate();
-
   let filter = {
     month: currentTime.value.getMonth() + 1,
     year: currentTime.value.getFullYear(),
@@ -91,25 +116,48 @@ function changeDate(val) {
   }
 
   useAppealStore().getEvent({filter: JSON.stringify(filter)}).then(res => {
-    console.log(' = = res', res)
+    eventsArr = res.items
+    showOldEvents()
+  })
+}
+
+function showOldEvents() {
+  // наверно тут нужно поставить положение "Сейчас", и раскрутить к нему, если есть
+  tableData.value.map(el => el.value = '')
+  eventsArr.forEach(el => {
+    let date = el.dateStart
+    if (Math.abs(new Date(currentTime.value) - new Date(date)) < 86400000) {
+      let day = new Date(date).getDate()
+      if (new Date(currentTime.value).getDate() === day) {
+        let h = new Date(date).getHours()
+        let m = new Date(date).getMinutes() ? new Date(date).getMinutes() : '0' + new Date(date).getMinutes()
+        tableData.value.map(item => {
+          let time = item.timePart.split(':')
+          if (time[0] == h && m == parseInt(time[1])) item.value = el.description || el.title
+          return item
+        })
+      }
+    }
   })
 }
 
 function setEvent(value) {
-  tableData.value.map(el => el.value = '')
+  let thisTime = new Date(currentTime.value)
+  thisTime.setHours(value.timePart.split(':')[0])
+  thisTime.setMinutes(parseInt(value.timePart.split(':')[1]))
+  if (value.value) return ElMessage.warning('Уже существует событие ')
+  if (thisTime < new Date()) return ElMessage.warning('Нельзя добавить событие в прошлом')
+
+  tableData.value.map(el => {
+    if (el.value === 'Новое событие') el.value = ''
+  })
   value.value = 'Новое событие'
-  selectedTime = value.time
-
-}
-
-function checkDate() {
-  if (smsDate.value < new Date()) return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
+  selectedTime = thisTime
 }
 
 function save() {
-  if (checkDate()) return false
-
   cb(selectedTime)
+  closeModal()
 }
 
 function open(row, cbModal) {

@@ -43,7 +43,7 @@
     <small>
       <label class="label-right l_150">Дата:</label>
 
-      <el-button @click="openHourly()">Календарь</el-button>
+      <el-button @click="openHourly()">{{eventTime?formatDMY_hm(eventTime):'Календарь'}}</el-button>
 
       <div>
         <label style="cursor: pointer" @click="checkResponsible()">
@@ -69,7 +69,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {computed, ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {Plus} from "@element-plus/icons-vue";
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
 import {EventType} from "@/utils/globalConstants";
 import HourlyCalendarModal from "@/components/calendar/HourlyCalendarModal.vue";
@@ -86,6 +86,7 @@ const commentLabel = ref(null)
 const EventTypes = ref([]); // кнокп с рисунками
 const eventselectedDateTime = ref(null)
 const hourlyModal = ref(null)
+const eventTime = ref(null)
 
 const title = computed(() => {
   let elem = event.value.type && EventTypes.value.find(el => el.id === event.value.type)
@@ -223,8 +224,9 @@ function openHourly() {
   hourlyModal.value.open(event.value, backFromHourly)
 }
 
-function backFromHourly() {
-  console.log('back From Hourly')
+function backFromHourly(time) {
+  console.log('back From Hourly time', time)
+  eventTime.value = time
 }
 
 
@@ -264,7 +266,7 @@ function EventCloseTypeChange() {
       event.value.dateStart = formatDateDDMMYYYY(dateStart)
       event.value.timeStart = dateStart && dateStart.toLocaleTimeString()
       event.value.dateEnd = formatDateDDMMYYYY(dateStart)
-      event.value.timeEnd = dateStart.toLocaleTimeString()
+      event.value.timeEnd = dateStart && dateStart.toLocaleTimeString()
 
       eventselectedDateTime.value = event.value.dateStart + ' ' + event.value.timeStart;
     } else {

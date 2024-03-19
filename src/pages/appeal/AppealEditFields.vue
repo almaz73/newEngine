@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; align-items: center; flex-wrap: wrap">
-    <div style="width: 40%; white-space: nowrap">
+    <div class="appealStat">
       <small class="label-right">Статус</small>
       <el-dropdown style="margin-bottom: 4px">
         <el-button type="primary">
@@ -38,7 +38,7 @@
           </span>
     </div>
 
-    <div style="border-left: 5px solid #d34338; padding-left: 20px; width: 50%">
+    <div class="appealStatRight">
       <small>
         <div class="label-red ">Результаты и действия:</div>
         <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
@@ -138,6 +138,25 @@
   <ClientsDirModal ref="сlientModal"/>
   <EditCarModal ref="carModal"/>
 </template>
+
+<style>
+.appealStat{
+  width: 40%; white-space: nowrap
+}
+.appealStatRight{
+  border-left: 5px solid #d34338;
+  padding-left: 20px;
+  width: 50%
+}
+
+@media (width<500px){
+  .appealStatRight{
+    width: initial;
+    margin: 12px 0;
+  }
+}
+</style>
+
 <script setup>
 
 import {useGlobalStore} from "@/stores/globalStore";
