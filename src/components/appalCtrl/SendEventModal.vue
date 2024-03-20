@@ -52,7 +52,7 @@
       </div>
     </small>
     <div style="text-align: right">
-      <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+      <el-button type="danger" @click="save()" :disabled="!isReady" :icon="Plus">Добавить</el-button>
       <el-button type="info" @click="isOpen = false">Отмена</el-button>
     </div>
   </AppModal>
@@ -72,7 +72,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
 import {EventType} from "@/utils/globalConstants";
-import HourlyCalendarModal from "@/components/calendar/HourlyCalendarModal.vue";
+import HourlyCalendarModal from "@/components/appalCtrl/HourlyCalendarModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -87,6 +87,7 @@ const EventTypes = ref([]); // кнокп с рисунками
 const eventselectedDateTime = ref(null)
 const hourlyModal = ref(null)
 const eventTime = ref(null)
+const isReady = ref(false)
 
 const title = computed(() => {
   let elem = event.value.type && EventTypes.value.find(el => el.id === event.value.type)
@@ -221,12 +222,22 @@ function getSelects() {
 }
 
 function openHourly() {
+  if(!title.value) return ElMessage.info('Выберите тип вызова')
   hourlyModal.value.open(event.value, backFromHourly)
 }
 
 function backFromHourly(time) {
-  console.log('back From Hourly time', time)
   eventTime.value = time
+  let dateStart = time
+  let dateEnd = new Date(time)
+  dateEnd.setMinutes( new Date(time).getMinutes()+15)
+
+
+  event.value.dateStart = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');
+  event.value.timeStart = dateStart.toLocaleTimeString()// dateStart.format('HH:mm');
+  event.value.dateEnd = formatDateDDMMYYYY(dateEnd)//  dateStart.format('DD.MM.YYYY');
+  event.value.timeEnd = dateEnd.toLocaleTimeString()// dateStart.format('HH:mm');
+  isReady.value = true
 }
 
 
@@ -237,8 +248,8 @@ function changeEventType(key) {
 }
 
 function checkDate() {
-  if (eventselectedDateTime.value < new Date())
-    return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
+  // if (eventselectedDateTime.value < new Date())
+  //   return ElMessage({message: 'Выбранная дата меньше текущей', type: 'warning'})
 }
 
 function EventCloseTypeChange() {
@@ -267,6 +278,8 @@ function EventCloseTypeChange() {
       event.value.timeStart = dateStart && dateStart.toLocaleTimeString()
       event.value.dateEnd = formatDateDDMMYYYY(dateStart)
       event.value.timeEnd = dateStart && dateStart.toLocaleTimeString()
+
+      isReady.value = true
 
       eventselectedDateTime.value = event.value.dateStart + ' ' + event.value.timeStart;
     } else {

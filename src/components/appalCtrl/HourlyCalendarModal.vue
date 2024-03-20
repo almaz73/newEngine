@@ -28,16 +28,15 @@
       </el-table>
     </el-scrollbar>
     <div style="text-align: right">
-      <el-button type="danger" @click="save()">Сохранить</el-button>
+      <el-button type="danger" @click="save()"
+                 :disabled="!isReady"
+                 :icon="Plus">Добавить</el-button>
       <el-button type="info" @click="closeModal()">Отмена</el-button>
     </div>
   </AppModal>
 </template>
 
 <style>
-.hourly {
-  cursor: pointer;
-}
 
 .hourly table > tbody .el-table__cell {
   padding: 0;
@@ -63,6 +62,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ElMessage, ElTable} from "element-plus";
 import {useAppealStore} from "@/stores/appealStore";
 import {formatDate} from "@/utils/globalFunctions";
+import {Plus} from "@element-plus/icons-vue";
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()
@@ -70,6 +70,7 @@ const isOpen = ref(false)
 const tableData = ref([])
 const currentTime = ref(new Date())
 const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const isReady = ref(false)
 let eventsArr = []
 let selectedTime = null
 let cb;
@@ -77,31 +78,11 @@ let userId;
 
 function tableRowClassName({row}) {
   if (row.value === 'Новое событие') return 'new-events'
-  if (row.value === 'Сейчас') return 'today-event'
+  if (row.today) return 'today-event'
   if (row.value) return 'old-events'
   return ''
 }
 
-function init() {
-  let minuteStart = parseInt(currentTime.value.getMinutes() / 15)
-  let startPeriod = currentTime.value
-  startPeriod.setMinutes((minuteStart + 1) * 15)
-  startPeriod.setSeconds(0)
-
-  let endPeriod = new Date()
-  endPeriod.setSeconds(0)
-  endPeriod.setMinutes(0)
-  endPeriod.setHours(24)
-
-  for (let time = new Date(startPeriod.setHours(0)); time < endPeriod; time.setMinutes(time.getMinutes() + 15)) {
-    if (time.getHours() > 5 && time.getHours() < 22) {
-      tableData.value.push({
-        timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' 🕗 ' : ''),
-        event: ''
-      })
-    }
-  }
-}
 
 function changeDate(val) {
   if (val) {
@@ -122,8 +103,17 @@ function changeDate(val) {
 }
 
 function showOldEvents() {
-  // наверно тут нужно поставить положение "Сейчас", и раскрутить к нему, если есть
-  tableData.value.map(el => el.value = '')
+  let todayH = new Date().getHours()
+  isReady.value = false
+  tableData.value.map(el => {
+    el.value = ''
+    el.today = ''
+    if (todayH == el.timePart.split(':')[0] && new Date().getDate() == currentTime.value.getDate()) {
+      el.today = 'Сейчас'
+    }
+
+  })
+
   eventsArr.forEach(el => {
     let date = el.dateStart
     if (Math.abs(new Date(currentTime.value) - new Date(date)) < 86400000) {
@@ -145,7 +135,6 @@ function setEvent(value) {
   let thisTime = new Date(currentTime.value)
   thisTime.setHours(value.timePart.split(':')[0])
   thisTime.setMinutes(parseInt(value.timePart.split(':')[1]))
-  if (value.value) return ElMessage.warning('Уже существует событие ')
   if (thisTime < new Date()) return ElMessage.warning('Нельзя добавить событие в прошлом')
 
   tableData.value.map(el => {
@@ -153,7 +142,32 @@ function setEvent(value) {
   })
   value.value = 'Новое событие'
   selectedTime = thisTime
+  isReady.value = true
 }
+
+function init() {
+  tableData.value = []
+  let minuteStart = parseInt(currentTime.value.getMinutes() / 15)
+  let startPeriod = currentTime.value
+  startPeriod.setMinutes((minuteStart + 1) * 15)
+  startPeriod.setSeconds(0)
+
+  let endPeriod = new Date()
+  endPeriod.setSeconds(0)
+  endPeriod.setMinutes(0)
+  endPeriod.setHours(24)
+
+
+  for (let time = new Date(startPeriod.setHours(0)); time < endPeriod; time.setMinutes(time.getMinutes() + 15)) {
+    if (time.getHours() > 5 && time.getHours() < 22) {
+      tableData.value.push({
+        timePart: (time.getHours() + ':' + (time.getMinutes() ? time.getMinutes() : '0' + time.getMinutes())) + (!time.getMinutes() ? ' 🕗 ' : ''),
+        event: ''
+      })
+    }
+  }
+}
+
 
 function save() {
   cb(selectedTime)
