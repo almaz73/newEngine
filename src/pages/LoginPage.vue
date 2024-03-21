@@ -33,10 +33,10 @@ const authMessage = ref('')
 function goMyFirstPage(role) {
   switch (role) {
     case "CallManager":
-      location.replace("/appeal")
+      location.replace("/v2/appeal")
       break
     default:
-      location.replace("/deal")
+      location.replace("/v2/deal")
   }
 }
 
