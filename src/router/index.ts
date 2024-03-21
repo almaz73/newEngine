@@ -5,7 +5,7 @@ import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory('/v2/'),
     routes: [
         {
             path: '/',

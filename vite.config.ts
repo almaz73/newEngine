@@ -6,6 +6,7 @@ export default defineConfig({
     plugins: [
         vue(),
     ],
+    base: '/v2/',
     server: {
         proxy: {
             '/api': {
