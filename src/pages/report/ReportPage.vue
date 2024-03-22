@@ -23,13 +23,14 @@ const callCenter = ref(null)
 const activeName = ref('callCenter')
 
 
-function tabchange(a, b) {
-  if (a.props.name == 'callCenter') callCenter.value.open()
+function tabchange(tab) {
+  if (tab.props.name === 'callCenter') callCenter.value.open()
 }
 
 onMounted(() => {
   globalStore.setTitle('Отчеты')
   globalStore.steps = []
+  setTimeout(callCenter.value.open, 500)
 })
 
 </script>

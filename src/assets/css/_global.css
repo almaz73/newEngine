@@ -38,15 +38,21 @@ body {
     z-index: 1000;
 }
 
+.router-window {
+    height: calc(100vh - 130px);
+}
+
 @media (width < 500px) {
     .waiter {
         right: inherit;
     }
+
+    .router-window {
+        height: inherit;
+    }
 }
 
-.router-window {
-    height: calc(100vh - 130px);
-}
+
 
 .gototop {
     cursor: pointer;
@@ -195,6 +201,10 @@ a:hover {
 
 .label.l_200 {
     width: 200px;
+}
+
+.label.l_300 {
+    width: 220px;
 }
 
 
