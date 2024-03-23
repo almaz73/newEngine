@@ -4,7 +4,7 @@
       <el-tab-pane label="Колл-центр" name="callCenter">
         <ReportCallCenter ref="callCenter"/>
       </el-tab-pane>
-      <el-tab-pane label="Колл-центр" name="another1111">
+      <el-tab-pane label="Another" name="another">
         <ReportCallCenter/>
       </el-tab-pane>
     </el-tabs>
@@ -20,17 +20,24 @@ import ReportCallCenter from "@/pages/report/reportCallCenter/ReportCallCenter.v
 
 const globalStore = useGlobalStore()
 const callCenter = ref(null)
-const activeName = ref('callCenter')
+const activeName = ref('another')
 
 
 function tabchange(tab) {
-  if (tab.props.name === 'callCenter') callCenter.value.open()
+  let tabName = tab.props.name
+  if (tabName === 'callCenter') callCenter.value.open({tab:tabName})
 }
 
 onMounted(() => {
   globalStore.setTitle('Отчеты')
   globalStore.steps = []
-  setTimeout(callCenter.value.open, 500)
+  // узнаю послдний выбранный отчет, и отображаю его
+  let LastReport = localStorage.getItem('LastReport')
+  if(LastReport){
+    LastReport = JSON.parse(LastReport)
+    activeName.value = LastReport.tab
+    callCenter.value.open(LastReport)
+  }
 })
 
 </script>

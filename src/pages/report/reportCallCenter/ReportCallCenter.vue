@@ -79,17 +79,25 @@ import rDays from "./rDays.vue";
 import rEmployees from "./rEmployees.vue";
 
 const expander = ref(null)
+let tab = null
 const types = {
   'employees': rEmployees,
   'days': rDays
 }
 
-function changeType(val) {
+function changeType(report, memory) {
   expander.value.classList.remove("expanded")
-  type_report.value = markRaw(types[val])
+  type_report.value = markRaw(types[report])
+  if(!memory) localStorage.setItem('LastReport', JSON.stringify({tab, report}))
 }
 
-function open() {
+function open(path) {
+  tab = path.tab
+  if (!path.report) hideTable()
+  else changeType(path.report, true)
+}
+
+function hideTable() {
   expander.value.classList.add("expanded")
   type_report.value = null
 }
