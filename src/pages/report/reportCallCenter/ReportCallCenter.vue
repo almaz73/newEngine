@@ -36,7 +36,7 @@
   display: grid;
   grid-template-rows: 0fr;
   overflow: hidden;
-  transition: grid-template-rows .3s;
+  transition: grid-template-rows .7s;
 }
 
 .expander-content {
@@ -54,8 +54,8 @@
 }
 
 .reports-buttons {
-  margin: 0 20px;
-  padding: 0 20px;
+  //margin: 0 20px;
+  //padding: 0 20px;
 }
 
 .reports-buttons .expander-content .el-button {
