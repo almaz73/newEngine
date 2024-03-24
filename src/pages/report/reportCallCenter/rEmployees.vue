@@ -31,7 +31,7 @@
     </div>
 
     <div>
-      <label class="label l_300">Cотруджник</label>
+      <label class="label l_300">Cотрудник</label>
       <el-select
           style="width: 220px"
           v-model="searchFilter.employeeId"
@@ -45,21 +45,25 @@
     <el-button :icon="Grid" type="danger" @click="toCearch()">Сформировать</el-button>
     <el-button type="info" @click="initFilter()">Сброс</el-button>
     <br><br>
-    <el-tabs @tabChange="tabChange()" v-model="activeName">
+    <el-tabs @tabChange="tabChange" v-model="activeName">
       <el-tab-pane label="Стандартый" name="standart">
         <el-table
             size="small"
-            :data="tableData"
+            :data="tableData1"
             :row-class-name="tableRowClassName"
+            @headerClick="headerClick"
             @rowClick="rowClick"
             row-key="id"
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         >
           <el-table-column label="ФИО" prop="employeeTitle"/>
-          <el-table-column label="Обращения" prop="appealCount"/>
-          <el-table-column label="Оценки А/М" prop="buyCount"/>
+          <el-table-column label="Обращения ⭐" prop="appealCount" v-if="star===1"/>
+          <el-table-column label="Обращения ✰" prop="appealCount" v-else/>
+          <el-table-column label="Оценки А/М ⭐" prop="buyCount" v-if="star===2"/>
+          <el-table-column label="Оценки А/М ✰" prop="buyCount" v-else/>
           <el-table-column label="Обращения-оценки" prop="appealBuyProc"/>
-          <el-table-column label="Выкуплено А/М" prop="boughtCount"/>
+          <el-table-column label="Выкуплено А/М ⭐" prop="boughtCount" v-if="star===3"/>
+          <el-table-column label="Выкуплено А/М ✰" prop="boughtCount" v-else/>
           <el-table-column label="Обращения-выкуп, %" prop="onCommissionProc"/>
 
         </el-table>
@@ -68,7 +72,27 @@
         Иерархический
       </el-tab-pane>
       <el-tab-pane label="Табличный" name="tabl">
-        Табличный
+        <el-table
+            size="small"
+            :data="tableData3"
+            :row-class-name="tableRowClassName"
+            @headerClick="headerClick"
+            @rowClick="rowClick"
+            row-key="id"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        >
+          <el-table-column label="ФИО" prop="employeeTitle"/>
+          <el-table-column label="Место выкупа" prop="locationTitle"/>
+          <el-table-column label="Обращения ⭐" prop="appealCount" v-if="star===1"/>
+          <el-table-column label="Обращения ✰" prop="appealCount" v-else/>
+          <el-table-column label="Оценки А/М ⭐" prop="buyCount" v-if="star===2"/>
+          <el-table-column label="Оценки А/М ✰" prop="buyCount" v-else/>
+          <el-table-column label="Обращения-оценки" prop="appealBuyProc"/>
+          <el-table-column label="Выкуплено А/М ⭐" prop="boughtCount" v-if="star===3"/>
+          <el-table-column label="Выкуплено А/М ✰" prop="boughtCount" v-else/>
+          <el-table-column label="Обращения-выкуп, %" prop="onCommissionProc"/>
+
+        </el-table>
       </el-tab-pane>
     </el-tabs>
 
@@ -93,9 +117,14 @@ import {ElMessage} from "element-plus";
 const searchFilter = ref({})
 const globalStore = useGlobalStore()
 const reportStore = useReportStore()
-const tableData = ref([])
+const tableTypes = ref({})
+const star = ref(1)
+const tableData1 = ref([])
+const tableData2 = ref([])
+const tableData3 = ref([])
 const activeName = ref('standart')
 let data = []
+let dataOld = []
 const dealTypes = ref([
   {title: 'Выкуп (трейд-ин)', value: 10},
   {title: 'Комиссия', value: 20},
@@ -111,10 +140,20 @@ globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
 
 function tabChange(tab) {
   console.log('tabChange tab', tab)
+  if (tab === 'standart') makeStandart()
+  if (tab === 'ierarh') makeIerarh()
+  if (tab === 'tabl') makeStandart(null, true)
+}
+
+function headerClick(a) {
+  if (a.label === "Обращения ✰") star.value = 1
+  if (a.label === "Оценки А/М ✰") star.value = 2
+  if (a.label === "Выкуплено А/М ✰") star.value = 3
+  makeStandart(true)
 }
 
 function rowClick(row) {
-  window.open('/v2/appeal/' + row.appealId, '_blank');
+  row.appealId && window.open('/v2/appeal/' + row.appealId, '_blank');
 }
 
 function initFilter() {
@@ -137,11 +176,10 @@ function toCearch() {
   if (S.employeeId) params.employeeId = S.employeeId
   if (S.buyTypeView) params.buyTypeView = S.buyTypeView
   reportStore.getEmployee(params).then(res => {
-    console.log('res=>', res)
-    data = res.employees
+    dataOld = res.employees
 
-    /*
-    data = [{
+
+    dataOld = [{
       "employeeTitle": "Валиева Юлия",
       "appealCount": 8,
       "buyCount": 8,
@@ -383,16 +421,20 @@ function toCearch() {
           }
         ]
       }]
-    */
 
-    if (data.length)makeStandart()
+    if (dataOld.length) makeStandart(true)
     else ElMessage.warning('Нет данных')
   })
 }
 
-function makeStandart() {
+function makeStandart(upd, isPlace) {
+  console.log('upd, isPlace', upd, isPlace)
+  if (!upd && tableTypes.value.standart && !isPlace) return tableData1.value = tableTypes.value.standart
+  if (!upd && tableTypes.value.tabl && isPlace) return tableData3.value = tableTypes.value.tabl
+  data = JSON.parse(JSON.stringify(dataOld))
   console.log('data', data)
-  tableData.value = []
+  tableData1.value = []
+  tableData3.value = []
   let idCount = 0
   let count1 = 0
   let count2 = 0
@@ -410,10 +452,16 @@ function makeStandart() {
     count5 += el.onCommissionProc
     el.id = idCount
     el.buyoutLocations.forEach(item => {
-      item.listAppeals.forEach(z => {
+
+      let arrList = item.listAppeals
+      if (star.value === 2) arrList = item.listBuys
+      if (star.value === 3) arrList = item.listBoughts
+
+      arrList.forEach(z => {
         count++;
         idCount++
         z.id = idCount
+        if (isPlace) z.locationTitle = item.locationTitle
         z.employeeTitle = count + '. Выкуп'
         z.appealCount = z.appealClientTitle
         z.buyCount = '☎ ' + z.appealClientPhone
@@ -430,8 +478,66 @@ function makeStandart() {
     boughtCount: count4,
     onCommissionProc: count5,
   })
+  if (!isPlace) {
+    tableTypes.value.standart = data
+    tableData1.value = data
+  }
+  if (isPlace) {
+    tableTypes.value.tabl = data
+    tableData3.value = data
+  }
 
+  console.log('---tableData3.value', tableData3.value)
+}
+
+function makeTabl() {
+  if (tableTypes.value.tabl) return tableData.value = tableTypes.value.tabl
+  console.log('tabl', data)
+  // tableData.value = []
+  // let idCount = 0
+  // let count1 = 0
+  // let count2 = 0
+  // let count3 = 0
+  // let count4 = 0
+  // let count5 = 0
+  // data.forEach(el => {
+  //   let count = 0
+  //   el.children = []
+  //   idCount++
+  //   count1 += el.appealCount
+  //   count2 += el.appealBuyProc
+  //   count3 += el.buyCount
+  //   count4 += el.boughtCount
+  //   count5 += el.onCommissionProc
+  //   el.id = idCount
+  //   el.buyoutLocations.forEach(item => {
+  //     item.listAppeals.forEach(z => {
+  //       count++;
+  //       idCount++
+  //       z.id = idCount
+  //       z.employeeTitle = count + '. Выкуп'
+  //       z.appealCount = z.appealClientTitle
+  //       z.buyCount = '☎ ' + z.appealClientPhone
+  //       z.appealBuyProc = '🚕 ' + z.appealAuto
+  //       el.children.push(z)
+  //     })
+  //   })
+  // })
+  // data.push({
+  //   employeeTitle: 'ИТОГО',
+  //   appealCount: count1,
+  //   appealBuyProc: count2,
+  //   buyCount: count3,
+  //   boughtCount: count4,
+  //   onCommissionProc: count5,
+  // })
+  // tableTypes.value.tabl = data
   tableData.value = data
+}
+
+function makeIerarh() {
+  console.log('ierarh')
+
 }
 
 
