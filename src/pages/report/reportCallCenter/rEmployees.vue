@@ -45,18 +45,18 @@
     <el-button :icon="Grid" type="danger" @click="toCearch()">Сформировать</el-button>
     <el-button type="info" @click="initFilter()">Сброс</el-button>
     <br><br>
-    <el-tabs @tabChange="tabChange" v-model="activeName">
+    <el-tabs @tabChange="tabChange" v-model="activeName" v-if="tableData.length">
       <el-tab-pane label="Стандартый" name="standart">
         <el-table
             size="small"
-            :data="tableData1"
+            :data="tableData"
             :row-class-name="tableRowClassName"
             @headerClick="headerClick"
-            @rowClick="rowClick"
+            @rowClick="openAppeal"
             row-key="id"
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        >
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
           <el-table-column label="ФИО" prop="employeeTitle"/>
+          <el-table-column label="Место выкупа" prop="locationTitle" v-if="tabView === 3"/>
           <el-table-column label="Обращения ⭐" prop="appealCount" v-if="star===1"/>
           <el-table-column label="Обращения ✰" prop="appealCount" v-else/>
           <el-table-column label="Оценки А/М ⭐" prop="buyCount" v-if="star===2"/>
@@ -65,24 +65,42 @@
           <el-table-column label="Выкуплено А/М ⭐" prop="boughtCount" v-if="star===3"/>
           <el-table-column label="Выкуплено А/М ✰" prop="boughtCount" v-else/>
           <el-table-column label="Обращения-выкуп, %" prop="onCommissionProc"/>
-
         </el-table>
+
       </el-tab-pane>
       <el-tab-pane label="Иерархический" name="ierarh">
-        Иерархический
+        <el-table
+            size="small"
+            :data="tableData"
+            :row-class-name="tableRowClassName"
+            @headerClick="headerClick"
+            @rowClick="openAppeal"
+            row-key="id"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+          <el-table-column label="ФИО" prop="employeeTitle"/>
+          <el-table-column label="Место выкупа" prop="locationTitle" v-if="tabView === 3"/>
+          <el-table-column label="Обращения ⭐" prop="appealCount" v-if="star===1"/>
+          <el-table-column label="Обращения ✰" prop="appealCount" v-else/>
+          <el-table-column label="Оценки А/М ⭐" prop="buyCount" v-if="star===2"/>
+          <el-table-column label="Оценки А/М ✰" prop="buyCount" v-else/>
+          <el-table-column label="Обращения-оценки" prop="appealBuyProc"/>
+          <el-table-column label="Выкуплено А/М ⭐" prop="boughtCount" v-if="star===3"/>
+          <el-table-column label="Выкуплено А/М ✰" prop="boughtCount" v-else/>
+          <el-table-column label="Обращения-выкуп, %" prop="onCommissionProc"/>
+        </el-table>
+
       </el-tab-pane>
       <el-tab-pane label="Табличный" name="tabl">
         <el-table
             size="small"
-            :data="tableData3"
+            :data="tableData"
             :row-class-name="tableRowClassName"
             @headerClick="headerClick"
-            @rowClick="rowClick"
+            @rowClick="openAppeal"
             row-key="id"
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        >
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
           <el-table-column label="ФИО" prop="employeeTitle"/>
-          <el-table-column label="Место выкупа" prop="locationTitle"/>
+          <el-table-column label="Место выкупа" prop="locationTitle" v-if="tabView === 3"/>
           <el-table-column label="Обращения ⭐" prop="appealCount" v-if="star===1"/>
           <el-table-column label="Обращения ✰" prop="appealCount" v-else/>
           <el-table-column label="Оценки А/М ⭐" prop="buyCount" v-if="star===2"/>
@@ -91,7 +109,6 @@
           <el-table-column label="Выкуплено А/М ⭐" prop="boughtCount" v-if="star===3"/>
           <el-table-column label="Выкуплено А/М ✰" prop="boughtCount" v-else/>
           <el-table-column label="Обращения-выкуп, %" prop="onCommissionProc"/>
-
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -117,11 +134,9 @@ import {ElMessage} from "element-plus";
 const searchFilter = ref({})
 const globalStore = useGlobalStore()
 const reportStore = useReportStore()
-const tableTypes = ref({})
 const star = ref(1)
-const tableData1 = ref([])
-const tableData2 = ref([])
-const tableData3 = ref([])
+const tabView = ref(1)
+const tableData = ref([])
 const activeName = ref('standart')
 let data = []
 let dataOld = []
@@ -132,17 +147,16 @@ const dealTypes = ref([
 
 const tableRowClassName = ({row}) => {
   if (row.appealId) return 'red-text'
-  return ''
 }
 
 const myEmployees = ref([])
 globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
 
 function tabChange(tab) {
-  console.log('tabChange tab', tab)
-  if (tab === 'standart') makeStandart()
-  if (tab === 'ierarh') makeIerarh()
-  if (tab === 'tabl') makeStandart(null, true)
+  if (tab === 'standart') tabView.value = 1;
+  if (tab === 'ierarh') tabView.value = 2;
+  if (tab === 'tabl') tabView.value = 3;
+  makeStandart()
 }
 
 function headerClick(a) {
@@ -152,7 +166,7 @@ function headerClick(a) {
   makeStandart(true)
 }
 
-function rowClick(row) {
+function openAppeal(row) {
   row.appealId && window.open('/v2/appeal/' + row.appealId, '_blank');
 }
 
@@ -178,7 +192,7 @@ function toCearch() {
   reportStore.getEmployee(params).then(res => {
     dataOld = res.employees
 
-
+/*
     dataOld = [{
       "employeeTitle": "Валиева Юлия",
       "appealCount": 8,
@@ -421,55 +435,87 @@ function toCearch() {
           }
         ]
       }]
+    */
 
     if (dataOld.length) makeStandart(true)
     else ElMessage.warning('Нет данных')
   })
 }
 
-function makeStandart(upd, isPlace) {
-  console.log('upd, isPlace', upd, isPlace)
-  if (!upd && tableTypes.value.standart && !isPlace) return tableData1.value = tableTypes.value.standart
-  if (!upd && tableTypes.value.tabl && isPlace) return tableData3.value = tableTypes.value.tabl
+function makeStandart() {
+  let isPlace = tabView.value === 3
+  // кеширующие поля
   data = JSON.parse(JSON.stringify(dataOld))
-  console.log('data', data)
-  tableData1.value = []
-  tableData3.value = []
+  tableData.value = []
   let idCount = 0
   let count1 = 0
   let count2 = 0
   let count3 = 0
   let count4 = 0
   let count5 = 0
-  data.forEach(el => {
-    let count = 0
-    el.children = []
-    idCount++
-    count1 += el.appealCount
-    count2 += el.appealBuyProc
-    count3 += el.buyCount
-    count4 += el.boughtCount
-    count5 += el.onCommissionProc
-    el.id = idCount
-    el.buyoutLocations.forEach(item => {
-
-      let arrList = item.listAppeals
-      if (star.value === 2) arrList = item.listBuys
-      if (star.value === 3) arrList = item.listBoughts
-
-      arrList.forEach(z => {
-        count++;
-        idCount++
-        z.id = idCount
-        if (isPlace) z.locationTitle = item.locationTitle
-        z.employeeTitle = count + '. Выкуп'
-        z.appealCount = z.appealClientTitle
-        z.buyCount = '☎ ' + z.appealClientPhone
-        z.appealBuyProc = '🚕 ' + z.appealAuto
-        el.children.push(z)
+  if ([1, 3].includes(tabView.value)) {
+    data.forEach(el => {
+      let count = 0
+      el.children = []
+      idCount++
+      count1 += el.appealCount
+      count2 += el.appealBuyProc
+      count3 += el.buyCount
+      count4 += el.boughtCount
+      count5 += el.onCommissionProc
+      el.id = idCount
+      el.buyoutLocations.forEach(item => {
+        let arrList = item.listAppeals
+        if (star.value === 2) arrList = item.listBuys
+        if (star.value === 3) arrList = item.listBoughts
+        arrList.forEach(z => {
+          count++;
+          idCount++
+          z.id = idCount
+          if (isPlace) z.locationTitle = item.locationTitle
+          z.employeeTitle = count + '. Выкуп'
+          z.appealCount = z.appealClientTitle
+          z.buyCount = '☎ ' + z.appealClientPhone
+          z.appealBuyProc = '🚕 ' + z.appealAuto
+          el.children.push(z)
+        })
       })
     })
-  })
+  }
+  if (tabView.value === 2) {
+    data.forEach(el => {
+      let count = 0
+      el.children = []
+      idCount++
+      count1 += el.appealCount
+      count2 += el.appealBuyProc
+      count3 += el.buyCount
+      count4 += el.boughtCount
+      count5 += el.onCommissionProc
+      el.id = idCount
+      el.buyoutLocations.forEach(item => {
+        item.children = []
+        idCount++;
+        item.id = idCount
+        item.employeeTitle = item.locationTitle
+        let arrList = item.listAppeals
+        if (star.value === 2) arrList = item.listBuys
+        if (star.value === 3) arrList = item.listBoughts
+        arrList.forEach(z => {
+          count++;
+          idCount++
+          z.id = idCount
+          z.employeeTitle = count + '. Выкуп'
+          z.appealCount = z.appealClientTitle
+          z.buyCount = '☎ ' + z.appealClientPhone
+          z.appealBuyProc = '🚕 ' + z.appealAuto
+          item.children.push(z)
+        })
+        el.children.push(item)
+      })
+    })
+  }
+
   data.push({
     employeeTitle: 'ИТОГО',
     appealCount: count1,
@@ -478,66 +524,8 @@ function makeStandart(upd, isPlace) {
     boughtCount: count4,
     onCommissionProc: count5,
   })
-  if (!isPlace) {
-    tableTypes.value.standart = data
-    tableData1.value = data
-  }
-  if (isPlace) {
-    tableTypes.value.tabl = data
-    tableData3.value = data
-  }
 
-  console.log('---tableData3.value', tableData3.value)
-}
-
-function makeTabl() {
-  if (tableTypes.value.tabl) return tableData.value = tableTypes.value.tabl
-  console.log('tabl', data)
-  // tableData.value = []
-  // let idCount = 0
-  // let count1 = 0
-  // let count2 = 0
-  // let count3 = 0
-  // let count4 = 0
-  // let count5 = 0
-  // data.forEach(el => {
-  //   let count = 0
-  //   el.children = []
-  //   idCount++
-  //   count1 += el.appealCount
-  //   count2 += el.appealBuyProc
-  //   count3 += el.buyCount
-  //   count4 += el.boughtCount
-  //   count5 += el.onCommissionProc
-  //   el.id = idCount
-  //   el.buyoutLocations.forEach(item => {
-  //     item.listAppeals.forEach(z => {
-  //       count++;
-  //       idCount++
-  //       z.id = idCount
-  //       z.employeeTitle = count + '. Выкуп'
-  //       z.appealCount = z.appealClientTitle
-  //       z.buyCount = '☎ ' + z.appealClientPhone
-  //       z.appealBuyProc = '🚕 ' + z.appealAuto
-  //       el.children.push(z)
-  //     })
-  //   })
-  // })
-  // data.push({
-  //   employeeTitle: 'ИТОГО',
-  //   appealCount: count1,
-  //   appealBuyProc: count2,
-  //   buyCount: count3,
-  //   boughtCount: count4,
-  //   onCommissionProc: count5,
-  // })
-  // tableTypes.value.tabl = data
   tableData.value = data
-}
-
-function makeIerarh() {
-  console.log('ierarh')
-
 }
 
 
