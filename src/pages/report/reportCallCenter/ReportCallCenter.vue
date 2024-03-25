@@ -53,11 +53,6 @@
   visibility: visible;
 }
 
-.reports-buttons {
-  //margin: 0 20px;
-  //padding: 0 20px;
-}
-
 .reports-buttons .expander-content .el-button {
   background: var(--main-color);
   color: white;

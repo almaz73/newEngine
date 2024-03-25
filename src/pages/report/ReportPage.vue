@@ -1,6 +1,6 @@
 <template>
   <main>
-    <el-tabs @tab-click="tabchange" style="margin:0 12px" v-model="activeName">
+    <el-tabs @tab-click="tabchange" v-model="activeName">
       <el-tab-pane label="Колл-центр" name="callCenter">
         <ReportCallCenter ref="callCenter"/>
       </el-tab-pane>

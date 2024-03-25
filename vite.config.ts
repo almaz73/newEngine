@@ -12,8 +12,7 @@ export default defineConfig({
             '/api': {
                 // target: 'http://localhost:5000', // локальный сервер
                 target: 'https://dev.autonet.pro/', // удаленный сервер
-                changeOrigin: true,
-                withCredentials: true
+                changeOrigin: true
             }
         }
     },

@@ -30,7 +30,7 @@ const login = ref('')
 const password = ref('')
 const authMessage = ref('')
 
-function goMyFirstPage(role) {
+function goMyFirstPage(role: string) {
   switch (role) {
     case "CallManager":
       location.replace("/v2/appeal")

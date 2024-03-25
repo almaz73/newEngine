@@ -11,6 +11,10 @@ export const useReportStore = defineStore("reportStore", {
             const res = await axios.get(url).then(res => res)
             return res.data
         },
-
+        async getMonthly(filter: any) {
+            const url: string = '/api/report/callcenter/monthly?filter=' + JSON.stringify(filter)
+            const res = await axios.get(url).then(res => res)
+            return res.data
+        },
     }
 })

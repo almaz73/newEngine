@@ -26,6 +26,7 @@
   <div
       class="left-menu-div"
       :class="{ narrow: globalStore.isNarrowPanel, show: globalStore.isShowPanel }"
+      style=" min-width: 75px"
   >
     <el-menu
         :default-active="activeIndex"
