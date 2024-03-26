@@ -52,8 +52,6 @@ body {
     }
 }
 
-
-
 .gototop {
     cursor: pointer;
     opacity: 0.4;
@@ -81,6 +79,14 @@ main {
 @media (width < 500px) {
     .tags span.clear, .tags span.find {
         line-height: 2.5rem;
+    }
+
+    .filter-report {
+        padding: 0 12px;
+    }
+
+    .el-tabs__nav-scroll {
+        padding: 0 12px;
     }
 }
 
@@ -208,7 +214,6 @@ a:hover {
 }
 
 
-
 .label-right {
     width: 100px;
     text-align: right;
@@ -224,6 +229,11 @@ a:hover {
 @media (width < 500px) {
     .label-right.l_150 {
         width: 100px;
+    }
+
+    .label.l_300 {
+        text-align: left;
+        padding: 8px 0;
     }
 }
 

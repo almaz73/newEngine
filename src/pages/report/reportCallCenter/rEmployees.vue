@@ -1,50 +1,54 @@
 <template>
   <main>
-    <h2>Отчет колл-центра по сотрудникам</h2>
+    <div class="filter-report">
+      <h2>Отчет колл-центра по сотрудникам 🦄</h2>
 
-    <div>
-      <label class="label l_300">Период</label>
+      <div>
+        <label class="label l_300">Период</label>
 
-      <el-date-picker
-          format="DD.MM.YYYY"
-          value-format="DD.MM.YYYY"
-          v-model="searchFilter.lowCreateDatePeriod"
+        <el-date-picker
+            format="DD.MM.YYYY"
+            value-format="DD.MM.YYYY"
+            :clearable="false"
+            v-model="searchFilter.lowCreateDatePeriod"
 
-      />
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      <el-date-picker
-          format="DD.MM.YYYY"
-          value-format="DD.MM.YYYY"
-          v-model="searchFilter.highCreateDatePeriod"
-      />
+        />
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        <el-date-picker
+            format="DD.MM.YYYY"
+            value-format="DD.MM.YYYY"
+            :clearable="false"
+            v-model="searchFilter.highCreateDatePeriod"
+        />
 
+      </div>
+
+      <div>
+        <label class="label l_300">Тип сделки</label>
+        <el-select
+            style="width: 220px"
+            v-model="searchFilter.dealType"
+            filterable>
+          <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
+        </el-select>
+      </div>
+
+      <div>
+        <label class="label l_300">Cотрудник</label>
+        <el-select
+            style="width: 220px"
+            v-model="searchFilter.employeeId"
+            filterable>
+          <el-option v-for="item in myEmployees" :key="item.id" :label="item.title" :value="item.id"/>
+        </el-select>
+      </div>
+
+
+      <br>
+      <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
+      <el-button type="info" @click="initFilter()">Сброс</el-button>
+      <br><br>
     </div>
-
-    <div>
-      <label class="label l_300">Тип сделки</label>
-      <el-select
-          style="width: 220px"
-          v-model="searchFilter.dealType"
-          filterable>
-        <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
-      </el-select>
-    </div>
-
-    <div>
-      <label class="label l_300">Cотрудник</label>
-      <el-select
-          style="width: 220px"
-          v-model="searchFilter.employeeId"
-          filterable>
-        <el-option v-for="item in myEmployees" :key="item.id" :label="item.title" :value="item.id"/>
-      </el-select>
-    </div>
-
-
-    <br>
-    <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
-    <el-button type="info" @click="initFilter()">Сброс</el-button>
-    <br><br>
     <el-tabs @tabChange="tabChange" v-model="activeName" v-if="tableData.length">
       <el-tab-pane label="Стандартый" name="standart">
         <el-table
@@ -188,251 +192,6 @@ function toSearch() {
   if (S.buyTypeView) params.buyTypeView = S.buyTypeView
   reportStore.getEmployee(params).then(res => {
     dataOld = res.employees
-
-    /*
-        dataOld = [{
-          "employeeTitle": "Валиева Юлия",
-          "appealCount": 8,
-          "buyCount": 8,
-          "boughtCount": 0,
-          "onCommissionCount": 0,
-          "appealBuyProc": 100.0,
-          "appealBoughtProc": 0.0,
-          "onCommissionProc": 0.0,
-          "buyoutLocations": [
-            {
-              "locationTitle": "Выкуп (Магнитогорск)",
-              "locationId": 434,
-              "appealCount": 7,
-              "buyCount": 6,
-              "boughtCount": 0,
-              "onCommissionCount": 0,
-              "appealBuyProc": 85.7,
-              "appealBoughtProc": 0.0,
-              "onCommissionProc": 0.0,
-              "listAppeals": [
-                {
-                  "appealId": 1675303,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Павел ",
-                  "appealClientPhone": "89630834385",
-                  "appealAuto": "Hyundai Solaris"
-                },
-                {
-                  "appealId": 1675455,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Сергей ",
-                  "appealClientPhone": "89959272281",
-                  "appealAuto": "Hyundai Solaris"
-                },
-                {
-                  "appealId": 1675473,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Владимир ",
-                  "appealClientPhone": "89043007469",
-                  "appealAuto": "Datsun on-DO"
-                },
-                {
-                  "appealId": 1675875,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Данил ",
-                  "appealClientPhone": "89995816866",
-                  "appealAuto": "ВАЗ (LADA) Granta"
-                },
-                {
-                  "appealId": 1677701,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Татьяна ",
-                  "appealClientPhone": "89995856432",
-                  "appealAuto": "ВАЗ (LADA) Granta"
-                },
-                {
-                  "appealId": 1678518,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Александр ",
-                  "appealClientPhone": "89823145303",
-                  "appealAuto": "Renault Megane"
-                },
-                {
-                  "appealId": 1677492,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Вячеслав ",
-                  "appealClientPhone": "89123097386",
-                  "appealAuto": "Hyundai Solaris"
-                }
-              ],
-              "listBuys": [
-                {
-                  "appealId": 1675303,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Павел ",
-                  "appealClientPhone": "89630834385",
-                  "appealAuto": "Hyundai Solaris"
-                },
-                {
-                  "appealId": 1675875,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Данил ",
-                  "appealClientPhone": "89995816866",
-                  "appealAuto": "ВАЗ (LADA) Granta"
-                },
-                {
-                  "appealId": 1675455,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Сергей ",
-                  "appealClientPhone": "89959272281",
-                  "appealAuto": "Hyundai Solaris"
-                },
-                {
-                  "appealId": 1677492,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Вячеслав ",
-                  "appealClientPhone": "89123097386",
-                  "appealAuto": "Hyundai Solaris"
-                },
-                {
-                  "appealId": 1677701,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Татьяна ",
-                  "appealClientPhone": "89995856432",
-                  "appealAuto": "ВАЗ (LADA) Granta"
-                },
-                {
-                  "appealId": 1678518,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Александр ",
-                  "appealClientPhone": "89823145303",
-                  "appealAuto": "Renault Megane"
-                }
-              ],
-              "listBoughts": [],
-              "listOnCommission": []
-            },
-            {
-              "locationTitle": "Выездной выкуп (Магнитогорск)",
-              "locationId": 433,
-              "appealCount": 1,
-              "buyCount": 2,
-              "boughtCount": 0,
-              "onCommissionCount": 0,
-              "appealBuyProc": 200.0,
-              "appealBoughtProc": 0.0,
-              "onCommissionProc": 0.0,
-              "listAppeals": [
-                {
-                  "appealId": 1676494,
-                  "appealType": 2,
-                  "appealTypeTitle": "Выкуп",
-                  "appealClientTitle": " Анатолий ",
-                  "appealClientPhone": "89191173664",
-                  "appealAuto": "Volkswagen Jetta"
-                }
-              ],
-              "listBuys": [
-                {
-                  "appealId": 1676494,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": " Анатолий ",
-                  "appealClientPhone": "89191173664",
-                  "appealAuto": "Volkswagen Jetta"
-                },
-                {
-                  "appealId": 1672302,
-                  "appealType": 0,
-                  "appealTypeTitle": null,
-                  "appealClientTitle": "Караченцев Дмитрий Петрович",
-                  "appealClientPhone": "89220197277",
-                  "appealAuto": "ВАЗ (LADA) Granta"
-                }
-              ],
-              "listBoughts": [],
-              "listOnCommission": []
-            }
-          ]
-        },
-          {
-            "employeeTitle": "Грибова Ольга",
-            "appealCount": 3,
-            "buyCount": 0,
-            "boughtCount": 0,
-            "onCommissionCount": 0,
-            "appealBuyProc": 0.0,
-            "appealBoughtProc": 0.0,
-            "onCommissionProc": 0.0,
-            "buyoutLocations": [
-              {
-                "locationTitle": "ОВ АСП Победа КЗН",
-                "locationId": 165,
-                "appealCount": 2,
-                "buyCount": 0,
-                "boughtCount": 0,
-                "onCommissionCount": 0,
-                "appealBuyProc": 0.0,
-                "appealBoughtProc": 0.0,
-                "onCommissionProc": 0.0,
-                "listAppeals": [
-                  {
-                    "appealId": 1690521,
-                    "appealType": 2,
-                    "appealTypeTitle": "Выкуп",
-                    "appealClientTitle": " Динар ",
-                    "appealClientPhone": "89397427693",
-                    "appealAuto": null
-                  },
-                  {
-                    "appealId": 1677534,
-                    "appealType": 2,
-                    "appealTypeTitle": "Выкуп",
-                    "appealClientTitle": " Юрий ",
-                    "appealClientPhone": "89046659001",
-                    "appealAuto": "ВАЗ (LADA) 2114 Samara"
-                  }
-                ],
-                "listBuys": [],
-                "listBoughts": [],
-                "listOnCommission": []
-              },
-              {
-                "locationTitle": "Выезд ОВ АСП Победа КЗН",
-                "locationId": 59,
-                "appealCount": 1,
-                "buyCount": 0,
-                "boughtCount": 0,
-                "onCommissionCount": 0,
-                "appealBuyProc": 0.0,
-                "appealBoughtProc": 0.0,
-                "onCommissionProc": 0.0,
-                "listAppeals": [
-                  {
-                    "appealId": 1677114,
-                    "appealType": 2,
-                    "appealTypeTitle": "Выкуп",
-                    "appealClientTitle": " Адель ",
-                    "appealClientPhone": "89991692901",
-                    "appealAuto": "ВАЗ (LADA) 2114 Samara"
-                  }
-                ],
-                "listBuys": [],
-                "listBoughts": [],
-                "listOnCommission": []
-              }
-            ]
-          }]
-        */
 
     if (dataOld.length) makeStandart(true)
     else ElMessage.warning('Нет данных')

@@ -1,53 +1,61 @@
 <template>
   <main>
-    <h2>Количество обращений по дням</h2>
-    <div>
-      <label class="label l_300">Выберите год и месяц</label>
+    <div class="filter-report">
+      <h2>Количество обращений по дням 🐋</h2>
+      <div>
+        <label class="label l_300">Выберите год и месяц</label>
 
-      <el-date-picker
-          type="month"
-          v-model="searchFilter.selectedMonth"
-          format="YYYY MMM"
-      />
+        <el-date-picker
+            type="month"
+            v-model="searchFilter.selectedMonth"
+            format="YYYY MMM"
+            :clearable="false"
+        />
+      </div>
+
+      <div>
+        <label class="label l_300">Вариант отчета</label>
+        <el-select
+            style="width: 220px"
+            v-model="searchFilter.chosenReportType"
+            filterable>
+          <el-option v-for="item in reportTypes" :key="item.value" :label="item.title" :value="item.value"/>
+        </el-select>
+      </div>
+
+      <div>
+        <label class="label l_300">Тип сделки</label>
+        <el-select
+            style="width: 220px"
+            v-model="searchFilter.chosenDealType"
+            filterable>
+          <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
+        </el-select>
+      </div>
+
+
+      <br>
+      <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
+      <el-button type="info" @click="init()">Сброс</el-button>
     </div>
-
-    <div>
-      <label class="label l_300">Вариант отчета</label>
-      <el-select
-          style="width: 220px"
-          v-model="searchFilter.chosenReportType"
-          filterable>
-        <el-option v-for="item in reportTypes" :key="item.value" :label="item.title" :value="item.value"/>
-      </el-select>
-    </div>
-
-    <div>
-      <label class="label l_300">Тип сделки</label>
-      <el-select
-          style="width: 220px"
-          v-model="searchFilter.chosenDealType"
-          filterable>
-        <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
-      </el-select>
-    </div>
-
-
-    <br>
-    <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
-    <el-button type="info" @click="init()">Сброс</el-button>
-
-
     <el-table
         class="report-days-table"
         :data="tableData"
         size="small"
+        v-if="tableData.length"
+        border
         empty-text="Нет данных"
+        :row-class-name="tableRowClassName"
+        @row-click="rowClick"
         highlight-current-row
     >
       <el-table-column width="220">
         <template #default="scope">
-          <span style="float: left; max-width: 142px">{{ scope.row.title }}</span>
-          <span style="float: right">
+          <span style="float: left; max-width: 142px; margin-left: 4px"
+                :class="{cityName:scope.row.level===1}">
+            {{ scope.row.title }}
+          </span>
+          <span style="float: right; padding-right: 4px; text-align: right">
             <small>Обращений</small><br>
             <small class="red-text">Осмотров</small>
           </span>
@@ -57,17 +65,18 @@
           v-for="(column, index) in tableData[0].days"
           :key="index"
           :label="''+(index+1)"
-          min-width="30"
+          min-width="22"
       >
         <template #default="scope">
           <!--                          <span>{{ scope.row.days[index].appealsCount }}</span>-->
-          <div>{{ scope.row.days[index].appealsCount }}</div>
-          <div class="red-text">{{ scope.row.days[index].buysCount }}</div>
+          <div>{{ scope.row.days[index].appealsCount ? scope.row.days[index].appealsCount : '&nbsp;' }}</div>
+          <div class="red-text">{{ scope.row.days[index].buysCount ? scope.row.days[index].buysCount : '&nbsp;' }}</div>
         </template>
       </el-table-column>
-      <el-table-column>
+      <el-table-column label="ВСЕГО" width="60">
         <template #default="scope">
-         {{scope.row.buyTotalCount}}
+          <span>{{ scope.row.appealTotalCount }}</span><br>
+          <span class="red-text"> {{ scope.row.buyTotalCount }}</span>
         </template>
       </el-table-column>
 
@@ -77,7 +86,30 @@
 <style>
 .report-days-table {
   margin-top: 24px;
-  width: calc(100vw - 130px)
+  width: calc(100vw - 130px);
+  cursor: pointer;
+}
+
+.report-days-table .cityName {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: left;
+  width: 100%;
+}
+
+.report-days-table.el-table .gray-fon {
+  --el-table-tr-bg-color: #f1eeee;
+  cursor: initial;
+}
+
+.report-days-table.el-table .hide-row {
+  display: none;
+}
+
+.report-days-table .cell {
+  line-height: initial;
+  text-align: center;
+  padding: 0;
 }
 
 @media (width < 500px) {
@@ -96,479 +128,16 @@ const searchFilter = ref({selectedMonth: new Date()})
 
 const globalStore = useGlobalStore()
 const reportStore = useReportStore()
-
-const tableData = ref([
-  {
-    "number": 1,
-    "title": "Альметьевск",
-    "days": [
-      {
-        "day": 1,
-        "appealsCount": 19,
-        "buysCount": 7,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 2,
-        "appealsCount": 11,
-        "buysCount": 5,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 3,
-        "appealsCount": 13,
-        "buysCount": 6,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 4,
-        "appealsCount": 14,
-        "buysCount": 3,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 5,
-        "appealsCount": 8,
-        "buysCount": 4,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 6,
-        "appealsCount": 19,
-        "buysCount": 4,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 7,
-        "appealsCount": 13,
-        "buysCount": 5,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 8,
-        "appealsCount": 13,
-        "buysCount": 4,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 9,
-        "appealsCount": 9,
-        "buysCount": 8,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 10,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 11,
-        "appealsCount": 19,
-        "buysCount": 6,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 12,
-        "appealsCount": 9,
-        "buysCount": 4,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 13,
-        "appealsCount": 16,
-        "buysCount": 4,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 14,
-        "appealsCount": 30,
-        "buysCount": 6,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 15,
-        "appealsCount": 20,
-        "buysCount": 8,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 16,
-        "appealsCount": 2,
-        "buysCount": 5,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 17,
-        "appealsCount": 12,
-        "buysCount": 2,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 18,
-        "appealsCount": 11,
-        "buysCount": 6,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 19,
-        "appealsCount": 27,
-        "buysCount": 11,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 20,
-        "appealsCount": 11,
-        "buysCount": 6,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 21,
-        "appealsCount": 19,
-        "buysCount": 5,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 22,
-        "appealsCount": 7,
-        "buysCount": 5,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 23,
-        "appealsCount": 3,
-        "buysCount": 6,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 24,
-        "appealsCount": 2,
-        "buysCount": 1,
-        "buyoutsCount": 1,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 25,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 26,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 27,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 28,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 29,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 30,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 31,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      }
-    ],
-    "parentNumber": 0,
-    "level": 1,
-    "isShow": true,
-    "isExpanded": false,
-    "appealTotalCount": 307,
-    "buyTotalCount": 121,
-    "buyoutTotalCount": 7,
-    "onCommissionTotalCount": 0,
-    "buyPercentage": 39,
-    "buyoutPercentage": 5,
-    "onCommissionPercentage": 0
-  },
-  {
-    "number": 1,
-    "title": "Габдреева Регина",
-    "days": [
-      {
-        "day": 1,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 2,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 3,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 4,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 5,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 6,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 7,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 8,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 9,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 10,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 11,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 12,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 13,
-        "appealsCount": 1,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 14,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 15,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 16,
-        "appealsCount": 0,
-        "buysCount": 1,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 17,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 18,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 19,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 20,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 21,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 22,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 23,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 24,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 25,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 26,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 27,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 28,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 29,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 30,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      },
-      {
-        "day": 31,
-        "appealsCount": 0,
-        "buysCount": 0,
-        "buyoutsCount": 0,
-        "onCommissionCount": 0
-      }
-    ],
-    "parentNumber": 1,
-    "level": 2,
-    "isShow": false,
-    "isExpanded": false,
-    "appealTotalCount": 1,
-    "buyTotalCount": 1,
-    "buyoutTotalCount": 0,
-    "onCommissionTotalCount": 0,
-    "buyPercentage": 100,
-    "buyoutPercentage": 0,
-    "onCommissionPercentage": 0
-  }])
+const tableData = ref([])
 const dealTypes = [{title: 'Выкуп (трейд-ин)', value: 10}, {title: 'Комиссия', value: 20}]
 const reportTypes = [{title: 'По городам', value: 10}, {title: 'По местам хранения', value: 20}];
 const myEmployees = ref([])
+const tableRowClassName = ({row}) => {
+  let styles = ''
+  if (!row.isShow) styles += 'hide-row '
+  if (row.level === 2) styles += 'gray-fon '
+  return styles
+}
 const columns = computed(() => { // получить массив дней в месяце
   let days = new Date(searchFilter.value.selectedMonth.getFullYear(),
       searchFilter.value.selectedMonth.getMonth() + 1, 0).getDate()
@@ -576,6 +145,23 @@ const columns = computed(() => { // получить массив дней в м
 })
 
 globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
+
+function rowClick(row) {
+  if (row.level === 1) { // по нажатию родителя скрываем/показываем строку
+    tableData.value.map(el => {
+      if (el.parentNumber === row.number) {
+        if (el.isExpanded) {
+          el.isExpanded = false
+          if (el.level === 2) el.isShow = false
+        } else {
+          el.isExpanded = true
+          if (el.level === 2) el.isShow = true
+        }
+      }
+      return el
+    })
+  }
+}
 
 function init() {
   searchFilter.value.selectedMonth = new Date()
@@ -585,227 +171,6 @@ function init() {
 
 init()
 
-/*tableData.value = [
-  {
-    "day": 1,
-    "appealsCount": 19,
-    "buysCount": 7,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 2,
-    "appealsCount": 11,
-    "buysCount": 5,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 3,
-    "appealsCount": 13,
-    "buysCount": 6,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 4,
-    "appealsCount": 14,
-    "buysCount": 3,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 5,
-    "appealsCount": 8,
-    "buysCount": 4,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 6,
-    "appealsCount": 19,
-    "buysCount": 4,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 7,
-    "appealsCount": 13,
-    "buysCount": 5,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 8,
-    "appealsCount": 13,
-    "buysCount": 4,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 9,
-    "appealsCount": 9,
-    "buysCount": 8,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 10,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 11,
-    "appealsCount": 19,
-    "buysCount": 6,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 12,
-    "appealsCount": 9,
-    "buysCount": 4,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 13,
-    "appealsCount": 16,
-    "buysCount": 4,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 14,
-    "appealsCount": 30,
-    "buysCount": 6,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 15,
-    "appealsCount": 20,
-    "buysCount": 8,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 16,
-    "appealsCount": 2,
-    "buysCount": 5,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 17,
-    "appealsCount": 12,
-    "buysCount": 2,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 18,
-    "appealsCount": 11,
-    "buysCount": 6,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 19,
-    "appealsCount": 27,
-    "buysCount": 11,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 20,
-    "appealsCount": 11,
-    "buysCount": 6,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 21,
-    "appealsCount": 19,
-    "buysCount": 5,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 22,
-    "appealsCount": 7,
-    "buysCount": 5,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 23,
-    "appealsCount": 3,
-    "buysCount": 6,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 24,
-    "appealsCount": 2,
-    "buysCount": 1,
-    "buyoutsCount": 1,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 25,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 26,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 27,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 28,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 29,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 30,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  },
-  {
-    "day": 31,
-    "appealsCount": 0,
-    "buysCount": 0,
-    "buyoutsCount": 0,
-    "onCommissionCount": 0
-  }
-]*/
-
-
 function toSearch() {
   let S = searchFilter.value
   let params = {
@@ -814,9 +179,10 @@ function toSearch() {
     dealType: S.chosenDealType,
     type: S.chosenReportType
   }
-  reportStore.getMonthly(params).then(res => tableData.value = res.items)
-
-  console.log('---', tableData.value)
+  reportStore.getMonthly(params).then(res => {
+    tableData.value = res.items
+    if (!tableData.value.length) ElMessage.warning('Нет данных')
+  })
 }
 
 

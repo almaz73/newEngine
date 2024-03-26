@@ -1,7 +1,7 @@
 <template>
   <main class="reports-buttons">
     <div class="expander" ref="expander">
-      <div class="expander-content">
+      <div class="expander-content filter-report ">
         <div>
           <el-button :icon="Avatar" @click="changeType('employees')">По сотрудникам</el-button>
           Количество обращений и оценок по каждому сотруднику
