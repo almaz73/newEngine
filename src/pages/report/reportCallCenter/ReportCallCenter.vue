@@ -11,7 +11,7 @@
           Количество обращений к сотрудникам по дням
         </div>
         <div>
-          <el-button :icon="Failed"> Причины архивирования</el-button>
+          <el-button :icon="Failed" @click="changeType('archive')"> Причины архивирования</el-button>
           Отчет по причинам архивирования обращений клиентов
         </div>
         <div>
@@ -72,18 +72,20 @@ import {Avatar, Calendar, Failed, Flag, PhoneFilled, Select} from "@element-plus
 import {markRaw, ref} from "vue";
 import rDays from "./rDays.vue";
 import rEmployees from "./rEmployees.vue";
+import rArchive from "./rArchive.vue"
 
 const expander = ref(null)
 let tab = null
 const types = {
   'employees': rEmployees,
-  'days': rDays
+  'days': rDays,
+  'archive': rArchive
 }
 
 function changeType(report, memory) {
   expander.value.classList.remove("expanded")
   type_report.value = markRaw(types[report])
-  if(!memory) localStorage.setItem('LastReport', JSON.stringify({tab, report}))
+  if (!memory) localStorage.setItem('LastReport', JSON.stringify({tab, report}))
 }
 
 function open(path) {

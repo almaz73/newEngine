@@ -46,7 +46,7 @@
 
       <br>
       <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
-      <el-button type="info" @click="initFilter()">Сброс</el-button>
+      <el-button type="info" @click="init()">Сброс</el-button>
       <br><br>
     </div>
     <el-tabs @tabChange="tabChange" v-model="activeName" v-if="tableData.length">
@@ -171,7 +171,7 @@ function openAppeal(row) {
   row.appealId && window.open('/v2/appeal/' + row.appealId, '_blank');
 }
 
-function initFilter() {
+function init() {
   searchFilter.value.lowCreateDatePeriod = formatDateDDMMYYYY(new Date(new Date().setDate(1)))
   searchFilter.value.highCreateDatePeriod = formatDateDDMMYYYY(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
   searchFilter.value.dealType = 10
@@ -179,7 +179,7 @@ function initFilter() {
   searchFilter.value.buyTypeView = null
 }
 
-initFilter()
+init()
 
 function toSearch() {
   let S = searchFilter.value
