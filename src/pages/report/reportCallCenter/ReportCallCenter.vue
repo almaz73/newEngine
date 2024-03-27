@@ -3,19 +3,19 @@
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
         <div>
-          <el-button :icon="Avatar" @click="changeType('employees')">По сотрудникам</el-button>
+          <el-button :icon="Avatar" @click="changeType('rEmployees')">По сотрудникам</el-button>
           Количество обращений и оценок по каждому сотруднику
         </div>
         <div>
-          <el-button :icon="Calendar" @click="changeType('days')">Обращений по дням</el-button>
+          <el-button :icon="Calendar" @click="changeType('rDays')">Обращений по дням</el-button>
           Количество обращений к сотрудникам по дням
         </div>
         <div>
-          <el-button :icon="Failed" @click="changeType('archive')"> Причины архивирования</el-button>
+          <el-button :icon="Failed" @click="changeType('rArchive')"> Причины архивирования</el-button>
           Отчет по причинам архивирования обращений клиентов
         </div>
         <div>
-          <el-button :icon="PhoneFilled">По звонкам</el-button>
+          <el-button :icon="PhoneFilled" @click="changeType('rCalls')">По звонкам</el-button>
           Отчет по звонкам сотрудника за месяц
         </div>
         <div>
@@ -73,13 +73,15 @@ import {markRaw, ref} from "vue";
 import rDays from "./rDays.vue";
 import rEmployees from "./rEmployees.vue";
 import rArchive from "./rArchive.vue"
+import rCalls from "./rCalls.vue"
 
 const expander = ref(null)
 let tab = null
 const types = {
-  'employees': rEmployees,
-  'days': rDays,
-  'archive': rArchive
+  'rEmployees': rEmployees,
+  'rDays': rDays,
+  'rArchive': rArchive,
+  'rCalls': rCalls
 }
 
 function changeType(report, memory) {

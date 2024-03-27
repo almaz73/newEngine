@@ -64,7 +64,7 @@
         @row-click="rowClick"
         highlight-current-row
     >
-      <el-table-column width="180">
+      <el-table-column width="180" label="Организация">
         <template #default="scope">
           <span style="float: left;" :class="{cityName:scope.row.level===1}">
             {{ scope.row.title }}
