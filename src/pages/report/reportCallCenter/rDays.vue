@@ -83,41 +83,6 @@
     </el-table>
   </main>
 </template>
-<style>
-.report-days-table {
-  margin-top: 24px;
-  width: calc(100vw - 130px);
-  cursor: pointer;
-}
-
-.report-days-table .cityName {
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: left;
-  width: 100%;
-}
-
-.report-days-table.el-table .gray-fon {
-  --el-table-tr-bg-color: #f1eeee;
-  cursor: initial;
-}
-
-.report-days-table.el-table .hide-row {
-  display: none;
-}
-
-.report-days-table .cell {
-  line-height: initial;
-  text-align: center;
-  padding: 0;
-}
-
-@media (width < 500px) {
-  .report-days-table {
-    width: 100vw
-  }
-}
-</style>
 <script setup>
 import {Grid} from "@element-plus/icons-vue";
 import {computed, ref} from "vue";

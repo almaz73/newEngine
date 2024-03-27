@@ -21,6 +21,7 @@
         &nbsp; &nbsp;
         <el-select
             style="width: 220px"
+            @change="monthChanged()"
             v-model="period"
             filterable>
           <el-option v-for="item in periodItem" :key="item.value" :label="item.title" :value="item.value"/>
@@ -63,83 +64,41 @@
         @row-click="rowClick"
         highlight-current-row
     >
-      <!--      <el-table-column width="220">-->
-      <!--        <template #default="scope">-->
-      <!--          <span style="float: left; max-width: 142px; margin-left: 4px"-->
-      <!--                :class="{cityName:scope.row.level===1}">-->
-      <!--            {{ scope.row.title }}-->
-      <!--          </span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      <el-table-column width="180">
+        <template #default="scope">
+          <span style="float: left;" :class="{cityName:scope.row.level===1}">
+            {{ scope.row.title }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
-          v-for="(column, index) in tableColumns"
+          v-for="(column, index) in tableColumns.slice(1)"
           :key="index"
-          :label="column.headerTitle"
-      >
+          :label="column.headerTitle">
         <template #default="scope">
-          {{ index === 0 ? scope.row.title : '' }}
-          {{ index === 1 ? scope.row.totalAppealCount : '' }}
-          {{ index === 2 ? scope.row.statusNewCount : '' }}
-          {{ index === 3 ? scope.row.statusInWorkCount : '' }}
-          {{ index === 4 ? scope.row.statusRequestArchiveCount : '' }}
-          {{ index === 5 ? scope.row.statusArchiveCount : '' }}
-
+          {{ index === 0 ? scope.row.totalAppealCount : '' }}
+          {{ index === 1 ? scope.row.statusNewCount : '' }}
+          {{ index === 2 ? scope.row.statusInWorkCount : '' }}
+          {{ index === 3 ? scope.row.statusRequestArchiveCount : '' }}
+          {{ index === 4 ? scope.row.statusArchiveCount : '' }}
+          {{ index === 5 ? columnValue(scope.row, index) : '' }}
+          {{ index === 6 ? columnValue(scope.row, index) : '' }}
+          {{ index === 7 ? columnValue(scope.row, index) : '' }}
+          {{ index === 8 ? columnValue(scope.row, index) : '' }}
+          {{ index === 9 ? columnValue(scope.row, index) : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="ВСЕГО" width="60">
-        <template #default="scope">
-          <span>{{ scope.row.appealTotalCount }}</span><br>
-          <span class="red-text"> {{ scope.row.buyTotalCount }}</span>
-        </template>
-      </el-table-column>
-
     </el-table>
   </main>
 </template>
-<style>
-.report-days-table {
-  margin-top: 24px;
-  width: calc(100vw - 130px);
-  cursor: pointer;
-}
-
-.report-days-table .cityName {
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: left;
-  width: 100%;
-}
-
-.report-days-table.el-table .gray-fon {
-  --el-table-tr-bg-color: #f1eeee;
-  cursor: initial;
-}
-
-.report-days-table.el-table .hide-row {
-  display: none;
-}
-
-.report-days-table .cell {
-  line-height: initial;
-  text-align: center;
-  padding: 0;
-}
-
-@media (width < 500px) {
-  .report-days-table {
-    width: 100vw
-  }
-}
-</style>
 <script setup>
 import {Grid} from "@element-plus/icons-vue";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
 
 const searchFilter = ref({lowCreateDatePeriod: new Date()})
-
 const reportStore = useReportStore()
 const tableData = ref([])
 const tableColumns = ref([])
@@ -159,6 +118,9 @@ const periodItem = [
   {title: '2 месяца назад', value: 30},
 ]
 
+function columnValue(row, ind) {
+  return row.reasons[ind - 5].count + ' (' + (row.reasons[ind - 5].count * 100 / row.totalAppealCount).toFixed(1) + '%)'
+}
 
 const tableRowClassName = ({row}) => {
   let styles = ''
@@ -166,17 +128,12 @@ const tableRowClassName = ({row}) => {
   if (row.level === 2) styles += 'gray-fon '
   return styles
 }
-const columns = computed(() => { // получить массив дней в месяце
-  let days = new Date(searchFilter.value.selectedMonth.getFullYear(),
-      searchFilter.value.selectedMonth.getMonth() + 1, 0).getDate()
-  return Array.from({length: days}, (_, i) => i + 1)
-})
 
 
 function rowClick(row) {
   if (row.level === 1) { // по нажатию родителя скрываем/показываем строку
     tableData.value.map(el => {
-      if (el.parentNumber === row.number) {
+      if (el.number === row.number) {
         if (el.isExpanded) {
           el.isExpanded = false
           if (el.level === 2) el.isShow = false
@@ -199,6 +156,16 @@ function init() {
 
 init()
 
+
+function monthChanged() {
+  let currentMonth = new Date(new Date().setDate(1))
+  if (period.value === 20) currentMonth = new Date(currentMonth.setMonth(currentMonth.getMonth() - 1))
+  if (period.value === 30) currentMonth = new Date(currentMonth.setMonth(currentMonth.getMonth() - 2))
+
+  searchFilter.value.lowCreateDatePeriod = formatDateDDMMYYYY(currentMonth)
+  searchFilter.value.highCreateDatePeriod = formatDateDDMMYYYY(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0))
+}
+
 function toSearch() {
   let S = searchFilter.value
   let params = {
@@ -209,7 +176,6 @@ function toSearch() {
   }
 
   reportStore.getArchiveClients(params).then(res => {
-    console.log(' res.items', res.items)
     tableData.value = res.items.row
     tableColumns.value = res.items.headersList
     if (!tableData.value.length) ElMessage.warning('Нет данных')
