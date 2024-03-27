@@ -129,7 +129,7 @@ function toSearch() {
   }
   reportStore.getCalls(params).then(res => {
     if (!res.report.length) ElMessage.warning('Нет данных')
-    normalizeTableData(res.report)
+    else  normalizeTableData(res.report)
   })
 
 }

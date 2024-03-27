@@ -19,7 +19,7 @@
           Отчет по звонкам сотрудника за месяц
         </div>
         <div>
-          <el-button :icon="Select">По выкупу а/м</el-button>
+          <el-button :icon="Select" @click="changeType('rBuyout')">По выкупу а/м</el-button>
           Отчет по выкупу а/м
         </div>
         <div>
@@ -74,6 +74,7 @@ import rDays from "./rDays.vue";
 import rEmployees from "./rEmployees.vue";
 import rArchive from "./rArchive.vue"
 import rCalls from "./rCalls.vue"
+import rBuyout from "./rBuyout.vue"
 
 const expander = ref(null)
 let tab = null
@@ -81,7 +82,8 @@ const types = {
   'rEmployees': rEmployees,
   'rDays': rDays,
   'rArchive': rArchive,
-  'rCalls': rCalls
+  'rCalls': rCalls,
+  'rBuyout': rBuyout
 }
 
 function changeType(report, memory) {
