@@ -26,6 +26,16 @@ export const useReportStore = defineStore("reportStore", {
             const res = await axios.get(url).then(res => res)
             return res.data
         },
+        async getByuouts(filter: any) {
+            const url: string = '/api/report/call-center/buy'
+            const res = await axios.get(url, {params: filter}).then(res => res)
+            return res.data
+        },
+        async getLocation(filter: any) {
+            const url: string = '/api/location/get/list'
+            const res = await axios.get(url, {params: filter}).then(res => res)
+            return res.data
+        },
 
     }
 })
