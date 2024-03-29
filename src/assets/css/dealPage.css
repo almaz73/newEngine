@@ -57,6 +57,9 @@
 .red-text {
     color: var(--main-color)
 }
+.green-text {
+    color: #3cac71
+}
 
 
 /** Таблица для мобильных экранов*/
