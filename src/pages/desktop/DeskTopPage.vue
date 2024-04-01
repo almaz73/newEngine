@@ -40,14 +40,14 @@
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Основной телефон"
-                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
+                            :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                             @input="telChanged(appeal.lead.person.phone)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
 
                 <el-form-item>
                   <el-input placeholder="Подменный телефон"
-                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
+                            :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.workflow.swapPhone"/>
                 </el-form-item>
 
@@ -78,7 +78,7 @@
                 <el-form-item prop="lead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
-                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
+                            :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
 
@@ -96,7 +96,7 @@
                 <el-form-item prop="buyLead.person['phone']"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
-                            :formatter="(value) =>formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
+                            :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.buyLead.person.phone"/>
                 </el-form-item>
 
@@ -149,6 +149,7 @@
                     prop="workflow.auto['vin']"
                     :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
                   <el-input placeholder="VIN 17 символов" @change="getAutoWithVIN()"
+                            maxlength="17"
                             v-model="appeal.workflow.auto.vin"/>
                 </el-form-item>
 
@@ -237,7 +238,7 @@
               </div>
               <div class="fields__in">
                 <el-form-item prop="workflow.BuyCategory"
-                              :rules="{required: true, message: 'Введите вид выкупа', trigger: ['blur']}"
+                              :rules="{required: true, message: '', trigger: ['blur']}"
                               v-if="appeal.workflow.workflowLeadType===2">
                   <el-select v-model="appeal.workflow.BuyCategory" placeholder="* Вид выкупа">
                     <el-option v-for="item in BuyCategoryTypes"
@@ -314,7 +315,7 @@
           <el-input placeholder="Описание" v-model="appeal.communication.description"/>
 
           <br><br><br>
-          <el-button @click="save()" :disabled="!isDirty">+ Сохранить новое обращение</el-button>
+          <el-button @click="save()">+ Сохранить новое обращение</el-button>
           <br><br>
           <el-button @click="resetForm(form)" :disabled="!isDirty">Сброс</el-button>
         </div>
@@ -339,10 +340,21 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {computed, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {useDesktopStore} from "@/stores/desktopStore";
-import {Workflows, Years, BuyCategoryTypes, CommunicationTypes, GearboxType, EngineType} from '@/utils/globalConstants'
-import {formattingPhone, emailValidate, vetRegNumber, weblink} from "@/utils/globalFunctions";
+import {BuyCategoryTypes, CommunicationTypes, EngineType, GearboxType, Years} from '@/utils/globalConstants'
+import {emailValidate, formattingPhone, vetRegNumber, weblink} from "@/utils/globalFunctions";
 import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
 import ModalParams from "@/pages/desktop/ModalParams.vue";
+
+let Workflows = [{id: 2, value: 2, title: 'Выкуп'},
+  {id: 1, value: 1, title: 'Продажа'},
+  {id: 3, value: 3, title: 'Сервис'},
+  {id: 4, value: 4, title: 'КСО'},
+  {id: 5, value: 5, title: 'Fleet'},
+  {id: 6, value: 6, title: 'Франшиза'},
+  {id: 7, value: 7, title: 'Доп.оборуд.'},
+  {id: 8, value: 8, title: 'Комиссия'},
+  {id: 9, value: 9, title: 'Подбор авто'},
+  {id: 10, value: 10, title: 'Сделка через салон'}]
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -392,9 +404,13 @@ const appealStart = {
 
 const appeal = reactive(JSON.parse(JSON.stringify(appealStart)))
 
+if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
+  Workflows = Workflows.filter(el => el.title !== "Франшиза")
+}
+
 globalStore.getBrands().then(res => brands.value = res)
 globalStore.getColors().then(res => colors.value = res.items)
-globalStore.getOrganizations().then((res) => organizations.value = res.items)
+globalStore.getOrganizations().then(res => organizations.value = res.items)
 globalStore.getPlaces().then(res => {
   cities.value = res.citys
   places.value = res.items

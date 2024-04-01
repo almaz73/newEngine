@@ -106,7 +106,7 @@ export const categoryAutos = [
     {id: 5, name: 'S'},
 ]
 
-export const Workflows = [
+export let Workflows = [
     {id: 2, value: 2, title: 'Выкуп'},
     {id: 1, value: 1, title: 'Продажа'},
     {id: 3, value: 3, title: 'Сервис'},

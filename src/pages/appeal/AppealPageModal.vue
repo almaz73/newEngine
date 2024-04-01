@@ -17,8 +17,7 @@
         </span>
 
         <div style="text-align: right">
-          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-          <el-button type="info" @click="closeModal()">Отмена</el-button>
+          <el-button type="info" @click="closeModal()">Закрыть</el-button>
         </div>
       </span>
     </el-scrollbar>
@@ -47,10 +46,6 @@ const closeModal = () => {
   isEditManagerName.value = false
 }
 
-const save = () => {
-  cb()
-  closeModal()
-}
 
 
 function open(row, cbModal) {

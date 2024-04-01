@@ -50,17 +50,17 @@
   <br>
 
   <small style="display: flex; flex-wrap: wrap; gap: 8px">
-    <span class="nowrap">
+    <span class="nowrap" v-if="appeal.locationName">
       <span class="label-red ">Место выкупа:</span> {{ appeal.locationName }} ({{ appeal.city }})
     </span>
-    <span class="nowrap">
+    <span class="nowrap" v-if="appeal.buyCategoryTitle">
       <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
     </span>
-    <span class="nowrap">
+    <span class="nowrap" v-if="appeal.workflowLeadType">
       <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
     </span>
-    <span class="nowrap">
-          <span class="label-red" v-if="appeal.tradeInDirectionTypeTitle">
+    <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
+          <span class="label-red" >
             Тип направления: {{ appeal.tradeInDirectionTypeTitle }}
           </span>
         </span>
@@ -78,8 +78,12 @@
         <div class="collapse" style="">
           <div class="collapse-left">
 
+            <div><span class="label">Тип клиента: </span>
+              <span v-if="appeal.lead.leadType===10">Физическое лицо</span>
+              <span v-if="appeal.lead.leadType===20">Юридическое лицо</span>
+              &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
+            </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
-            <div><span class="label">Тип клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
               {{ appeal.lead.person.firstName }} {{ appeal.lead.person.middleName }} {{ appeal.lead.person.lastName }}
               &nbsp;
@@ -101,7 +105,10 @@
           <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
             <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}
             </div>
-            <div><span class="label">Пол:</span> {{ appeal.lead.person.gender === 10 ? 'муж.' : 'жен.' }}</div>
+            <div><span class="label">Пол:</span>
+              {{ appeal.lead.person.gender === 10 ? 'муж.' : '' }}
+              {{ appeal.lead.person.gender === 20 ? 'жен.' : '' }}
+            </div>
             <div><span class="label">Место проживания:</span>
               {{ appeal.lead.person.homeAddress.fiasAddress && appeal.lead.person.homeAddress.fiasAddress.value }}
             </div>
@@ -113,7 +120,8 @@
           </div>
         </div>
       </el-collapse-item>
-      <el-collapse-item :title="'&nbsp; Автомобиль: &nbsp; '+appeal.carBrandModel" name="2">
+      <el-collapse-item :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
+                        name="2">
         <div style="padding: 0 30px">
           <span v-if="appeal.carModel"><span class="label">
             Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
@@ -122,8 +130,8 @@
                  style="cursor: pointer">
           <br></span>
 
-          <span class="label">  Год: </span>{{ appeal.yearReleased }}<br>
-          <span class="label">  Статус: </span>
+          <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}<br>
+          <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
           {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
           <br>
         </div>
@@ -140,17 +148,19 @@
 </template>
 
 <style>
-.appealStat{
-  width: 40%; white-space: nowrap
+.appealStat {
+  width: 40%;
+  white-space: nowrap
 }
-.appealStatRight{
+
+.appealStatRight {
   border-left: 5px solid #d34338;
   padding-left: 20px;
   width: 50%
 }
 
-@media (width<500px){
-  .appealStatRight{
+@media (width < 500px) {
+  .appealStatRight {
     width: initial;
     margin: 12px 0;
   }
@@ -162,7 +172,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
-import {AppealStatusTable, Workflows, statuses} from "@/utils/globalConstants";
+import {AppealStatusTable, statuses, Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";

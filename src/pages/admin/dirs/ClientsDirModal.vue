@@ -48,10 +48,10 @@
                     @change="emailValidate(client.person.email)"
                     title="Email" v-model="client.person.email"/>
           <el-input placeholder="Телефон" title="Телефон"
-                    :formatter="(value) =>formattingPhone(value, (val)=>client.person.phone=val)"
+                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
                     v-model="client.person.phone"/>
           <el-input placeholder="Доп.телефон" title="Доп.телефон"
-                    :formatter="(value) =>formattingPhone(value, (val)=>client.person.phone2=val)"
+                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone2=val)"
                     v-model="client.person.phone2"/>
 
 

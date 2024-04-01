@@ -22,21 +22,34 @@ const leftPanelPermissions = {
         'Admin',
         'CallManager',
         'GenManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'PsmManager',
+        'Hostess'
+
     ],
     appeal: [
         'Admin',
         'CallManager',
         'GenManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'Hostess'
     ],
     deal: [
         'Admin',
-        'GenManager'
+        'GenManager',
+        'Hostess'
     ],
     sell: [
         'Admin',
-        'GenManager'
+        'GenManager',
+        'Hostess'
+    ],
+    calendar: [
+        'Admin',
+        'CallManager',
+        'GenManager',
+        'LocalCallEmployee',
+        'Hostess'
     ],
     calls: [
         'Admin'
@@ -44,18 +57,14 @@ const leftPanelPermissions = {
     reports: [
         'Admin',
         'CallManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'Hostess'
     ],
     admin: [
         'Admin',
         'GenManager'
     ],
-    calendar: [
-        'Admin',
-        'CallManager',
-        'GenManager',
-        'LocalCallEmployee'
-    ],
+
     map: [
         'Admin'
     ],

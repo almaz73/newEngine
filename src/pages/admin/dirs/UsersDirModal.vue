@@ -31,10 +31,10 @@
                     @change="emailValidate(user.person.email)"
                     title="Email" v-model="user.person.email"/>
           <el-input placeholder="Телефон" title="Телефон" clearable
-                    :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone=val)"
+                    :formatter="(value) =>value && formattingPhone(value, (val)=>user.person.phone=val)"
                     v-model="user.person.phone"/>
           <el-input placeholder="Доп.телефон" title="Доп.телефон" clearable
-                    :formatter="(value) =>formattingPhone(value, (val)=>user.person.phone2=val)"
+                    :formatter="(value) =>value && formattingPhone(value, (val)=>user.person.phone2=val)"
                     v-model="user.person.phone2"/>
 
           <hr>

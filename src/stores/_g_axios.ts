@@ -20,6 +20,7 @@ axios.interceptors.response.use(resp => resp
         }
 
         if (err.code === "ERR_BAD_REQUEST") {
+            if(err.response.statusText ==="Unauthorized") return ElMessage.error('Вы не авторизовались')
             return ElMessage({message: err.response.data.errorText, type: 'error',})
         }
 
