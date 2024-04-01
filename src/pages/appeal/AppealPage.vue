@@ -62,7 +62,7 @@
       <el-table-column label="Автомобиль">
         <template #default="scope">
           <div class="nowrap"><b> {{ getButType(scope.row.buyWorkflowDealType) }}</b></div>
-          <div class="nowrap"> 🚗 {{ scope.row.carBrandModel }}</div>
+          <div class="nowrap"> {{ scope.row.vin ? '🚗' : '' }} {{ scope.row.carBrandModel }}</div>
           <div class="red-text nowrap">{{ scope.row.vin }}</div>
         </template>
       </el-table-column>
@@ -139,7 +139,7 @@ import AppealFilter from "@/pages/appeal/AppealFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
-import {reactive, ref, computed, onMounted} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 import {buyTypes, EventType} from '@/utils/globalConstants';
 import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
@@ -255,7 +255,7 @@ function openModal(row) {
 
 function openPage(row) {
   appealStore.currentRow = row
-  router.push({name: 'appealEdit', params:{id:row.id}})
+  router.push({name: 'appealEdit', params: {id: row.id}})
 }
 
 onMounted(() => {

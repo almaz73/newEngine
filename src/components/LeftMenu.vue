@@ -251,7 +251,7 @@
 import {useGlobalStore} from '@/stores/globalStore'
 import {ref} from "vue";
 import EventBus from "@/utils/eventBus";
-import {permit} from "@/utils/globalFunctions"
+import {permit} from "@/utils/permit.js"
 
 
 const globalStore = useGlobalStore()

@@ -2,27 +2,27 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div>
+        <div v-if="permit('rEmployees', 'reports')">
           <el-button :icon="Avatar" @click="changeType('rEmployees')">По сотрудникам</el-button>
           Количество обращений и оценок по каждому сотруднику
         </div>
-        <div>
+        <div v-if="permit('rDays', 'reports')">
           <el-button :icon="Calendar" @click="changeType('rDays')">Обращений по дням</el-button>
           Количество обращений к сотрудникам по дням
         </div>
-        <div>
+        <div v-if="permit('rArchive', 'reports')">
           <el-button :icon="Failed" @click="changeType('rArchive')"> Причины архивирования</el-button>
           Отчет по причинам архивирования обращений клиентов
         </div>
-        <div>
+        <div  v-if="permit('rCalls', 'reports')">
           <el-button :icon="PhoneFilled" @click="changeType('rCalls')">По звонкам</el-button>
           Отчет по звонкам сотрудника за месяц
         </div>
-        <div>
+        <div  v-if="permit('rBuyout', 'reports')">
           <el-button :icon="Select" @click="changeType('rBuyout')">По выкупу а/м</el-button>
           Отчет по выкупу а/м
         </div>
-        <div>
+        <div  v-if="permit('rAсtual', 'reports')">
           <el-button :icon="Flag" @click="changeType('rAсtual')"> По актуальности</el-button>
           Отчет актуальности обращений
         </div>
@@ -76,6 +76,7 @@ import rArchive from "./rArchive.vue"
 import rCalls from "./rCalls.vue"
 import rBuyout from "./rBuyout.vue"
 import rAсtual from "./rAсtual.vue"
+import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
 let tab = null

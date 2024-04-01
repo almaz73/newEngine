@@ -138,7 +138,8 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import {decryptPassword, emailValidate, formattingPhone, permit} from "@/utils/globalFunctions";
+import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import {permit} from "@/utils/permit.js";
 import UploadPhoto from "@/components/UploadPhoto.vue";
 
 const isMyKey = ref(null)
