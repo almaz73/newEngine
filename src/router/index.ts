@@ -24,6 +24,10 @@ const router = createRouter({
             name: 'desktop',
             component: () => import('@/pages/desktop/DeskTopPage.vue').catch(val => fail(val))
         }, {
+            path: '/hostess',
+            name: 'hostess',
+            component: () => import('@/pages/desktop/HostesPage.vue').catch(val => fail(val))
+        }, {
             path: '/example',
             name: 'example',
             component: () => import('@/pages/desktop/ExampleForm.vue').catch(val => fail(val))
@@ -65,7 +69,7 @@ const router = createRouter({
             path: '/calendar',
             name: 'calendar',
             component: () => import('@/pages/calendar/CalendarPage.vue').catch(val => fail(val))
-        },{
+        }, {
             path: '/map',
             name: 'map',
             component: () => import('@/components/MapCtrl.vue').catch(val => fail(val))

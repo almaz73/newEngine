@@ -1,4 +1,9 @@
 export const widthMobile = 500;
+
+export const LeadType = [
+    {id: 10, name: 'Физ. лицо'},
+    {id: 20, name: 'Юр. лицо'}
+]
 export const driveTypies = [
     {id: 10, name: 'Передний привод'},
     {id: 20, name: 'Задний привод'},
@@ -172,6 +177,17 @@ export const CommunicationTypes = [
     {id: 15, name: 'Исходящий звонок'},
     {id: 20, name: 'Визит'},
     {id: 30, name: 'Заявка через интернет'}
+]
+
+export const Hostes = [
+    { id: 2, value: 2, title: 'Продать а/м' },
+    { id: 1, value: 1, title: 'Купить а/м' },
+    { id: 8, value: 8, title: 'Оставить а/м на комиссию' },
+    { id: 3, value: 3, title: 'Автосервис' },
+    { id: 4, value: 4, title: 'Оформление кредита/страховки' },
+    { id: 7, value: 7, title: 'Приобрести доп. оборудование' },
+    { id: 9, value: 9, title: 'Подобрать автомобиль' },
+    { id: 10, value: 10, title: 'Оформить сделку через салон' },
 ]
 
 export const BuyCategoryTypes = [

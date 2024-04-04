@@ -14,10 +14,16 @@ export const useDesktopStore = defineStore('desktopStore', {
             return await saveAppealSalon(obj)
         },
         async getLeadsByPhone(tel: string) {
-            return await getLeadsByPhone(tel)
+            return axios.get(`/api/lead/GetLeadsByPhone/` + tel).then((res) => res.data)
         },
         async getAutoVIN(vin: string) {
-            return await getAutoVIN(vin)
+            return await axios.get(`/api/auto/vin/` + vin).then((res) => res.data)
+        },
+        async getHostess() {
+            return await axios.get(`/api/user/get`).then((res) => res.data)
+        },
+        async getDepartmentsByPolicy() {
+            return await axios.get(`/api/OrgElement/GetDepartmentsByPolicy`).then((res) => res.data)
         }
     }
 })
@@ -34,10 +40,3 @@ function saveAppealSalon(obj: any) {
     return axios.post(`/api/salon-deal/add`, obj).then((res) => res)
 }
 
-function getLeadsByPhone(val: string) {
-    return axios.get(`/api/lead/GetLeadsByPhone/` + val).then((res) => res.data)
-}
-
-function getAutoVIN(val: string) {
-    return axios.get(`/api/auto/vin/` + val).then((res) => res.data)
-}

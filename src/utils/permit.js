@@ -24,8 +24,8 @@ const leftPanelPermissions = {
         'GenManager',
         'LocalCallEmployee',
         'PsmManager',
-        'Hostess'
-
+        'Hostess',
+        'AnalystEmployee'
     ],
     appeal: [
         'Admin',
@@ -36,8 +36,7 @@ const leftPanelPermissions = {
     ],
     deal: [
         'Admin',
-        'GenManager',
-        'Hostess'
+        'GenManager'
     ],
     sell: [
         'Admin',
@@ -49,7 +48,8 @@ const leftPanelPermissions = {
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
-        'Hostess'
+        'Hostess',
+        'AnalystEmployee'
     ],
     calls: [
         'Admin'
@@ -58,7 +58,8 @@ const leftPanelPermissions = {
         'Admin',
         'CallManager',
         'LocalCallEmployee',
-        'Hostess'
+        'Hostess',
+        'AnalystEmployee'
     ],
     admin: [
         'Admin',

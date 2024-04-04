@@ -35,7 +35,16 @@
         @select="select"
         popper-effect="light"
     >
-      <RouterLink to="/desktop" v-if="permit('desktop')">
+      <RouterLink to="/hostess" v-if="permit('desktop') && globalStore.account.role==='Hostess'" >
+        <el-menu-item index="1">
+          <el-icon>
+            <img alt="Рабочий стол" src="@/assets/icons/ic-desktop-windows-black-18-px.png" height="34" width="34"/>
+          </el-icon>
+          <template #title>Рабочий стол</template>
+        </el-menu-item>
+      </RouterLink>
+
+      <RouterLink to="/desktop" v-if="permit('desktop') && globalStore.account.role!=='Hostess'">
         <el-menu-item index="1">
           <el-icon>
             <img alt="Рабочий стол" src="@/assets/icons/ic-desktop-windows-black-18-px.png" height="34" width="34"/>
