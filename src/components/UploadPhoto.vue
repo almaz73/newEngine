@@ -5,19 +5,18 @@
       :show-file-list="false"
       :auto-upload="true"
       :http-request="uploadFiles"
-      @click="start($event)"
   >
-   <span class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
-      <span class="photo-upload__btns">
-<!--        <span @click="handleDownload(file)">-->
-<!--          <el-icon><Download/></el-icon>-->
-<!--        </span>-->
-        <span @click="handlePictureCardPreview(file)">
+    <span class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
+      <span class="photo-upload__btns" :style="{pointerEvents:isClickparent?'none':'auto'}">
+        <span @mouseover="uploadFocus" @mouseout="uploadBlur">
+          <el-icon><Download/></el-icon>
+        </span>
+        <span @click="handlePictureCardPreview()">
           <el-icon><zoom-in/></el-icon>
         </span>
-<!--        <span @click="handleRemove(file)">-->
-<!--          <el-icon><Delete/></el-icon>-->
-<!--        </span>-->
+        <span @click="handleRemove()">
+          <el-icon><Delete/></el-icon>
+        </span>
       </span>
    </span>
 
@@ -32,69 +31,6 @@
   </el-dialog>
 </template>
 
-<style scoped>
-.photo-upload {
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  margin: 10px;
-  display: flex;
-  pointer-events: none;
-  opacity: 1;
-  justify-content: center;
-  align-items: center;
-}
-
-.photo-upload__btns {
-  pointer-events: auto;
-  position: absolute;
-  background: #ffffff99;
-  display: flex;
-  gap: 12px;
-  padding: 5px 5px 0;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.el-upload:hover .photo-upload__btns {
-  opacity: 1;
-}
-
-.avatar-uploader .avatar {
-  width: 150px;
-  height: 150px;
-  display: block;
-}
-</style>
-<style>
-.el-upload {
-  width: 126px;
-  height: 126px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 126px;
-  height: 126px;
-  text-align: center;
-}
-</style>
 
 <script setup>
 
@@ -108,7 +44,7 @@ const photoUrl = ref(null)
 
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
-
+const isClickparent = ref(false)
 
 
 const handlePictureCardPreview = () => {
@@ -117,7 +53,13 @@ const handlePictureCardPreview = () => {
   dialogVisible.value = true
 }
 
-const handleDownload = () => window.location.assign(photoUrl.value)
+const handleRemove = () => {
+  photoUrl.value = null
+  emits('setNewPhoto', {fbase64: null, name: ''})
+}
+
+const uploadFocus = () => isClickparent.value = true
+const uploadBlur = () => isClickparent.value = false
 
 
 watchEffect(() => photoUrl.value = props.url)
@@ -132,17 +74,7 @@ const checkBeforeUpload = (rawFile) => {
   }
 }
 
-function start(event, val) {
-  console.log('event', event)
-
-  event.stopPropagation()
-  console.log(' - - start val', val)
-  return false
-
-}
-
 function uploadFiles(obj) {
-  console.log('-->>>obj', obj)
   if (checkBeforeUpload(obj.file)) return false
   const f = obj.file;
 

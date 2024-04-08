@@ -165,14 +165,16 @@ let id = Math.floor(Math.random() * 100000); // для правильного з
 
 function escapeHandler(e) {
   if (e.key === 'Escape') {
-    let currentId = globalStore.listOpenModals[globalStore.listOpenModals.length-1]
+    if (document.querySelector('.el-dialog')) return false // Не закрываемся, если открыта панель от просмотра фото
+    let currentId = globalStore.listOpenModals[globalStore.listOpenModals.length - 1]
     if (currentId === id) closeModal()
   }
 }
-onMounted(()=>{
+
+onMounted(() => {
   globalStore.listOpenModals.push(id)
   document.addEventListener('keydown', escapeHandler);
 })
-onUnmounted(()=>document.removeEventListener('keydown', escapeHandler))
+onUnmounted(() => document.removeEventListener('keydown', escapeHandler))
 
 </script>
