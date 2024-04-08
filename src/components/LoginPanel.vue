@@ -1,7 +1,7 @@
 <template>
   <div class="account_window">
     <div class="account_window__content">
-      <img alt="photo" class="account_window__photo" src="@/assets/icons/icon-face.png"/>
+      <img alt="photo" class="account_window__photo" :src="loginPhotoSrc"/>
       <div class="account_window__text">
         <img class="settings"
              alt=""
@@ -50,12 +50,13 @@ import {useGlobalStore} from "@/stores/globalStore";
 import router from "@/router";
 import EventBus from '@/utils/eventBus'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
-import { ref } from "vue";
+import {computed, ref} from "vue";
 
 
 const emits = defineEmits(['closeLoginPanel'])
 const globalStore = useGlobalStore()
 const UserModal = ref(null)
+const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/assets/icons/icon-face.png")
 
 function clearCash() {
   localStorage.clear()

@@ -23,8 +23,7 @@
       <div>{{ globalStore.account.roleTitle }}</div>
     </div>
 
-
-    <img src="@/assets/icons/icon-face.png"
+    <img :src="loginPhotoSrc"
          @click="isAccountShow=true"
          alt="photo"
          class="icon-face"/>
@@ -34,13 +33,15 @@
 </template>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import LoginPanel from "@/components/LoginPanel.vue";
 import StepsCtrl from "@/components/StepsCtrl.vue";
 
 const isOnline = ref(navigator.onLine)
 const globalStore = useGlobalStore()
 const isAccountShow = ref(false)
+const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/assets/icons/icon-face.png")
+
 
 function showMenu() {
   globalStore.isShowPanel = !globalStore.isShowPanel

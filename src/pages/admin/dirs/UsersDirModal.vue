@@ -13,6 +13,7 @@
         <el-form ref="form" :model="user" @change="isDirty=true">
           <div class="photo-place">
             <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
+<!--            <UploadPhoto2 @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>-->
           </div>
           <el-input
               readonly
@@ -141,6 +142,7 @@ import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue"
 import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
 import {permit} from "@/utils/permit.js";
 import UploadPhoto from "@/components/UploadPhoto.vue";
+import UploadPhoto2 from "@/components/UploadPhoto2.vue";
 
 const isMyKey = ref(null)
 const globalStore = useGlobalStore()
@@ -262,6 +264,7 @@ function checking() {
 }
 
 function setNewPhoto(file) {
+  if(!file) return  user.value.avatar.url =''
   user.value.avatar.file = file.fbase64.split('base64,')[1]
   user.value.avatar.name = file.name
 }

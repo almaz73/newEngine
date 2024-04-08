@@ -5,15 +5,63 @@
       :show-file-list="false"
       :auto-upload="true"
       :http-request="uploadFiles"
+      @click="start($event)"
   >
+   <span class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
+      <span class="photo-upload__btns">
+<!--        <span @click="handleDownload(file)">-->
+<!--          <el-icon><Download/></el-icon>-->
+<!--        </span>-->
+        <span @click="handlePictureCardPreview(file)">
+          <el-icon><zoom-in/></el-icon>
+        </span>
+<!--        <span @click="handleRemove(file)">-->
+<!--          <el-icon><Delete/></el-icon>-->
+<!--        </span>-->
+      </span>
+   </span>
+
     <img alt="" v-if="photoUrl" :src="photoUrl" class="avatar"/>
     <el-icon v-else class="avatar-uploader-icon">
       <Plus/>
     </el-icon>
   </el-upload>
+
+  <el-dialog v-model="dialogVisible">
+    <img :src="dialogImageUrl" alt="Preview Image"/>
+  </el-dialog>
 </template>
 
 <style scoped>
+.photo-upload {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  margin: 10px;
+  display: flex;
+  pointer-events: none;
+  opacity: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-upload__btns {
+  pointer-events: auto;
+  position: absolute;
+  background: #ffffff99;
+  display: flex;
+  gap: 12px;
+  padding: 5px 5px 0;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.el-upload:hover .photo-upload__btns {
+  opacity: 1;
+}
+
 .avatar-uploader .avatar {
   width: 150px;
   height: 150px;
@@ -51,12 +99,26 @@
 <script setup>
 
 import {ElMessage} from "element-plus";
-import {Plus} from "@element-plus/icons-vue";
+import {Delete, Download, Plus, ZoomIn} from "@element-plus/icons-vue";
 import {ref, watchEffect} from "vue";
 
 const props = defineProps(['url'])
 const emits = defineEmits(['setNewPhoto'])
 const photoUrl = ref(null)
+
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+
+
+const handlePictureCardPreview = () => {
+  if (!photoUrl.value) return false
+  dialogImageUrl.value = photoUrl.value
+  dialogVisible.value = true
+}
+
+const handleDownload = () => window.location.assign(photoUrl.value)
+
 
 watchEffect(() => photoUrl.value = props.url)
 
@@ -70,7 +132,17 @@ const checkBeforeUpload = (rawFile) => {
   }
 }
 
+function start(event, val) {
+  console.log('event', event)
+
+  event.stopPropagation()
+  console.log(' - - start val', val)
+  return false
+
+}
+
 function uploadFiles(obj) {
+  console.log('-->>>obj', obj)
   if (checkBeforeUpload(obj.file)) return false
   const f = obj.file;
 
