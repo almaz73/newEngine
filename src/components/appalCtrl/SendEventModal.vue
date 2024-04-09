@@ -20,7 +20,7 @@
       <el-button type="success" style="padding: 22px 12px; border: none"
                  :style="{background: model.id===event.type?'#999':''}"
                  v-for="(model, ind) in EventTypes" :key="ind">
-        <img :src="'/src/assets/icons/'+eventTypeButtonClass(model)" alt=""
+        <img :src="'/v2/src/assets/icons/'+eventTypeButtonClass(model)" alt=""
              @click="changeEventType(model.id)"/>
       </el-button>
     </div>

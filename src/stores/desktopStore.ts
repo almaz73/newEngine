@@ -19,12 +19,27 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getAutoVIN(vin: string) {
             return await axios.get(`/api/auto/vin/` + vin).then((res) => res.data)
         },
-        async getHostess() {
+        async getHostessUser() {
             return await axios.get(`/api/user/get`).then((res) => res.data)
         },
         async getDepartmentsByPolicy() {
             return await axios.get(`/api/OrgElement/GetDepartmentsByPolicy`).then((res) => res.data)
+        },
+        async getLocation() {
+            return await axios.get(`/api/location`).then((res) => res.data)
+        },
+        async getByPolicy(roles: Array) {
+            return axios.get(`/api/user/list/policy` , {params: roles}).then((res) => res.data)
+        },
+
+        //api/user/list/policy?roles=50&roles=51&roles=52&roles=20&roles=21&roles=120&roles=150
+        async getHostess() {
+            return await axios.get(`/api/appeals/hostess/list?date=08.04.2024&limit=15&mainFilter=30&offset=0`).then((res) => res.data)
         }
+
+
+
+        //https://dev.autonet.pro/api/appeals/hostess/list?date=08.04.2024&limit=15&mainFilter=30&offset=0
     }
 })
 

@@ -76,8 +76,8 @@ const calendarStore = useCalendarStore()
 const tableData = ref([])
 const changedDate = ref(new Date())
 const calendar = ref<CalendarInstance>()
-const showExpired = ref(true)
-const showVisitEvents = ref(true)
+const showExpired = ref(false)
+const showVisitEvents = ref(false)
 const days = ref({})
 const selectDate = (val: CalendarDateType) => {
   if (!calendar.value) return

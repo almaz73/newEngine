@@ -30,7 +30,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import AppealEditFields from "@/pages/appeal/AppealEditFields.vue";
-import {Plus} from "@element-plus/icons-vue";
+
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()

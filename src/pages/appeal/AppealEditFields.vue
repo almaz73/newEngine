@@ -79,8 +79,8 @@
           <div class="collapse-left">
 
             <div><span class="label">Тип клиента: </span>
-              <span v-if="appeal.lead.leadType===10">Физическое лицо</span>
-              <span v-if="appeal.lead.leadType===20">Юридическое лицо</span>
+              <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
+              <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
               &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
