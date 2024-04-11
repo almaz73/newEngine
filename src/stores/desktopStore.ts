@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
 export const useDesktopStore = defineStore('desktopStore', {
     state: () => ({}),
@@ -29,17 +30,15 @@ export const useDesktopStore = defineStore('desktopStore', {
             return await axios.get(`/api/location`).then((res) => res.data)
         },
         async getByPolicy(roles: Array) {
-            return axios.get(`/api/user/list/policy` , {params: roles}).then((res) => res.data)
+            return axios.get(`/api/user/list/policy`, {params: roles}).then((res) => res.data)
         },
-
-        //api/user/list/policy?roles=50&roles=51&roles=52&roles=20&roles=21&roles=120&roles=150
         async getHostess() {
-            return await axios.get(`/api/appeals/hostess/list?date=08.04.2024&limit=15&mainFilter=30&offset=0`).then((res) => res.data)
+            const date = formatDateDDMMYYYY(new Date())
+            return await axios.get(`/api/appeals/hostess/list?date=${date}&limit=30&mainFilter=10&offset=0`).then((res) => res.data)
+        },
+        async saveHostess(params) {
+            return await axios.post(`/api/workflow/`, params).then((res) => res.data)
         }
-
-
-
-        //https://dev.autonet.pro/api/appeals/hostess/list?date=08.04.2024&limit=15&mainFilter=30&offset=0
     }
 })
 

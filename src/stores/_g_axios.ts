@@ -23,7 +23,9 @@ axios.interceptors.response.use(resp => resp
             if(err.response.statusText ==="Unauthorized") return ElMessage.error('Вы не авторизовались')
             return ElMessage({message: err.response.data.errorText, type: 'error',})
         }
-
+        if (err.request.status === 404) {
+            ElMessage({message: 'Ошибка 404. Не найдено ', type: 'warning',})
+        }
         if (err.request.status === 500) {
             ElMessage({message: 'Ошибка 500. Внутрення ошибка сервера', type: 'warning',})
         }

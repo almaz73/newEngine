@@ -71,7 +71,7 @@
             <label class="label l_300">Вид коммуникации</label>
             <el-select
                 style="width: 220px"
-                v-model="currentUser.communicationType"
+                v-model="newWorkflow.type"
                 filterable>
               <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
@@ -99,8 +99,17 @@
             </el-select>
           </div>
 
-          <div>
+          <div v-if="newWorkflow.workflowLeadType === 2">
+            <label class="label l_300">Вид выкупа</label>
+            <el-select
+                style="width: 220px"
+                v-model="newWorkflow.buyCategory"
+                filterable>
+              <el-option v-for="item in buyCategoryTypes" :key="item.id" :label="item.title" :value="item.id"/>
+            </el-select>
+          </div>
 
+          <div>
             <label class="label l_300">Марка</label>
             <el-select
                 style="width: 220px"
@@ -127,8 +136,9 @@
             <el-select
                 style="width: 220px"
                 v-model="newWorkflow.locationId"
+                @change="changeLocation()"
                 filterable>
-              <el-option v-for="item in storages" :key="item.value" :label="item.title" :value="item.value"/>
+              <el-option v-for="item in storages" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </div>
 
@@ -138,7 +148,7 @@
                 style="width: 220px"
                 v-model="newWorkflow.managerId"
                 filterable>
-              <el-option v-for="item in managers" :key="item.value" :label="item.title" :value="item.value"/>
+              <el-option v-for="item in managers" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </div>
 
@@ -200,7 +210,13 @@
           {{ scope.row.client }}<br> {{ scope.row.clientPhone ? '☎:' + formattingPhone(scope.row.clientPhone) : '' }}
         </template>
       </el-table-column>
-      <el-table-column label="Менеджер" prop="manager"/>
+      <el-table-column label="Менеджер">
+        <template #default="scope">
+          <span style="white-space: nowrap; overflow: hidden" :title="scope.row.manager">
+            {{ scope.row.manager }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="Авто" prop="auto"/>
       <el-table-column label="Обращение" prop="workflowLeadType"/>
       <el-table-column label="Кто создал" prop="created"/>
@@ -248,7 +264,7 @@ import {formattingPhone} from "@/utils/globalFunctions";
 import {ElMessageBox} from "element-plus";
 
 const globalStore = useGlobalStore()
-const newWorkflow = ref({lead: {person: {}, leadType: 10}, workflowLeadType:0})
+const newWorkflow = ref({lead: {person: {}, leadType: 10}, workflowLeadType: null})
 const desktopStore = useDesktopStore()
 const currentUser = ref([])
 const isShowFio = ref(false)
@@ -261,17 +277,17 @@ const storages = ref([])
 const isFieldsOpen = ref(false)
 const isFilterOpen = ref(false)
 const userStorage = ref(null)
+const buyCategoryTypes = [{id: 10, title: 'Свободный выкуп'}, {id: 20, title: 'Выездной выкуп'}]
 const allstorages = []
 let defaultLocation = null
 let allmanagers = [];
 
 globalStore.getBrands().then(res => brands.value = res)
-desktopStore.getDepartmentsByPolicy().then(res => {
-  console.log('res--', res)
-  storages.value = res
-})
+desktopStore.getDepartmentsByPolicy().then(res => storages.value = res)
 
 function changeFio(sentence) {
+  sentence = sentence.trim()
+  sentence = sentence.replaceAll('  ', '')
   let words = sentence.split(' ')
   newWorkflow.value.lead.person.firstName = words[0]
   newWorkflow.value.lead.person.lastName = words[1]
@@ -282,11 +298,16 @@ function changeBrand(id) {
   globalStore.getModels(id).then((res) => models.value = res)
 }
 
-function getDefaultLocationTitle() {
-  console.log('getDefaultLocationTitle - - ')
+function changeLocation() {
+  managers.value = [];
+  allmanagers.forEach(value => {
+    if (value.storage === newWorkflow.value.locationId) managers.value.push(value);
+  })
+}
 
+function getDefaultLocationTitle() {
   storages.value.forEach(value => {
-    if (value.id == userStorage.value) {
+    if (value.id === userStorage.value) {
       newWorkflow.value.locationTitle = value.title;
     }
   })
@@ -298,13 +319,13 @@ desktopStore.getHostessUser().then(res => {
 
   desktopStore.getLocation().then(data => {
     data.items.forEach(value => {
-      if (value.type == 10 || value.type == 60) allstorages.push(value);
+      if (value.type === 10 || value.type === 60) allstorages.push(value);
     })
 
     defaultLocation = localStorage.getItem('hostesDesktopDefaultLocationId');
 
     if (defaultLocation !== undefined) {
-      newWorkflow.value.locationId = defaultLocation;
+      // newWorkflow.value.locationId = defaultLocation;
       getDefaultLocationTitle();
     } else if (currentUser.value.location.id !== null) {
       localStorage.setItem('hostesDesktopDefaultLocationId', currentUser.value.location.id);
@@ -317,83 +338,75 @@ desktopStore.getHostessUser().then(res => {
   })
 })
 
-desktopStore.getHostess().then(res => {
-  tableData.value = res.items
-  tableData.value.map(el => {
-    let hh = new Date(el.event.created).getHours()
-    let mm = new Date(el.event.created).getMinutes()
-    el.hours = ('0' + hh).slice(-2) + ":" + ('0' + mm).slice(-2)
-    return el
+function getData() {
+  desktopStore.getHostess().then(res => {
+    tableData.value = res.items
+    tableData.value.map(el => {
+      let hh = new Date(el.event.created).getHours()
+      let mm = new Date(el.event.created).getMinutes()
+      el.hours = ('0' + hh).slice(-2) + ":" + ('0' + mm).slice(-2)
+      return el
+    })
   })
-})
+}
+
+getData()
+
 
 function changeWorkflowLeadType() {
-  console.log('changeWorkflowLeadType')
   managers.value = [];
   storages.value = [];
-
-  console.log('allstorages', allstorages)
-
-  allstorages.forEach(storage=>{
-    console.log( ' ==storage', storage )
+  allstorages.forEach(storage => {
     if (
-        newWorkflow.value.workflowLeadType == 2 ||
-        newWorkflow.value.workflowLeadType == 5 ||
-        newWorkflow.value.workflowLeadType == 8
+        newWorkflow.value.workflowLeadType === 2 ||
+        newWorkflow.value.workflowLeadType === 5 ||
+        newWorkflow.value.workflowLeadType === 8
     ) {
-      if (storage.type == 10) {
+      if (storage.type === 10) {
         storages.value.push(storage);
       }
     } else if (
-        newWorkflow.value.workflowLeadType == 1 ||
-        newWorkflow.value.workflowLeadType == 4 ||
-        newWorkflow.value.workflowLeadType == 7 ||
-        newWorkflow.value.workflowLeadType == 9
+        newWorkflow.value.workflowLeadType === 1 ||
+        newWorkflow.value.workflowLeadType === 4 ||
+        newWorkflow.value.workflowLeadType === 7 ||
+        newWorkflow.value.workflowLeadType === 9
     ) {
-      if (storage.type == 60) {
+      if (storage.type === 60) {
         storages.value.push(storage);
       }
-    } else if (newWorkflow.value.workflowLeadType == 3) {
-      if (storage.type == 30 || storage.type == 40) {
+    } else if (newWorkflow.value.workflowLeadType === 3) {
+      if (storage.type === 30 || storage.type === 40) {
         storages.value.push(storage);
       }
     }
   })
-
-  console.log('==storages.value', storages.value)
-
-  console.log('-----newWorkflow', newWorkflow)
-
-  // _.forEach($scope.allstorages, function (storage) {
-  //
-  // });
 }
 
 function check() {
   /*    фиксим космическое влияние на код (глюк)    */
   var appeal = newWorkflow.value;
   let errors = []
-  if (appeal.lead.leadType == 10 || appeal.lead.leadType == 20) {
+  if (appeal.lead.leadType === 10 || appeal.lead.leadType === 20) {
     errors = [];
-    if (appeal.locationId == null || appeal.locationId == 0) errors.push('Не указано место хранения');
+    if (appeal.locationId == null || appeal.locationId === 0) errors.push('Не указано место хранения');
     if (appeal.type == null) errors.push('Не указан вид коммуникации');
-    if (appeal.lead.leadType == 10 && appeal.lead.person.firstName == null) errors.push('Не указано имя клиента');
+    if (appeal.lead.leadType === 10 && appeal.lead.person.firstName == null) errors.push('Не указано имя клиента');
     if (appeal.locationId == null) errors.push('Не не выбран ДЦ');
-    if (appeal.workflowLeadType == 2 && appeal.buyCategory == null) errors.push('Не выбран вид выкупа');
+    if (appeal.workflowLeadType === 2 && appeal.buyCategory == null) errors.push('Не выбран вид выкупа');
     if (appeal.managerId == null) errors.push('Не указан продавец');
     if (appeal.workflowLeadType == null) errors.push('Не указан тип обращения');
-    if (appeal.lead.leadType == 20) {
+    if (appeal.lead.leadType === 20) {
       if (!appeal.lead.legalEntity.name) errors.push('Не указано наименование организации');
       if (!appeal.lead.legalEntity.person.phone) errors.push('Не указан контактный телефон');
       if (!appeal.lead.legalEntity.person.firstName) errors.push('Не указано имя клиента');
       if (!appeal.lead.legalEntity.inn) errors.push('Не указан ИНН');
-      if (appeal.lead.legalEntity.inn && (appeal.lead.legalEntity.inn.length != 10 && appeal.lead.legalEntity.inn.length != 12)) errors.push('Неверное значение ИНН');
+      if (appeal.lead.legalEntity.inn && (appeal.lead.legalEntity.inn.length !== 10 && appeal.lead.legalEntity.inn.length !== 12)) errors.push('Неверное значение ИНН');
     }
 
     if (errors.length) {
       let html = ''
       errors.forEach(el => html += `<div> &nbsp; &nbsp;  &nbsp;  👉 ${el}</div>`)
-      ElMessageBox.alert(html, 'Ошибка добавления', {dangerouslyUseHTMLString: true})
+      ElMessageBox.alert(html, 'Ошибка добавления', {dangerouslyUseHTMLString: true, closeOnPressEscape: true})
     }
   }
   return errors.length
@@ -401,7 +414,11 @@ function check() {
 
 function save() {
   if (check()) return false
-  console.log('СОХРАНЯЕМСЯ')
+  console.log('СОХРАНЯЕМСЯ  = ', newWorkflow.value)
+  desktopStore.saveHostess(newWorkflow.value).then(res => {
+    console.log('res', res)
+    getData()
+  })
 }
 
 onMounted(() => {
