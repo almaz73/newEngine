@@ -27,39 +27,69 @@
             </el-select>
           </div>
 
+          <div v-if="!isFizLitso">
+            <div style="display: flex; align-items: center">
+              <label class="label l_300">ИНН *</label>
+              <div style="white-space: nowrap;">
+                <el-input v-model="newWorkflow.lead.legalEntity.inn"
+                          maxlength="12"
+                          style=" margin-right: 5px" @input="changeFio"/>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center">
+              <label class="label l_300">Наименование организации *</label>
+              <div style="white-space: nowrap;">
+                <el-input v-model="newWorkflow.lead.legalEntity.name" style=" margin-right: 5px" @input="changeFio"/>
+              </div>
+            </div>
+          </div>
+
           <div style="display: flex; align-items: center">
-            <label class="label l_300">Клиент</label>
+            <label class="label l_300">Клиент *</label>
             <div style="white-space: nowrap;">
-              <el-input v-model="newWorkflow.lead.personFullTitle" style=" margin-right: 5px" @input="changeFio"/>
+              <el-input v-if="isFizLitso" v-model="newWorkflow.lead.personFullTitle" style=" margin-right: 5px"
+                        @input="changeFio"/>
+              <el-input v-if="!isFizLitso" v-model="newWorkflow.lead.legalEntity.personFullTitle"
+                        style=" margin-right: 5px" @input="changeFio"/>
               <el-button @click="isShowFio=!isShowFio" :icon="MoreFilled"/>
             </div>
           </div>
           <div>
             <label class="label l_300">Контактный телефон</label>
-            <el-input placeholder="Телефон" title="Телефон" clearable
+            <el-input v-if="isFizLitso"
+                      placeholder="Телефон" title="Телефон" clearable
                       :formatter="(value) =>value && formattingPhone(value, (val)=>newWorkflow.lead.person.phone=val)"
                       v-model="newWorkflow.lead.person.phone"/>
+            <el-input v-if="!isFizLitso"
+                      placeholder="Телефон" title="Телефон" clearable
+                      :formatter="(value) =>value && formattingPhone(value, (val)=>newWorkflow.lead.legalEntity.person.phone=val)"
+                      v-model="newWorkflow.lead.legalEntity.person.phone"/>
           </div>
 
-          <div>
+          <div v-if="isFizLitso">
             <label class="label l_300">Примечание</label>
             <el-input v-model="newWorkflow.description" type="textarea" style="width: 250px"/>
           </div>
 
 
+          <br>
           <div v-if="isShowFio">
             <div>
-              <label class="label l_300">Имя</label>
-              <el-input v-model="newWorkflow.lead.person.firstName"/>
+              <label class="label l_300">Имя *</label>
+              <el-input v-if="isFizLitso" v-model="newWorkflow.lead.person.firstName"/>
+              <el-input v-if="!isFizLitso" v-model="newWorkflow.lead.legalEntity.person.firstName"/>
             </div>
 
             <div>
               <label class="label l_300">Фамилия</label>
-              <el-input v-model="newWorkflow.lead.person.lastName"/>
+              <el-input v-if="isFizLitso" v-model="newWorkflow.lead.person.lastName"/>
+              <el-input v-if="!isFizLitso" v-model="newWorkflow.lead.legalEntity.person.lastName"/>
+
             </div>
             <div>
               <label class="label l_300">Отчество</label>
-              <el-input v-model="newWorkflow.lead.person.middleName"/>
+              <el-input v-if="isFizLitso" v-model="newWorkflow.lead.person.middleName"/>
+              <el-input v-if="!isFizLitso" v-model="newWorkflow.lead.legalEntity.person.middleName"/>
             </div>
           </div>
 
@@ -152,14 +182,9 @@
             </el-select>
           </div>
 
-          <div>
+          <div style="line-height: 2">
             <label class="label l_300">Статус клиента</label>
-            <el-select
-                style="width: 220px"
-                v-model="currentUser.dealType"
-                filterable>
-              <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
-            </el-select>
+            {{ newWorkflow.clientStatus }}
           </div>
 
 
@@ -185,7 +210,7 @@
       </span>
       <span style="float: right" v-if="isFieldsOpen">
         <el-button type="danger" :icon="Plus" @click="save()">Добавить </el-button>
-        <el-button type="info">Очистить</el-button>
+        <el-button type="info" @click="init()">Очистить</el-button>
       </span>
     </div>
 
@@ -202,7 +227,13 @@
         row-key="id"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
       <el-table-column label="↑" prop="hours" width="50"/>
-      <el-table-column label="↓" prop="onCommissionProc" width="40"/>
+      <el-table-column label="↓" prop="onCommissionProc" width="40">
+        <template #default="scope">
+          <span @click="fillForm(scope.row)">
+            <el-icon style="color: red; font-size: larger; cursor: pointer"><RefreshLeft/></el-icon>
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="Дата" prop="date"/>
       <el-table-column label="Вид клиента" prop="clientStatus"/>
       <el-table-column label="Клиент" prop="client">
@@ -222,10 +253,14 @@
       <el-table-column label="Кто создал" prop="created"/>
 
       <el-table-column label="Тест-драйв">
-        <template #default="scope">{{ scope.row.testDrive ? '✅' : '' }}</template>
+        <template #default="scope">
+          <el-icon class="galka" v-if="scope.row.testDrive"><Select/></el-icon>
+        </template>
       </el-table-column>
       <el-table-column label="Презентация">
-        <template #default="scope">{{ scope.row.presentation ? '✅' : '' }}</template>
+        <template #default="scope">
+          <el-icon class="galka" v-if="scope.row.presentation"><Select/></el-icon>
+        </template>
       </el-table-column>
     </el-table>
   </main>
@@ -252,24 +287,34 @@
   }
 }
 
+.galka svg {
+  color: green;
+  pointer-events: none;
+}
+
 </style>
 
 <script setup>
 import {useGlobalStore} from "@/stores/globalStore";
+import {useAppealStore} from "@/stores/appealStore";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {CommunicationTypes, Hostes, LeadType} from "@/utils/globalConstants";
-import {onMounted, ref} from "vue";
-import {MoreFilled, Plus} from "@element-plus/icons-vue";
+import {computed, onMounted, ref} from "vue";
+import {MoreFilled, Plus, RefreshLeft, Select} from "@element-plus/icons-vue";
 import {formattingPhone} from "@/utils/globalFunctions";
 import {ElMessageBox} from "element-plus";
 
 const globalStore = useGlobalStore()
-const newWorkflow = ref({lead: {person: {}, leadType: 10}, workflowLeadType: null})
+const appealStore = useAppealStore()
+const newWorkflow = ref(null)
+const newWorkflowInit = {
+  lead: {person: {}, leadType: 10, legalEntity: {inn: null, person: {}}},
+  workflowLeadType: null
+}
 const desktopStore = useDesktopStore()
 const currentUser = ref([])
 const isShowFio = ref(false)
 const tableData = ref([])
-const dealTypes = ref([])
 const managers = ref([])
 const brands = ref([])
 const models = ref([])
@@ -281,6 +326,8 @@ const buyCategoryTypes = [{id: 10, title: 'Свободный выкуп'}, {id:
 const allstorages = []
 let defaultLocation = null
 let allmanagers = [];
+const isFizLitso = computed(() => newWorkflow.value.lead.leadType === 10)
+const lead = ref({personFullTitle: null, clientStatusTooltip: 'не указано'});
 
 globalStore.getBrands().then(res => brands.value = res)
 desktopStore.getDepartmentsByPolicy().then(res => storages.value = res)
@@ -289,13 +336,43 @@ function changeFio(sentence) {
   sentence = sentence.trim()
   sentence = sentence.replaceAll('  ', '')
   let words = sentence.split(' ')
-  newWorkflow.value.lead.person.firstName = words[0]
-  newWorkflow.value.lead.person.lastName = words[1]
-  newWorkflow.value.lead.person.middleName = words[2]
+
+  if (newWorkflow.value.lead.leadType === 10) {
+    newWorkflow.value.lead.person.firstName = words[0]
+    newWorkflow.value.lead.person.lastName = words[1]
+    newWorkflow.value.lead.person.middleName = words[2]
+  } else {
+    newWorkflow.value.lead.legalEntity.person.firstName = words[0]
+    newWorkflow.value.lead.legalEntity.person.lastName = words[1]
+    newWorkflow.value.lead.legalEntity.person.middleName = words[2]
+  }
 }
 
 function changeBrand(id) {
   globalStore.getModels(id).then((res) => models.value = res)
+}
+
+function fillForm(val) {
+  isFieldsOpen.value = false
+  init()
+  appealStore.getAppeal(val.appealId).then(res => {
+    newWorkflow.value = res
+
+    if (res.lead.leadType === 20) {
+      newWorkflow.value.lead.legalEntity.personFullTitle = (res.lead.legalEntity.person.lastName || '') + ' ' +
+          (res.lead.legalEntity.person.firstName || '') + ' ' + (res.lead.legalEntity.person.middleName || '')
+    } else {
+      newWorkflow.value.lead.personFullTitle = (res.lead.person.lastName || '') + ' ' +
+          (res.lead.person.firstName || '') + ' ' + (res.lead.person.middleName || '')
+    }
+
+    newWorkflow.value.carBrandId = brands.value.find(el => el.name === res.carBrand).id
+    if (newWorkflow.value.carBrandId) changeBrand(newWorkflow.value.carBrandId)
+    changeWorkflowLeadType()
+    changeLocation()
+    isFieldsOpen.value = true
+  })
+
 }
 
 function changeLocation() {
@@ -341,6 +418,7 @@ desktopStore.getHostessUser().then(res => {
 function getData() {
   desktopStore.getHostess().then(res => {
     tableData.value = res.items
+    globalStore.isWaiting = false
     tableData.value.map(el => {
       let hh = new Date(el.event.created).getHours()
       let mm = new Date(el.event.created).getMinutes()
@@ -400,7 +478,8 @@ function check() {
       if (!appeal.lead.legalEntity.person.phone) errors.push('Не указан контактный телефон');
       if (!appeal.lead.legalEntity.person.firstName) errors.push('Не указано имя клиента');
       if (!appeal.lead.legalEntity.inn) errors.push('Не указан ИНН');
-      if (appeal.lead.legalEntity.inn && (appeal.lead.legalEntity.inn.length !== 10 && appeal.lead.legalEntity.inn.length !== 12)) errors.push('Неверное значение ИНН');
+      if (appeal.lead.legalEntity.inn && (appeal.lead.legalEntity.inn.length !== 10 &&
+          appeal.lead.legalEntity.inn.length !== 12)) errors.push('Неверное значение ИНН');
     }
 
     if (errors.length) {
@@ -412,11 +491,17 @@ function check() {
   return errors.length
 }
 
+function init() {
+  newWorkflow.value = JSON.parse(JSON.stringify(newWorkflowInit))
+}
+
+init()
+
 function save() {
   if (check()) return false
-  console.log('СОХРАНЯЕМСЯ  = ', newWorkflow.value)
-  desktopStore.saveHostess(newWorkflow.value).then(res => {
-    console.log('res', res)
+  globalStore.isWaiting = true
+  desktopStore.saveHostess(newWorkflow.value).then(() => {
+    init()
     getData()
   })
 }

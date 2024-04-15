@@ -11,7 +11,7 @@ export const formatDate = (val: string) => {
     })
 }
 
-export const formatDateDDMMYYYY = (val: string) => {
+export const formatDateDDMMYYYY = (val: string | Date) => {
     // формат: 17.01.2022
     if (!val) return ''
     return new Date(val).toLocaleString('ru-Ru', {

@@ -29,14 +29,14 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getLocation() {
             return await axios.get(`/api/location`).then((res) => res.data)
         },
-        async getByPolicy(roles: Array) {
+        async getByPolicy(roles: []) {
             return axios.get(`/api/user/list/policy`, {params: roles}).then((res) => res.data)
         },
         async getHostess() {
             const date = formatDateDDMMYYYY(new Date())
             return await axios.get(`/api/appeals/hostess/list?date=${date}&limit=30&mainFilter=10&offset=0`).then((res) => res.data)
         },
-        async saveHostess(params) {
+        async saveHostess(params: any) {
             return await axios.post(`/api/workflow/`, params).then((res) => res.data)
         }
     }
