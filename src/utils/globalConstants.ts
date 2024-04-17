@@ -235,6 +235,20 @@ export const WorkType = [
     {id: 50, name: 'СТОК'}
 ]
 
+export const clientStatusEnums = [
+    {id: 0, name: 'Не указано'},
+    {id: 10, name: 'Первичный'},
+    {id: 20, name: 'По рекомендации'},
+    {id: 30, name: 'Внешний клиент'},
+    {id: 40, name: 'Повторный'},
+    {id: 50, name: 'Вернувшийся'},
+    {id: 60, name: 'Сирота'},
+    {id: 70, name: 'Упущенный клиент'},
+    {id: 80, name: 'Клиент автосервиса'},
+    {id: 100, name: 'Визит по звонку'},
+    {id: 110, name: 'Забытый'}
+]
+
 export const EventType = {
     1: 'Звонок',
     2: 'Встреча',

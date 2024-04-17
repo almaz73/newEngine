@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main style="margin: 0 8px">
     <br>
     {{ currentUser.organization ? currentUser.organization.name : '' }} &nbsp; &nbsp; / &nbsp; &nbsp;
     {{ currentUser.department ? currentUser.department.name : '' }}
@@ -101,21 +101,22 @@
             <label class="label l_300">Вид коммуникации</label>
             <el-select
                 style="width: 220px"
+                :disabled="isEdit"
                 v-model="newWorkflow.type"
                 filterable>
               <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </div>
 
-          <div>
-            <label class="label l_300">Время события</label>
-            <el-date-picker
-                format="DD.MM.YYYY  hh:mm"
-                value-format="DD.MM.YYYY"
-                :clearable="false"
-                v-model="newWorkflow.lowCreateDatePeriod"
-            />
-          </div>
+          <!--          <div v-if="isEdit">-->
+          <!--            <label class="label l_300">Время события</label>-->
+          <!--            <el-date-picker-->
+          <!--                format="DD.MM.YYYY  hh:mm"-->
+          <!--                value-format="DD.MM.YYYY"-->
+          <!--                :clearable="false"-->
+          <!--                v-model="newWorkflow.lowCreateDatePeriod"-->
+          <!--            />-->
+          <!--          </div>-->
 
           <h2>Обращение </h2>
           <div>
@@ -167,6 +168,7 @@
                 style="width: 220px"
                 v-model="newWorkflow.locationId"
                 @change="changeLocation()"
+                :disabled="isEdit"
                 filterable>
               <el-option v-for="item in storages" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
@@ -177,16 +179,20 @@
             <el-select
                 style="width: 220px"
                 v-model="newWorkflow.managerId"
+                :disabled="isEdit"
                 filterable>
               <el-option v-for="item in managers" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
           </div>
 
-          <div style="line-height: 2">
+          <div style="line-height: 2" v-if="isEdit">
             <label class="label l_300">Статус клиента</label>
             {{ newWorkflow.clientStatus }}
           </div>
-
+          <div style="line-height: 2; text-align: right" v-if="isEdit">
+            <el-checkbox v-model="newWorkflow.testDrive" label="Тест-драйв" size="large"/>
+            <el-checkbox v-model="newWorkflow.presentation" label="Презентация" size="large"/>
+          </div>
 
         </div>
 
@@ -195,9 +201,22 @@
     </div>
     <div style="margin: 40px 0 80px 0">
       <span style="float: left">
-        <el-button type="danger">Не завершенные</el-button>
+        <el-select v-model="filterButtonValue"
+                   class="red-select"
+                   @change="getData"
+                   placeholder="Select" style="width: 180px">
+        <el-option
+            v-for="item in filterButton"
+            :key="item.id"
+
+            :label="item.name"
+            :value="item.id"
+        />
+      </el-select>
+
+        &nbsp;
         <span class="a-search custom">
-        <el-button @click.prevent="isFilterOpen=!isFilterOpen">
+        <el-button @click.prevent="openFilter">
           <img
               alt=""
               class="filter-button"
@@ -209,25 +228,66 @@
           </span>
       </span>
       <span style="float: right" v-if="isFieldsOpen">
-        <el-button type="danger" :icon="Plus" @click="save()">Добавить </el-button>
-        <el-button type="info" @click="init()">Очистить</el-button>
+        <el-button type="danger" :icon="Plus" @click="save()" v-if="!isEdit">Добавить</el-button>
+        <el-button type="danger" :icon="Plus" @click="saveEdit()" v-if="isEdit">Сохранить</el-button>
+        <el-button type="info" @click="init(); isFieldsOpen=false">Очистить</el-button>
       </span>
     </div>
 
     <div class="grid-opener" :style="{gridTemplateRows:isFilterOpen?'1fr':'0fr'}">
       <div style="overflow: hidden">
-        Тут еще несколько фильтров<br>
-        <el-button>фильтры</el-button>
+        <div>
+          <label class="hostes-label">Хостес</label>
+          <el-select
+              style="width: 220px"
+              placeholder="Выберите значение"
+              v-model="searchFilterAppeals.hostesId"
+              filterable>
+            <el-option v-for="item in hostesUsers" :key="item.id" :label="item.title" :value="item.id"/>
+          </el-select>
+        </div>
+
+        <!--        <div>-->
+        <!--          <label class="hostes-label">Продавец</label>-->
+        <!--          <el-select-->
+        <!--              style="width: 220px"-->
+        <!--              v-model="newWorkflow.managerId"-->
+        <!--              filterable>-->
+        <!--            <el-option v-for="item in managers" :key="item.id" :label="item.title" :value="item.id"/>-->
+        <!--          </el-select>-->
+        <!--        </div>-->
+
+        <div>
+          <label class="hostes-label">Дата</label>
+          <el-date-picker
+              v-model="searchFilterAppeals.date"
+              :clearable="false"
+          />
+        </div>
+
+        <div>
+          <label class="hostes-label">Статус клиента</label>
+          <el-select
+              style="width: 220px"
+              placeholder="Выбрать значение"
+              v-model="searchFilterAppeals.clientStatus"
+              filterable>
+            <el-option v-for="item in clientStatusEnums" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </div>
+        <br>
+        <el-button type="success" @click="toSearchFilter()">Показать</el-button>
+        <el-button type="info">Сброс</el-button>
+        <br><br>
       </div>
     </div>
 
     <el-table
         size="small"
         :data="tableData"
-        row-key="id"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-      <el-table-column label="↑" prop="hours" width="50"/>
-      <el-table-column label="↓" prop="onCommissionProc" width="40">
+    >
+      <el-table-column label="↓" prop="hours" width="50"/>
+      <el-table-column label="↑" prop="onCommissionProc" width="40">
         <template #default="scope">
           <span @click="fillForm(scope.row)">
             <el-icon style="color: red; font-size: larger; cursor: pointer"><RefreshLeft/></el-icon>
@@ -238,7 +298,8 @@
       <el-table-column label="Вид клиента" prop="clientStatus"/>
       <el-table-column label="Клиент" prop="client">
         <template #default="scope">
-          {{ scope.row.client }}<br> {{ scope.row.clientPhone ? '☎:' + formattingPhone(scope.row.clientPhone) : '' }}
+          <a @click="fillForm(scope.row)">{{ scope.row.client }}</a><br>
+          {{ scope.row.clientPhone ? '☎:' + formattingPhone(scope.row.clientPhone) : '' }}
         </template>
       </el-table-column>
       <el-table-column label="Менеджер">
@@ -292,21 +353,37 @@
   pointer-events: none;
 }
 
+.red-select .el-select__wrapper {
+  background: var(--main-color);
+  box-shadow: none;
+}
+
+.red-select .el-select__wrapper span {
+  color: white;
+}
+
+.hostes-label {
+  display: inline-block;
+  font-size: small;
+  width: 120px;
+}
+
 </style>
 
 <script setup>
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
 import {useDesktopStore} from "@/stores/desktopStore";
-import {CommunicationTypes, Hostes, LeadType} from "@/utils/globalConstants";
+import {clientStatusEnums, CommunicationTypes, Hostes, LeadType} from "@/utils/globalConstants";
 import {computed, onMounted, ref} from "vue";
 import {MoreFilled, Plus, RefreshLeft, Select} from "@element-plus/icons-vue";
-import {formattingPhone} from "@/utils/globalFunctions";
+import {formatDateDDMMYYYY, formattingPhone} from "@/utils/globalFunctions";
 import {ElMessageBox} from "element-plus";
 
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const newWorkflow = ref(null)
+const filterButtonValue = ref(10)
 const newWorkflowInit = {
   lead: {person: {}, leadType: 10, legalEntity: {inn: null, person: {}}},
   workflowLeadType: null
@@ -324,10 +401,15 @@ const isFilterOpen = ref(false)
 const userStorage = ref(null)
 const buyCategoryTypes = [{id: 10, title: 'Свободный выкуп'}, {id: 20, title: 'Выездной выкуп'}]
 const allstorages = []
-let defaultLocation = null
-let allmanagers = [];
 const isFizLitso = computed(() => newWorkflow.value.lead.leadType === 10)
 const lead = ref({personFullTitle: null, clientStatusTooltip: 'не указано'});
+const isEdit = ref(false)
+const hostesUsers = ref([])
+const searchFilterAppeals = ref({date: new Date()})
+let defaultLocation = null
+let allmanagers = [];
+let filterButton = ref([{name: 'Не завершенные', id: 10}, {name: 'Завершенные', id: 20}, {name: 'Все события', id: 30}])
+
 
 globalStore.getBrands().then(res => brands.value = res)
 desktopStore.getDepartmentsByPolicy().then(res => storages.value = res)
@@ -355,6 +437,7 @@ function changeBrand(id) {
 function fillForm(val) {
   isFieldsOpen.value = false
   init()
+  isEdit.value = true
   appealStore.getAppeal(val.appealId).then(res => {
     newWorkflow.value = res
 
@@ -415,8 +498,29 @@ desktopStore.getHostessUser().then(res => {
   })
 })
 
-function getData() {
-  desktopStore.getHostess().then(res => {
+
+function openFilter() {
+  isFilterOpen.value = !isFilterOpen.value
+  desktopStore.getHostesUser().then(res => hostesUsers.value = res.items)
+}
+
+function toSearchFilter() {
+  console.log('toSearchFilter searchFilterAppeals.value=' , searchFilterAppeals.value)
+  getData(filterButtonValue.value)
+}
+
+function getData(mainFilter) {
+  globalStore.isWaiting = true
+  mainFilter = mainFilter || 10
+
+  let params = {
+    date: formatDateDDMMYYYY(searchFilterAppeals.value.date),
+    clientStatus: searchFilterAppeals.value.clientStatus,
+    hostesId: searchFilterAppeals.value.hostesId,
+    mainFilter: mainFilter,
+  }
+  console.log('params', params)
+  desktopStore.getHostess(params).then(res => {
     tableData.value = res.items
     globalStore.isWaiting = false
     tableData.value.map(el => {
@@ -425,10 +529,25 @@ function getData() {
       el.hours = ('0' + hh).slice(-2) + ":" + ('0' + mm).slice(-2)
       return el
     })
+    showRowsNumber(mainFilter, res.totalCount)
   })
 }
 
 getData()
+
+function showRowsNumber(mainFilter, totalCount) {
+  switch (mainFilter) {
+    case 10:
+      filterButton.value[0].name = 'Не завершенные ' + totalCount;
+      break
+    case 20:
+      filterButton.value[1].name = 'Завершенные ' + totalCount;
+      break
+    case 30:
+      filterButton.value[2].name = 'Все события ' + totalCount;
+      break
+  }
+}
 
 
 function changeWorkflowLeadType() {
@@ -492,6 +611,7 @@ function check() {
 }
 
 function init() {
+  isEdit.value = false
   newWorkflow.value = JSON.parse(JSON.stringify(newWorkflowInit))
 }
 
@@ -504,6 +624,21 @@ function save() {
     init()
     getData()
   })
+}
+
+function saveEdit() {
+  ElMessageBox.confirm('В случае сохранения данных, статус клиента будет изменен на “Упущенный клиент”')
+      .then(() => {
+        desktopStore.saveEditHostes(newWorkflow.value.lead)
+        let t = ('0' + new Date().getHours()).slice(-2) + ':' + ('0' + new Date().getMinutes()).slice(-2)
+
+        let obj = {
+          dateEnd: t,
+          dateStart: t,
+          id: newWorkflow.value.leadId
+        }
+        desktopStore.saveEditHostesFinish(obj).then(getData)
+      })
 }
 
 onMounted(() => {

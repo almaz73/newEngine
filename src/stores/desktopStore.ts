@@ -1,6 +1,5 @@
 import {defineStore} from 'pinia'
 import axios from 'axios'
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
 export const useDesktopStore = defineStore('desktopStore', {
     state: () => ({}),
@@ -32,12 +31,26 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getByPolicy(roles: []) {
             return axios.get(`/api/user/list/policy`, {params: roles}).then((res) => res.data)
         },
-        async getHostess() {
-            const date = formatDateDDMMYYYY(new Date())
-            return await axios.get(`/api/appeals/hostess/list?date=${date}&limit=30&mainFilter=10&offset=0`).then((res) => res.data)
+        async getHostess(params: any) {
+            let filters = ''
+            if (params.date) filters = '&date=' + params.date
+            if (params.mainFilter) filters += '&mainFilter=' + params.mainFilter
+            if (params.clientStatus) filters += '&clientStatus=' + params.clientStatus
+            if (params.hostesId) filters += '&hostesId=' + params.hostesId
+            return await axios.get(`/api/appeals/hostess/list?limit=15&offset=0` + filters).then((res) => res.data)
         },
         async saveHostess(params: any) {
             return await axios.post(`/api/workflow/`, params).then((res) => res.data)
+        },
+        async saveEditHostes(obj: any) {
+            return axios.post(`/api/lead`, obj).then(res => res.data)
+        },
+        async saveEditHostesFinish(params: any) {
+            const filter = `?dateEnd=${params.dateEnd}&dateStart=${params.dateStart}&id=${params.id}`
+            return await axios.post(`/api/event/changeeventdates/` + filter).then((res) => res.data)
+        },
+        async getHostesUser() {
+            return axios.get(`/api/user/list/policy?roles=53`).then(res => res.data)
         }
     }
 })
