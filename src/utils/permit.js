@@ -23,7 +23,6 @@ const leftPanelPermissions = {
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
-        'PsmManager',
         'Hostess',
         'AnalystEmployee'
     ],
@@ -41,7 +40,8 @@ const leftPanelPermissions = {
     sell: [
         'Admin',
         'GenManager',
-        'Hostess'
+        'Hostess',
+        'PsmManager'
     ],
     calendar: [
         'Admin',

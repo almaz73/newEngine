@@ -41,6 +41,9 @@ function goMyFirstPage(role: string) {
     case "CallManager":
       location.replace("/v2/appeal")
       break
+    case "PsmManager":
+      location.replace("/v2/sell")
+      break
     default:
 
       location.replace("/v2/desktop")
