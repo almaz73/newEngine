@@ -10,17 +10,17 @@
         @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
-        @openChart="isGridOpen=!isGridOpen"
+        @openChart="openChart()"
+        :isShowChart="true"
         @getData="getData"
     />
 
 
     <br><br><br>
 
-
     <div class="grid-opener" :style="{gridTemplateRows:isGridOpen?'1fr':'0fr'}" style="float: left">
-      <div style="overflow: hidden;">
-        <ApexDonutChartForSell v-if="isGridOpen"/>
+      <div style="overflow: hidden;" :style="{height:isGridOpen?'auto':'0px'}">
+        <ApexDonutChartForSell/>
       </div>
     </div>
 
@@ -47,6 +47,13 @@
         highlight-current-row
     >
 
+      <el-table-column width="60">
+        <template #default="scope">
+          <div class="white-square">
+            {{scope.row.place?scope.row.place:'--'}}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="Автомобиль">
         <template #default="scope">
           <div class="red-text" v-if="scope.row.auto">
@@ -57,6 +64,7 @@
           <div v-if="scope.row.auto"> {{ scope.row.auto.vin }}</div>
           <div>
             <span v-if="scope.row.auto"
+                  style="border: 1px solid #ddd"
                   :style="carColor(scope.row.auto.bodyColorCode)"> &nbsp; &nbsp; &nbsp; &nbsp; </span>
             <span> &nbsp; Пробег: {{ scope.row.mileageAuto }} </span>
           </div>
@@ -136,6 +144,17 @@
   justify-content: center;
   align-items: center;
 }
+
+.white-square{
+  width: 30px;
+  height: 30px;
+  background: white;
+  border-radius: 3px;
+  border: 1px solid #bbb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
 
 <script setup>
@@ -177,7 +196,6 @@ const filter = {
 }
 let filterOld; // кучковый способ запросов
 const isGridOpen = ref(false); // открытие диаграмма
-const isMounted = ref(false)
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
@@ -232,13 +250,15 @@ function validateFilter() {
   return false
 }
 
+function openChart() {
+  console.log('v>>openChart')
+  isGridOpen.value=!isGridOpen.value;
+}
+
 function getData() {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
   warehousStore.getWarehouses(filterOld).then(res => {
-
-    console.log('-- -res = ', res)
-
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)

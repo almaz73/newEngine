@@ -1,26 +1,31 @@
 <template>
-  <apexchart
-      style="float: left"
-      type="donut"
-      width="480"
-      :options="chartOptions"
-      :series="chartOptions.series">
+  <div style="max-height: 480px; float: left" v-if="chartOptions.series.length">
+    <apexchart
+        style="float: left"
+        type="donut"
+        width="460"
+        :options="chartOptions"
+        :series="chartOptions.series">
 
-  </apexchart>
+    </apexchart>
 
-  <apexchart
-      style="float: left"
-      type="donut"
-      width="520"
-      :options="chartOptions2"
-      :series="chartOptions2.series">
-  </apexchart>
+    <apexchart
+        style="float: left"
+        type="donut"
+        width="520"
+        :options="chartOptions2"
+        :series="chartOptions2.series">
+    </apexchart>
+  </div>
 </template>
 
 
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {useWarehousStore} from "@/stores/warehousStore";
+
+const warehousStore = useWarehousStore()
 
 const chartOptions = ref({
   dataLabels: {enabled: false},
@@ -32,7 +37,7 @@ const chartOptions = ref({
         labels: {
           show: true,
           name: {
-            formatter: function (val) {
+            formatter: function () {
               return 'а/м'
             }
           },
@@ -53,8 +58,7 @@ const chartOptions = ref({
       }
     }
   },
-  labels: ["0-15 дн.", "16-30 дн.", "31-45 дн.", "46-60 дн.", "60+ дн."],
-  series: ref([1, 55, 41, 17, 15]),
+  series: ref([]),
   theme: {palette: 'palette7'}
 })
 const chartOptions2 = ref({
@@ -88,8 +92,7 @@ const chartOptions2 = ref({
       }
     }
   },
-  labels: ["0-15 дн.", "16-30 дн.", "31-45 дн.", "46-60 дн.", "60+ дн."],
-  series: ref([1, 55, 41, 17, 15]),
+  series: ref([]),
   theme: {palette: 'palette5'}
 })
 
@@ -137,19 +140,27 @@ const data = {
   }
 }
 
-chartOptions.value.labels = []
-chartOptions.value.series = []
 
-chartOptions2.value.labels = []
-chartOptions2.value.series = []
+function getData() {
+  warehousStore.getCharts().then(res => {
 
-data.chart.items.forEach(el => {
-  chartOptions.value.labels.push(el.category + ' &nbsp; &nbsp; <b>' + el.count.toLocaleString('ru-RU') + ' a/м</b>')
-  chartOptions.value.series.push(el.count)
+    chartOptions.value.labels = []
+    chartOptions.value.series = []
+    chartOptions2.value.labels = []
+    chartOptions2.value.series = []
 
-  chartOptions2.value.labels.push(el.category + ' &nbsp; &nbsp; <b>' + el.price.toLocaleString('ru-RU') + ' тыс.р</b>')
-  chartOptions2.value.series.push(el.price)
+    res.chart && res.chart.items.forEach(el => {
+      chartOptions.value.labels.push(el.category + ' &nbsp; &nbsp; <b>' + el.count.toLocaleString('ru-RU') + ' a/м</b>')
+      chartOptions.value.series.push(el.count)
+
+      chartOptions2.value.labels.push(el.category + ' &nbsp; &nbsp; <b>' + el.price.toLocaleString('ru-RU') + ' тыс.р</b>')
+      chartOptions2.value.series.push(el.price)
+    })
+  })
+}
+
+onMounted(() => {
+  getData()
 })
-
 
 </script>

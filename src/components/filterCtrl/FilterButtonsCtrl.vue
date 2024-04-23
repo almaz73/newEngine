@@ -24,7 +24,7 @@
           src="@/assets/icons/icon-menu-arrow-down.png"
       />
     </el-button>
-    <el-button :icon="PieChart" @click="emits('openChart')"/>
+    <el-button :icon="PieChart" @click="emits('openChart')" v-if="props.isShowChart"/>
   </div>
 </template>
 <script setup>
@@ -34,7 +34,7 @@ import {PieChart} from "@element-plus/icons-vue";
 
 const text = ref('')
 const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData', 'openChart'])
-const props = defineProps(['buttons', 'isOpen', 'placeholder'])
+const props = defineProps(['buttons', 'isOpen', 'placeholder', 'isShowChart'])
 const buttons = props.buttons
 const activeCode = buttons.length && buttons.find(el => el.active).code
 const activeButton = ref(activeCode)

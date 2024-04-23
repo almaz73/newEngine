@@ -13,6 +13,9 @@ export const useWarehousStore = defineStore("warehousStore", {
             else this.list = []
             return res.data
         },
+        async getCharts() {
+            return axios.get(`/api/sell/get/chart/storage?quickFilter=10&skip=0`).then(res => res.data)
+        }
     }
 })
 
