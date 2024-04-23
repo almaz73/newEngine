@@ -24,14 +24,16 @@
           src="@/assets/icons/icon-menu-arrow-down.png"
       />
     </el-button>
+    <el-button :icon="PieChart" @click="emits('openChart')"/>
   </div>
 </template>
 <script setup>
 import {computed, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
+import {PieChart} from "@element-plus/icons-vue";
 
 const text = ref('')
-const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData'])
+const emits = defineEmits(['buttonFilterSelect', 'openFilter', 'updateSearchText', 'getData', 'openChart'])
 const props = defineProps(['buttons', 'isOpen', 'placeholder'])
 const buttons = props.buttons
 const activeCode = buttons.length && buttons.find(el => el.active).code

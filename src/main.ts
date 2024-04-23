@@ -7,6 +7,8 @@ import {createPinia} from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+import VueApexCharts from "vue3-apexcharts";
+
 import ElementPlus from 'element-plus'
 // @ts-ignore
 import ru from 'element-plus/dist/locale/ru.min.mjs'
@@ -33,5 +35,6 @@ dayjs.Ls.en.weekStart = 1 // Неделя начинается с понедел
 app.use(createPinia())
 app.use(ElementPlus, {locale: ru})
 app.use(router)
+app.use(VueApexCharts);
 
 app.mount('#app')

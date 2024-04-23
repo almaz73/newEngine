@@ -1,5 +1,8 @@
 <template>
   <main>
+    <span style="float: right; border: 1px solid red">
+
+    </span>
     <FilterButtonsCtrl
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
@@ -7,8 +10,20 @@
         @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
+        @openChart="isGridOpen=!isGridOpen"
         @getData="getData"
     />
+
+
+    <br><br><br>
+
+
+    <div class="grid-opener" :style="{gridTemplateRows:isGridOpen?'1fr':'0fr'}" style="float: left">
+      <div style="overflow: hidden;">
+        <ApexDonutChartForSell v-if="isGridOpen"/>
+      </div>
+    </div>
+
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
       <WarehousFilter
@@ -35,7 +50,8 @@
       <el-table-column label="Автомобиль">
         <template #default="scope">
           <div class="red-text" v-if="scope.row.auto">
-           {{scope.row.id}} {{ scope.row.auto.brandTitle + ' ' + (scope.row.auto.modelTitle ? scope.row.auto.modelTitle : '') }}
+            {{ scope.row.id }}
+            {{ scope.row.auto.brandTitle + ' ' + (scope.row.auto.modelTitle ? scope.row.auto.modelTitle : '') }}
             <b>{{ scope.row.auto.year }}</b>
           </div>
           <div v-if="scope.row.auto"> {{ scope.row.auto.vin }}</div>
@@ -69,7 +85,7 @@
           <div class="red-round">
             {{ scope.row.inSaleDays && scope.row.inSaleDays }}
           </div>
-          {{scope.row.priceLastDayDiff}}
+          {{ scope.row.priceLastDayDiff }}
         </template>
       </el-table-column>
     </el-table>
@@ -130,8 +146,9 @@ import WarehousFilter from "@/pages/warehous/WarehousFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useWarehousStore} from "@/stores/warehousStore";
-import {reactive, ref, computed, onMounted} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
+import ApexDonutChartForSell from "@/components/ApexDonutChartForSell.vue";
 
 
 const globalStore = useGlobalStore()
@@ -159,6 +176,8 @@ const filter = {
   search: ''
 }
 let filterOld; // кучковый способ запросов
+const isGridOpen = ref(false); // открытие диаграмма
+const isMounted = ref(false)
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
