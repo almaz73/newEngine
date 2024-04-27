@@ -1,0 +1,198 @@
+<template>
+  <div>
+    <div style="margin-bottom: 30px">
+      <el-button @click="add()"
+                 :disabled="isEdit"
+                 type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+      </el-button>
+      <span v-if="globalStore.isMobileView && isEdit"><br><br></span>
+      <el-button v-if="isEdit" @click="save()">Сохранить</el-button>
+      <el-button v-if="isEdit" @click="reset()">Сброс</el-button>
+    </div>
+
+    <el-table
+        :data="tableData"
+        empty-text="Нет данных"
+        highlight-current-row>
+      <el-table-column label="Организация" prop="colorName">
+        <template #default="scope">
+          <el-select v-if="isEdit && selectedRow.id===scope.row.id"
+                     placeholder="Организация"
+                     v-model="scope.row.orgId"
+                     @change="changeOrg(scope.row.orgId)"
+                     clearable
+                     filterable>
+            <el-option v-for="(item, ind) in organizations"
+                       :key="ind" :label="item.name"
+                       :value="item.id"/>
+          </el-select>
+          <span v-else>{{ scope.row.orgName }}</span>
+        </template>
+      </el-table-column>
+
+
+      <el-table-column label="Максимальный порог, руб.">
+        <template #default="scope">
+          <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
+                    v-model="scope.row.maxPrice"></el-input>
+          <span v-else>{{ scope.row.maxPrice }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Максимальный порог, процент.">
+        <template #default="scope">
+          <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
+                    v-model="scope.row.maxPercentage"></el-input>
+          <span v-else>{{ scope.row.maxPercentage }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Период действия, с">
+        <template #default="scope">
+          <span v-if="isEdit && selectedRow.id===scope.row.id">
+            <el-date-picker
+                v-model="scope.row.validFrom"
+                format="DD.MM.YYYY"
+            /></span>
+          <span v-else> {{ formatDateDDMMYYYY(scope.row.validFrom) }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Период действия, до">
+        <template #default="scope">
+          <span v-if="isEdit && selectedRow.id===scope.row.id"><el-date-picker
+              v-model="scope.row.validTo"
+              format="DD.MM.YYYY"
+          /></span>
+
+          <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="73">
+        <template #default="scope">
+          <el-icon @click="edit(scope.row, scope.$index)" style="cursor: pointer">
+            <EditPen/>
+          </el-icon>
+          &nbsp;
+          <el-icon style="cursor: pointer" @click="deleteRow(scope.row)">
+            <CloseBold/>
+          </el-icon>
+        </template>
+      </el-table-column>
+
+    </el-table>
+    <template v-if="total>2">
+      <!--      v-if="total>rowsPerPage"-->
+      <el-pagination
+          v-model:page-size="rowsPerPage"
+          :page-sizes="[5, 10, 20, 50]"
+          layout="prev, pager, next, sizes"
+          @current-change="changePage"
+          @size-change="changePageSize"
+          :total="total"
+      />
+      <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
+    </template>
+  </div>
+</template>
+<script setup lang="ts">
+import {useAdminStore} from "@/stores/adminStore";
+import {ref} from "vue";
+import {ElMessage, ElMessageBox, ElTable} from "element-plus";
+import {useGlobalStore} from "@/stores/globalStore";
+import {EditPen, CloseBold, Plus} from '@element-plus/icons-vue'
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+
+const globalStore = useGlobalStore()
+const adminStore = useAdminStore()
+const tableData = ref([])
+const isEdit = ref(false)
+const selectedRow = ref({})
+let selectedIndex = null
+const total = ref(0)
+const rowsPerPage = ref(10)
+const pageDescription = ref('')
+const filter = {offset: 0, limit: 10}
+const organizations = ref([])
+
+function reset() {
+  const ind = tableData.value.findIndex(el => el.id === selectedRow.value.id)
+  tableData.value[ind] = selectedRow.value
+  isEdit.value = false
+}
+
+function changeOrg(id) {
+  let el = organizations.value.find(el => el.id === id)
+  if (tableData.value[selectedIndex]) tableData.value[selectedIndex].orgName = el.name
+}
+
+globalStore.getOrganizations().then(res => organizations.value = res.items)
+
+function changePageSize() {
+  filter.limit = rowsPerPage.value
+  getData()
+}
+
+function changePage(val: number) {
+  filter.offset = (val - 1) * rowsPerPage.value
+  getData()
+}
+
+function add() {
+  selectedRow.value = {
+    maxPercentage: null,
+    maxPrice: null,
+    orgName: '',
+    orgId: null,
+    validFrom: null,
+    validTo: null
+  }
+  tableData.value.unshift(selectedRow.value)
+  isEdit.value = true
+}
+
+function edit(row, ind) {
+  selectedRow.value = JSON.parse(JSON.stringify(row))
+  selectedIndex = ind
+  isEdit.value = true
+}
+
+function save() {
+  let row = selectedRow.value
+  adminStore.saveMaxPrice(row).then(res => {
+    if (res !== undefined) {
+      ElMessage({message: 'Новое пороговое значение сохранено.', type: 'success'})
+      getData()
+    }
+  })
+}
+
+function deleteRow(row: any) {
+  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  }).then(() => {
+    adminStore.deleteMaxPrice(row.id).then(() => {
+      ElMessage({message: 'Пороговое значение удалено.', type: 'success'})
+      getData()
+    })
+  })
+}
+
+function getData() {
+  isEdit.value = false
+  selectedRow.value = false
+  adminStore.getMaxPrices(filter).then((res: any) => {
+    tableData.value = res.models
+    total.value = res.totalCount
+  })
+
+}
+
+globalStore.setTitle('Пороговые значения')
+globalStore.steps = []
+getData()
+
+
+</script>

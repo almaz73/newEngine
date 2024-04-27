@@ -99,7 +99,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <el-sub-menu index="6" v-if="permit('')">
+      <el-sub-menu index="6" v-if="permit('importExport')">
         <template #title>
           <el-icon>
             <img alt="Управление" src="@/assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/>
@@ -142,7 +142,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('plan')">
         <el-menu-item index="10">
           <el-icon>
             <img alt="Плановые показатели" src="@/assets/icons/icon-plan-indicator.png" height="34" width="34"/>

@@ -3,7 +3,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 
 let role = ''
 
-export function permit(node, moduleName) {
+export function permit(node, moduleName=null) {
     role = role || useGlobalStore().account.role
     if (role === 'Admin') return true
 
@@ -24,18 +24,21 @@ const leftPanelPermissions = {
         'GenManager',
         'LocalCallEmployee',
         'Hostess',
-        'AnalystEmployee'
+        'AnalystEmployee',
+        'BuyerManager'
     ],
     appeal: [
         'Admin',
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
-        'Hostess'
+        'Hostess',
+        'BuyerManager'
     ],
     deal: [
         'Admin',
-        'GenManager'
+        'GenManager',
+        'BuyerManager'
     ],
     sell: [
         'Admin',
@@ -49,7 +52,8 @@ const leftPanelPermissions = {
         'GenManager',
         'LocalCallEmployee',
         'Hostess',
-        'AnalystEmployee'
+        'AnalystEmployee',
+        'BuyerManager'
     ],
     calls: [
         'Admin'
@@ -59,13 +63,21 @@ const leftPanelPermissions = {
         'CallManager',
         'LocalCallEmployee',
         'Hostess',
-        'AnalystEmployee'
+        'AnalystEmployee',
+        'BuyerManager'
+    ],
+    importExport: [
+        'Admin',
+        'BuyerManager'
     ],
     admin: [
         'Admin',
         'GenManager'
     ],
-
+    plan: [
+        'Admin',
+        'BuyerManager'
+    ],
     map: [
         'Admin'
     ],

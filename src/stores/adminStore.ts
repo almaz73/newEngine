@@ -153,6 +153,21 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/work/` + id).then(q => q)
             return res.data
         },
-
+        async getMaxPrices(filter: any) {
+            const {quickSearch, offset, limit} = filter
+            let url = '/api/Analytic/GetMaxPrices';
+            url += '?offset=' + offset
+            if (limit) url += '&limit=' + limit
+            if (quickSearch) url += '&quickSearch=' + quickSearch
+            return await axios.get(url).then(res => res.data)
+        },
+        async saveMaxPrice(obj: any) {
+            const res = await axios.post(`/api/Analytic/PostMaxPrice`, obj).then(q => q)
+            return res.data
+        },
+        async deleteMaxPrice(id: number) {
+            const res = await axios.delete(`/api/Analytic/DeleteMaxPrice?orgId=` + id).then(q => q)
+            return res.data
+        },
     }
 })

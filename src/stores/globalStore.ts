@@ -20,7 +20,8 @@ export const useGlobalStore = defineStore('globalStore', {
             firstName: '',
             roleTitle: '',
             orgElementName: '',
-            storage: ''
+            storage: '',
+            role:''
         },
         steps: [
             {name: 'Обращение', done: true},
