@@ -34,7 +34,7 @@
       <el-table-column label="Максимальный порог, руб.">
         <template #default="scope">
           <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
-                    v-model="scope.row.maxPrice"></el-input>
+                    v-model="selectedRow.maxPrice"></el-input>
           <span v-else>{{ scope.row.maxPrice }}</span>
         </template>
       </el-table-column>
@@ -42,7 +42,7 @@
       <el-table-column label="Максимальный порог, процент.">
         <template #default="scope">
           <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
-                    v-model="scope.row.maxPercentage"></el-input>
+                    v-model="selectedRow.maxPercentage"></el-input>
           <span v-else>{{ scope.row.maxPercentage }}</span>
         </template>
       </el-table-column>
@@ -160,6 +160,8 @@ function edit(row, ind) {
 
 function save() {
   let row = selectedRow.value
+  row.validFrom = new Date(row.validFrom)
+  row.validTo = new Date(row.validTo)
   adminStore.saveMaxPrice(row).then(res => {
     if (res !== undefined) {
       ElMessage({message: 'Новое пороговое значение сохранено.', type: 'success'})

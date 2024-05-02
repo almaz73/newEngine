@@ -166,7 +166,7 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async deleteMaxPrice(id: number) {
-            const res = await axios.delete(`/api/Analytic/DeleteMaxPrice?orgId=` + id).then(q => q)
+            const res = await axios.delete(`/api/Analytic/DeleteMaxPrice?id=` + id).then(q => q)
             return res.data
         },
     }
