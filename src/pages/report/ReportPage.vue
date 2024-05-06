@@ -20,12 +20,14 @@ import ReportCallCenter from "@/pages/report/reportCallCenter/ReportCallCenter.v
 
 const globalStore = useGlobalStore()
 const callCenter = ref(null)
-const activeName = ref('another')
+const activeName = ref('callCenter')
 
 
 function tabchange(tab) {
   let tabName = tab.props.name
-  if (tabName === 'callCenter') callCenter.value.open({tab:tabName})
+  if (tabName === 'callCenter') {
+    callCenter.value.open({tab:tabName})
+  }
 }
 
 onMounted(() => {
@@ -37,6 +39,10 @@ onMounted(() => {
     LastReport = JSON.parse(LastReport)
     activeName.value = LastReport.tab
     callCenter.value.open(LastReport)
+  }else{
+    // Если это колл центр
+    activeName.value = 'callCenter'
+    callCenter.value.open({tab:'callCenter'})
   }
 })
 

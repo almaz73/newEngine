@@ -63,6 +63,8 @@ function clearCash() {
 }
 
 function signOut() {
+  localStorage.removeItem('LastReport')
+  localStorage.removeItem('LastUsedDirectories')
   globalStore.signOut().then(() => {
     localStorage.removeItem('account')
     globalStore.isAuthorized = false

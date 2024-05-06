@@ -3,15 +3,16 @@ import {useGlobalStore} from "@/stores/globalStore";
 
 let role = ''
 
-export function permit(node, moduleName=null) {
+export function permit(node, moduleName = null) {
     role = role || useGlobalStore().account.role
     if (role === 'Admin') return true
 
     switch (moduleName) {
+        case null:
         case undefined:
             return node && leftPanelPermissions[node] && leftPanelPermissions[node].includes(role)
         case 'reports':
-            return node && repoerPermissions[node] && repoerPermissions[node].includes(role)
+            return node && reportPermissions[node] && reportPermissions[node].includes(role)
     }
 
 }
@@ -23,17 +24,21 @@ const leftPanelPermissions = {
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
+        'LocalCallManager',
         'Hostess',
         'AnalystEmployee',
-        'BuyerManager'
+        'BuyerManager',
+        'CallEmployee'
     ],
     appeal: [
         'Admin',
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
+        'LocalCallManager',
         'Hostess',
-        'BuyerManager'
+        'BuyerManager',
+        'CallEmployee'
     ],
     deal: [
         'Admin',
@@ -51,9 +56,11 @@ const leftPanelPermissions = {
         'CallManager',
         'GenManager',
         'LocalCallEmployee',
+        'LocalCallManager',
         'Hostess',
         'AnalystEmployee',
-        'BuyerManager'
+        'BuyerManager',
+        'CallEmployee'
     ],
     calls: [
         'Admin'
@@ -62,9 +69,11 @@ const leftPanelPermissions = {
         'Admin',
         'CallManager',
         'LocalCallEmployee',
+        'LocalCallManager',
         'Hostess',
         'AnalystEmployee',
-        'BuyerManager'
+        'BuyerManager',
+        'CallEmployee'
     ],
     importExport: [
         'Admin',
@@ -86,33 +95,45 @@ const leftPanelPermissions = {
         'GenManager'
     ],
 }
-const repoerPermissions = {
+const reportPermissions = {
     rEmployees: [
         'Admin',
         'CallManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'LocalCallManager',
+        'Hostess',
+        'CallEmployee'
     ],
     rDays: [
         'Admin',
         'CallManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'LocalCallManager',
+        'Hostess',
+        'CallEmployee'
     ],
     rArchive: [
         'Admin',
-        'CallManager'
+        'CallManager',
+        'Hostess'
     ],
     rCalls: [
         'Admin',
         'CallManager',
+        'Hostess'
     ],
     rBuyout: [
         'Admin',
-        'CallManager'
+        'CallManager',
+        'Hostess'
     ],
     rAсtual: [
         'Admin',
         'CallManager',
-        'LocalCallEmployee'
+        'LocalCallEmployee',
+        'LocalCallManager',
+        'Hostess',
+        'CallEmployee'
     ]
 }
 
