@@ -278,9 +278,9 @@ function changeMenu(a: any) {
 }
 
 
-// нужно вычислить по адресу, что открыто и высветить меню
+// нужно вычислить по адресу, что открыто было последним и высветить меню
 const storage = sessionStorage.getItem('menuIndex')
-const menuButtons = {'/desktop': '1', '/appeal': '2', '/deal': '3', '/sell': '4'}
+const menuButtons = {'/v2/desktop': '1', '/v2/appeal': '2', '/v2/deal': '3', '/v2/sell': '4'}
 
 activeIndex.value = menuButtons[location.pathname]
 if (!activeIndex.value) activeIndex.value = storage

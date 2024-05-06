@@ -2,10 +2,10 @@
   <main>
     <el-tabs @tab-click="tabchange" v-model="activeName">
       <el-tab-pane label="Колл-центр" name="callCenter">
-        <ReportCallCenter ref="callCenter"/>
+        <ReportCallCenter ref="refCallCenter"/>
       </el-tab-pane>
-      <el-tab-pane label="Another" name="another">
-        <ReportCallCenter/>
+      <el-tab-pane label="Общие отчеты" name="common">
+        <ReportCommon ref="refCommon"/>
       </el-tab-pane>
     </el-tabs>
   </main>
@@ -17,32 +17,36 @@
 import {onMounted, ref} from "vue"
 import {useGlobalStore} from "@/stores/globalStore";
 import ReportCallCenter from "@/pages/report/reportCallCenter/ReportCallCenter.vue";
+import ReportCommon from "@/pages/report/reportCommon/ReportCommon.vue";
 
 const globalStore = useGlobalStore()
-const callCenter = ref(null)
+const refCallCenter = ref(null)
+const refCommon = ref(null)
 const activeName = ref('callCenter')
 
 
 function tabchange(tab) {
-  let tabName = tab.props.name
-  if (tabName === 'callCenter') {
-    callCenter.value.open({tab:tabName})
-  }
+  let tabName = tab.props.name;
+  let link = tab.LastReport || {tab: tabName}
+  if (tabName === 'callCenter') refCallCenter.value.open(link)
+  if (tabName === 'common') refCommon.value.open(link)
 }
+
 
 onMounted(() => {
   globalStore.setTitle('Отчеты')
   globalStore.steps = []
-  // узнаю послдний выбранный отчет, и отображаю его
+  // узнаю последний выбранный отчет, и отображаю его
   let LastReport = localStorage.getItem('LastReport')
-  if(LastReport){
+
+  if (LastReport) {
     LastReport = JSON.parse(LastReport)
     activeName.value = LastReport.tab
-    callCenter.value.open(LastReport)
-  }else{
-    // Если это колл центр
+    tabchange({props: {name: LastReport.tab}, LastReport})
+  } else {
+    // Если ничего не выбрано
     activeName.value = 'callCenter'
-    callCenter.value.open({tab:'callCenter'})
+    refCallCenter.value.open({tab: 'callCenter'})
   }
 })
 

@@ -37,10 +37,22 @@ export const useReportStore = defineStore("reportStore", {
             return res.data
         },
         async getActual(filter: any) {
-            const url: string = 'api/report/callcenter/appeal/days?filter=' + JSON.stringify(filter)
+            const url: string = '/api/report/callcenter/appeal/days?filter=' + JSON.stringify(filter)
             const res = await axios.get(url).then(res => res)
             return res.data
         },
+        async getDepartments() {
+            const res = await axios.get('/api/orgelement/get/departmens').then(res => res)
+            return res.data
+        },
+        async getSourceAppeals(params: any) {
+            const {department, month, year} = params
+            const res = await axios.get(
+                `/api/report/common/appeal-source?department=${department}&month=${month}&year=${year}`)
+                .then(res => res)
+            return res.data
+        },
 
+//api/report/common/appeal-source?department=6&month=4&year=2024
     }
 })
