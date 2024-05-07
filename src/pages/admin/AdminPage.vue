@@ -43,6 +43,7 @@ import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
 import OrgsDir from "@/pages/admin/dirs/OrgsDir.vue";
 import InspectionDir from "@/pages/admin/dirs/InspectionDir.vue";
 import WorksDir from "@/pages/admin/dirs/WorksDir.vue";
+import PossibleDamages from "@/pages/admin/dirs/PossibleDamages.vue";
 
 
 const globalStore = useGlobalStore()
@@ -77,8 +78,8 @@ const AdminDirectories = {
   '🚧Шаблоны документов': ClientsDir,
   'Клиенты': ClientsDir,
   '🚧Программы сертификации': ClientsDir,
-  '🚧Возможные неисправности': ClientsDir,
-  '🚧Пороговое значение': ThresholdDir
+  'Возможные неисправности': PossibleDamages,
+  'Пороговое значение': ThresholdDir
 }
 const directories = Object.keys(AdminDirectories)
 

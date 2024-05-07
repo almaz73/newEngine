@@ -169,5 +169,37 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/Analytic/DeleteMaxPrice?id=` + id).then(q => q)
             return res.data
         },
+        async getMalfunctions() {
+            return await axios.get('/api/Malfunctions').then(res => res.data)
+        },
+        async switchMalfunction(id: number) {
+            const res = await axios.post(`/api/Malfunctions/${id}/ToggleBlock`).then(q => q)
+            return res.data
+        },
+        async getMalfunctionsById(id: any) {
+            return await axios.get('/api/Malfunctions/' + id).then(res => res.data)
+        },
+        async saveMalfunctionsById(params: any) {
+            return await axios.post('/api/Malfunctions/', params).then(res => res.data)
+        },
+        async getAutoTypes() {
+            return await axios.get('/api/auto/get/auto-types').then(res => res.data)
+        },
+        async getModels(brandId: number, autoType: number) {
+            const res = await axios.get(`/api/auto/getModels?brandId=${brandId}&autoType=${autoType}`).then(q => q)
+            return res.data
+        },
+        async getGenerations(id: any) {
+            return await axios.get('/api/auto/getGenerations?modelId=' + id).then(res => res.data)
+        },
+        async getModifications(ids: any) {
+            let params = '?z'
+            ids.forEach((el: number) => params += '&generationId=' + el)
+            return await axios.get('/api/auto/getModifications?generationId=' + params).then(res => res.data)
+        },
+        async deleteModification(id: number) {
+            const res = await axios.delete(`/api/Malfunctions/` + id).then(q => q)
+            return res.data
+        },
     }
 })
