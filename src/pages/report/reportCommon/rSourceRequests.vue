@@ -15,7 +15,7 @@
       </div>
 
       <div>
-        <label class="label l_300">Тип сделки</label>
+        <label class="label l_300">Отдел</label>
         <el-select
             style="width: 220px"
             v-model="searchFilter.department"

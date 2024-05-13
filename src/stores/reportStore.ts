@@ -52,7 +52,19 @@ export const useReportStore = defineStore("reportStore", {
                 .then(res => res)
             return res.data
         },
+        async getwWorkflowLeadTypes() {
+            const res = await axios.get('/api/deal/getworkflowleadtypesforavailabledeals')
+                .then(res => res)
+            return res.data
+        },
+        async getDealsReport(params: any) {
+            let req = '?startDate=' + params.startDate + '&endDate=' + params.endDate
+            params.orgIds.forEach(el => req += '&orgId=' + el)
+            params.workflowLeadTypes.forEach(el => req += '&workflowLeadType=' + el)
+            const res = await axios.get('/api/report/GetDealsReport' + req)
+                .then(res => res)
+            return res.data
+        },
 
-//api/report/common/appeal-source?department=6&month=4&year=2024
     }
 })
