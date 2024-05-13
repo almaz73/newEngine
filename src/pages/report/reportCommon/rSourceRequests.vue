@@ -25,8 +25,8 @@
       </div>
 
       <br>
-      <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
-      <el-button type="info" @click="init()">Сброс</el-button>
+      <el-button :icon="Grid" type="danger" @click="getData()">Сформировать</el-button>
+      <el-button type="info" @click="searchFilter ={monthYear: new Date(), department: 6}">Сброс</el-button>
       <br><br>
     </div>
 
@@ -35,16 +35,22 @@
         v-if="tableData[0]"
         :data="tableData"
         :row-class-name="tableRowClassName"
-        @rowClick="openAppeal"
-        row-key="id"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-      <el-table-column label="ФИО" prop="userTitle"/>
+        row-key="userId"
+        :tree-props="{ children: 'children'}">
+      <el-table-column label="ФИО" min-width="200">
+        <template #default="scope">
+          <span>
+            {{ scope.row.userTitle }}
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column
           minWidth="30"
           v-for="(column, ind) in tableData[0].appealSummByDays"
           :key="ind"
-          :label="''+(ind+1)">
-        {{ column ? column : '' }}
+          #default="scope"
+          :label="String(ind+1)">
+        {{ scope.row.appealSummByDays[ind] ? scope.row.appealSummByDays[ind] : '' }}
       </el-table-column>
 
       <el-table-column label="Всего" prop="appealsCount"/>
@@ -57,6 +63,7 @@
 <style>
 .el-table .red-text {
   color: #f56c6c;
+  background: #ffefef;
 }
 </style>
 
@@ -64,57 +71,73 @@
 import {Grid} from "@element-plus/icons-vue";
 import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
+import {ElMessage} from "element-plus";
 
-const searchFilter = ref({})
+const searchFilter = ref({monthYear: new Date(), department: 6})
 const reportStore = useReportStore()
 const tableData = ref([])
 const departments = ref([])
-let data = []
 
 reportStore.getDepartments().then(res => departments.value = res.items)
 
 const tableRowClassName = ({row}) => {
-  if (row.appealId) return 'red-text'
+  if (row.days) return 'red-text'
 }
 
 
-
-
-function openAppeal(row) {
-  console.log('row', row)
-
-  // row.appealId && window.open('/v2/appeal/' + row.appealId, '_blank');
+// добавляем потомков, и скрываем
+function addChildren(data) {
+  tableData.value = []
+  data.forEach(el => {
+    tableData.value.push(el)
+    if (el.days.length) {
+      el.children = []
+      el.days.forEach(item => {
+        el.children.push({
+          userTitle: item.roleTitle,
+          appealSummByDays: item.appealsPerDay,
+          appealsCount: item.appealsCount,
+          parentId: el.userId,
+          isShow: false,
+        })
+      })
+    }
+  })
 }
 
-function init() {
-  searchFilter.value.monthYear = new Date()
-  searchFilter.value.department = 6
+// добавляем итоговую строку
+function addSum() {
+  if (!tableData.value.length) return false
+  let sumDays = {}
+  tableData.value.forEach(el => {
+    el.appealSummByDays.forEach((item, ind) => {
+      if (!el.days) return false
+      if (sumDays[ind] !== undefined) sumDays[ind] += item
+      else sumDays[ind] = item
+    })
+  })
 
-
-
-
-  tableData.value = data
-
+  tableData.value.push({
+    userTitle: 'ИТОГО',
+    appealSummByDays: Object.values(sumDays),
+    appealsCount: Object.values(sumDays).reduce((s, i) => i + s, 0)
+  })
 }
 
-init()
 
-
-
-function toSearch() {
+function getData() {
+  tableData.value = []
   const params = {
     department: searchFilter.value.department,
-    month: searchFilter.value.monthYear.getMonth() + 1 - 1,
+    month: searchFilter.value.monthYear.getMonth() + 1,
     year: searchFilter.value.monthYear.getFullYear()
   }
   reportStore.getSourceAppeals(params).then(res => {
-    console.log('res', res)
-
-    // res.models.push({
-    //   employeeTitle: 'ИТОГО',
-    // })
-
-    tableData.value = res.models
+    if (!res.models || !res.models.length) {
+      return ElMessage.warning('Нет данных')
+    }
+    addChildren(res.models)
+    addSum()
   })
 }
 

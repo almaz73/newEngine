@@ -3,8 +3,8 @@
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
         <div v-if="permit('rSourceRequests', 'reports')">
-          <el-button :icon="Avatar" @click="changeType('rSourceRequests')">По сотрудникам</el-button>
-          Количество обращений и оценок по каждому сотруднику
+          <el-button :icon="Avatar" @click="changeType('rSourceRequests')">Источний обращений</el-button>
+          Отчет по источнику обращений, по категориям создавших обращение
         </div>
       </div>
     </div>
