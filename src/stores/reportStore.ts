@@ -65,6 +65,18 @@ export const useReportStore = defineStore("reportStore", {
                 .then(res => res)
             return res.data
         },
-
+        async getCreditReport(params: any) {
+            let req = '?highDate=' + params.startDate + '&lowDate=' + params.endDate + '&reportType=' + params.reportType
+            if (params.user) req += '&user=' + params.user
+            if (params.manager) req += '&manager=' + params.manager
+            if (params.organization) req += '&organization=' + params.organization
+            if (params.bank) req += '&bank=' + params.bank
+            const res = await axios.get('/api/report/common/credit' + req)
+                .then(res => res)
+            return res.data
+        },
+        async getCreditReportUsers() {
+            return axios.get(`/api/user/list/policy?roles=50&roles=51&roles=52&roles=90&roles=91`).then(res => res.data)
+        }
     }
 })
