@@ -7,6 +7,10 @@
           Отчет по источнику обращений, по категориям создавших обращение
         </div>
 
+        <div v-if="permit('rAppeals', 'reports')">
+          <el-button :icon="Microphone" @click="changeType('rAppeals')">Обращения продаж</el-button>
+          Отчет обращений продаж по месяцам
+        </div>
       </div>
     </div>
     <component :is="type_report"/>
@@ -52,12 +56,14 @@
 import {Microphone} from "@element-plus/icons-vue";
 import {markRaw, ref} from "vue";
 import rSellAutoDays from "./rSellAutoDays.vue";
+import rAppeals from "./rAppeals.vue";
 import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
 let tab = null
 const types = {
   'rSellAutoDays': rSellAutoDays,
+  'rAppeals':rAppeals
 }
 
 function changeType(report, memory) {

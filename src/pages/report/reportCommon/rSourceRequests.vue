@@ -39,9 +39,9 @@
         :tree-props="{ children: 'children'}">
       <el-table-column label="ФИО" min-width="200">
         <template #default="scope">
-          <span>
+          <b>
             {{ scope.row.userTitle }}
-          </span>
+          </b>
         </template>
       </el-table-column>
       <el-table-column
@@ -97,8 +97,6 @@ function addChildren(data) {
           userTitle: item.roleTitle,
           appealSummByDays: item.appealsPerDay,
           appealsCount: item.appealsCount,
-          parentId: el.userId,
-          isShow: false,
         })
       })
     }

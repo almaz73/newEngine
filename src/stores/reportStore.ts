@@ -81,6 +81,9 @@ export const useReportStore = defineStore("reportStore", {
         async getAutoSellPerDay(params: any) {
             const link: string = `?filter={"year":${params.year},"month":${params.month}}`
             return axios.get('/api/report/getSellMonthByModel' + link).then(res => res.data)
-        }
+        },
+        async getSellAppeals() {
+            return axios.get('/api/report/getSellAppeals/').then(res => res.data)
+        },
     }
 })
