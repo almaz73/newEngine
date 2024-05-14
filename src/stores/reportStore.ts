@@ -76,7 +76,11 @@ export const useReportStore = defineStore("reportStore", {
             return res.data
         },
         async getCreditReportUsers() {
-            return axios.get(`/api/user/list/policy?roles=50&roles=51&roles=52&roles=90&roles=91`).then(res => res.data)
+            return axios.get('/api/user/list/policy?roles=50&roles=51&roles=52&roles=90&roles=91').then(res => res.data)
+        },
+        async getAutoSellPerDay(params: any) {
+            const link: string = `?filter={"year":${params.year},"month":${params.month}}`
+            return axios.get('/api/report/getSellMonthByModel' + link).then(res => res.data)
         }
     }
 })
