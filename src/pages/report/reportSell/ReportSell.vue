@@ -2,8 +2,13 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
+        <div v-if="permit('rAppealDays', 'reports')">
+          <el-button :icon="Microphone" @click="changeType('rAppealDays')">Количество обращений по дням</el-button>
+          Количество обращений к сотрудникам за один месяц
+        </div>
+
         <div v-if="permit('rSellAutoDays', 'reports')">
-          <el-button :icon="Microphone" @click="changeType('rSellAutoDays')">Источний обращений</el-button>
+          <el-button :icon="Microphone" @click="changeType('rSellAutoDays')">Продажи по можелям</el-button>
           Отчет по источнику обращений, по категориям создавших обращение
         </div>
 
@@ -57,13 +62,15 @@ import {Microphone} from "@element-plus/icons-vue";
 import {markRaw, ref} from "vue";
 import rSellAutoDays from "./rSellAutoDays.vue";
 import rAppeals from "./rAppeals.vue";
+import rAppealDays from "./rAppealDays.vue"
 import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
 let tab = null
 const types = {
   'rSellAutoDays': rSellAutoDays,
-  'rAppeals':rAppeals
+  'rAppeals':rAppeals,
+  'rAppealDays':rAppealDays
 }
 
 function changeType(report, memory) {
