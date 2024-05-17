@@ -85,5 +85,9 @@ export const useReportStore = defineStore("reportStore", {
         async getSellAppeals() {
             return axios.get('/api/report/getSellAppeals/').then(res => res.data)
         },
+        async getAppealsinorganizations(params: any) {
+            const link: string = `?filter={"lowCreateDatePeriod":"${params.startDate}","highCreateDatePeriod":"${params.endDate}"}`
+            return axios.get('/api/report/admin/appealsinorganizations' + link).then(res => res.data)
+        },
     }
 })

@@ -10,6 +10,9 @@
       <el-tab-pane label="Отдел продаж" name="sell">
         <ReportSell ref="refSell"/>
       </el-tab-pane>
+      <el-tab-pane label="Автосеть РФ" name="autoSet">
+        <ReportAutoSet ref="refAutoSet"/>
+      </el-tab-pane>
     </el-tabs>
   </main>
 
@@ -22,11 +25,13 @@ import {useGlobalStore} from "@/stores/globalStore";
 import ReportCallCenter from "@/pages/report/reportCallCenter/ReportCallCenter.vue";
 import ReportCommon from "@/pages/report/reportCommon/ReportCommon.vue";
 import ReportSell from "@/pages/report/reportSell/ReportSell.vue";
+import ReportAutoSet from "@/pages/report/reportAutoSet/ReportAutoSet.vue";
 
 const globalStore = useGlobalStore()
 const refCallCenter = ref(null)
 const refCommon = ref(null)
 const refSell = ref(null)
+const refAutoSet = ref(null)
 const activeName = ref('callCenter')
 
 
@@ -36,6 +41,7 @@ function tabchange(tab) {
   if (tabName === 'callCenter') refCallCenter.value.open(link)
   if (tabName === 'common') refCommon.value.open(link)
   if (tabName === 'sell') refSell.value.open(link)
+  if (tabName === 'autoSet') refAutoSet.value.open(link)
 }
 
 

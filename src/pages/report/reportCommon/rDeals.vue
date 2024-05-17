@@ -110,7 +110,7 @@ const organizations = ref([])
 const dealTypes = ref([])
 const period = ref(10)
 const periodItem = [
-  {title: 'Текущий месяй', value: 10},
+  {title: 'Текущий месяц', value: 10},
   {title: 'Прошлый месяц', value: 20},
   {title: '2 месяца назад', value: 30},
 ]
