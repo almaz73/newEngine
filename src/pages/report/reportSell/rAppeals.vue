@@ -41,17 +41,6 @@
   </main>
 </template>
 
-<style>
-.el-table .blue-text {
-  color: cornflowerblue;
-  font-weight: bold;
-}
-
-.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
-  background: #ddd;
-}
-</style>
-
 <script setup>
 import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";

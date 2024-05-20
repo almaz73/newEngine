@@ -59,8 +59,8 @@ export const useReportStore = defineStore("reportStore", {
         },
         async getDealsReport(params: any) {
             let req = '?startDate=' + params.startDate + '&endDate=' + params.endDate
-            params.orgIds.forEach(el => req += '&orgId=' + el)
-            params.workflowLeadTypes.forEach(el => req += '&workflowLeadType=' + el)
+            params.orgIds.forEach((el: string) => req += '&orgId=' + el)
+            params.workflowLeadTypes.forEach((el: string) => req += '&workflowLeadType=' + el)
             const res = await axios.get('/api/report/GetDealsReport' + req)
                 .then(res => res)
             return res.data
@@ -93,8 +93,11 @@ export const useReportStore = defineStore("reportStore", {
             const link: string = `?filter={"year":${params.year},"month":${params.month}}`
             return axios.get('/api/report/getSalesmanAppointmentsAndWorksheetReport' + link).then(res => res.data)
         },
-
-        //api/report/getSalesmanAppointmentsAndWorksheetReport
-        //filter=%7B%22year%22:2024,%22month%22:4%7D
+        async getEfficiency(params: any) {
+            const res = await axios.get(
+                `/api/report/analytic/efficiency?highCreateDatePeriod=${params.endDate}&lowCreateDatePeriod=${params.startDate}`)
+                .then(res => res)
+            return res.data
+        },
     }
 })

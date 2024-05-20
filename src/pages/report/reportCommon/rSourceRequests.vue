@@ -60,13 +60,6 @@
   </main>
 </template>
 
-<style>
-.el-table .red-text {
-  color: #f56c6c;
-  background: #ffefef;
-}
-</style>
-
 <script setup>
 import {Grid} from "@element-plus/icons-vue";
 import {ref} from "vue";

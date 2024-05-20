@@ -2,9 +2,9 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rCountAppeals', 'reports')">
-          <el-button :icon="Phone" @click="changeType('rCountAppeals')">Количество обращений</el-button>
-          Отчет по количеству обращений в организациях.
+        <div v-if="permit('rEfficiency', 'reports')">
+          <el-button :icon="Microphone" @click="changeType('rEfficiency')">Эффективность</el-button>
+          Эффективность работы сотрудников аналитического центра
         </div>
       </div>
     </div>
@@ -12,17 +12,16 @@
   </main>
 </template>
 
-
 <script setup>
-import {Phone} from "@element-plus/icons-vue";
+import {Microphone} from "@element-plus/icons-vue";
 import {markRaw, ref} from "vue";
-import rCountAppeals from "./rCountAppeals.vue";
+import rEfficiency from "./rEfficiency.vue";
 import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
 let tab = null
 const types = {
-  'rCountAppeals': rCountAppeals,
+  'rEfficiency': rEfficiency,
 }
 
 function changeType(report, memory) {

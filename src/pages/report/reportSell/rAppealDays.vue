@@ -46,19 +46,6 @@
   </main>
 </template>
 
-<style>
-.el-table .blue-text {
-  color: cornflowerblue;
-  font-weight: bold;
-}
-
-
-.el-table .gray-fon {
-  --el-table-tr-bg-color: #eee;
-  cursor: initial;
-}
-</style>
-
 <script setup>
 import {Grid} from "@element-plus/icons-vue";
 import {ref} from "vue";
