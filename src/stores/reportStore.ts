@@ -93,6 +93,11 @@ export const useReportStore = defineStore("reportStore", {
             const link: string = `?filter={"year":${params.year},"month":${params.month}}`
             return axios.get('/api/report/getSalesmanAppointmentsAndWorksheetReport' + link).then(res => res.data)
         },
+        async getEfficiencySell(params: any) {
+            let link: string = `?lowDate=${params.startDate}&highDate=${params.endDate}`
+            if (params.organization) link += '&organization=' + params.organization
+            return axios.get('/api/report/getSellEfficiency' + link).then(res => res.data)
+        },
         async getEfficiency(params: any) {
             const res = await axios.get(
                 `/api/report/analytic/efficiency?highCreateDatePeriod=${params.endDate}&lowCreateDatePeriod=${params.startDate}`)
