@@ -104,5 +104,11 @@ export const useReportStore = defineStore("reportStore", {
                 .then(res => res)
             return res.data
         },
+        async getCallCenterCalls(params: any) {
+            const res = await axios.get(
+              `/api/report/sell/callCenterCalls?highDate=${params.endDate}&lowDate=${params.startDate}&org=${params.organization}`)
+              .then(res => res);
+            return res.data;
+        }
     }
 })

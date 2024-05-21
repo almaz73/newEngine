@@ -21,6 +21,11 @@
           <el-button :icon="Microphone" @click="changeType('rEfficienceCell')">Эффективность</el-button>
           Эффективность
         </div>
+
+        <div v-if="permit('rCallCenterCalls', 'reports')">
+          <el-button :icon="Microphone" @click="changeType('rCallCenterCalls')">Отчет по специалистам контакт-центра</el-button>
+          Отчет по специалистам контакт-центра Звонки
+        </div>
       </div>
     </div>
     <component :is="type_report"/>
@@ -69,6 +74,7 @@ import rSellAutoDays from "./rSellAutoDays.vue";
 import rAppeals from "./rAppeals.vue";
 import rAppealDays from "./rAppealDays.vue"
 import rEfficienceCell from "./rEfficienceCell.vue"
+import rCallCenterCalls from "./rCallCenterCalls.vue"
 import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
@@ -77,7 +83,8 @@ const types = {
   'rSellAutoDays': rSellAutoDays,
   'rAppeals': rAppeals,
   'rAppealDays': rAppealDays,
-  'rEfficienceCell': rEfficienceCell
+  'rEfficienceCell': rEfficienceCell,
+  'rCallCenterCalls':rCallCenterCalls
 }
 
 function changeType(report, memory) {
