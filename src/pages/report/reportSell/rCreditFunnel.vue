@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="filter-report">
-      <h2>Отчет по специалистам контакт-центра Звонки 🐜</h2>
+      <h2>Отчет по менеджерам КСО (Входящий звонок) 🌴</h2>
 
       <div>
         <label class="label l_300">Период</label>
@@ -40,6 +40,16 @@
         </el-select>
       </div>
 
+      <div>
+        <label class="label l_300">Тип коммуникации</label>
+        <el-select
+          style="width: 220px"
+          v-model="searchFilter.communicationType"
+          filterable>
+          <el-option v-for="item in communicationTypes" :key="item.value" :label="item.title" :value="item.value"/>
+        </el-select>
+      </div>
+
       <br>
       <el-button :icon="Grid" type="danger"
                  :disabled="!searchFilter.organization"
@@ -64,32 +74,20 @@
           <a class="blue-text" v-else>{{scope.row.rowTitle}}</a>
         </template>
       </el-table-column>
-      <el-table-column label="Вх.звонок" prop="callsCount"/>
-      <el-table-column label="Назначенные встречи" prop="appointedMeetsCount"/>
-      <el-table-column label="Конверсия зв./наз.встречи, %">
-        <template #default="scope">
-          {{Math.round(scope.row.appointedMeetsConversion*100)/100}} %
-        </template>
-      </el-table-column>
-      <el-table-column label="Встречи" prop="meetingsCount"/>
-      <el-table-column label="Конверсия наз.встречи/встречи, %">
-        <template #default="scope">
-          {{Math.round(scope.row.meetingsConversion*100)/100}} %
-        </template>
-      </el-table-column>
-      <el-table-column label="Выдачи" prop="sellsCount"/>
-      <el-table-column label="Конверсия встречи/выдачи,%">
-        <template #default="scope">
-          {{Math.round(scope.row.meetingSellsConversion*100)/100}} %
-        </template>
-      </el-table-column>
-      <el-table-column label="Конверсия вх.звонок/выдачи, %">
-        <template #default="scope">
-          {{Math.round(scope.row.callSellsConversion*100)/100}} %
-        </template>
-      </el-table-column>
 
-      <el-table-column label="Маржинальность (GM1)" prop="gm1"/>
+      <el-table-column label="Назначенные встречи" prop="appointedMeetsCount"/>
+      <el-table-column label="Встречи" prop="meetingsCount"/>
+      <el-table-column label="Обращения в отдел ксо" prop="creditApplicationCount"/>
+      <el-table-column label="Конверсия встречи/обращения в ксо	" prop="applicationInProcessCount"/>
+      <el-table-column label="Подача заявки	" prop="applicationApprovalCount"/>
+      <el-table-column label="Конверсия встречи/подача заявки" prop="applicationIssueCount"/>
+
+      <el-table-column label="Одобрения" prop="sellsCount"/>
+      <el-table-column label="Конверсия подача заявки/одобрения" prop="applicationInProcessConversion"/>
+      <el-table-column label="Выдачи в кредит конверсия выдачи/одобрения" prop="creditApplicationConversion"/>
+      <el-table-column label="Конверсия выдачи/встречи" prop="applicationApprovalConversion"/>
+      <el-table-column label="Выдачи авто" prop="applicationIssueApprovalConversion"/>
+      <el-table-column label="Конверсия выдачи авто/выдачи кредит" prop="applicationIssueMeetingsConversion"/>
     </el-table>
 
 
@@ -106,7 +104,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
-const searchFilter = ref({startDate: new Date()})
+const searchFilter = ref({startDate: new Date(), communicationType:10})
 const reportStore = useReportStore()
 const tableData = ref([])
 const period = ref(10)
@@ -116,6 +114,11 @@ const periodItem = [
   {title: 'Прошлый месяц', value: 20},
   {title: '2 месяца назад', value: 30},
 ]
+const communicationTypes = [
+  {title: 'Входящий звонок', value: 10},
+  {title: 'Визит', value: 20},
+]
+
 
 let counColor = 0
 const tableRowClassName = () => {
@@ -127,7 +130,6 @@ globalStore.getOrganizations().then(res => organizations.value = res.items)
 function openAppeal(row) {
   !isNaN(row.rowTitle) && window.open('/v2/appeal/' + row.rowTitle, '_blank');
 }
-
 function init() {
   searchFilter.value.startDate = formatDateDDMMYYYY(new Date(new Date().setDate(1)))
   searchFilter.value.endDate = formatDateDDMMYYYY(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
@@ -173,10 +175,10 @@ function addChildren(data) {
 function getData() {
   tableData.value = []
 
-  reportStore.getCallCenterCalls(searchFilter.value).then(res => {
+  reportStore.getCreditFunnel(searchFilter.value).then(res => {
     if (!res.items.length) return ElMessage.warning('Нет данных')
-  addChildren(res.items)
+    addChildren(res.items)
   })
-}
 
+}
 </script>

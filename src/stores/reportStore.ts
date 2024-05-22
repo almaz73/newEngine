@@ -109,6 +109,12 @@ export const useReportStore = defineStore("reportStore", {
               `/api/report/sell/callCenterCalls?highDate=${params.endDate}&lowDate=${params.startDate}&org=${params.organization}`)
               .then(res => res);
             return res.data;
+        },
+        async getCreditFunnel(params: any) {
+            const res = await axios.get(
+              `/api/report/sell/creditApplicationFunnel?highDate=${params.endDate}&lowDate=${params.startDate}&org=${params.organization}&communicationType=${params.communicationType}`)
+              .then(res => res);
+            return res.data;
         }
     }
 })

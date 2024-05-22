@@ -111,7 +111,6 @@ function open(row, cbModal) {
   });
 
   adminStore.getPolicy().then(res=>{
-    console.log('res', res)
     policies.value = res.items
   })
 }

@@ -75,8 +75,6 @@ function find() {
 }
 
 function showModel(val) {
-  console.log('selectedBrand.value', selectedBrand.value)
-  console.log('val', val)
   if (!selectedBrand.value || !selectedBrand.value.name) {
     selectedBrand.value = val
     globalStore.getModels(val.id).then((res) => {

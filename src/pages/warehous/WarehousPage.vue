@@ -251,7 +251,6 @@ function validateFilter() {
 }
 
 function openChart() {
-  console.log('v>>openChart')
   isGridOpen.value=!isGridOpen.value;
 }
 

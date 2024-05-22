@@ -62,9 +62,6 @@ function changeType(report, memory) {
 }
 
 function open(path) {
-
-  console.log('path', path)
-
   tab = path.tab
   if (!path.report) hideTable()
   else changeType(path.report, true)

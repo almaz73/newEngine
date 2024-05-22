@@ -38,7 +38,6 @@ onMounted(() => {
 
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      console.log('координаты = ', position.coords.latitude, position.coords.longitude);
       L.marker([position.coords.latitude, position.coords.longitude]).addTo(map.value);
     });
   } else {
