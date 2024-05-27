@@ -43,7 +43,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Клиент" width="150">
+      <el-table-column label="Клиент" width="250">
         <template #default="scope">
           <div><b> {{ scope.row.leadName }}</b></div>
           <div> {{ scope.row.leadPhone }}</div>
@@ -84,11 +84,16 @@
 
       <el-table-column label="Событие">
         <template #default="scope">
+          <div class="red-text"
+                :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </div><br/>
+          {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
+        </template>
+      </el-table-column>
+
+      <el-table-column width="30">
+        <template #default="scope">
           <span class="edit-table-row" @click="openModal(scope.row)"/>
           <span class="edit-table-page" @click="openPage(scope.row)">⏏</span>
-          <span class="red-text"
-                :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </span><br/>
-          {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
         </template>
       </el-table-column>
 
