@@ -33,7 +33,8 @@
             <img @click="openUrgsModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteUser(scope.row.id)" alt=""
+            <img v-if="scope.row.id!==1"
+                 @click="deleteUser(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
@@ -47,7 +48,7 @@
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import { ElTable} from "element-plus";
+import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import OrgsDirModal from "@/pages/admin/dirs/OrgsDirModal.vue";
 
@@ -59,11 +60,9 @@ const isEdit = ref(false)
 const selectedRow = ref(false)
 const orgsModal = ref(null)
 
-function openUrgsModal(row){
+function openUrgsModal(row) {
   orgsModal.value.open(row, getData)
 }
-
-
 
 
 function getData() {

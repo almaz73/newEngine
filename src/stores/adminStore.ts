@@ -201,5 +201,8 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/Malfunctions/` + id).then(q => q)
             return res.data
         },
+        async getOrg(id: number) {
+            return await axios.get('/api/orgelement/get?id=' + id).then(res => res.data)
+        },
     }
 })
