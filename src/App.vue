@@ -17,7 +17,7 @@
     />
   </div>
 </template>
-
+ 
 <script setup lang="ts">
 import {RouterView} from 'vue-router'
 import LeftMenu from '@/components/LeftMenu.vue'
