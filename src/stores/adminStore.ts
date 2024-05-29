@@ -204,8 +204,11 @@ export const useAdminStore = defineStore("adminStore", {
         async getOrg(id: number) {
             return await axios.get('/api/orgelement/get?id=' + id).then(res => res.data)
         },
-        async getTires() {
+        async getTireBrands() {
             return await axios.get('/api/wheelbrands').then(res => res.data)
+        },
+        async getTires(brand: string) {
+            return await axios.get('/api/wheelbrands/'+brand).then(res => res.data)
         },
     }
 })
