@@ -9,7 +9,10 @@
         <el-radio-button label="Темная тема"/>
       </el-radio-group>
     </div>
+    <br>
     <p>
+      <RouterLink to="/myView"><h2>Как я вижу развитие веб-направления</h2></RouterLink>
+      <br><br><br>
       <RouterLink to="/ideas">Идеи по редизайну</RouterLink>
     </p>
 

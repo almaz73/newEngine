@@ -58,6 +58,10 @@ const router = createRouter({
             name: 'ideas',
             component: () => import('@/views_Developer/IdeaPage.vue').catch(val => fail(val))
         }, {
+            path: '/myView',
+            name: 'myView',
+            component: () => import('@/myView/MyView.vue').catch(val => fail(val))
+        }, {
             path: '/bayerhelp',
             name: 'bayerhelp',
             component: () => import('@/documentation/BayerHelp.vue').catch(val => fail(val))
