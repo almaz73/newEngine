@@ -15,6 +15,7 @@
       }}
     </h4>
     <br>
+    --{{selectedBrand}}-
     <el-table
         v-if="!globalStore.isMobileView"
         :data="tableData"
@@ -27,10 +28,21 @@
     >
       <el-table-column label="Название">
         <template #default="scope">
-          <span v-if="selectedBrand && selectedBrand.name"> - - {{ scope.row.name }}
-            <el-button @click.stop="showPicture(scope.row.name)" style="float: right">Посмотреть</el-button>
-          </span>
+          <span v-if="selectedBrand && selectedBrand.name "> - - {{ scope.row.model }}  </span>
           <span v-else>   {{ scope.row.name }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="roleTitle" width="73px" v-if="selectedBrand && selectedBrand.name ">
+        <template #default="scope">
+          <div style="" class="admin-table-editors">
+            <img @click="openModal(scope.row)" alt=""
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img @click="deleteInsp(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -44,13 +56,15 @@
     </div>
 
   </div>
+  <TiresDirModal ref="TiresModal"/>
 </template>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
-import {ElTable} from "element-plus";
+import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {Search} from "@element-plus/icons-vue";
+import TiresDirModal from "@/pages/admin/dirs/TiresDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -61,6 +75,7 @@ const brandsTotal = ref('')
 const modelsTotal = ref('')
 const search = ref('')
 const selectedBrand = ref({name: ''})
+const TiresModal = ref(null)
 
 function find() {
   let word = search.value.toUpperCase()
@@ -76,13 +91,35 @@ function find() {
   }
 }
 
-function showModel(val) {
+function openModal(row: any | null) {
+  TiresModal.value.open(row, getData)
+}
+
+
+function deleteInsp(id: number) {
+  ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+      .then((res) => {
+        res && adminStore.deleteInspection(id).then(() => {
+          ElMessage({message: 'Осмотре успешно удален', type: 'success'})
+          getData()
+        })
+      })
+}
+
+function showModel(brand) {
+
+
   if (!selectedBrand.value || !selectedBrand.value.name) {
-    selectedBrand.value = val
-    globalStore.getModels(val.id).then((res) => {
-      tableData.value = res
+    selectedBrand.value = brand
+    adminStore.getTires(brand.name).then(res => {
+      console.log('res', res)
+      tableData.value = res.items
       modelsMemory = JSON.parse(JSON.stringify(res))
-      modelsTotal.value = res.length
+
+
     })
   } else {
     search.value = ''
@@ -93,15 +130,16 @@ function showModel(val) {
 
 
 function getData() {
-  adminStore.getTires().then(res => {
+  adminStore.getTireBrands().then(res => {
     console.log('res', res)
-    tableData.value = res.items
+    tableData.value = res.items.map(el=>({name:el}))
     brandsMemory = JSON.parse(JSON.stringify(res))
     brandsTotal.value = res.count
+    console.log('tableData.value', tableData.value)
   })
 }
 
-function showPicture(model:string) {
+function showPicture(model: string) {
   let url = `https://www.google.com/search?q=${selectedBrand.value.name}+${model}+foto`
   window.open(url)
 }
