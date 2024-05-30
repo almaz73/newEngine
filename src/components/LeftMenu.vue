@@ -35,6 +35,14 @@
         @select="select"
         popper-effect="light"
     >
+      <RouterLink to="/myView" >
+        <el-menu-item index="0">
+          <el-icon>
+           ИДЕИ
+          </el-icon>
+          <template #title>Рабочий стол</template>
+        </el-menu-item>
+      </RouterLink>
       <RouterLink to="/hostess" v-if="permit('desktop') && globalStore.account.role==='Hostess'" >
         <el-menu-item index="1">
           <el-icon>
