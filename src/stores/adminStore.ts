@@ -132,11 +132,11 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('/api/bank/get/list').then(q => q)
             return (cache.getBanks = res.data)
         },
-        async saveBanks(obj: any){
-            const res = await axios.post('/api/bank',obj).then(q => q)
+        async saveBanks(obj: any) {
+            const res = await axios.post('/api/bank', obj).then(q => q)
             return res.data
         },
-        async deleteBanks(deleteId: number){
+        async deleteBanks(deleteId: number) {
             const res = await axios.delete(`/api/bank/${deleteId}`).then(q => q)
             return res.data
         },
@@ -225,8 +225,22 @@ export const useAdminStore = defineStore("adminStore", {
         async saveTire(params: any) {
             return await axios.post('/api/wheelmodel', params).then(q => q)
         },
-        async deleteTire(id:number){
-            return await axios.delete('/api/wheelmodel/'+id).then(q => q)
-        }
+        async deleteTire(id: number) {
+            return await axios.delete('/api/wheelmodel/' + id).then(q => q)
+        },
+        async getMarkupCategory(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/markupCategory/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async getDepartmentsWithBuyLocations(orgId: number) {
+            return await axios.get('/api/OrgElement/GetDepartmentsWithBuyLocations?orgId=' + orgId).then(res => res.data)
+        },
+        async saveMarkupCategory(params) {
+            console.log('params', params)
+            const res = await axios.post('/api/markupCategory', params).then(q => q)
+            return res.data
+        },
+
     }
 })

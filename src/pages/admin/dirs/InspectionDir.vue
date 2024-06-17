@@ -76,7 +76,7 @@ function deleteInsp(id: number) {
   })
       .then((res) => {
         res && adminStore.deleteInspection(id).then(() => {
-          ElMessage({message: 'Осмотре успешно удален', type: 'success'})
+          ElMessage({message: 'Осмотр успешно удален', type: 'success'})
           getData()
         })
       })

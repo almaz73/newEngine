@@ -37,6 +37,7 @@ import {markRaw, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import ClientsDir from "@/pages/admin/dirs/ClientsDir.vue";
 import ThresholdDir from "@/pages/admin/dirs/ThresholdDir.vue";
+import EstimateTabs from "@/pages/admin/dirs/estimate/EstimateTabs.vue";
 import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
 import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
@@ -80,7 +81,8 @@ const AdminDirectories = {
   'Клиенты': ClientsDir,
   '🚧Программы сертификации': ClientsDir,
   'Возможные неисправности': PossibleDamages,
-  'Пороговое значение': ThresholdDir
+  'Пороговое значение': ThresholdDir,
+  'Оценки': EstimateTabs,
 }
 const directories = Object.keys(AdminDirectories)
 
