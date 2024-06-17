@@ -279,6 +279,15 @@ export const EventType = {
     144: 'Простое событие',
 }
 
+export const autoTypeList = [
+    { name: 'Легковой автомобиль', code: 10 },
+    { name: 'Грузовой автомобиль', code: 20 },
+    { name: 'Легкий коммерческий', code: 30 },
+    { name: 'Автобусы', code: 40 },
+    { name: 'Прицеп', code: 50 },
+    { name: 'Мотоцикл', code: 60 },
+];
+
 
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {

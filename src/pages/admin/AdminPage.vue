@@ -46,7 +46,7 @@ import InspectionDir from "@/pages/admin/dirs/InspectionDir.vue";
 import WorksDir from "@/pages/admin/dirs/WorksDir.vue";
 import PossibleDamages from "@/pages/admin/dirs/PossibleDamages.vue";
 import TiresDir from "@/pages/admin/dirs/TiresDir.vue"
-
+import BanksDir from "@/pages/admin/dirs/BanksDir.vue"
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
@@ -64,7 +64,7 @@ const AdminDirectories = {
   '🚧Запчасти': ClientsDir,
   '🚧Место хранения': ClientsDir,
   '🚧Шины': TiresDir,
-  '🚧Банки': ClientsDir,
+  '🚧Банки': BanksDir,
   '🚧Кредитные программы': ClientsDir,
   '🚧Тарифы': ClientsDir,
   '🚧Акции': ClientsDir,

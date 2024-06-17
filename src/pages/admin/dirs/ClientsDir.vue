@@ -12,7 +12,6 @@
       <el-button @click="openModalUserDir()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
 
-
     <el-table
         v-if="!globalStore.isMobileView"
         :data="tableData"
@@ -118,6 +117,7 @@ function changePage(val: number) {
 
 
 function getData() {
+
   filter.quickSearch = search.value
   globalStore.isWaiting = true
   adminStore.getClients(filter).then(res => {
@@ -132,7 +132,6 @@ function getData() {
               (el.person.registrationAddress.fia && el.person.registrationAddress.fias.value))
       ) el.isRegistrationAddress = true
     })
-
     tableData.value = res.data.individuals
     total.value = res.data.totalCount
   })
