@@ -27,7 +27,9 @@
     >
       <el-table-column label="Название">
         <template #default="scope">
-          <span v-if="selectedBrand && selectedBrand.name"> - - {{ scope.row.name }}
+          <span v-if="selectedBrand && selectedBrand.name">
+            <button @click.stop="showBrands()"> ◄ </button>
+            {{ scope.row.name }}
             <el-button @click.stop="showPicture(scope.row.name)" style="float: right">Посмотреть</el-button>
           </span>
           <span v-else>   {{ scope.row.name }}</span>
@@ -38,7 +40,9 @@
       <div v-for="(row, ind) in tableData"
            @click="showModel(row)"
            :key="ind" style="border-top:5px double #ddd">
-        <span v-if="selectedBrand && selectedBrand.name"> - - {{ row.name }}</span>
+        <span v-if="selectedBrand && selectedBrand.name">
+          <button @click.stop="showBrands()"> ◄ </button>
+          {{ row.name }}</span>
         <span v-else>{{ row.name }}</span>
       </div>
     </div>
@@ -82,11 +86,13 @@ function showModel(val) {
       modelsMemory = JSON.parse(JSON.stringify(res))
       modelsTotal.value = res.length
     })
-  } else {
-    search.value = ''
-    selectedBrand.value = null
-    find()
   }
+}
+
+function showBrands() {
+  search.value = ''
+  selectedBrand.value = null
+  find()
 }
 
 
@@ -98,7 +104,7 @@ function getData() {
   })
 }
 
-function showPicture(model:string) {
+function showPicture(model: string) {
   let url = `https://www.google.com/search?q=${selectedBrand.value.name}+${model}+foto`
   window.open(url)
 }
