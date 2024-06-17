@@ -5,17 +5,22 @@
                :prefix-icon="Search"
                clearable
                @clear="find()"
+               @input="find()"
                @keydown.enter="find()"/>
+      &nbsp; &nbsp;
+    <el-button v-if="selectedBrand" @click="openModal(selectedBrand)" type="danger" :icon="Plus"> Добавить</el-button>
+    <br><br>
+
     </span>
+
     <h4 style="color: #999">
       {{
         (selectedBrand && selectedBrand.name) ?
-            'Автомобильный бренд: ' + selectedBrand.name + '.   (моделей: ' + modelsTotal + ' )' :
+            'Автомобильный бренд: ' + selectedBrand.name + '.   (моделей шин: ' + modelsTotal + ' )' :
             'Все бренды ( ' + brandsTotal + ')'
       }}
     </h4>
     <br>
-    --{{selectedBrand}}-
     <el-table
         v-if="!globalStore.isMobileView"
         :data="tableData"
@@ -28,18 +33,20 @@
     >
       <el-table-column label="Название">
         <template #default="scope">
-          <span v-if="selectedBrand && selectedBrand.name "> - - {{ scope.row.model }}  </span>
-          <span v-else>   {{ scope.row.name }}</span>
+          <span v-if="!selectedBrand || !selectedBrand.name">{{ scope.row.name }} </span>
+          <span v-if="selectedBrand && selectedBrand.name " style="font-size: 9px">{{ selectedBrand.name }} </span>
+
+          <span v-if="selectedBrand && selectedBrand.name ">  &nbsp; ↶ &nbsp;  {{ scope.row.model }}  </span>
         </template>
       </el-table-column>
 
       <el-table-column prop="roleTitle" width="73px" v-if="selectedBrand && selectedBrand.name ">
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img @click="openModal(scope.row)" alt=""
+            <img @click="openModal(scope.row, $event)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteInsp(scope.row.id)" alt=""
+            <img @click="deleteTire(scope.row.id, $event)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
@@ -63,14 +70,13 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
-import {Search} from "@element-plus/icons-vue";
+import {Plus, Search} from "@element-plus/icons-vue";
 import TiresDirModal from "@/pages/admin/dirs/TiresDirModal.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 let brandsMemory = []
-let modelsMemory = []
 const brandsTotal = ref('')
 const modelsTotal = ref('')
 const search = ref('')
@@ -79,69 +85,53 @@ const TiresModal = ref(null)
 
 function find() {
   let word = search.value.toUpperCase()
-  if (!word) {
-    tableData.value = brandsMemory
-    return
-  }
-
-  if (!selectedBrand.value) {
-    tableData.value = brandsMemory.filter(el => el.name.toUpperCase().includes(word))
-  } else {
-    tableData.value = modelsMemory.filter(el => el.name.toUpperCase().includes(word))
-  }
+  brandsTotal.value = brandsMemory.count
+  if (word) tableData.value = tableData.value.filter(el => el.name.toUpperCase().includes(word))
+  else tableData.value = brandsMemory.items.map(el => ({name: el}))
 }
 
-function openModal(row: any | null) {
+function openModal(row, event) {
+  event && event.stopPropagation()
   TiresModal.value.open(row, getData)
 }
 
 
-function deleteInsp(id: number) {
+function deleteTire(id: number, event) {
+  event.stopPropagation()
   ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
       .then((res) => {
-        res && adminStore.deleteInspection(id).then(() => {
-          ElMessage({message: 'Осмотре успешно удален', type: 'success'})
+        res && adminStore.deleteTire(id).then(() => {
+          ElMessage({message: 'Модель шины успешно удалена', type: 'success'})
           getData()
         })
       })
 }
 
 function showModel(brand) {
-
-
   if (!selectedBrand.value || !selectedBrand.value.name) {
     selectedBrand.value = brand
     adminStore.getTires(brand.name).then(res => {
-      console.log('res', res)
-      tableData.value = res.items
-      modelsMemory = JSON.parse(JSON.stringify(res))
-
-
+      tableData.value = res.items.reverse()
+      modelsTotal.value = res.count
     })
   } else {
     search.value = ''
     selectedBrand.value = null
+    modelsTotal.value = null
     find()
   }
 }
 
-
 function getData() {
+  selectedBrand.value = null
   adminStore.getTireBrands().then(res => {
-    console.log('res', res)
-    tableData.value = res.items.map(el=>({name:el}))
+    tableData.value = res.items.map(el => ({name: el}))
     brandsMemory = JSON.parse(JSON.stringify(res))
     brandsTotal.value = res.count
-    console.log('tableData.value', tableData.value)
   })
-}
-
-function showPicture(model: string) {
-  let url = `https://www.google.com/search?q=${selectedBrand.value.name}+${model}+foto`
-  window.open(url)
 }
 
 getData()

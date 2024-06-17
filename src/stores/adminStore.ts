@@ -207,8 +207,17 @@ export const useAdminStore = defineStore("adminStore", {
         async getTireBrands() {
             return await axios.get('/api/wheelbrands').then(res => res.data)
         },
-        async getTires(brand: string) {
-            return await axios.get('/api/wheelbrands/'+brand).then(res => res.data)
+        async getTires(brandId: string) {
+            return await axios.get('/api/wheelbrands/' + brandId).then(res => res.data)
         },
+        async getTire(modelId: string) {
+            return await axios.get('/api/wheelmodel/' + modelId).then(res => res.data)
+        },
+        async saveTire(params: any) {
+            return await axios.post('/api/wheelmodel', params).then(q => q)
+        },
+        async deleteTire(id:number){
+            return await axios.delete('/api/wheelmodel/'+id).then(q => q)
+        }
     }
 })
