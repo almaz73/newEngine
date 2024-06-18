@@ -257,6 +257,18 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/MarkupMatrix/${id}`).then(q => q)
             return res.data
         },
-        
+        async getMarkupHistory(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/MileageRate/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async saveMarkupHistory(params: any) {
+            const res = await axios.post('/api/MileageRate',params).then(q => q)
+            return res.data
+        },
+        async deleteMarkupHistory(id: number) {
+            const res = await axios.delete(`/api/MileageRate/${id}`).then(q => q)
+            return res.data
+        },
     }
 })

@@ -287,7 +287,11 @@ export const autoTypeList = [
     { name: 'Прицеп', code: 50 },
     { name: 'Мотоцикл', code: 60 },
 ];
-
+export const colorTypeList = [
+    { name: 'Зеленая',code:0, color: 'rgb(221, 255, 221)' },
+    { name: 'Желтая',code:10, color: 'rgb(255, 255, 221)', },
+    { name: 'Красная',code:20, color: 'rgb(255, 221, 221)' },
+];
 
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {
