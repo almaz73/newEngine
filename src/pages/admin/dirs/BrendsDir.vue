@@ -74,8 +74,7 @@ function find() {
     tableData.value = brandsMemory
     return
   }
-
-  if (!selectedBrand.value) {
+  if (selectedBrand.value) {
     tableData.value = brandsMemory.filter(el => el.name.toUpperCase().includes(word))
   } else {
     tableData.value = modelsMemory.filter(el => el.name.toUpperCase().includes(word))
@@ -87,7 +86,6 @@ function showModel(val) {
     selectedBrand.value = val
     globalStore.getModels(val.id).then((res) => {
       tableData.value = res
-      console.log(res)
       modelsMemory = JSON.parse(JSON.stringify(res))
       modelsTotal.value = res.length
     })

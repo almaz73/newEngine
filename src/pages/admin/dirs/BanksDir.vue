@@ -2,6 +2,7 @@
     <div>
         <div style="margin-bottom: 30px">
             <el-input v-model="search" :prefix-icon="Search" @clear="find()" clearable
+            placeholder="Фильтр" 
                 :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }" @keydown.enter="find()" />
             <el-button @click="add()" :disabled="isEdit" type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' :
                 'Добавить' }}
