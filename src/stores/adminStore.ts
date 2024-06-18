@@ -237,10 +237,38 @@ export const useAdminStore = defineStore("adminStore", {
             return await axios.get('/api/OrgElement/GetDepartmentsWithBuyLocations?orgId=' + orgId).then(res => res.data)
         },
         async saveMarkupCategory(params) {
-            console.log('params', params)
             const res = await axios.post('/api/markupCategory', params).then(q => q)
             return res.data
         },
-
+        async deleteMarkupCategory(id: number) {
+            const res = await axios.delete(`/api/markupCategory/${id}`).then(q => q)
+            return res.data
+        },
+        async getMarkupMatrix(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/MarkupMatrix/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async saveMarkupMatrix(params: any) {
+            const res = await axios.post('/api/MarkupMatrix',params).then(q => q)
+            return res.data
+        },
+        async deleteMarkupMatrix(id: number) {
+            const res = await axios.delete(`/api/MarkupMatrix/${id}`).then(q => q)
+            return res.data
+        },
+        async getMarkupHistory(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/MileageRate/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async saveMarkupHistory(params: any) {
+            const res = await axios.post('/api/MileageRate',params).then(q => q)
+            return res.data
+        },
+        async deleteMarkupHistory(id: number) {
+            const res = await axios.delete(`/api/MileageRate/${id}`).then(q => q)
+            return res.data
+        },
     }
 })

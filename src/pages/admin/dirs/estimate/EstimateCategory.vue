@@ -10,7 +10,7 @@
               style="width: 100%; margin-bottom: 20px"
               :default-sort="{ prop: 'order', order: 'descending'}"
               highlight-current-row>
-      <el-table-column label="Организация" prop="orgElement.name" width="185"/>
+      <el-table-column label="Организация" prop="orgElement.name" width="185" sortable/>
       <el-table-column prop="department.name" label="Отдел"/>
       <el-table-column prop="priceLow" label="Цена продажи, от"/>
       <el-table-column prop="priceHigh" label="Цена продажи, до"/>
@@ -46,7 +46,7 @@
             <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteInsp(scope.row.id)" alt=""
+            <img @click="deleteCategory(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
@@ -89,7 +89,6 @@ import {useGlobalStore} from "@/stores/globalStore";
 import EstimateCategoryModal from "@/pages/admin/dirs/estimate/EstimateCategoryModal.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
-
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
@@ -131,17 +130,17 @@ function openModal(row: any | null) {
 }
 
 
-function deleteInsp(id: number) {
+function deleteCategory(id: number) {
   ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
       .then((res) => {
         console.log('res', res)
-        // res && adminStore.deleteInspection(id).then(() => {
-        //   ElMessage({message: 'Категория наценки успешно удалена', type: 'success'})
-        //   getData()
-        // })
+        res && adminStore.deleteMarkupCategory(id).then(() => {
+          ElMessageBox({message: 'Категория наценки успешно удалена', type: 'success'})
+          getData()
+        })
       })
 }
 
@@ -152,6 +151,7 @@ function getData() {
   selectedRow.value = false
 
   adminStore.getMarkupCategory(filter).then(res => {
+    console.log(res)
     tableData.value = res.models
     total.value = res.totalCount
   })
