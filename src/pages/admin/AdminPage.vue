@@ -64,7 +64,7 @@ const AdminDirectories = {
   '🚧Запчасти': ClientsDir,
   '🚧Место хранения': ClientsDir,
   '🚧Шины': TiresDir,
-  '🚧Банки': BanksDir,
+  'Банки': BanksDir,
   '🚧Кредитные программы': ClientsDir,
   '🚧Тарифы': ClientsDir,
   '🚧Акции': ClientsDir,
