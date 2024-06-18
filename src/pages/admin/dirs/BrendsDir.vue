@@ -8,7 +8,6 @@
                @clear="find()"
                @keydown.enter="find()":style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }"/>
     </span>
-    <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     <br><br>
     <h4 style="color: #999">
       {{
@@ -38,18 +37,7 @@
           <span v-else>   {{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="roleTitle" width="73px" v-if="selectedBrand && selectedBrand.name">
-        <template #default="scope">
-          <div style="" class="admin-table-editors">
-            <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteModel(scope.row.id)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
-          </div>
-        </template>
-      </el-table-column>
+
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData"
@@ -63,14 +51,12 @@
     </div>
 
   </div>
-  <BrendsDirModal ref="BrendsModal"/>
 </template>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
-import {ElMessageBox, ElTable } from "element-plus";
-import {Plus, Search} from "@element-plus/icons-vue";
-import BrendsDirModal from "@/pages/admin/dirs/BrendsDirModal.vue";
+import {ElTable } from "element-plus";
+import {Search} from "@element-plus/icons-vue";
 
 const globalStore = useGlobalStore()
 const tableData = ref([])
@@ -114,24 +100,6 @@ function showBrands() {
   search.value = ''
   selectedBrand.value = null
   find()
-}
-function openModal(row: any | null){
-  row.brend = selectedBrand.value.name
-  BrendsModal.value.open(row, getData)
-}
-function deleteModel(){
-  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
-      confirmButtonText: 'Да',
-      cancelButtonText: 'Нет'
-    })
-        // .then(() => {
-        //   adminStore.deleteBanks(row.id).then(res => {
-        //     ElMessage({message: 'Запись удалена.', type: 'success'})
-        //     getData()
-        //   })
-        // })
-        // .catch(() => {
-        // })
 }
 
 function getData() {
