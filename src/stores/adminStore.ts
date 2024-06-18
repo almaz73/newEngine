@@ -244,5 +244,19 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/markupCategory/${id}`).then(q => q)
             return res.data
         },
+        async getMarkupMatrix(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/MarkupMatrix/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async saveMarkupMatrix(params: any) {
+            const res = await axios.post('/api/MarkupMatrix',params).then(q => q)
+            return res.data
+        },
+        async deleteMarkupMatrix(id: number) {
+            const res = await axios.delete(`/api/MarkupMatrix/${id}`).then(q => q)
+            return res.data
+        },
+        
     }
 })
