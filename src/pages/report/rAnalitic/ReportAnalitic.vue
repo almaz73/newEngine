@@ -2,7 +2,7 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rEfficiency', 'reports')">
+        <div v-if="permit('reports','rEfficiency' )">
           <el-button :icon="Microphone" @click="changeType('rEfficiency')">Эффективность</el-button>
           Эффективность работы сотрудников аналитического центра
         </div>

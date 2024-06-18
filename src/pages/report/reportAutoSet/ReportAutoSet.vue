@@ -2,7 +2,7 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rCountAppeals', 'reports')">
+        <div v-if="permit('reports','rCountAppeals')">
           <el-button :icon="Phone" @click="changeType('rCountAppeals')">Количество обращений</el-button>
           Отчет по количеству обращений в организациях.
         </div>

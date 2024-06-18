@@ -2,27 +2,27 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rEmployees', 'reports')">
+        <div v-if="permit('reports','rEmployees')">
           <el-button :icon="Avatar" @click="changeType('rEmployees')">По сотрудникам</el-button>
           Количество обращений и оценок по каждому сотруднику
         </div>
-        <div v-if="permit('rDays', 'reports')">
+        <div v-if="permit('reports','rDays')">
           <el-button :icon="Calendar" @click="changeType('rDays')">Обращений по дням</el-button>
           Количество обращений к сотрудникам по дням
         </div>
-        <div v-if="permit('rArchive', 'reports')">
+        <div v-if="permit('reports','rArchive')">
           <el-button :icon="Failed" @click="changeType('rArchive')"> Причины архивирования</el-button>
           Отчет по причинам архивирования обращений клиентов
         </div>
-        <div  v-if="permit('rCalls', 'reports')">
+        <div  v-if="permit('reports','rCalls')">
           <el-button :icon="PhoneFilled" @click="changeType('rCalls')">По звонкам</el-button>
           Отчет по звонкам сотрудника за месяц
         </div>
-        <div  v-if="permit('rBuyout', 'reports')">
+        <div  v-if="permit('reports','rBuyout')">
           <el-button :icon="Select" @click="changeType('rBuyout')">По выкупу а/м</el-button>
           Отчет по выкупу а/м
         </div>
-        <div  v-if="permit('rAсtual', 'reports')">
+        <div  v-if="permit('reports','rAсtual')">
           <el-button :icon="Flag" @click="changeType('rAсtual')"> По актуальности</el-button>
           Отчет актуальности обращений
         </div>
