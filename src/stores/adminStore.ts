@@ -237,10 +237,12 @@ export const useAdminStore = defineStore("adminStore", {
             return await axios.get('/api/OrgElement/GetDepartmentsWithBuyLocations?orgId=' + orgId).then(res => res.data)
         },
         async saveMarkupCategory(params) {
-            console.log('params', params)
             const res = await axios.post('/api/markupCategory', params).then(q => q)
             return res.data
         },
-
+        async deleteMarkupCategory(id: number) {
+            const res = await axios.delete(`/api/markupCategory/${id}`).then(q => q)
+            return res.data
+        },
     }
 })
