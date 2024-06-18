@@ -4,6 +4,8 @@
         :buttons="filterButtons"
         :isOpen="isFilterOpened"
         :placeholder="''"
+        :isShowAdd="true"
+        @add="addAppeal"
         @buttonFilterSelect="buttonFilterSelect"
         @openFilter="openFilter"
         @updateSearchText="val=>searchText=val"
@@ -84,9 +86,13 @@
 
       <el-table-column label="Событие">
         <template #default="scope">
-          <div class="red-text"
-                :title="scope.row.lastTaskTitle">  {{ EventType[scope.row.workflowLeadType] }} </div><br/>
-          {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
+          <div :style="highlightCell(scope.row)" style="padding: 4px">
+            <div
+                :title="scope.row.lastTaskTitle"> {{ EventType[scope.row.workflowLeadType] }}
+            </div>
+            <br/>
+            {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>
+          </div>
         </template>
       </el-table-column>
 
@@ -134,6 +140,7 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
     <AppealPageModal ref="appealModal"/>
+    <AddAppealModal ref="addAppealModal"/>
   </main>
 </template>
 <script setup>
@@ -149,6 +156,7 @@ import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 import {buyTypes, EventType} from '@/utils/globalConstants';
 import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
 import router from "@/router";
+import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
 
 
 const tableData = ref([])
@@ -176,6 +184,29 @@ const filter = {
 }
 let filterOld; // кучковый способ запросов
 const appealModal = ref(null)
+const addAppealModal = ref(null)
+
+function addAppeal() {
+  console.log('Добавляем ')
+  addAppealModal.value.open()
+}
+
+function highlightCell(deal) {
+  var statusClass = {};
+
+  if (deal.appealStatusId == 17) {
+    statusClass['background-color'] = '#DCDCDC';
+  } else {
+    var lastTaskDate = new Date(deal.lastTaskDate);
+    var currentDate = new Date();
+    if (lastTaskDate > currentDate) statusClass['background-color'] = '#E6E6E6';
+    if (lastTaskDate < currentDate) {
+      statusClass['background-color'] = '#df8680';
+      statusClass['color'] = '#FAFAFA';
+    }
+  }
+  return statusClass;
+};
 
 function colorBox(txt) {
   if (txt === 'Новый') return {background: '#01a9db', color: 'white'}

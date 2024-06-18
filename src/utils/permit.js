@@ -104,7 +104,6 @@ const reportPermissions = {
         'CallManager',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
         'CallEmployee'
     ],
     rDays: [
@@ -112,30 +111,25 @@ const reportPermissions = {
         'CallManager',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
         'CallEmployee'
     ],
     rArchive: [
         'Admin',
         'CallManager',
-        'Hostess'
     ],
     rCalls: [
         'Admin',
         'CallManager',
-        'Hostess'
     ],
     rBuyout: [
         'Admin',
         'CallManager',
-        'Hostess'
     ],
     rAсtual: [
         'Admin',
         'CallManager',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
         'CallEmployee'
     ]
 }
@@ -144,33 +138,29 @@ const reportTabs = {
         'Admin',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
     ],
     reportCallCenter: [
         'Admin',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
         'CallManager',
-        'CallEmployee'
+        'CallEmployee',
+        'Hostess',
     ],
     reportAnalitic: [
         'Admin',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
     ],
     reportSell: [
         'Admin',
         'LocalCallEmployee',
         'LocalCallManager',
-        'Hostess',
     ],
     reportAutoSet: [
         'Admin',
         'LocalCallEmployee',
-        'LocalCallManager',
-        'Hostess',
+        'LocalCallManager'
     ]
 }
 
