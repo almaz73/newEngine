@@ -2,32 +2,32 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rAppealDays', 'reports')">
+        <div v-if="permit('reports','rAppealDays')">
           <el-button :icon="Microphone" @click="changeType('rAppealDays')">Количество обращений по дням</el-button>
           Количество обращений к сотрудникам за один месяц
         </div>
 
-        <div v-if="permit('rSellAutoDays', 'reports')">
+        <div v-if="permit('reports','rSellAutoDays')">
           <el-button :icon="Microphone" @click="changeType('rSellAutoDays')">Продажи по можелям</el-button>
           Отчет по источнику обращений, по категориям создавших обращение
         </div>
 
-        <div v-if="permit('rAppeals', 'reports')">
+        <div v-if="permit('reports','rAppeals')">
           <el-button :icon="Microphone" @click="changeType('rAppeals')">Обращения продаж</el-button>
           Отчет обращений продаж по месяцам
         </div>
 
-        <div v-if="permit('rEfficienceCell', 'reports')">
+        <div v-if="permit('reports','rEfficienceCell')">
           <el-button :icon="Microphone" @click="changeType('rEfficienceCell')">Эффективность</el-button>
           Эффективность
         </div>
 
-        <div v-if="permit('rCallCenterCalls', 'reports')">
+        <div v-if="permit('reports','rCallCenterCalls')">
           <el-button :icon="Microphone" @click="changeType('rCallCenterCalls')">Отчет по специалистам контакт-центра</el-button>
           Отчет по специалистам контакт-центра Звонки
         </div>
 
-        <div v-if="permit('rCreditFunnel', 'reports')">
+        <div v-if="permit('reports','rCreditFunnel')">
           <el-button :icon="Microphone" @click="changeType('rCreditFunnel')">Отчет по менеджерам КСО</el-button>
           Отчет по менеджерам КСО
         </div>

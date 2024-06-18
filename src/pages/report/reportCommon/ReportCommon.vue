@@ -2,15 +2,15 @@
   <main class="reports-buttons">
     <div class="expander" ref="expander">
       <div class="expander-content filter-report ">
-        <div v-if="permit('rSourceRequests', 'reports')">
+        <div v-if="permit('reports','rSourceRequests')">
           <el-button :icon="Microphone" @click="changeType('rSourceRequests')">Источний обращений</el-button>
           Отчет по источнику обращений, по категориям создавших обращение
         </div>
-        <div v-if="permit('rCredit', 'reports')">
+        <div v-if="permit('reports','rCredit')">
           <el-button :icon="CreditCard" @click="changeType('rCredit')">Кредит</el-button>
           Отчет по заявкам на кредит
         </div>
-        <div v-if="permit('rDeals', 'reports')">
+        <div v-if="permit('reports','rDeals')">
           <el-button :icon="Box" @click="changeType('rDeals')">Информация по сделкам</el-button>
           Отчёт, содержащий информацию о сделках за указанный период
         </div>
@@ -33,8 +33,8 @@ const expander = ref(null)
 let tab = null
 const types = {
   'rSourceRequests': rSourceRequests,
-  'rDeals':rDeals,
-  'rCredit':rCredit
+  'rDeals': rDeals,
+  'rCredit': rCredit
 }
 
 function changeType(report, memory) {

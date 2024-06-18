@@ -43,7 +43,7 @@
           <template #title>Рабочий стол</template>
         </el-menu-item>
       </RouterLink>
-      <RouterLink to="/hostess" v-if="permit('desktop') && globalStore.account.role==='Hostess'" >
+      <RouterLink to="/hostess" v-if="permit('menu', 'desktop') && globalStore.account.role==='Hostess'" >
         <el-menu-item index="1">
           <el-icon>
             <img alt="Рабочий стол" src="@/assets/icons/ic-desktop-windows-black-18-px.png" height="34" width="34"/>
@@ -52,7 +52,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/desktop" v-if="permit('desktop') && globalStore.account.role!=='Hostess'">
+      <RouterLink to="/desktop" v-if="permit('menu','desktop') && globalStore.account.role!=='Hostess'">
         <el-menu-item index="1">
           <el-icon>
             <img alt="Рабочий стол" src="@/assets/icons/ic-desktop-windows-black-18-px.png" height="34" width="34"/>
@@ -61,7 +61,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/appeal" v-if="permit('appeal')">
+      <RouterLink to="/appeal" v-if="permit('menu','appeal')">
         <el-menu-item index="2">
           <el-icon>
             <img alt="Обращения" src="@/assets/icons/ic-people-black-18-px.png" height="34" width="34"/>
@@ -70,7 +70,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/deal" v-if="permit('deal')">
+      <RouterLink to="/deal" v-if="permit('menu','deal')">
         <el-menu-item index="3">
           <el-icon>
             <img alt="Оценки" src="@/assets/icons/ic-directions-car-black-18-px.png" height="34" width="34"/>
@@ -79,7 +79,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="sell" v-if="permit('sell')">
+      <RouterLink to="sell" v-if="permit('menu','sell')">
         <el-menu-item index="4">
           <el-icon>
             <img alt="Склад" src="@/assets/icons/ic-home-black-18-px.png" height="34" width="34"/>
@@ -88,7 +88,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="calls" v-if="permit('calls')">
+      <RouterLink to="calls" v-if="permit('menu','calls')">
         <el-menu-item index="5">
           <el-icon>
             <img alt="Звонки" src="@/assets/icons/ic-call-black-20-px.png" height="34" width="34"/>
@@ -97,7 +97,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/admin" v-if="permit('admin')">
+      <RouterLink to="/admin" v-if="permit('menu','admin')">
         <el-menu-item index="7">
           <el-icon>
             <img alt="Вложенные меню" src="@/assets/icons/ic-settings-black-18-px.png" height="34" width="34"/>
@@ -107,7 +107,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <el-sub-menu index="6" v-if="permit('importExport')">
+      <el-sub-menu index="6" v-if="permit('menu','importExport')">
         <template #title>
           <el-icon>
             <img alt="Управление" src="@/assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/>
@@ -132,7 +132,7 @@
       </el-sub-menu>
 
 
-      <RouterLink to="/calendar" v-if="permit('calendar')">
+      <RouterLink to="/calendar" v-if="permit('menu','calendar')">
         <el-menu-item index="8">
           <el-icon>
             <img alt="Cобытия" src="@/assets/icons/ic-done-all-black-18-px.png" height="34" width="34"/>
@@ -141,7 +141,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/map" v-if="permit('map')">
+      <RouterLink to="/map" v-if="permit('menu','map')">
         <el-menu-item index="9">
           <el-icon>
             <img alt="Аналитика" src="@/assets/icons/ic-trending-up-black-18-px.png" height="34" width="34"/>
@@ -150,7 +150,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('plan')">
+      <RouterLink to="/" v-if="permit('menu','plan')">
         <el-menu-item index="10">
           <el-icon>
             <img alt="Плановые показатели" src="@/assets/icons/icon-plan-indicator.png" height="34" width="34"/>
@@ -159,7 +159,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="11">
           <el-icon>
             <img alt="Заявки на кредит" src="@/assets/icons/ic-account-balance-black-18-px.png" height="34" width="34"/>
@@ -168,7 +168,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/realization" v-if="permit('realization')">
+      <RouterLink to="/realization" v-if="permit('menu','realization')">
         <el-menu-item index="12">
           <el-icon>
             <img alt="Реализация" src="@/assets/icons/ic-shopping-cart-black-18-px.png" height="34" width="34"/>
@@ -177,7 +177,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="13">
           <el-icon>
             <img alt="Страховые полисы" src="@/assets/icons/icon-insurance-policies.png" height="34" width="34"/>
@@ -186,7 +186,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="14">
           <el-icon>
             <img alt="Доп.оборудование" src="@/assets/icons/icon-equip.png" height="34" width="34"/>
@@ -195,7 +195,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/reports" v-if="permit('reports')">
+      <RouterLink to="/reports" v-if="permit('menu','reports')">
         <el-menu-item index="15">
           <el-icon>
             <img alt="отчеты" src="@/assets/icons/icon-reports.png" height="34" width="34"/>
@@ -204,7 +204,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="16">
           <el-icon>
             <img alt="Новости" src="@/assets/icons/ic-chat-black-18-px.png" height="34" width="34"/>
@@ -213,7 +213,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="17">
           <el-icon>
             <img alt="Система" src="@/assets/icons/ic-system-inactive.png" height="34" width="34"/>
@@ -222,7 +222,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="18">
           <el-icon>
             <img alt="Помощь" src="@/assets/icons/ic-help-red-18-px.png" height="32" width="32"/>
@@ -231,7 +231,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/" v-if="permit('')">
+      <RouterLink to="/" v-if="permit('menu','')">
         <el-menu-item index="19">
           <el-icon>
             <img alt="Анкеты" src="@/assets/icons/icon-questionnaires_.png" height="34" width="34"/>

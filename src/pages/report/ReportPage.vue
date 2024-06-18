@@ -1,19 +1,19 @@
 <template>
   <main>
     <el-tabs @tab-click="tabchange" v-model="activeName">
-      <el-tab-pane label="Общие отчеты" name="common">
+      <el-tab-pane label="Общие отчеты" name="common" v-if="permit('reportTabs','reportCommon')">
         <ReportCommon ref="refCommon"/>
       </el-tab-pane>
-      <el-tab-pane label="Колл-центр" name="callCenter">
+      <el-tab-pane label="Колл-центр" name="callCenter" v-if="permit('reportTabs','reportCallCenter')">
         <ReportCallCenter ref="refCallCenter"/>
       </el-tab-pane>
-      <el-tab-pane label="Отдел аналитики" name="analitic">
+      <el-tab-pane label="Отдел аналитики" name="analitic" v-if="permit('reportTabs','reportAnalitic')">
         <ReportAnalitic ref="refAnalitic"/>
       </el-tab-pane>
-      <el-tab-pane label="Отдел продаж" name="sell">
+      <el-tab-pane label="Отдел продаж" name="sell" v-if="permit('reportTabs', 'reportSell')">
         <ReportSell ref="refSell"/>
       </el-tab-pane>
-      <el-tab-pane label="Автосеть РФ" name="autoSet">
+      <el-tab-pane label="Автосеть РФ" name="autoSet" v-if="permit( 'reportTabs', 'reportAutoSet')">
         <ReportAutoSet ref="refAutoSet"/>
       </el-tab-pane>
     </el-tabs>
@@ -30,6 +30,7 @@ import ReportCommon from "@/pages/report/reportCommon/ReportCommon.vue";
 import ReportSell from "@/pages/report/reportSell/ReportSell.vue";
 import ReportAutoSet from "@/pages/report/reportAutoSet/ReportAutoSet.vue";
 import ReportAnalitic from "@/pages/report/rAnalitic/ReportAnalitic.vue"
+import {permit} from "@/utils/permit";
 
 
 const globalStore = useGlobalStore()
