@@ -316,3 +316,9 @@ a:hover {
     margin-right: 12px;
     align-self: center;
 }
+
+.modal-buttons-bottom {
+    display: block;
+    text-align: right;
+    margin-top: 12px
+}

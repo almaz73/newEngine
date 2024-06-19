@@ -116,14 +116,14 @@
             </el-select>
           </div>
         </el-form>
-        <div style="text-align: right; margin-top: 12px">
+        <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
           <el-button type="info"
                      v-if="title === 'Редактирование пользователя' && permit()"
                      @click="showHistory()" title="История изменений">⟲
           </el-button>
-        </div>
+        </span>
       </div>
     </el-scrollbar>
   </AppModal>
