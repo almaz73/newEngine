@@ -76,10 +76,10 @@
                  v-model="model.validTo"/>
         </small>
 
-        <div style="text-align: right; margin-top: 12px">
+        <span style="display:block; text-align: right; margin-top: 12px">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
-        </div>
+        </span>
       </span>
     </el-scrollbar>
   </AppModal>
@@ -121,7 +121,9 @@ function changeOrg(id) {
 function open(row, cbModal) {
   cb = cbModal;
   isOpen.value = true;
-  if (!row) model.value = {orgElement:{id:null}, department:{id:null}};
+
+  if (row && !row.department) row.department = {id: null}
+  if (!row) model.value = {orgElement: {id: null}, department: {id: null}};
   else model.value = JSON.parse(JSON.stringify(row))
 
   globalStore.getOrganizations().then(res => organizations.value = res.items)
