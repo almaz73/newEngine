@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="admin ">
-      <el-button-group class="left-admin group-button custom">
+      <el-button-group class="left-admin group-button custom gray-buttons">
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
                    @click="found(el)"

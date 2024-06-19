@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="desk">
-            <el-button-group v-model="appeal.lead.leadType" class="group-button">
+            <el-button-group v-model="appeal.lead.leadType" class="group-button gray-buttons">
               <div>Клиент</div>
               <br>
               <el-button @click="appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
@@ -112,7 +112,7 @@
             </div>
           </div>
           <div class="desk" style="margin-bottom: -40px;">
-            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.communication.type!==15"/>
+            <el-button-group class="group-button " v-if="!globalStore.isMobileView || appeal.communication.type!==15"/>
 
             <div class="fields yourPlace">
               <div>{{ Workflows.find(el => el.value === appeal.workflow.workflowLeadType).title }}</div>
@@ -128,7 +128,7 @@
               </el-form-item>
             </div>
           </div>
-          <div class="desk">
+          <div class="desk gray-buttons">
             <el-button-group v-model="appeal.lead.leadType" class="group-button">
               <div>Обращение</div>
               <br>
@@ -291,7 +291,7 @@
           </div>
         </div>
 
-        <div class="field_left " style="background: none">
+        <div class="field_left gray-buttons" style="background: none">
           <div style="margin: 17px 0">Источник обращения</div>
           <el-form-item>
             <el-select v-model="appeal.communication.type">
