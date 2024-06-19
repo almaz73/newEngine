@@ -124,7 +124,6 @@
     } 
 
     adminStore.getTurnoverTypeRates().then(res =>{
-        console.log(res)
         turnoverTypeRates.value = res
 
     } )

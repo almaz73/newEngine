@@ -1,25 +1,35 @@
 <template>
     <div class="admin-filter-field">
       <div style="display: flex; align-items: center;">
-      <span style="margin-right:15px;">Организация</span>
-      <el-input v-model="search.orgElement"
-                :prefix-icon="Search"
-                placeholder="Поиск"
-                @clear="search.orgElement=''"
-                clearable
-                :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
+        <span style="margin-right:15px;">Организация</span>
 
-                @keydown.enter="getData()"/>
-                <br>
-      <span style="margin-right:15px;">Отдел</span>          
-      <el-input v-model="search.department"
-                :prefix-icon="Search"
-                placeholder="Поиск"
-                @clear="search.department=''"
-                clearable
-                :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
-
-                @keydown.enter="getData()"/>
+          <el-select
+          :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
+            style="width: 190px"
+            :prefix-icon="Search"
+            placeholder="Организация"
+            @change="changeOrg"
+            v-model="search.orgElement"
+            filterable
+            clearable>
+          <el-option v-for="item in organizations" :key="item.id" :label="item.name"
+                    :value="item.id"/>
+          </el-select>
+          <br>
+          <span style="margin-right:15px;">Отдел</span>          
+          <el-select
+          :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
+          :prefix-icon="Search"
+            style="width: 190px"
+            title="Отдел"
+            placeholder="Отдел"
+            @change="changeDep"
+            v-model="search.department"
+            filterable
+            clearable>
+            <el-option v-for="item in departments" :key="item.id" :label="item.name"
+                    :value="item.id"/>
+          </el-select>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
@@ -118,6 +128,8 @@
   const rowsPerPage = ref(5)
   const currentPage = ref(1)
   const search = ref({orgElement:'',department:''})
+  const departments = ref([])
+  const organizations = ref([])
   const filter = {
     filter: {},
     limit: rowsPerPage.value,
@@ -130,6 +142,27 @@
     let end = start + rowsPerPage.value - 1
     return start + ' - ' + end
   })
+
+  function find() {
+    if (!search.value.orgElement && !search.value.department) filter.search = '';
+    else filter.search = `OrgId=${search.value.orgElement}&DepartmentId=${search.value.department}`;
+    getData()
+  }
+  function changeOrg(id) {
+    if(id) adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
+    else{
+      search.value.orgElement = ''
+      search.value.department = ''
+    }
+    find()
+  }
+
+  function changeDep(id){
+    if(!id)  search.value.department = ''
+    find()
+  }
+
+
   
   function changePage(val) {
     currentPage.value = val
@@ -173,10 +206,10 @@
     selectedRow.value = false
 
     adminStore.getTurnoverRate(filter).then(res => {
-        console.log(res)
       tableData.value = res.models
       total.value = res.totalCount
     })
+    globalStore.getOrganizations().then(res => organizations.value = res.items)
   }
   
   globalStore.setTitle('Категория наценки')

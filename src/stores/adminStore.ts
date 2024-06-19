@@ -230,7 +230,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getMarkupCategory(params: any) {
             let link = '&limit=' + params.limit || 25
-            if (params.search) link += '&search=' + params.search
+            if (params.search) link += '&' + params.search
             return await axios.get('/api/markupCategory/?offset=' + params.offset + link).then(res => res.data)
         },
         async getDepartmentsWithBuyLocations(orgId: number) {
@@ -246,7 +246,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getMarkupMatrix(params: any) {
             let link = '&limit=' + params.limit || 25
-            if (params.search) link += '&search=' + params.search
+            if (params.search) link += '&' + params.search
             return await axios.get('/api/MarkupMatrix/?offset=' + params.offset + link).then(res => res.data)
         },
         async saveMarkupMatrix(params: any) {
@@ -259,7 +259,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getMarkupHistory(params: any) {
             let link = '&limit=' + params.limit || 25
-            if (params.search) link += '&search=' + params.search
+            if (params.search) link += '&' + params.search
             return await axios.get('/api/MileageRate/?offset=' + params.offset + link).then(res => res.data)
         },
         async saveMarkupHistory(params: any) {
@@ -276,14 +276,11 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getTurnoverRate(params: any) {
             let link = '&limit=' + params.limit || 25
-            if (params.search) link += '&search=' + params.search
+            if (params.search) link += '&' + params.search
             return await axios.get('/api/TurnoverRate/?offset=' + params.offset + link).then(res => res.data)
         },
         async getTurnoverTypeRates() {
-            // if (cache.TypeRates) return cache.TypeRates
             return await axios.get('/api/TurnoverRate/GetRates').then(res => res.data)
-
-            // return (cache.TypeRates = cache.TypeRates)
         },
         async saveTurnoverRate(params: any) {
             const res = await axios.post('/api/TurnoverRate',params).then(q => q)
