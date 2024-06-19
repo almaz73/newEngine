@@ -10,6 +10,7 @@
       <EstimateHistory/>
     </el-tab-pane>
     <el-tab-pane label="Норма оборачиваемости">
+      <EstimateTurnoverRate/>
     </el-tab-pane>
 
 
@@ -19,6 +20,7 @@
 import EstimateCategory from "@/pages/admin/dirs/estimate/EstimateCategory.vue"
 import EstimateMatrix from "@/pages/admin/dirs/estimate/EstimateMatrix.vue"
 import EstimateHistory from "@/pages/admin/dirs/estimate/EstimateHistory.vue"
+import EstimateTurnoverRate from "@/pages/admin/dirs/estimate/EstimateTurnoverRate.vue"
 import {ref} from "vue";
 
 const activeName = ref('first')

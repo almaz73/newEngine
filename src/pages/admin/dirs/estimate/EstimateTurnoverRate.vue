@@ -27,7 +27,6 @@
               :data="tableData"
                 style="width: 100%; margin-bottom: 20px"
                 :default-sort="{ prop: 'order', order: 'descending'}"
-                :row-class-name="getRowClass"
                 >
         <el-table-column label="Организация" prop="orgElement.name" width="185" sortable/>
         <el-table-column prop="department.name" label="Отдел"/>
@@ -98,14 +97,14 @@
         <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
       </template>
     </div>
-    <EstimateHistoryModal ref="InspectionModal"/>
+    <EstimateTurnoveRateModal ref="InspectionModal"/>
   </template>
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
   import {computed, ref} from "vue";
   import {ElMessageBox, ElTable} from "element-plus";
   import {useGlobalStore} from "@/stores/globalStore";
-  import EstimateHistoryModal from "@/pages/admin/dirs/estimate/EstimateHistoryModal.vue";
+  import EstimateTurnoveRateModal from "@/pages/admin/dirs/estimate/EstimateTurnoverRateModal.vue";
   import {EditPen, CloseBold,Plus, Search, Unlock,Lock} from '@element-plus/icons-vue'
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
   import {colorTypeList} from "@/utils/globalConstants";
@@ -151,7 +150,7 @@
   }
 
   function toggleActive(id:number) {
-    adminStore.switchActiveMarkupHistory(id).then(() => {
+    adminStore.switchActiveTurnoverRate(id).then(() => {
             getData()
     })
   }
@@ -162,35 +161,19 @@
       cancelButtonText: 'Нет'
     })
         .then((res) => {
-          res && adminStore.deleteMarkupHistory(id).then(() => {
+          res && adminStore.deleteTurnoverRate(id).then(() => {
             ElMessageBox({message: 'Запись успешно удалена', type: 'success'})
             getData()
           })
         })
   }
-  function getColor(nameColor:string){
-    const type = colorTypeList.find(item => item.name === nameColor);
-    return type ? type.color : 'white';
-  }
-  function getRowClass(obj:any) {
-        switch (obj.row.typeTitle) {
-          case 'Зеленая':
-            return 'row-green';
-          case 'Желтая':
-            return 'row-yellow';
-          case 'Красная':
-            return 'row-red';
-          default:
-            return '';
-        }
-    }
   
   function getData() {
     isEdit.value = false
     selectedRow.value = false
-  
-    adminStore.getMarkupHistory(filter).then(res => {
-      console.log(res)
+
+    adminStore.getTurnoverRate(filter).then(res => {
+        console.log(res)
       tableData.value = res.models
       total.value = res.totalCount
     })
@@ -202,31 +185,3 @@
   
   
   </script>
-
-<style>
-
-.row-green,.row-yellow,.row-red{
-  transition: background-color .25s ease;
-}
-.row-green {
-  background-color: rgb(221, 255, 221) !important;
-}
-.row-yellow {
-  background-color: rgb(255, 255, 221) !important;
-}
-.row-red {
-  background-color: rgb(255, 221, 221) !important;
-}
-.row-green:hover {
-  background-color: rgb(200, 235, 200) !important;
-}
-.row-yellow:hover {
-  background-color: rgb(235, 235, 200) !important;
-}
-.row-red:hover {
-  background-color: rgb(235, 200, 200) !important;
-}
-.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell {
-  background-color: inherit !important;
-}
-</style>

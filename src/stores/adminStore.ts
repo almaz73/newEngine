@@ -270,5 +270,33 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/MileageRate/${id}`).then(q => q)
             return res.data
         },
+        async switchActiveMarkupHistory(id: number) {
+            const res = await axios.post(`/api/MileageRate/SwitchMileagerate/${id}`).then(q => q)
+            return res.data
+        },
+        async getTurnoverRate(params: any) {
+            let link = '&limit=' + params.limit || 25
+            if (params.search) link += '&search=' + params.search
+            return await axios.get('/api/TurnoverRate/?offset=' + params.offset + link).then(res => res.data)
+        },
+        async getTurnoverTypeRates() {
+            // if (cache.TypeRates) return cache.TypeRates
+            return await axios.get('/api/TurnoverRate/GetRates').then(res => res.data)
+
+            // return (cache.TypeRates = cache.TypeRates)
+        },
+        async saveTurnoverRate(params: any) {
+            const res = await axios.post('/api/TurnoverRate',params).then(q => q)
+            return res.data
+        },
+        async deleteTurnoverRate(id: number) {
+            const res = await axios.delete(`/api/TurnoverRate/${id}`).then(q => q)
+            return res.data
+        },
+        async switchActiveTurnoverRate(id: number) {
+            const res = await axios.post(`/api/TurnoverRate/SwitchTurnover/${id}`).then(q => q)
+            return res.data
+        },
+
     }
 })
