@@ -3,10 +3,11 @@
     <span>
      <el-input v-model="search"
                :prefix-icon="Search"
-               placeholder="Фильтр"               
+               placeholder="Фильтр"
                clearable
                @clear="find()"
-               @keydown.enter="find()":style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }"/>
+               @input="find()"
+               :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }"/>
     </span>
     <br><br>
     <h4 style="color: #999">
@@ -55,26 +56,21 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
-import {ElTable } from "element-plus";
+import {ElTable} from "element-plus";
 import {Search} from "@element-plus/icons-vue";
 
 const globalStore = useGlobalStore()
 const tableData = ref([])
-let brandsMemory = []
-let modelsMemory = []
+let brandsMemory:any = []
+let modelsMemory:any = []
 const brandsTotal = ref('')
 const modelsTotal = ref('')
 const search = ref('')
 const selectedBrand = ref({name: ''})
-const BrendsModal = ref(null)
 
 function find() {
   let word = search.value.toUpperCase()
-  if (!word) {
-    tableData.value = brandsMemory
-    return
-  }
-  if (selectedBrand.value) {
+  if (!selectedBrand.value || !selectedBrand.value.name) {
     tableData.value = brandsMemory.filter(el => el.name.toUpperCase().includes(word))
   } else {
     tableData.value = modelsMemory.filter(el => el.name.toUpperCase().includes(word))
@@ -93,10 +89,9 @@ function showModel(val) {
 }
 
 
-
 function showBrands() {
   search.value = ''
-  selectedBrand.value = null
+  selectedBrand.value = {name:''}
   find()
 }
 
