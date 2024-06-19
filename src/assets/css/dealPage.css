@@ -198,3 +198,7 @@
     margin-top: 24px;
     width: calc(100% - 15px) !important
 }
+
+.big-table .el-table__cell {
+    padding: 0 !important;
+}
