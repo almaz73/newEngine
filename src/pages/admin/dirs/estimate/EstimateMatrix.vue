@@ -174,10 +174,13 @@
       total.value = res.totalCount
     })
   }
-  
-  globalStore.setTitle('Категория наценки')
-  globalStore.steps = []
-  getData()
-  
+
+  function open(){
+    globalStore.setTitle('Матрица наценки')
+    globalStore.steps = []
+    getData()
+  }
+
+  defineExpose({open});
   
   </script>

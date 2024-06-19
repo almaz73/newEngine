@@ -136,7 +136,6 @@ function deleteCategory(id: number) {
     cancelButtonText: 'Нет'
   })
       .then((res) => {
-        console.log('res', res)
         res && adminStore.deleteMarkupCategory(id).then(() => {
           ElMessageBox({message: 'Категория наценки успешно удалена', type: 'success'})
           getData()
@@ -151,7 +150,6 @@ function getData() {
   selectedRow.value = false
 
   adminStore.getMarkupCategory(filter).then(res => {
-    console.log(res)
     tableData.value = res.models
     total.value = res.totalCount
   })
