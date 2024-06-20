@@ -21,8 +21,8 @@ export const useAdminStore = defineStore("adminStore", {
             return await axios.get(url).then(res => res)
         },
 
-        async addColor(row: any) {
-            const params = {entityType: '10'}
+        async addColor(row: any,entityType = '10') {
+            const params = {entityType}
             Object.assign(params, row)
             const res = await axios.post('/api/bodycolor', params).then(q => q)
             return res.data

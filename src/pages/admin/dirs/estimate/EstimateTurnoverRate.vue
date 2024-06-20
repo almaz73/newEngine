@@ -67,16 +67,18 @@
         <el-table-column prop="roleTitle" width="73px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
-              <el-icon v-if="scope.row.isActive" @click="toggleActive(scope.row.id)"><Unlock /></el-icon>
-              <el-icon class="el-red-lock" v-if="!scope.row.isActive" @click="toggleActive(scope.row.id)"><Lock /></el-icon>
-              <el-icon @click="openModal(scope.row)" style="cursor: pointer">
-                        <EditPen />
-                    </el-icon>
-                    &nbsp;
-                    <el-icon style="cursor: pointer" @click="deleteCategory(scope.row.id)">
-                        <CloseBold />
-                    </el-icon>
-
+              <img v-if="scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
+                 title="Разблокировать"
+                 src="@/assets/icons/icon-unblocked-gray.png">
+              <img v-if="!scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
+                 title="Заблокировать"
+                 src="@/assets/icons/icon-blocked-red.png">
+            <img @click="openModal(scope.row)" alt=""
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img @click="deleteCategory(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">          
             </div>
           </template>
         </el-table-column>
@@ -125,7 +127,7 @@
   const selectedRow = ref(false)
   const InspectionModal = ref(null)
   const total = ref(0)
-  const rowsPerPage = ref(5)
+  const rowsPerPage = ref(10)
   const currentPage = ref(1)
   const search = ref({orgElement:'',department:''})
   const departments = ref([])
