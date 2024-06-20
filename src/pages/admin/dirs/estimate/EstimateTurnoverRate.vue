@@ -16,6 +16,7 @@
                     :value="item.id"/>
           </el-select>
           <br>
+          <span v-if="search.orgElement">
           <span style="margin-right:15px;">Отдел</span>          
           <el-select
           :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
@@ -30,6 +31,7 @@
             <el-option v-for="item in departments" :key="item.id" :label="item.name"
                     :value="item.id"/>
           </el-select>
+          </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
@@ -117,9 +119,8 @@
   import {ElMessageBox, ElTable} from "element-plus";
   import {useGlobalStore} from "@/stores/globalStore";
   import EstimateTurnoveRateModal from "@/pages/admin/dirs/estimate/EstimateTurnoverRateModal.vue";
-  import {EditPen, CloseBold,Plus, Search, Unlock,Lock} from '@element-plus/icons-vue'
+  import {Plus, Search} from '@element-plus/icons-vue'
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
-  import {colorTypeList} from "@/utils/globalConstants";
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])
@@ -214,9 +215,12 @@
     globalStore.getOrganizations().then(res => organizations.value = res.items)
   }
   
-  globalStore.setTitle('Категория наценки')
-  globalStore.steps = []
-  getData()
+  function open(){
+    globalStore.setTitle('Матрица наценки')
+    globalStore.steps = []
+    getData()
+  }
+  defineExpose({open});
   
   
   </script>

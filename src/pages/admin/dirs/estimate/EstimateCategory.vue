@@ -19,6 +19,7 @@
                     :value="item.id"/>
           </el-select>
           <br>
+          <span v-if="search.orgElement">
           <span style="margin-right:15px;">Отдел</span>          
           <el-select
           :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
@@ -33,6 +34,7 @@
           <el-option v-for="item in departments" :key="item.id" :label="item.name"
                     :value="item.id"/>
           </el-select>
+        </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
     <br><br>
@@ -147,7 +149,7 @@ function find() {
     if(id) adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
     else{
       search.value.orgElement = ''
-      search.value.department = ''
+      search.value.department = ''   
     }
     find()
   }

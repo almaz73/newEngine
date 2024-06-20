@@ -39,23 +39,23 @@
 
           <small>
              <label class="label-right l_100">A, %</label>
-             <el-input type="number" v-model="model.categoryA" class="input-width"/>
+             <el-input type="number" v-model="model.categoryA" class="input-width" min="0" max="100" @input="checkPercentage('categoryA')"/>
           </small>
            <small>
                <label class="label-right l_100">B, %</label>
-               <el-input type="number" v-model="model.categoryB" class="input-width"/>
+               <el-input type="number" v-model="model.categoryB" class="input-width" min="0" max="100" @input="checkPercentage('categoryB')"/>
           </small>
            <small>
                <label class="label-right l_100">C, %</label>
-               <el-input type="number" v-model="model.categoryC" class="input-width"/>
+               <el-input type="number" v-model="model.categoryC" class="input-width" min="0" max="100" @input="checkPercentage('categoryC')"/>
           </small>
            <small>
                <label class="label-right l_100">D, %</label>
-               <el-input type="number" v-model="model.categoryD" class="input-width"/>
+               <el-input type="number" v-model="model.categoryD" class="input-width" min="0" max="100" @input="checkPercentage('categoryD')"/>
           </small>
            <small>
                <label class="label-right l_100">S, %</label>
-               <el-input type="number" v-model="model.categoryS" class="input-width"/>
+               <el-input type="number" v-model="model.categoryS" class="input-width" min="0" max="100" @input="checkPercentage('categoryS')"/>
           </small>
 
           <small>
@@ -130,18 +130,32 @@ function open(row, cbModal) {
   if (model.value.orgElement.id) changeOrg(model.value.orgElement.id)
 }
 
-
-function checking() {
-  if (!model.value.orgElement) {
-    return ElMessage({message: 'Поле "организация" обязетелен для заполнения', type: "warning"});
+function checkPercentage(category) {
+  if (model.value[category] > 100) {
+    model.value[category] = 100;
   }
-  if (!model.value.validFrom) {
-    return ElMessage({message: 'Поле "Период действаия, с" обязетелен для заполнения', type: "warning"});
-  }
-  if (!model.value.validTo) {
-    return ElMessage({message: 'Поле "Период действаия, до" обязетелен для заполнения', type: "warning"});
+  if (model.value[category] < 0) {
+    model.value[category] = 0;
   }
 }
+
+function checking() {
+    if (!model.value.orgElement.id) {
+      return ElMessage({message: 'Поле "Организация" обязетелен для заполнения', type: "warning"});
+    }
+    if (!model.value.validFrom) {
+      return ElMessage({message: 'Поле "Период действаия, с" обязетелен для заполнения', type: "warning"});
+    }
+    if (!model.value.validTo) {
+      return ElMessage({message: 'Поле "Период действаия, до" обязетелен для заполнения', type: "warning"});
+    }
+    const validFromDate = new Date(model.value.validFrom);
+    const validToDate = new Date(model.value.validTo);
+    if (validToDate < validFromDate) {
+      return ElMessage({message: 'Даты не по возрастанию', type: "warning"});
+    }
+
+  }
 
 function save() {
   if (checking()) return false;

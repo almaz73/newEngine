@@ -16,6 +16,7 @@
                            :value="item.id"/>
              </el-select>
              <br>
+             <span v-if="search.orgElement">
       <span style="margin-right:15px;">Отдел</span>          
                 <el-select
                 :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
@@ -30,6 +31,7 @@
                 <el-option v-for="item in departments" :key="item.id" :label="item.name"
                            :value="item.id"/>
              </el-select>
+             </span>  
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
@@ -116,7 +118,7 @@
   import {ElMessageBox, ElTable} from "element-plus";
   import {useGlobalStore} from "@/stores/globalStore";
   import EstimateMatrixModal from "@/pages/admin/dirs/estimate/EstimateMatrixModal.vue";
-  import {EditPen, CloseBold,Plus, Search} from '@element-plus/icons-vue'
+  import {Plus, Search} from '@element-plus/icons-vue'
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
