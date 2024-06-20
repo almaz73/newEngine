@@ -164,7 +164,7 @@ const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const total = ref(0)
 const searchText = ref('')
-const rowsPerPage = ref(10)
+const rowsPerPage = ref(5)
 const currentPage = ref(1)
 const filterButtons = reactive([
   {type: 'appealsCount', count: 0, name: 'Обращения:', code: 10, active: true},
@@ -194,7 +194,7 @@ function addAppeal() {
 function highlightCell(deal) {
   var statusClass = {};
 
-  if (deal.appealStatusId == 17) {
+  if (deal.appealStatusId === 17) {
     statusClass['background-color'] = '#DCDCDC';
   } else {
     var lastTaskDate = new Date(deal.lastTaskDate);
@@ -206,7 +206,7 @@ function highlightCell(deal) {
     }
   }
   return statusClass;
-};
+}
 
 function colorBox(txt) {
   if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
