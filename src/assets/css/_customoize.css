@@ -56,12 +56,6 @@ li.el-menu-item {
     background: #3cac71 !important
 }
 
-.el-button:active, .el-button:focus {
-    color: #444 !important;
-    border: 1px solid #ccc !important;
-}
-
-
 .custom .el-button + .el-button {
     margin-left: 10px;
 }
