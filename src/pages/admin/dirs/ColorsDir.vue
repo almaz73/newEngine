@@ -31,20 +31,25 @@
 
       <el-table-column>
         <template #default="scope">
-          <el-color-picker v-model="scope.row.colorCode"/>
+          <el-color-picker v-model="scope.row.colorCode"
+                           :style="{'pointer-events':(isEdit && selectedRow.id===scope.row.id)? '':'none'}" />
         </template>
       </el-table-column>
 
       <el-table-column width="73">
         <template #default="scope">
-          <el-icon @click="edit(scope.row)" style="cursor: pointer">
-            <EditPen/>
-          </el-icon>
-          &nbsp;
-          <el-icon style="cursor: pointer" @click="deleteRow(scope.row)">
-            <CloseBold/>
-          </el-icon>
+          <div style="" class="admin-table-editors">
+            <img @click="edit(scope.row)" alt=""
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img @click="deleteRow(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">
+          </div>
         </template>
+
+
+
       </el-table-column>
 
     </el-table>

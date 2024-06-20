@@ -55,14 +55,14 @@
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validFrom) }}</span>
           </template>
         </el-table-column>
-  
+
         <el-table-column label="Период действия, до" sortable>
           <template #default="scope">
             <span v-if="isEdit && selectedRow.id===scope.row.id"><el-date-picker
                 v-model="scope.row.validTo"
                 format="DD.MM.YYYY"
             /></span>
-  
+
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
           </template>
         </el-table-column>
@@ -80,12 +80,12 @@
                  src="@/assets/icons/icon-pencil-gray.png">
             <img @click="deleteCategory(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">          
+                 title="Удалить">
             </div>
           </template>
         </el-table-column>
       </el-table>
-  
+
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
@@ -98,7 +98,7 @@
           </span>
         </div>
       </div>
-  
+
       <template v-if="total>2">
         <el-pagination
             v-model:page-size="rowsPerPage"
@@ -116,7 +116,7 @@
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
   import {computed, ref} from "vue";
-  import {ElMessageBox, ElTable} from "element-plus";
+  import { ElMessage, ElMessageBox } from 'element-plus'
   import {useGlobalStore} from "@/stores/globalStore";
   import EstimateTurnoveRateModal from "@/pages/admin/dirs/estimate/EstimateTurnoverRateModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
@@ -139,7 +139,7 @@
     offset: 0,
     search: ''
   }
-  
+
   const pageDescription = computed(() => {
     let start = (currentPage.value - 1) * rowsPerPage.value + 1
     let end = start + rowsPerPage.value - 1
@@ -166,21 +166,21 @@
   }
 
 
-  
+
   function changePage(val) {
     currentPage.value = val
     filter.offset = (val - 1) * rowsPerPage.value
     getData()
     if (globalStore.isMobileView) gotoTop()
   }
-  
+
   function changePageSize(val) {
     rowsPerPage.value = val
     filter.offset = 0
     filter.limit = rowsPerPage.value
     getData()
   }
-  
+
   function openModal(row: any | null) {
     InspectionModal.value.open(row, getData)
   }
@@ -190,7 +190,7 @@
             getData()
     })
   }
-  
+
   function deleteCategory(id: number) {
     ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
       confirmButtonText: 'Да',
@@ -198,12 +198,12 @@
     })
         .then((res) => {
           res && adminStore.deleteTurnoverRate(id).then(() => {
-            ElMessageBox({message: 'Запись успешно удалена', type: 'success'})
+            ElMessage({message: 'Запись успешно удалена', type: 'success'})
             getData()
           })
         })
   }
-  
+
   function getData() {
     isEdit.value = false
     selectedRow.value = false
@@ -214,13 +214,13 @@
     })
     globalStore.getOrganizations().then(res => organizations.value = res.items)
   }
-  
+
   function open(){
     globalStore.setTitle('Матрица наценки')
     globalStore.steps = []
     getData()
   }
   defineExpose({open});
-  
-  
+
+
   </script>

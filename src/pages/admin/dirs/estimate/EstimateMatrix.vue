@@ -115,7 +115,7 @@
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
   import {computed, ref} from "vue";
-  import {ElMessageBox, ElTable} from "element-plus";
+  import { ElMessage, ElMessageBox } from 'element-plus'
   import {useGlobalStore} from "@/stores/globalStore";
   import EstimateMatrixModal from "@/pages/admin/dirs/estimate/EstimateMatrixModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
@@ -189,7 +189,7 @@
     })
         .then((res) => {
           res && adminStore.deleteMarkupMatrix(id).then(() => {
-            ElMessageBox({message: 'Запись успешно удалена', type: 'success'})
+            ElMessage({message: 'Запись успешно удалена', type: 'success'})
             getData()
           })
         })

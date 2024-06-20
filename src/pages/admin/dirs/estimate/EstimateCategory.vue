@@ -117,7 +117,7 @@
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
-import {ElMessageBox, ElTable} from "element-plus";
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {useGlobalStore} from "@/stores/globalStore";
 import EstimateCategoryModal from "@/pages/admin/dirs/estimate/EstimateCategoryModal.vue";
 import {Plus, Search} from "@element-plus/icons-vue";
@@ -190,7 +190,7 @@ function deleteCategory(id: number) {
   })
       .then((res) => {
         res && adminStore.deleteMarkupCategory(id).then(() => {
-          ElMessageBox({message: 'Категория наценки успешно удалена', type: 'success'})
+          ElMessage({message: 'Категория наценки успешно удалена', type: 'success'})
           getData()
         })
       })

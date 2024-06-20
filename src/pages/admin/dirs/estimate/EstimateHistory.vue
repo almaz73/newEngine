@@ -117,7 +117,7 @@
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
   import {computed, ref} from "vue";
-  import {ElMessageBox, ElTable} from "element-plus";
+  import { ElMessage, ElMessageBox } from 'element-plus'
   import {useGlobalStore} from "@/stores/globalStore";
   import EstimateHistoryModal from "@/pages/admin/dirs/estimate/EstimateHistoryModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
@@ -195,8 +195,9 @@
       cancelButtonText: 'Нет'
     })
         .then((res) => {
-          res && adminStore.deleteMarkupHistory(id).then(() => {
-            ElMessageBox({message: 'Запись успешно удалена', type: 'success'})
+          res && adminStore.deleteMarkupHistory(id).then(answer => {
+            console.log('answer', answer)
+            ElMessage({message: 'Запись успешно удалена', type: 'success'})
             getData()
           })
         })

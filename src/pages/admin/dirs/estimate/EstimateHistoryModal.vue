@@ -58,6 +58,7 @@
                <el-date-picker
                    style="width: 160px; overflow-x: hidden;"
                    editable
+                   placeholder="Введите дату"
                    format="DD.MM.YYYY"
                    v-model="model.validFrom"/>
           </small>
@@ -66,6 +67,7 @@
                <label class="label-right l_100">Период действия,  до</label>
                <el-date-picker
                    style="width: 160px; overflow-x: hidden;"
+                   placeholder="Введите дату"
                    editable
                    format="DD.MM.YYYY"
                    v-model="model.validTo"/>
@@ -84,9 +86,9 @@
     width: 100px;
     overflow-x: hidden;
   }
-  
+
   </style>
-  
+
   <script setup>
   import AppModal from "@/components/AppModal.vue";
   import {useGlobalStore} from "@/stores/globalStore";
@@ -94,30 +96,30 @@
   import {ref} from "vue";
   import {Plus} from "@element-plus/icons-vue";
   import {ElMessage} from "element-plus";
-  import {colorTypeList} from "@/utils/globalConstants"; 
+  import {colorTypeList} from "@/utils/globalConstants";
   const organizations = ref([])
   const departments = ref([])
   const globalStore = useGlobalStore();
   const isOpen = ref(false);
-  const model = ref({});
+  const model = ref({ })
   const closeModal = () => isOpen.value = false;
-  
+
   const adminStore = useAdminStore();
   let cb;
-  
-  
+
+
   function changeOrg(id) {
     adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
   }
-  
+
   function open(row, cbModal) {
     cb = cbModal;
     isOpen.value = true;
-    if (!row) model.value = {orgElement:{id:null}, department:{id:null}};
+    if (!row) model.value = {orgElement:{id:null}, department:{id:null}, rate: 0 };
     else{
         model.value = JSON.parse(JSON.stringify(row))
         if(!row.department) model.value.department = {id:null};
-    } 
+    }
 
 
     globalStore.getOrganizations().then(res => organizations.value = res.items)
@@ -132,7 +134,7 @@
     model.value[category] = 0;
   }
 }
-  
+
   function checking() {
     if (!model.value.orgElement.id) {
       return ElMessage({message: 'Поле "Организация" обязетелен для заполнения', type: "warning"});
@@ -150,18 +152,18 @@
     }
 
   }
-  
+
   function save() {
     model.value.type = model.value.typeTitle
     if (checking()) return false;
-    adminStore.saveMarkupHistory(model.value).then(() => {
-      ElMessage({message: "Запись успешно сохранена", type: "success"});
+    adminStore.saveMarkupHistory(model.value).then(res => {
+      res && ElMessage({message: "Запись успешно сохранена", type: "success"});
       isOpen.value = false;
       cb();
     });
   }
-  
+
   defineExpose({open});
-  
-  
+
+
   </script>
