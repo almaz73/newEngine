@@ -83,7 +83,6 @@
         </span>
       </el-scrollbar>
     </AppModal>
-    <UsersDirModal_History ref="modalHistory"/>
   </template>
   <style>
   .input-width {
@@ -100,7 +99,6 @@
   import {ref} from "vue";
   import {Plus} from "@element-plus/icons-vue";
   import {ElMessage} from "element-plus";
-  import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
   
   const organizations = ref([])
   const departments = ref([])
@@ -108,8 +106,6 @@
   const isOpen = ref(false);
   const model = ref({});
   const closeModal = () => isOpen.value = false;
-  
-  const modalHistory = ref(null);
   const adminStore = useAdminStore();
   let cb;
   
