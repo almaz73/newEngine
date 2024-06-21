@@ -6,14 +6,10 @@
                   @clear="find()"
                   clearable
                   :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
-                  @keydown.enter="find()"/>
+                  @input="find()"/>
         <el-button @click="openModal"
-                   :disabled="isEdit"
                    type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
         </el-button>
-        <span v-if="globalStore.isMobileView && isEdit"><br><br></span>
-        <el-button v-if="isEdit" @click="save()">Сохранить</el-button>
-        <el-button v-if="isEdit" @click="selectedRow = isEdit = false">Сброс</el-button>
       </div>
   
       <el-table
@@ -22,12 +18,9 @@
           highlight-current-row>
         <el-table-column label="Цвет" prop="colorName" sortable>
           <template #default="scope">
-            <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
-                      v-model="scope.row.colorName"></el-input>
-            <span v-else>{{ scope.row.colorName }}</span>
+            <span>{{ scope.row.colorName }}</span>
           </template>
         </el-table-column>
-  
   
         <el-table-column>
           <template #default="scope">
@@ -73,7 +66,6 @@
   const InspectionModal = ref(null)
   let tableDataMemory = []
   const search = ref('')
-  const isEdit = ref(false)
   const selectedRow = ref(false)
   
   function openModal(row: any | null) {
@@ -82,37 +74,25 @@
 
   
   function find() {
-    console.log("asda")
     tableData.value = tableDataMemory.filter(el => el.colorName.toUpperCase().includes(search.value.toUpperCase()))
     if (!search.value) tableData.value = tableDataMemory
   }
   
-  
-  function save() {
-    let row = tableData.value.find(el => !el.id)
-    adminStore.addColor(row).then(() => {
-      ElMessage({message: 'Новый цвет сохранен.', type: 'success'})
-      getData()
-    })
-  }
-  
+
   function deleteRow(row: any) {
     ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
       confirmButtonText: 'Да',
       cancelButtonText: 'Нет'
     })
         .then(() => {
-          adminStore.deleteColor(row.id).then(res => {
+          adminStore.deleteColor(row.id).then(() => {
             ElMessage({message: 'Цвет удален.', type: 'success'})
             getData()
           })
         })
-        .catch(() => {
-        })
   }
   
   function getData() {
-    isEdit.value = false
     selectedRow.value = false
     globalStore.getColors(20).then(res => {
       tableData.value = res.items

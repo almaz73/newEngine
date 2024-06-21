@@ -12,8 +12,8 @@
             <el-input
                 style="width: 190px"
                 v-model="model.colorName"
-                  clearable
-                  placeholder="Цвет">
+                clearable
+                placeholder="Цвет">
            </el-input>
           </small>
           <small>
@@ -28,25 +28,14 @@
     </el-scrollbar>
   </AppModal>
 </template>
-<style>
-.input-width {
-  width: 100px;
-  overflow-x: hidden;
-}
-
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
-import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 
-const organizations = ref([])
-const departments = ref([])
-const globalStore = useGlobalStore();
 const isOpen = ref(false);
 const model = ref({});
 const closeModal = () => isOpen.value = false;
@@ -57,8 +46,6 @@ function open(row, cbModal) {
   cb = cbModal;
   isOpen.value = true;
   model.value = JSON.parse(JSON.stringify(row))
-
-
 }
 
 
@@ -73,7 +60,7 @@ function checking() {
 
 function save() {
   if (checking()) return false;
-  adminStore.addColor(model.value,20).then(() => {
+  adminStore.addColor(model.value, 20).then(() => {
     ElMessage({message: "Запись успешно сохранена", type: "success"});
     isOpen.value = false;
     cb();
@@ -81,6 +68,4 @@ function save() {
 }
 
 defineExpose({open});
-
-
 </script>

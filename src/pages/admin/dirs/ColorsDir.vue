@@ -31,8 +31,9 @@
 
       <el-table-column>
         <template #default="scope">
-          <el-color-picker v-model="scope.row.colorCode"
-                           :style="{'pointer-events':(isEdit && selectedRow.id===scope.row.id)? '':'none'}" />
+          <div :style="{pointerEvents:(isEdit && selectedRow.id===scope.row.id)? '':'none'}">
+            <el-color-picker v-model="scope.row.colorCode"/>
+          </div>
         </template>
       </el-table-column>
 
