@@ -4,89 +4,119 @@
             <el-input v-model="search" :prefix-icon="Search" @clear="find()" clearable
             placeholder="Фильтр" 
                 :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }" @keydown.enter="find()" />
-            <el-button @click="add()" :disabled="isEdit" type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' :
+                <el-button v-if="isFilialsPage" @click="showBanks()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
+                'НАЗАД' }}
+            </el-button>
+            <el-button @click="openModal()"  type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' :
                 'Добавить' }}
             </el-button>
-            <span v-if="globalStore.isMobileView && isEdit"><br><br></span>
-            <el-button v-if="isEdit" @click="save()">Сохранить</el-button>
-            <el-button v-if="isEdit" @click="selectedRow = isEdit = false">Сброс</el-button>
+            <h4 style="color: #999">
+            {{
+                (isFilialsPage) ?
+                    'Банк: ' + activeBank + '.   (филиалы: ' + filialsData.length + ' )' :
+                    'Все Банки ( ' + banksLength + ')'
+            }}
+            </h4>
         </div>
 
-        <el-table :data="tableData" empty-text="Нет данных" highlight-current-row>
-            <el-table-column label="Название" prop="name" sortable>
+        <el-table v-if="!isFilialsPage" :data="tableData" empty-text="Нет данных" highlight-current-row>
+            <el-table-column label="Название" prop="name" sortable />
+
+            <el-table-column label="Краткое наименование" prop="shortName" />
+            <el-table-column>
                 <template #default="scope">
-                    <el-input autofocus v-if="isEdit && selectedRow.id === scope.row.id"
-                        v-model="scope.row.name"></el-input>
-                    <span v-else>{{ scope.row.name }}</span>
+                    <el-button @click.stop="showFilials(scope.row.bankId,scope.row.name)" style="float: right">Филиалы</el-button>
                 </template>
             </el-table-column>
-
-            <el-table-column label="Краткое наименование" prop="shortName">
-                <template #default="scope">
-                    <el-input autofocus v-if="isEdit && selectedRow.id === scope.row.id"
-                        v-model="scope.row.shortName"></el-input>
-                    <span v-else>{{ scope.row.shortName }}</span>
-                </template>
-            </el-table-column>
-
             <el-table-column width="73">
                 <template #default="scope">
-                    <el-icon @click="edit(scope.row)" style="cursor: pointer">
-                        <EditPen />
-                    </el-icon>
-                    &nbsp;
-                    <el-icon style="cursor: pointer" @click="deleteRow(scope.row)">
-                        <CloseBold />
-                    </el-icon>
+                    <div style="" class="admin-table-editors">
+                        <img @click="openModal(scope.row)" alt=""
+                            title="Редактировать"
+                            src="@/assets/icons/icon-pencil-gray.png">
+                        <img @click="deleteRow(scope.row.id)" alt=""
+                            src="@/assets/icons/icon-cross-gray.png"
+                            title="Удалить">
+                    </div>
+                    
+                </template>
+            </el-table-column>
+
+        </el-table>
+        <el-table v-if="isFilialsPage" :data="filialsData" empty-text="Нет данных" highlight-current-row>
+            <el-table-column label="Название" prop="name" sortable />
+
+            <el-table-column label="БИК" prop="bik" />
+            <el-table-column label="К/C" prop="correspondentAccount" />
+            <el-table-column label="Адресс" prop="registrationAddress.fiasAddress.value" />
+            <el-table-column width="73">
+                <template #default="scope">
+                    <div style="" class="admin-table-editors">
+                        <img @click="openModal(scope.row)" alt=""
+                            title="Редактировать"
+                            src="@/assets/icons/icon-pencil-gray.png">
+                        <img @click="deleteFilials(scope.row)" alt=""
+                            src="@/assets/icons/icon-cross-gray.png"
+                            title="Удалить">
+                    </div>
+                    
                 </template>
             </el-table-column>
 
         </el-table>
     </div>
+    <BanksDirModal ref="modal"/>
 </template>
 <script setup lang="ts">
 import { useAdminStore } from "@/stores/adminStore";
 import { ref } from "vue";
 import { ElMessage, ElMessageBox, ElTable } from "element-plus";
 import { useGlobalStore } from "@/stores/globalStore";
-import { EditPen, CloseBold, Search, Plus } from '@element-plus/icons-vue'
-
+import {ArrowLeft, Search, Plus } from '@element-plus/icons-vue'
+import BanksDirModal from "@/pages/admin/dirs/BanksDirModal.vue"
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
+const banksLength = ref(0)
+const activeBank = ref('')
+const filialsData = ref([])
+const modal = ref(null)
+const BankIdFilials = ref(0)
 let tableDataMemory = []
+let filialsDataMemory = []
 const search = ref('')
-const isEdit = ref(false)
-const selectedRow = ref(false)
+const isFilialsPage = ref(false)
 
 function find() {
-    tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
-    if (!search.value) tableData.value = tableDataMemory
-}
-
-function edit(row) {
-    selectedRow.value = row
-    isEdit.value = true
-}
-
-function save() {
-
-    let row = tableData.value.find(el => !el.id)
-    console.log(row)
-    if(row === undefined){
-        row = selectedRow.value
-        row.bankId = selectedRow.value.id
+    if(isFilialsPage.value){
+        filialsData.value = filialsDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
+        if (!search.value) filialsData.value = filialsDataMemory
     }
-    
-    adminStore.saveBanks(row).then(() => {
-        ElMessage({ message: 'Банк сохранен.', type: 'success' })
-        getData()
-    })
+    else{
+        console.log("Asdasd")
+        tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
+        if (!search.value) tableData.value = tableDataMemory
+    }
+
 }
 
-function add() {
-    tableData.value.unshift({ name: '', shortName: '' })
-    isEdit.value = true
+function showFilials(id: number, name: string){
+    activeBank.value = name
+    getFilials(id)
+    isFilialsPage.value = true
+    search.value = ''
+}
+function showBanks(id: number){
+    getData()
+    isFilialsPage.value = false
+    filialsDataMemory = []
+    filialsData.value = []
+    search.value = ''
+}
+
+
+function openModal(row: any | null) {
+    modal.value.open(row, getData,isFilialsPage.value)
 }
 
 function deleteRow(row: any) {
@@ -104,14 +134,38 @@ function deleteRow(row: any) {
         })
 }
 
+function deleteFilials(row){
+    ElMessageBox.confirm('Вы действительно хотите удалить филиал?', 'Внимание', {
+      confirmButtonText: 'Да',
+      cancelButtonText: 'Нет'
+    })
+        .then(() => {
+            adminStore.deleteBankFilials(row.id).then(res => {
+            ElMessage({message: 'Филиал удален.', type: 'success'})
+            getFilials()
+          })
+        })
+        .catch(() => {
+        })
+    
+}
+
 function getData() {
-    isEdit.value = false
-    selectedRow.value = false
     globalStore.isWaiting = true
     adminStore.getBanks().then(res => {
         globalStore.isWaiting = false
-        tableData.value = res.result
-        tableDataMemory = JSON.parse(JSON.stringify(res.result))
+        tableData.value = res.items
+        banksLength.value = res.count
+        tableDataMemory = JSON.parse(JSON.stringify(res.items))
+    })
+} 
+function getFilials(id:number = BankIdFilials.value) {
+    globalStore.isWaiting = true
+    BankIdFilials.value = id
+    adminStore.getBankFilials(id).then(res => {
+        globalStore.isWaiting = false
+        filialsData.value = res.items
+        filialsDataMemory = JSON.parse(JSON.stringify(res.items))
     })
 }
 
