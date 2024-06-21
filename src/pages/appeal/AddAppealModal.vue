@@ -56,52 +56,98 @@
             </small>
           <el-divider/>
           Автомобиль<br>
-           <small>
-                 <label class="label-right l_100">Обьявления</label>
-                 <el-input v-model="model.categoryC"/>
-            </small><br>
-              <small>
+          <small>
+                 <label class="label-right l_100">Объявления</label>
+                 <el-input v-model="model.description"/>
+          </small><br>
+          <small>
                <label class="label-right l_100">Марка</label>
-               <el-select style="width: 120px;"></el-select>
-            </small>
-            <small>
-               <label class="label-right l_100">Модель</label>
-               <el-select style="width: 120px;"></el-select>
-            </small><br>
-            <small>
-                 <label class="label-right l_100">Год выпуска</label>
-               <el-select style="width: 120px;"></el-select>
-            </small>
+               <el-form-item prop="carBrand" style="display: inline-block"
+                             :rules="{required: true, message: '', trigger: ['blur']}">
+                  <el-select
+                      style="width: 110px"
+                      v-model="model.carBrand"
+                      @change="changeBrand(model.carBrand)"
+                      :filterable="!globalStore.isMobileView"
+                      clearable
+                  >
+                    <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id"/>
+                  </el-select>
+               </el-form-item>
+          </small>
+          <small>
+            <label class="label-right l_100">Модель</label>
+            <el-form-item prop="carModelId" style="display: inline-block"
+                          :rules="{required: true, message: '', trigger: ['blur']}">
+              <el-select
+                  :disabled="!model.carBrand"
+                  style="width: 110px"
+                  v-model="model.carModelId"
+                  :filterable="!globalStore.isMobileView"
+                  placeholder="Модель">
+                <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+              </el-select>
+            </el-form-item>
+          </small><br>
+          <small>
+            <label class="label-right l_100">Год выпуска</label>
+            <el-form-item prop="carModelId" style="display: inline-block"
+                          :rules="{required: true, message: '', trigger: ['blur']}">
+                <el-select placeholder="Год выпуска"
+                           clearable
+                           style="width: 110px"
+                           v-model="model.yearReleased">
+                    <el-option v-for="item in Years" :key="item.name" :label="item.name" :value="item.name"/>
+                  </el-select>
+            </el-form-item>
+          </small>
 
           <el-divider/>
 
-           Клиент<br>
+          Клиент<br>
+
           <small>
                <label class="label-right l_100">Тип клиента</label>
-               <el-select style="width: 120px;"></el-select>
+                <el-select
+                    style="width: 200px"
+                    v-model="model.leadType"
+                    filterable>
+              <el-option v-for="item in LeadType" :key="item.id" :label="item.name" :value="item.id"/>
+            </el-select>
             </small>
           <br>
             <small>
                <label class="label-right l_100">Фамилия</label>
-               <el-input></el-input>
+               <el-input v-model="model.lead.person.lastName"> </el-input>
             </small><br>
             <small>
-               <label class="label-right l_100">Имя</label>
-               <el-input></el-input>
+              <label class="label-right l_100">Имя</label>
+              <el-form-item prop="lead.person['firstName']" style="display: inline-block"
+                            :rules="{required: true, message: '', trigger: ['blur']}">
+                 <el-input v-model="model.lead.person.firstName"></el-input>
+              </el-form-item>
             </small><br>
           <small>
                <label class="label-right l_100">Отчество</label>
-               <el-input></el-input>
+               <el-input v-model="model.lead.person.middleName"></el-input>
             </small><br>
 
           <small>
-               <label class="label-right l_100">Контактный телефон</label>
-               <el-input style="width: 100px; overflow: hidden "></el-input>
-            </small>
+               <label class="label l_200">Контактный телефон</label>
+            
+            <el-form-item prop="lead.person['phone']" style="display: inline-block"
+                          :rules="{required: true, message: '', trigger: ['blur']}">
+                <el-input placeholder="* Основной телефон"
 
-           <small>
-               <label class="label-right l_100">Контактная эл.почта</label>
-               <el-input style="width: 100px; overflow: hidden "></el-input>
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>model.lead.person.phone=val)"
+                          @input="telChanged(model.lead.person.phone)"
+                          v-model="model.lead.person.phone"/>
+                </el-form-item>
+
+             <label class="label l_200">Контактная эл.почта</label>
+               <el-input placeholder="Email"
+                         @change="emailValidate(model.lead.person.email)"
+                         title="Email" v-model="model.lead.person.email"/>
             </small><br>
 
 
@@ -121,23 +167,32 @@
 <script setup>
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {Workflows} from "@/utils/globalConstants";
+import {LeadType, Workflows, Years} from "@/utils/globalConstants";
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
+import {emailValidate, formattingPhone} from "@/utils/globalFunctions";
 
 const currentButton = ref({title: 'Выкуп', value: 2})
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
-const model = ref({});
+const model = ref({lead: {person: {}}});
 const treatmentSources = ref([])
 const managers = ref([])
 const modalHistory = ref(null);
 const adminStore = useAdminStore();
 const form = ref(null)
+const brands = ref([])
+const models = ref([])
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
+
+globalStore.getBrands().then(res => brands.value = res)
+
+function changeBrand(id) {
+  globalStore.getModels(id).then((res) => models.value = res)
+}
 
 const resetForm = formEl => {
   formEl && formEl.resetFields()
@@ -170,12 +225,18 @@ function changeType(flow) {
   currentButton.value = flow
 }
 
+const telChanged = value => {
+  console.log('value', value)
+
+  // getContragent
+}
+
 
 function checking() {
   if (!model.value.treatmentSourceId) {
     return ElMessage({message: 'Поле "Источник" обязетелен для заполнения', type: "warning"});
   }
-  if (!model.value.BuyCategory && currentButton.value.title==='Выкуп') {
+  if (!model.value.BuyCategory && currentButton.value.title === 'Выкуп') {
     return ElMessage({message: 'Поле "Вид выкупа" обязетелен для заполнения', type: "warning"});
   }
   if (!model.value.validTo) {
