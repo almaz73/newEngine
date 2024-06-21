@@ -129,7 +129,7 @@ export const useAdminStore = defineStore("adminStore", {
         async getBanks() {
 
             if (cache.getBanks) return cache.getBanks
-            const res = await axios.get('/api/bank/get/list').then(q => q)
+            const res = await axios.get('/api/bank/').then(q => q)
             return (cache.getBanks = res.data)
         },
         async saveBanks(obj: any) {
@@ -144,6 +144,18 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/bankitem/get/list?bankId=${id}`).then(q => q)
             return res.data
         },
+        async deleteBankFilials(id: number | null) {
+            const res = await axios.delete(`/api/bankitem/deletebyid/${id}?bankId=`).then(q => q)
+            return res.data
+        },
+        async getAddress(query:string, count = 5){
+            // НЕТ ДОСТУПА
+            console.log({query,count})
+            const  params = {query,count}
+            const res = await axios.post(`https://dadata.ru/api/v2/suggest/address`,params).then(q => q)
+            return res.data 
+        },
+
         async getWork(id: number | null) {
             let url = '/api/work'
             if (id) url += '/' + id
