@@ -1,13 +1,9 @@
 <template>
   <div>
     <div style="margin-bottom: 30px">
-      <el-button @click="add()"
-                 :disabled="isEdit"
+      <el-button @click="openModal()"
                  type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
       </el-button>
-      <span v-if="globalStore.isMobileView && isEdit"><br><br></span>
-      <el-button v-if="isEdit" @click="save()">Сохранить</el-button>
-      <el-button v-if="isEdit" @click="reset()">Сброс</el-button>
     </div>
 
     <el-table
@@ -71,7 +67,7 @@
 
       <el-table-column width="73">
         <template #default="scope">
-          <el-icon @click="edit(scope.row, scope.$index)" style="cursor: pointer">
+          <el-icon @click="openModal(scope.row)" style="cursor: pointer">
             <EditPen/>
           </el-icon>
           &nbsp;
@@ -83,7 +79,6 @@
 
     </el-table>
     <template v-if="total>2">
-      <!--      v-if="total>rowsPerPage"-->
       <el-pagination
           v-model:page-size="rowsPerPage"
           :page-sizes="[5, 10, 20, 50]"
@@ -95,6 +90,7 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
+  <ThresholdDirModal ref="modal" />
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
@@ -103,24 +99,21 @@ import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {EditPen, CloseBold, Plus} from '@element-plus/icons-vue'
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
-
+import ThresholdDirModal from "@/pages/admin/dirs/ThresholdDirModal.vue"
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const isEdit = ref(false)
 const selectedRow = ref({})
 let selectedIndex = null
+const modal = ref(null)
 const total = ref(0)
 const rowsPerPage = ref(10)
 const pageDescription = ref('')
 const filter = {offset: 0, limit: 10}
 const organizations = ref([])
 
-function reset() {
-  const ind = tableData.value.findIndex(el => el.id === selectedRow.value.id)
-  tableData.value[ind] = selectedRow.value
-  isEdit.value = false
-}
+
 
 function changeOrg(id) {
   let el = organizations.value.find(el => el.id === id)
@@ -139,36 +132,11 @@ function changePage(val: number) {
   getData()
 }
 
-function add() {
-  selectedRow.value = {
-    maxPercentage: null,
-    maxPrice: null,
-    orgName: '',
-    orgId: null,
-    validFrom: null,
-    validTo: null
-  }
-  tableData.value.unshift(selectedRow.value)
-  isEdit.value = true
+
+function openModal(row: any | null){
+  modal.value.open(row, getData)
 }
 
-function edit(row, ind) {
-  selectedRow.value = JSON.parse(JSON.stringify(row))
-  selectedIndex = ind
-  isEdit.value = true
-}
-
-function save() {
-  let row = selectedRow.value
-  row.validFrom = new Date(row.validFrom)
-  row.validTo = new Date(row.validTo)
-  adminStore.saveMaxPrice(row).then(res => {
-    if (res !== undefined) {
-      ElMessage({message: 'Новое пороговое значение сохранено.', type: 'success'})
-      getData()
-    }
-  })
-}
 
 function deleteRow(row: any) {
   ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
