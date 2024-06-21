@@ -18,12 +18,7 @@
           </small>
           <small>
             <label class="label-right l_100">Цветовой код</label>
-            <el-input
-                style="width: 190px"
-                v-model="model.colorCode"
-                  clearable
-                  placeholder="Цветовой код">
-           </el-input>
+            <el-color-picker v-model="model.colorCode"/>
         <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>

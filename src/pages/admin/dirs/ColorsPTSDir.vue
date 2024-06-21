@@ -31,7 +31,15 @@
   
         <el-table-column>
           <template #default="scope">
-            <el-color-picker v-model="scope.row.colorCode"/>
+            <div
+              :style="{ 
+                backgroundColor: scope.row.colorCode, 
+                width: '30px', 
+                height: '30px', 
+                borderRadius: '4px', 
+                border: '1px solid #dcdfe6' 
+              }"
+            ></div>
           </template>
         </el-table-column>
   
@@ -57,7 +65,7 @@
   import {ref} from "vue";
   import {ElMessage, ElMessageBox, ElTable} from "element-plus";
   import {useGlobalStore} from "@/stores/globalStore";
-  import {EditPen, CloseBold, Search, Plus} from '@element-plus/icons-vue'
+  import {Search, Plus} from '@element-plus/icons-vue'
   import ColorsPTSDirModal from '@/pages/admin/dirs/ColorsPTSDirModal.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
@@ -72,10 +80,6 @@
   InspectionModal.value.open(row, getData)
 }
 
-  function add() {
-    tableData.value.unshift({colorName: '', colorCode: '#ddd'})
-    isEdit.value = true
-  }
   
   function find() {
     console.log("asda")
@@ -83,10 +87,6 @@
     if (!search.value) tableData.value = tableDataMemory
   }
   
-  function edit(row) {
-    selectedRow.value = row
-    isEdit.value = true
-  }
   
   function save() {
     let row = tableData.value.find(el => !el.id)
