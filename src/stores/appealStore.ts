@@ -16,6 +16,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get('/api/workflow/' + id)
             return res.data
         },
+        async saveAppeal(params: number) {
+            const res = await axios.post('/api/workflow/' , params)
+            return res.data
+        },
         async getEvents(id: number, noCach: boolean) {
             // @ts-ignore
             if (!noCach && cache['getEventsAppeal' + id]) return cache['getEventsAppeal' + id]
@@ -75,8 +79,7 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getContragent(phone: number) {
-            const res = await axios.get('/api/lead/getContragent/10/?search=' + phone)
-                .then(q => q)
+            const res = await axios.get('/api/lead/getContragent/10/?search=' + phone).then(q => q)
             return res.data
         }
     }

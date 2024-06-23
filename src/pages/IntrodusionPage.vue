@@ -5,8 +5,8 @@
 
     <div style="border: 5px double #ccc; padding: 30px">
       <el-radio-group v-model="textButtons" @click="toggleDark();themeChanged()">
-        <el-radio-button label="Светлая тема"/>
-        <el-radio-button label="Темная тема"/>
+        <el-radio-button value="Светлая тема"/>
+        <el-radio-button value="Темная тема"/>
       </el-radio-group>
     </div>
     <br>
