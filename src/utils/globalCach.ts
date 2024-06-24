@@ -21,6 +21,7 @@ const cache = {
     getSmsTemplates: null,
     getTreatments: null,
     getBanks: null,
-    getDocumentTypes: null
+    getDocumentTypes: null,
+    getenabledemployeers: null
 }
 export default cache

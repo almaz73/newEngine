@@ -97,6 +97,11 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/appeals/get/filter/users`).then(q => q)
             return (cache.getUsers = res.data)
         },
+        async getenabledemployeers() {
+            if (cache.getenabledemployeers) return cache.getenabledemployeers // список статичный - кэшируем
+            const res = await axios.get(`/api/user/getenabledemployeers`).then(q => q)
+            return (cache.getenabledemployeers = res.data)
+        },
         async getClientStatuses() {
             if (cache.getClientStatuses) return cache.getClientStatuses // список статичный - кэшируем
             const res = await axios.get(`/api/lead/get/client/statuses`).then(q => q)
