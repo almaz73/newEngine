@@ -10,22 +10,42 @@
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
       <div class="modal-fields">
-        <el-form ref="form" :model="user" @change="isDirty=true">
+        <el-form ref="form" :model="user" class="error-to-message">
           <div class="photo-place">
             <UploadPhoto @setNewPhoto="setNewPhoto" :url="user.avatar.url"/>
           </div>
-          <el-input
-              readonly
-              onfocus="this.removeAttribute('readonly')"
-              placeholder="Логин"
-              title="Логин"
-              autocomplete="off" v-model="user.login"/>
-          <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
+          <el-form-item prop="login"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Логин', trigger: ['change']}">
+            <el-input
+                readonly
+                onfocus="this.removeAttribute('readonly')"
+                placeholder="Логин"
+                title="Логин"
+                autocomplete="off" v-model="user.login"/>
+          </el-form-item>
+
+          <el-form-item prop="password"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Пароль', trigger: ['change']}">
+            <el-input placeholder="Пароль" title="Пароль" autocomplete="off" type="password" v-model="user.password"/>
+          </el-form-item>
           &nbsp; &nbsp;
           <a @click="signingLikeAnother()" v-if="isMyKey|| title === 'Создание нового пользователя'">Прикинуться</a>
           <hr>
-          <el-input placeholder="Фамилия *" title="Фамилия" v-model="user.person.lastName"/>
-          <el-input placeholder="Имя *" title="Имя" v-model="user.person.firstName"/>
+
+          <el-form-item prop="person['lastName']"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Фамилия', trigger: ['change']}">
+            <el-input placeholder="Фамилия" title="Фамилия" v-model="user.person.lastName"/>
+          </el-form-item>
+
+          <el-form-item prop="person['firstName']"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Имя', trigger: ['change']}">
+            <el-input placeholder="Имя" title="Имя" v-model="user.person.firstName"/>
+          </el-form-item>
+
           <el-input placeholder="Отчество" title="Отчество" v-model="user.person.middleName"/>
           <el-input placeholder="Email"
                     @change="emailValidate(user.person.email)"
@@ -52,26 +72,36 @@
 
           <div class="line">
             <label>Отдел</label>
-            <el-select
-                placeholder="Введите отдел *"
-                v-model="user.department.id"
-                filterable
-                clearable>
-              <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+            <el-form-item prop="department['id']"
+                          style="display: inline-block; width: 220px"
+                          :rules="{required: true, message: 'Введите отдел', trigger: ['change']}">
+              <el-select
+                  placeholder="Введите отдел"
+                  v-model="user.department.id"
+                  filterable
+                  clearable>
+                <el-option v-for="item in departmentsChosen" :key="item.id" :label="item.name" :value="item.id"/>
+              </el-select>
+            </el-form-item>
           </div>
 
           <div class="line">
             <label>Место хранения/выкупа</label>
-            <el-select
-                v-if="locationsChosen.length"
-                placeholder="Введите место хранения/выкупа *"
-                v-model="user.location.id"
-                filterable
-                clearable>
-              <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
-            </el-select>
+            <el-form-item prop="location['id']"
+                          style="display: inline-block; width: 220px"
+                          :rules="{required: true, message: 'Введите место хранения/выкупа', trigger: ['change']}">
+              <el-select
+                  v-if="locationsChosen.length"
+                  placeholder="Введите место хранения/выкупа"
+                  v-model="user.location.id"
+                  filterable
+                  clearable>
+                <el-option v-for="item in locationsChosen" :key="item.id" :label="item.title" :value="item.id"/>
+              </el-select>
+
+
             <small v-else style="padding: 6px 0 "><i> Не найдено</i></small>
+            </el-form-item>
           </div>
 
           <div class="line">
@@ -88,8 +118,12 @@
 
           <div class="line" v-if="permit()">
             <label>Должность</label>
-            <el-input style="margin: 0" placeholder="Введите должность *" :title="'Должность: '+user.position"
+            <el-form-item prop="position"
+                          style="display: inline-block; width: 220px"
+                          :rules="{required: true, message: 'Введите должность', trigger: ['change']}">
+              <el-input style="margin: 0" placeholder="Введите должность" :title="'Должность: '+user.position"
                       v-model="user.position"/>
+            </el-form-item>
           </div>
           <hr>
 
@@ -138,7 +172,7 @@ import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-import {decryptPassword, emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import {decryptPassword, emailValidate, formattingPhone, checkEmptyFields} from "@/utils/globalFunctions";
 import {permit} from "@/utils/permit.js";
 import UploadPhoto from "@/components/UploadPhoto.vue";
 
@@ -240,27 +274,6 @@ function signingLikeAnother() {
   })
 }
 
-function checking() {
-  if (!user.value.login) {
-    return ElMessage({message: 'Поле "Логин" обязателен для заполнения', type: 'warning'})
-  }
-  if (!user.value.person.lastName) {
-    return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
-  }
-  if (!user.value.person.firstName) {
-    return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
-  }
-  if (!user.value.department.id && permit()) {
-    return ElMessage({message: 'Поле "Отдел" обязателен для заполнения', type: 'warning'})
-  }
-  if (!user.value.location.id && permit()) {
-    return ElMessage({message: 'Поле "Место хранение/выкупа" обязателен для заполнения', type: 'warning'})
-  }
-  if (!user.value.position && permit()) {
-    return ElMessage({message: 'Поле "Должность" обязателен для заполнения', type: 'warning'})
-  }
-}
-
 function setNewPhoto(file) {
   if (file && file.fbase64) {
     user.value.avatar.file = file.fbase64.split('base64,')[1]
@@ -272,11 +285,12 @@ function setNewPhoto(file) {
 }
 
 function save() {
-  if (checking()) return false
-  adminStore.saveUser(user.value).then(() => {
-    ElMessage({message: 'Успешно', type: 'success'})
-    isOpen.value = false
-    cb && cb()
+  checkEmptyFields(form.value).then(noErr => {
+    noErr && adminStore.saveUser(user.value).then(res => {
+      res && ElMessage({message: 'Успешно', type: 'success'})
+      isOpen.value = false
+      cb && cb()
+    })
   })
 }
 
