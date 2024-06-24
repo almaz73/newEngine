@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom: 30px">
-      <el-button @click="openModal()"
+      <el-button @click="openModal(null)"
                  type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
       </el-button>
     </div>
@@ -67,13 +67,14 @@
 
       <el-table-column width="73">
         <template #default="scope">
-          <el-icon @click="openModal(scope.row)" style="cursor: pointer">
-            <EditPen/>
-          </el-icon>
-          &nbsp;
-          <el-icon style="cursor: pointer" @click="deleteRow(scope.row)">
-            <CloseBold/>
-          </el-icon>
+          <div style="" class="admin-table-editors">
+            <img @click="openModal(scope.row)" alt=""
+                 title="Редактировать"
+                 src="@/assets/icons/icon-pencil-gray.png">
+            <img @click="deleteRow(scope.row.id)" alt=""
+                 src="@/assets/icons/icon-cross-gray.png"
+                 title="Удалить">
+          </div>
         </template>
       </el-table-column>
 
@@ -90,22 +91,22 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
-  <ThresholdDirModal ref="modal" />
+  <ThresholdDirModal ref="modal"/>
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
-import {EditPen, CloseBold, Plus} from '@element-plus/icons-vue'
+import {Plus} from '@element-plus/icons-vue'
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import ThresholdDirModal from "@/pages/admin/dirs/ThresholdDirModal.vue"
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const isEdit = ref(false)
-const selectedRow = ref({})
-let selectedIndex = null
+const selectedRow = ref({id: null})
+let selectedIndex = 0
 const modal = ref(null)
 const total = ref(0)
 const rowsPerPage = ref(10)
@@ -114,9 +115,8 @@ const filter = {offset: 0, limit: 10}
 const organizations = ref([])
 
 
-
-function changeOrg(id) {
-  let el = organizations.value.find(el => el.id === id)
+function changeOrg(id: number) {
+  let el = organizations.value.find((el: any) => el.id === id)
   if (tableData.value[selectedIndex]) tableData.value[selectedIndex].orgName = el.name
 }
 
@@ -133,8 +133,8 @@ function changePage(val: number) {
 }
 
 
-function openModal(row: any | null){
-  modal.value.open(row, getData)
+function openModal(row: any) {
+  modal.value && modal.value.open(row, getData)
 }
 
 

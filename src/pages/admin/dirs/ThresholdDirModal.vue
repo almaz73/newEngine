@@ -1,7 +1,7 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="340"
+              :width="360"
               :top="40"
               :title="'Категория наценки'"
               draggable>
@@ -10,7 +10,7 @@
             <small>
               <label class="label-right l_100">Организация</label>
              <el-select
-                style="width: 190px"
+                style="width: 220px"
                 placeholder="Организация"
                 v-model="model.orgId"
                 filterable
@@ -22,7 +22,6 @@
             <small>
               <label class="label-right l_100">Максимальный порог, руб.</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.maxPrice"
                   clearable
                   placeholder="Максимальный порог, руб.">
@@ -30,12 +29,10 @@
             </small>
             <small>
               <label class="label-right l_100">Максимальный порог, процент.</label>
-              <el-input 
-              
-              min="0"
-              max="100"
+              <el-input
+                  min="0"
+                  max="100"
                   @input="checkPercentage('maxPercentage')"
-                  style="width: 190px"
                   v-model="model.maxPercentage"
                   placeholder="Максимальный порог, процент.">
              </el-input>
@@ -62,7 +59,7 @@
       </el-scrollbar>
     </AppModal>
   </template>
-  
+
   <script setup>
   import AppModal from "@/components/AppModal.vue";
   import {useAdminStore} from "@/stores/adminStore";
@@ -78,15 +75,8 @@
   const adminStore = useAdminStore();
   let cb;
 
-  function changeOrg(id) {
-  let el = organizations.value.find(el => el.id === id)
-  if (model.value[selectedIndex]) tableData.value[selectedIndex].orgName = el.name
-  }
-
-
 
   function open(row, cbModal) {
-
     cb = cbModal;
     isOpen.value = true;
     if(!row){
@@ -116,12 +106,8 @@
     })
   }
 function checkPercentage(category) {
-  if (model.value[category] > 100) {
-    model.value[category] = 100;
-  }
-  if (model.value[category] < 0) {
-    model.value[category] = 0;
-  }
+  if (model.value[category] > 100) model.value[category] = 100;
+  if (model.value[category] < 0) model.value[category] = 0;
 }
 
   function checking() {
@@ -135,7 +121,5 @@ function checkPercentage(category) {
       return ElMessage({message: 'Поле "Максимальный порог, процент" обязетелен для заполнения', type: "warning"});
     }
   }
-  
-  
   defineExpose({open});
   </script>
