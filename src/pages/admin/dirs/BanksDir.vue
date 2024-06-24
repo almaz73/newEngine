@@ -2,20 +2,21 @@
     <div>
         <div style="margin-bottom: 30px">
             <el-input v-model="search" :prefix-icon="Search" @clear="find()" clearable
-            placeholder="Фильтр" 
+            placeholder="Фильтр"
                 :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }" @keydown.enter="find()" />
-                <el-button v-if="isFilialsPage" @click="showBanks()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
-                'НАЗАД' }}
-            </el-button>
+
             <el-button @click="openModal()"  type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' :
                 'Добавить' }}
             </el-button>
             <h4 style="color: #999">
             {{
                 (isFilialsPage) ?
-                    'Банк: ' + activeBank + '.   (филиалы: ' + filialsData.length + ' )' :
+                    'Филиалы банка: ' + activeBank + '.   ( ' + filialsData.length + ' )' :
                     'Все Банки ( ' + banksLength + ')'
             }}
+              <el-button v-if="isFilialsPage" @click="showBanks()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
+                  'Вернуться к банкам' }}
+              </el-button>
             </h4>
         </div>
 
@@ -116,7 +117,7 @@ function showBanks(id: number){
 
 
 function openModal(row: any | null) {
-    modal.value.open(row, getData,isFilialsPage.value)
+  modal.value.open(row, getData, isFilialsPage.value)
 }
 
 function deleteRow(row: any) {
