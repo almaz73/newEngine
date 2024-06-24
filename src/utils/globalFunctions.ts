@@ -309,23 +309,11 @@ export function decryptPassword(encryptedPassword: string): string {
 // end проостое хкширование
 
 
-// Функция для проверки полей на заполненность 
-interface CheckItem {
-    fieldName: string;
-    check: string | undefined;
-}
-export function checkingOnEmptyInput(checkArr:CheckItem[], typeMessage="warning"){
-    return checkArr.find(obj => {
-      if(!obj.check){
-        return ElMessage({message: `Поле "${obj.fieldName}" обязателен для заполнения`, type: typeMessage});
-      }
-    })
-  }
-
+// Функция для проверки полей на заполненность
 export function checkEmptyFields(formEl: any) {
     return formEl && formEl.validate((valid: boolean, a: any) => {
         const empty = a && Object.entries(a).find(el => !el[1].fieldValue)
-        empty && ElMessage({message: `Поле "${empty[1][0].message}" обязетелен для заполнения`, type: 'warning'})
+        empty && ElMessage({message: `Поле "${empty[1][0].message}" обязателен для заполнения`, type: 'warning'})
         return !valid
     })
 }
