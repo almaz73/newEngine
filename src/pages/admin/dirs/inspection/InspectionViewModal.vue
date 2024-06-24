@@ -65,7 +65,7 @@ import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {inspectionItemCategories, inspectionUiType} from "@/utils/globalConstants";
-
+import {checkingOnEmptyInput} from "@/utils/globalFunctions.ts"
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
 const insp = ref({});
@@ -85,25 +85,15 @@ function open(row, cbModal) {
   adminStore.getDomage().then(res => damages.value = res.items);
 
 }
-
-
-function checking() {
-  if (!insp.value.name) {
-    return ElMessage({message: 'Поле "Название" обязетелен для заполнения', type: "warning"});
-  }
-  if (!insp.value.inspectionItemCategory) {
-    return ElMessage({message: 'Поле "Категория осмотра" обязетелен для заполнения', type: "warning"});
-  }
-  if (!insp.value.inspectionUiType) {
-    return ElMessage({message: 'Поле "Интерфейс" обязетелен для заполнения', type: "warning"});
-  }
-  if (!insp.value.order) {
-    return ElMessage({message: 'Поле "Порядок" обязетелен для заполнения', type: "warning"});
-  }
-}
-
 function save() {
-  if (checking()) return false;
+  let emptyCheckArr = [
+    {fieldName:"Название",check:insp.value.name},
+    {fieldName:"Категория осмотра",check:insp.value.inspectionItemCategory},
+    {fieldName:"Интерфейс",check:insp.value.inspectionUiType},
+    {fieldName:"Порядок",check:insp.value.order},
+  ]
+  if(checkingOnEmptyInput(emptyCheckArr)) return false
+  
   adminStore.saveInspection(insp.value).then(() => {
     ElMessage({message: "Осмотр успешно сохранен", type: "success"});
     isOpen.value = false;
