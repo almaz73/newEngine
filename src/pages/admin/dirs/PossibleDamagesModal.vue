@@ -9,71 +9,76 @@
     <el-scrollbar maxHeight="480px">
 
       <span class="modal-fields">
-        <span>
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Тип ТС*</label>
-               <el-select
-                   @change="autoType()"
-                   v-model="model.autoType"
-                   filterable
-                   clearable>
-                <el-option v-for="item in autoTypes"
-                           :key="item.value" :label="item.title" :value="item.value"/>
-            </el-select>
-          </div>
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Марка*</label>
-               <el-select
-                   @change="changeBrand(model.brand.id, true)"
-                   v-model="model.brand.id"
-               >
-                <el-option v-for="item in brands"
-                           :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
-          </div>
+        <el-form ref="form" :model="model" class="error-to-message">
+              <label class="label l_150">Тип ТС</label>
+               <el-form-item prop="autoType"
+                             style="display: inline-block; width: 220px"
+                             :rules="{required: true, message: 'Тип ТС', trigger: ['change']}">
+                 <el-select
+                     @change="autoType()"
+                     v-model="model.autoType"
+                     filterable
+                     clearable>
+                  <el-option v-for="item in autoTypes"
+                             :key="item.value" :label="item.title" :value="item.value"/>
+                  </el-select>
+               </el-form-item>
 
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Модель*</label>
-               <el-select
-                   @change="getGenerations(model.model.id, true)"
-                   v-model="model.model.id"
-                   filterable
-                   clearable>
-                <el-option v-for="item in models"
-                           :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
-          </div>
 
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Поколение</label>
+              <label class="label l_150">Марка</label>
+              <el-form-item prop="brand['id']"
+                            style="display: inline-block; width: 220px"
+                          :rules="{required: true, message: 'Марка', trigger: ['change']}">
+                 <el-select
+                     @change="changeBrand(model.brand.id, true)"
+                     v-model="model.brand.id"
+                 >
+                  <el-option v-for="item in brands"
+                             :key="item.id" :label="item.name" :value="item.id"/>
+                 </el-select>
+              </el-form-item>
+
+              <label class="label l_150">Модель</label>
+              <el-form-item prop="model['id']"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Модель', trigger: ['change']}">
+                 <el-select
+                     @change="getGenerations(model.model.id, true)"
+                     v-model="model.model.id"
+                     filterable
+                     clearable>
+                  <el-option v-for="item in models"
+                             :key="item.id" :label="item.name" :value="item.id"/>
+                  </el-select>
+              </el-form-item>
+
+              <label class="label l_150">Поколение</label>
                <el-select
                    v-model="model.generations"
                    @change="getModifications(model.generations, true)"
                    multiple
+                   style="width: 220px; margin-bottom: 10px"
                    filterable
                    clearable>
                 <el-option v-for="item in allGenerations"
                            :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
-          </div>
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Модификация</label>
+
+              <label class="label 150">Модификация</label>
                <el-select
                    v-model="model.modifications"
                    multiple
+                   style="width: 220px; margin-bottom: 10px"
                    filterable
                    clearable>
                 <el-option v-for="item in allModifications"
                            :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
-          </div>
 
-          <div style="display: flex; align-items: center">
-              <label class="label l_200">Возможные неисправности</label>
-               <el-input type="textarea" v-model="model.description"/>
-          </div>
+              <label class="label l_150">Возможные неисправности</label>
+               <el-input type="textarea" v-model="model.description" style="width: 310px"/>
          <br><br>
-        </span>
+        </el-form>
         <div style="text-align: right">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
@@ -96,6 +101,7 @@ import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
+import {checkEmptyFields} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
@@ -111,6 +117,7 @@ const brands = ref([])
 const models = ref([])
 const allGenerations = ref([])
 const allModifications = ref([])
+const form = ref(null)
 
 
 function open(row, cbModal) {
@@ -176,18 +183,20 @@ function checking() {
 }
 
 function save() {
-  if (checking()) return false;
-  let params = Object.assign({}, model.value)
-  params.autoType = {id: params.autoType}
-  if (params.modifications.length && !params.modifications[0].id) params.modifications = params.modifications.map(el => ({id: el}))
-  if (params.generations.length && !params.generations[0].id) params.generations = params.generations.map(el => ({id: el}))
-  adminStore.saveMalfunctionsById(params).then(res => {
-    if (res) {
-      ElMessage({message: "Успешно", type: "success"});
-      isOpen.value = false;
-      cb();
-    }
-  });
+  checkEmptyFields(form.value).then(noErr => {
+    if (!noErr) return false
+    let params = Object.assign({}, model.value)
+    params.autoType = {id: params.autoType}
+    if (params.modifications.length && !params.modifications[0].id) params.modifications = params.modifications.map(el => ({id: el}))
+    if (params.generations.length && !params.generations[0].id) params.generations = params.generations.map(el => ({id: el}))
+    adminStore.saveMalfunctionsById(params).then(res => {
+      if (res) {
+        ElMessage({message: "Успешно", type: "success"});
+        isOpen.value = false;
+        cb();
+      }
+    });
+  })
 }
 
 defineExpose({open});
