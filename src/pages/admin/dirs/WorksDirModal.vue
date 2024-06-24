@@ -9,11 +9,14 @@
     <el-scrollbar maxHeight="480px">
 
       <span class="modal-fields">
-        <span>
-          <el-input placeholder="Название *" title="Название" v-model="work.name"/>
+        <el-form ref="form" :model="work" class="error-to-message">
+          <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
+            <el-input placeholder="Название" title="Название" v-model="work.name"/>
+          </el-form-item>
 
           <el-select
               title="Тип работы"
+              style="margin-bottom: 10px"
               placeholder="Тип работы"
               v-model="work.type"
               @change="changeType()"
@@ -23,12 +26,15 @@
                          :value="item.id"/>
            </el-select>
 
-          <el-input
-              placeholder="Количество норма часов"
-              title="Количество норма часов"
-              v-model="work.rateHour"
-              clearable>
-          </el-input>
+          <el-form-item prop="rateHour"
+                        :rules="{required: true, message: 'Количество норма-часов', trigger: ['change']}">
+            <el-input
+                placeholder="Количество норма-часов"
+                title="Количество норма-часов"
+                v-model="work.rateHour"
+                clearable>
+            </el-input>
+          </el-form-item>
 
           <el-select
               title="Ремонтируемый элемент"
@@ -41,7 +47,7 @@
           </el-select>
           <hr>
 
-        </span>
+        </el-form>
       <div style="text-align: right">
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отмена</el-button>
@@ -65,6 +71,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import {WorkType} from "@/utils/globalConstants";
+import {checkEmptyFields} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
@@ -75,6 +82,7 @@ const modalHistory = ref(null);
 const adminStore = useAdminStore();
 let cb;
 const repairElements = ref([])
+const form = ref(null)
 
 
 function open(row, cbModal) {
@@ -86,30 +94,18 @@ function open(row, cbModal) {
 }
 
 
-function checking() {
-  if (!work.value.name) {
-    return ElMessage({message: 'Поле "Название" обязетелен для заполнения', type: "warning"});
-  }
-  if (!work.value.type) {
-    return ElMessage({message: 'Поле "Тип работы" обязетелен для заполнения', type: "warning"});
-  }
-  if (!work.value.rateHour) {
-    return ElMessage({message: 'Поле "Количество норма-часов" обязетелен для заполнения', type: "warning"});
-  }
-}
-
 function changeType() {
   adminStore.getRepaired(work.value.type).then(res => repairElements.value = res.items);
 }
 
 function save() {
-  if (checking()) return false;
-
-  adminStore.saveWork(work.value).then(() => {
-    ElMessage({message: "Вид работы успешно сохранен", type: "success"});
-    isOpen.value = false;
-    cb();
-  });
+  checkEmptyFields(form.value).then(res => {
+    res && adminStore.saveWork(work.value).then(itog => {
+      itog && ElMessage({message: "Вид работы успешно сохранен", type: "success"});
+      isOpen.value = false;
+      cb();
+    });
+  })
 }
 
 defineExpose({open});
