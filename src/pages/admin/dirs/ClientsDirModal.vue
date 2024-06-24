@@ -10,31 +10,42 @@
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
       <div class="modal-fields">
-        <el-form ref="form" :model="client" @change="isDirty=true">
-          <div class="line">
+        <el-form ref="form" :model="client" class="error-to-message">
+          <small class="line">
             <label>Источник</label>
-            <el-select v-model="client.treatmentSourceId" placeholder="Выберите источник">
-              <el-option-group
-                  v-for="group in treatmentsGroup"
-                  :key="group.id"
-                  :label="group.name"
-              >
-                <el-option
-                    v-for="item in group.groups"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.name"
-                />
-              </el-option-group>
-            </el-select>
-          </div>
+
+            <el-form-item prop="treatmentSourceId"
+                          style="display: inline-block; width: 420px"
+                          :rules="{required: true, message: 'Источник', trigger: ['change']}">
+              <el-select v-model="client.treatmentSourceId" placeholder="Выберите источник">
+                <el-option-group
+                    v-for="group in treatmentsGroup"
+                    :key="group.id"
+                    :label="group.name"
+                >
+                  <el-option
+                      v-for="item in group.groups"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="item.name"
+                  />
+                </el-option-group>
+              </el-select>
+            </el-form-item>
+          </small>
 
           <hr>
-          <el-input placeholder="Фамилия *" title="Фамилия" v-model="client.person.lastName"/>
-          <el-input placeholder="Имя *" title="Имя" v-model="client.person.firstName"/>
+          <el-input placeholder="Фамилия" title="Фамилия" v-model="client.person.lastName"/>
+
+
+          <el-form-item prop="person['firstName']"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Имя', trigger: ['change']}">
+            <el-input placeholder="Имя" title="Имя" v-model="client.person.firstName"/>
+          </el-form-item>
           <el-input placeholder="Отчество" title="Отчество" v-model="client.person.middleName"/>
 
-          <span><small style="padding-right: 30px">Пол: </small><el-select
+          <span><small style="padding: 0 24px">Пол: </small><el-select
               placeholder="Пол"
               v-model="client.person.gender"
               style="width:160px"
@@ -55,7 +66,7 @@
                     v-model="client.person.phone2"/>
 
 
-          <span><small>День/р.:</small>
+          <span><small style="padding: 0 24px">День/р.:</small>
              <el-date-picker
                  style="width: 150px; overflow: hidden"
                  placeholder="День рождения" title="День рождения"
@@ -66,30 +77,30 @@
           <br>
           <div style="display: flex">
             <div>
-              <div class="line">
+              <small class="line">
                 <label>Место рождения</label>
                 <el-input v-model="client.person.placeOfBirth"/>
-              </div>
+              </small>
 
-              <div class="line">
+              <small class="line">
                 <label> Ссылка на соц.сети</label>
                 <el-input v-model="client.person.socialNetworksAddress"/>
-              </div>
+              </small>
 
-              <div class="line">
+              <small class="line">
                 <label>ИНН (физ. лица)</label>
                 <el-input placeholder="ИНН" v-model="client.person.inn"/>
-              </div>
+              </small>
 
-              <div>
+              <small>
                 <label>Согласие на обработку персональных данных</label> &nbsp;
                 <el-checkbox v-model="client.person.personalDataAgree"/>
-              </div>
+              </small><br>
 
-              <div>
+              <small>
                 <label>Согласие на получение смc</label> &nbsp;
                 <el-checkbox v-model="client.person.smsReceivingAgree"/>
-              </div>
+              </small>
 
               <div class="line" v-if="client.person.registrationAddress">
                 <label>Адрес регистрации</label>
@@ -225,7 +236,7 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {emailValidate, formattingPhone} from "@/utils/globalFunctions";
+import {emailValidate, formattingPhone, checkEmptyFields } from "@/utils/globalFunctions";
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 
 const globalStore = useGlobalStore()
@@ -305,7 +316,7 @@ function open(row, cbModal) {
 
   adminStore.getDepartments().then(res => departments.value = res.items)
   adminStore.getBanks().then(res => banks.value = res.result)
-  adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
+  row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
       .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 }
@@ -326,21 +337,24 @@ function checking() {
 
 
 function save() {
-  if (checking()) return false
+  checkEmptyFields(form.value).then(noErr => {
 
-  // телефон должен состоять только из цифр
-  client.value.person.phone = client.value.person.phone.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
+    if (!noErr) return false
 
-  adminStore.saveClient(client.value).then((res) => {
-    if (res.code === "ERR_BAD_REQUEST") {
-      ElMessage({message: res.response.data.errorText, type: 'error', duration: 7000})
-      return false
-    }
+    // телефон должен состоять только из цифр
+    client.value.person.phone = client.value.person.phone.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
 
-    ElMessage({message: 'Успешно', type: 'success'})
-    isOpen.value = false
-    client.value = clientInit
-    cb()
+    adminStore.saveClient(client.value).then((res) => {
+      if (res.code === "ERR_BAD_REQUEST") {
+        ElMessage({ message: res.response.data.errorText, type: 'error', duration: 7000 })
+        return false
+      }
+
+      ElMessage({ message: 'Успешно', type: 'success' })
+      isOpen.value = false
+      client.value = clientInit
+      cb()
+    })
   })
 }
 
