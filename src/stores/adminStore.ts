@@ -126,6 +126,15 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('/api/damageitem').then(q => q)
             return (cache.getDomage = res.data)
         },
+        async saveDamage(params:any) {
+            cache.getDomage = null
+            const res = await axios.post('/api/damageitem',params).then(q => q)
+        },
+        async deleteDamage(deleteId: number) {
+            cache.getDomage = null
+            const res = await axios.delete(`/api/damageitem/${deleteId}`).then(q => q)
+            return res.data
+        },
         async getBanks() {
 
             if (cache.getBanks) return cache.getBanks

@@ -42,7 +42,7 @@ import UsersDir from "@/pages/admin/dirs/UsersDir.vue";
 import BrendsDir from "@/pages/admin/dirs/BrendsDir.vue";
 import ColorsDir from "@/pages/admin/dirs/ColorsDir.vue";
 import OrgsDir from "@/pages/admin/dirs/OrgsDir.vue";
-import InspectionDir from "@/pages/admin/dirs/InspectionDir.vue";
+import InspectionTabs from "@/pages/admin/dirs/inspection/InspectionTabs.vue"
 import WorksDir from "@/pages/admin/dirs/WorksDir.vue";
 import PossibleDamages from "@/pages/admin/dirs/PossibleDamages.vue";
 import TiresDir from "@/pages/admin/dirs/TiresDir.vue"
@@ -59,7 +59,7 @@ const AdminDirectories = {
   '🚧Марки по ПТС': ClientsDir,
   'Цвета кузова': ColorsDir,
   'Цвета кузова по ПТС': ColorsPTSDir,
-  'Лист осмотра': InspectionDir,
+  'Лист осмотра': InspectionTabs,
   'Виды работ': WorksDir,
   '🚧Ремонтируемые элементы': ClientsDir,
   '🚧Запчасти': ClientsDir,

@@ -15,7 +15,13 @@
               :default-sort="{ prop: 'order', order: 'descending'}"
               highlight-current-row>
       <el-table-column prop="name" label="Название" sortable/>
-      <el-table-column prop="inspectionItemCategory" label="Категория осмотра" sortable/>
+      <el-table-column prop="inspectionItemCategory" label="Категория осмотра" sortable>
+        <template #default="scope">
+        <div style="display: flex; align-items: center">
+          <span>{{ getInsItem(scope.row.inspectionItemCategory) }}</span>
+        </div>
+      </template>
+        </el-table-column>
       <el-table-column prop="order" label="Порядок" sortable/>
       <el-table-column prop="roleTitle" width="73px">
         <template #default="scope">
@@ -45,16 +51,16 @@
       </div>
     </div>
   </div>
-  <InspectionDirModal ref="InspectionModal"/>
+  <InspectionViewModal ref="InspectionModal"/>
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
-import InspectionDirModal from "@/pages/admin/dirs/InspectionDirModal.vue";
+import InspectionViewModal from "@/pages/admin/dirs/inspection/InspectionViewModal.vue";
 import {Plus, Search} from "@element-plus/icons-vue";
-
+import {inspectionItemCategories} from "@/utils/globalConstants"
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
@@ -68,6 +74,11 @@ function openModal(row: any | null) {
   InspectionModal.value.open(row, getData)
 }
 
+function getInsItem(id:number){
+    if (!id) return ""
+    return inspectionItemCategories.find(el => el.id === id)?.name
+  }
+  
 
 function deleteInsp(id: number) {
   ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
@@ -97,10 +108,8 @@ function getData() {
     tableDataMemory = JSON.parse(JSON.stringify(res.items))
   })
 }
-
 globalStore.setTitle('Осмотр')
 globalStore.steps = []
 getData()
-
 
 </script>

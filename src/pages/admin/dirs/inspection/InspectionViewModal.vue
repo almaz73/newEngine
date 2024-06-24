@@ -51,7 +51,6 @@
       </span>
     </el-scrollbar>
   </AppModal>
-  <UsersDirModal_History ref="modalHistory"/>
 </template>
 <style>
 
@@ -65,7 +64,6 @@ import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
 import {inspectionItemCategories, inspectionUiType} from "@/utils/globalConstants";
 
 const globalStore = useGlobalStore();
@@ -73,7 +71,6 @@ const isOpen = ref(false);
 const insp = ref({});
 const closeModal = () => isOpen.value = false;
 
-const modalHistory = ref(null);
 const adminStore = useAdminStore();
 let cb;
 const damages = ref([])
