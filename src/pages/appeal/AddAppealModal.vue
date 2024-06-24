@@ -8,7 +8,7 @@
     <el-scrollbar>
 
       <span class="modal-fields">
-        <el-form ref="form" :model="newWorkflow">
+        <el-form ref="form" :model="newWorkflow" class="error-to-message">
           <el-button-group style="vertical-align: center">
             <template v-for="flow in workflowTypes" :key="flow.value">
             <el-button v-if="flow.value<11"
@@ -20,9 +20,9 @@
           </el-button-group>
           <br><br>
             <small>
-               <label class="label-right l_100">Источник *</label>
+               <label class="label-right l_100">Источник</label>
               <el-form-item prop="treatmentSourceId" style="display: table-cell; width: 220px"
-                            :rules="{required: true, message: '', trigger: ['blur', 'change']}">
+                            :rules="{required: true, message: 'Источник', trigger: ['blur', 'change']}">
               <el-select
                   v-model="newWorkflow.treatmentSourceId"
                   filterable>
@@ -35,7 +35,7 @@
             <small v-if="currentButton.title==='Выкуп'">
                <label class="label-right l_100">Вид выкупа</label>
               <el-form-item prop="BuyCategory" style="display: table-cell; width: 220px"
-                            :rules="{required: true, message: '', trigger: ['blur', 'change']}">
+                            :rules="{required: true, message: 'Вид выкупа', trigger: ['blur', 'change']}">
                 <el-select
                     v-model="newWorkflow.BuyCategory"
                     filterable>
@@ -62,7 +62,7 @@
           <small>
                <label class="label-right l_100">Марка</label>
                <el-form-item prop="carBrand" style="display: table-cell"
-                             :rules="{required: true, message: '', trigger: ['blur']}">
+                             :rules="{required: true, message: 'Марка', trigger: ['blur', 'change']}">
                   <el-select
                       style="width: 140px"
                       v-model="newWorkflow.carBrand"
@@ -77,7 +77,7 @@
           <small>
             <label class="label-right l_100">Модель</label>
             <el-form-item prop="carModelId" style="display: table-cell"
-                          :rules="{required: true, message: '', trigger: ['blur']}">
+                          :rules="{required: true, message: 'Модель', trigger: ['blur', 'change']}">
               <el-select
                   style="width: 110px"
                   v-model="newWorkflow.carModelId"
@@ -89,8 +89,8 @@
           </small>
           <small>
             <label class="label-right l_100">Год выпуска</label>
-            <el-form-item prop="carModelId" style="display: table-cell"
-                          :rules="{required: true, message: '', trigger: ['blur']}">
+            <el-form-item prop="yearReleased" style="display: table-cell"
+                          :rules="{required: true, message: 'Год выпуска', trigger: ['blur', 'change']}">
                 <el-select placeholder="Год выпуска"
                            clearable
                            style="width: 110px"
@@ -122,7 +122,7 @@
             <small>
               <label class="label-right l_100">Имя</label>
               <el-form-item prop="lead.person['firstName']" style="display: table-cell"
-                            :rules="{required: true, message: '', trigger: ['blur']}">
+                            :rules="{required: true, message: 'Имя', trigger: ['blur']}">
                  <el-input v-model="newWorkflow.lead.person.firstName" :disabled="isClientChosen"/>
               </el-form-item>
             </small><br>
@@ -132,10 +132,10 @@
             </small><br>
 
           <small>
-               <label class="label l_200">Контактный телефон *</label>
+               <label class="label l_200">Контактный телефон</label>
             
             <el-form-item prop="lead.person['phone']" style="display: table-cell"
-                          :rules="{required: true, message: '', trigger: ['blur']}">
+                          :rules="{required: true, message: 'Контактный телефон', trigger: ['blur']}">
                <el-autocomplete
                    v-model="newWorkflow.lead.person.phone"
                    :disabled="isClientChosen"
@@ -183,7 +183,7 @@ import {ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import UsersDirModal_History from '@/pages/admin/dirs/UsersDirModal_History.vue'
-import {emailValidate, formattingPhone} from '@/utils/globalFunctions'
+import {emailValidate, formattingPhone, checkEmptyFields} from '@/utils/globalFunctions'
 
 const currentButton = ref({title: 'Выкуп', value: 2})
 const globalStore = useGlobalStore()
@@ -196,7 +196,6 @@ const adminStore = useAdminStore()
 const form = ref(null)
 const brands = ref([])
 const models = ref([])
-const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const isClientChosen = ref(false)
 const account = localStorage.getItem('account')
 const user = account && JSON.parse(account);
@@ -298,35 +297,8 @@ function handlePhone(val) {
 }
 
 
-function checking() {
-  if (!newWorkflow.value.treatmentSourceId) {
-    return ElMessage({message: 'Поле "Источник" обязетелен для заполнения', type: 'warning'})
-  }
-  if (!newWorkflow.value.BuyCategory && currentButton.value.title === 'Выкуп') {
-    return ElMessage({message: 'Поле "Вид выкупа" обязетелен для заполнения', type: 'warning'})
-  }
-  if (!newWorkflow.value.carBrand) {
-    return ElMessage({message: 'Поле "Марка" обязетелен для заполнения', type: 'warning'})
-  }
-  if (!newWorkflow.value.carModelId) {
-    return ElMessage({message: 'Поле "Модель" обязетелен для заполнения', type: 'warning'})
-  }
-
-  if (!newWorkflow.value.yearReleased) {
-    return ElMessage({message: 'Поле "Год выпуска" обязетелен для заполнения', type: 'warning'})
-  }
-
-  if (!newWorkflow.value.lead.person.firstName) {
-    return ElMessage({message: 'Поле "Имя" обязетелен для заполнения', type: 'warning'})
-  }
-  if (!newWorkflow.value.lead.person.phone) {
-    return ElMessage({message: 'Поле "Контактный телефон" обязетелен для заполнения', type: 'warning'})
-  }
-}
-
 function save() {
-  checking()
-  submitForm(form.value).then(res => { // проверка заполненности обязательных полей
+  checkEmptyFields(form.value).then(res => { // проверка заполненности обязательных полей
     newWorkflow.value.lead.treatmentSourceId = newWorkflow.value.treatmentSourceId;
 
     res && appealStore.saveAppeal(newWorkflow.value).then(res => {
@@ -336,8 +308,6 @@ function save() {
       cb()
     })
   })
-
-
 }
 
 defineExpose({open})

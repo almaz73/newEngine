@@ -321,4 +321,11 @@ export function checkingOnEmptyInput(checkArr:CheckItem[], typeMessage="warning"
       }
     })
   }
-  
+
+export function checkEmptyFields(formEl: any) {
+    return formEl && formEl.validate((valid: boolean, a: any) => {
+        const empty = a && Object.entries(a).find(el => !el[1].fieldValue)
+        empty && ElMessage({message: `Поле "${empty[1][0].message}" обязетелен для заполнения`, type: 'warning'})
+        return !valid
+    })
+}

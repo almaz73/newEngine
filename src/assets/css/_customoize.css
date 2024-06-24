@@ -143,6 +143,10 @@ li.el-menu-item {
     margin-top: -8px;
 }
 
+.error-to-message .el-form-item__error{
+    display: none;
+}
+
 
 .yourPlace .el-input__inner {
     min-width: 100%;
