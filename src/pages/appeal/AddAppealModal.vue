@@ -3,10 +3,9 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 360: 500"
             :top="40"
-            :title="'Обращения'"
+            :title="'Обращения - '+workflowTypes.find(el=>el.value==newWorkflow.workflowLeadType).title"
             draggable>
     <el-scrollbar>
-
       <span class="modal-fields">
         <el-form ref="form" :model="newWorkflow" class="error-to-message">
           <el-button-group style="vertical-align: center">
@@ -32,7 +31,7 @@
             </small>
 
             <br>
-            <small v-if="currentButton.title==='Выкуп'">
+            <small v-if="currentButton.title==='Выкуп' && ![8, 10].includes(newWorkflow.workflowLeadType)">
                <label class="label-right l_100">Вид выкупа</label>
               <el-form-item prop="BuyCategory" style="display: table-cell; width: 220px"
                             :rules="{required: true, message: 'Вид выкупа', trigger: ['blur', 'change']}">
@@ -44,7 +43,7 @@
               </el-form-item>
             </small>
             <br>
-             <small>
+             <small v-if="!['8', '10'].includes(newWorkflow.workflowLeadType)">
                <label class="label-right l_100">Ответственный</label>
                  <el-select
                      style="width: 220px"
@@ -54,11 +53,13 @@
               </el-select>
             </small>
           <hr/>
+
+          <div v-if="newWorkflow.workflowLeadType!==6 ">
           Автомобиль<br>
-          <small>
+          <small v-if="!['8', '10'].includes(newWorkflow.workflowLeadType)">
                  <label class="label-right l_100">Объявления</label>
                  <el-input v-model="newWorkflow.description"/>
-          </small><br>
+          <br></small>
           <small>
                <label class="label-right l_100">Марка</label>
                <el-form-item prop="carBrand" style="display: table-cell"
@@ -101,8 +102,10 @@
           </small>
 
           <hr/>
+          </div>
 
-          Клиент<br>
+          {{ ['8', '10'].includes(newWorkflow.workflowLeadType) ? 'Продавец' : 'Клиент' }}
+          <br>
 
           <small>
                <label class="label-right l_100">Тип клиента</label>
@@ -115,6 +118,24 @@
             </el-select>
             </small>
           <br>
+           <small v-if="['8', '10'].includes(newWorkflow.workflowLeadType)">
+              <label class="label-right l_100">Телефон</label>
+
+              <el-form-item prop="client.person['phone']" style="display: table-cell"
+                            :rules="{required: true, message: 'Телефон', trigger: ['blur']}">
+                <el-autocomplete
+                    v-model="newWorkflow.client.person.phone"
+                    :disabled="disablePerson"
+                    :fetch-suggestions="getSeller"
+                    :trigger-on-focus="false"
+                    @select="setClient"
+                    clearable
+                    placeholder="Введите телефон"
+                />
+              </el-form-item>
+
+          </small>
+
           <div v-if="newWorkflow.lead.leadType===10">
             <small>
               <label class="label-right l_100">Фамилия</label>
@@ -125,9 +146,11 @@
                   :trigger-on-focus="false"
                   @select="setClient"
                   clearable
-                  placeholder="Введите телефон"
+                  placeholder="Введите Фамилию"
               />
-            </small><br>
+            <br></small>
+
+
 
             <small>
               <label class="label-right l_100">Имя</label>
@@ -135,13 +158,14 @@
                             :rules="{required: true, message: 'Имя', trigger: ['blur']}">
                  <el-input v-model="newWorkflow.lead.person.firstName" :disabled="disablePerson"/>
               </el-form-item>
-            </small><br>
-            <small>
+            <br></small>
+
+            <small v-if="!['8', '10'].includes(newWorkflow.workflowLeadType)">
                <label class="label-right l_100">Отчество</label>
                <el-input v-model="newWorkflow.lead.person.middleName" :disabled="disablePerson"/>
-            </small><br>
+            <br></small>
 
-            <small>
+           <small v-if="!['8', '10'].includes(newWorkflow.workflowLeadType)">
               <label class="label l_200">Контактный телефон</label>
 
               <el-form-item prop="lead.person['phone']" style="display: table-cell"
@@ -158,7 +182,7 @@
               </el-form-item>
 
             </small>
-            <small>
+            <small v-if="!['8', '10'].includes(newWorkflow.workflowLeadType)">
 
              <label class="label l_200">Контактная эл.почта</label>
                <el-input placeholder="Email"
@@ -222,6 +246,7 @@
               </small><br>
            </div>
 
+
           <span class="modal-buttons-bottom">
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
@@ -238,6 +263,7 @@
 import AppModal from '@/components/AppModal.vue'
 import {useAppealStore} from '@/stores/appealStore'
 import {useGlobalStore} from '@/stores/globalStore'
+import {useDesktopStore} from "@/stores/desktopStore";
 import {LeadType, WorkflowsVariants, Years} from '@/utils/globalConstants'
 import {ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
@@ -245,6 +271,7 @@ import {ElMessage} from 'element-plus'
 import UsersDirModal_History from '@/pages/admin/dirs/UsersDirModal_History.vue'
 import {emailValidate, checkEmptyFields} from '@/utils/globalFunctions'
 
+const desktopStore = useDesktopStore()
 const currentButton = ref({title: 'Выкуп', value: 2})
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
@@ -259,16 +286,18 @@ const disablePerson = ref(false)
 
 const account = localStorage.getItem('account')
 const user = account && JSON.parse(account);
-const newLead = {source: 10, leadId: 0, leadType: 10, person: {}, legalEntity:{person: {}}}
+const newLead = {source: 10, leadId: 0, leadType: 10, person: {}, legalEntity: {person: {}}}
 const newWorkflow = ref({});
 const workflowTypes = ref([])
 
 
 globalStore.getBrands().then(res => brands.value = res)
 
+getWorkflowTypeEnum(user.role)
 
 // В зависимости от аккаунта, позволяется создать разный подбор типов обращений
 function getWorkflowTypeEnum(userRole) {
+  console.log('userRole', userRole)
   if (userRole === 'BuyerEmployee' || userRole === 'BuyerManager') {
     workflowTypes.value = WorkflowsVariants.Buyers;
     workflowTypes.value = makeArr(WorkflowsVariants.Buyers)
@@ -289,13 +318,14 @@ function getWorkflowTypeEnum(userRole) {
     workflowTypes.value = makeArr(WorkflowsVariants.AllUsers)
     newWorkflow.value.workflowLeadType = 2;
   }
+  console.log('newWorkflow.value', newWorkflow.value)
+
 }
 
 function makeArr(arr) {
   return Object.entries(arr).map(el => ({value: el[0], title: el[1]}));
 }
 
-getWorkflowTypeEnum(user.role)
 
 function changeBrand(id) {
   newWorkflow.value.carModelId = null
@@ -315,6 +345,7 @@ const closeModal = () => {
 }
 
 function open(cbModal) {
+  currentButton.value = {title: 'Выкуп', value: 2}
   newWorkflow.value = {managerId: user.id, lead: newLead, type: 15, workflowLeadType: 2};
   cb = cbModal
   isOpen.value = true
@@ -330,7 +361,12 @@ function open(cbModal) {
 }
 
 function changeWorkflowType(flow) {
+  console.log('flow', flow)
+  if (disablePerson.value) return false
   currentButton.value = flow
+  newWorkflow.value.workflowLeadType = flow.value
+  if (flow.title === 'Комиссия') newWorkflow.value.client = {person: {}}
+
 }
 
 const getAgent = value => {
@@ -345,35 +381,107 @@ const getAgent = value => {
   })
 }
 
+const getSeller = value => {
+  if (value.length < 3) return []
+  return appealStore.getIndividual(value).then(res => {
+    console.log('r2 es', res)
+    res = res.items.map(el => {
+      el.value = el.lastName + ' ' + el.firstName + ' ' + el.middleName + ' ( ' + el.phone + ' ) '
+      return el
+    })
+    return res
+  })
+}
+
 
 //При выборе телефона или фамилии
 //Отправляя Id получаем правильноогого клиента, физ или юр
- function setClient(val) {
-  let id = val.id
-   appealStore.getLead(id).then(function (data) {
-     disablePerson.value = true;
+function setClient(val) {
 
-     if (data.leadType === 10 && data.person.phone) {
-       data.person.phone = parseInt(data.person.phone);
-     }
-     if (data.leadType === 20 && data.legalEntity.person.phone) {
-       data.legalEntity.person.phone = parseInt(data.legalEntity.person.phone);
-     }
-     newWorkflow.value.lead = data;
-   })
- }
+  console.log('val', val)
+  if (newWorkflow.value.workflowLeadType === '8') {
+    // Для комиссии
+    newWorkflow.value.client.leadId = val.id;
+    newWorkflow.value.client.person.firstName = val.firstName;
+    newWorkflow.value.client.person.lastName = val.lastName;
+
+    newWorkflow.value.lead.person.firstName = val.firstName;
+    newWorkflow.value.lead.person.lastName = val.lastName;
+
+    newWorkflow.value.client.person.phone = val.phone;
+    newWorkflow.value.client.person.id = val.personId;
+    disablePerson.value = true;
+
+    desktopStore.getHostessUser().then().then(res => {
+      newWorkflow.value.locationId = res.location.id
+    })
+
+    return false
+  }
+
+
+  let id = val.id
+  appealStore.getLead(id).then(function (data) {
+    disablePerson.value = true;
+
+    if (data.leadType === 10 && data.person.phone) {
+      data.person.phone = parseInt(data.person.phone);
+    }
+    if (data.leadType === 20 && data.legalEntity.person.phone) {
+      data.legalEntity.person.phone = parseInt(data.legalEntity.person.phone);
+    }
+    newWorkflow.value.lead = data;
+  })
+}
 
 
 function save() {
   checkEmptyFields(form.value).then(res => { // проверка заполненности обязательных полей
     newWorkflow.value.lead.treatmentSourceId = newWorkflow.value.treatmentSourceId;
 
-    res && appealStore.saveAppeal(newWorkflow.value).then(res => {
-      if (!res) return false
-      res && ElMessage({message: 'Категория наценки успешно сохранена', type: 'success'})
-      isOpen.value = false
-      cb()
-    })
+    console.log('newWorkflow.value', newWorkflow.value)
+    console.log('(newWorkflow.value.workflowLeadType', newWorkflow.value.workflowLeadType)
+
+    if (newWorkflow.value.workflowLeadType === '8') {
+      console.log('zzzzzzzzzz')
+
+      let params = {
+        leadType: newWorkflow.value.lead.leadType,
+        client: newWorkflow.value.client,
+        appeal: {
+          carModel: {id: newWorkflow.value.carModelId},
+          yearReleased: newWorkflow.value.yearReleased
+        },
+        locationId: newWorkflow.value.locationId, // todo нужно вытащить
+        treatmentSourceId: newWorkflow.value.treatmentSourceId
+      }
+
+      if (newWorkflow.value.leadType === 10) {
+        newWorkflow.value.client.treatmentSourceId = 2;
+      }
+
+      if (newWorkflow.value.leadType === 20) {
+        $scope.model.legal.typeCompany = 10;
+        $scope.model.legal.treatmentSourceId = 2;
+        $scope.model.legal.typeLegal = 10;
+      }
+
+
+      res && desktopStore.saveAppealComission(params).then(itog => {
+        console.log('itog', itog)
+        if (!itog) return false
+        ElMessage({message: 'Обращение "Комиссия" успешно добавлено', type: 'success'})
+        isOpen.value = false
+        cb()
+      })
+    } else {
+      res && appealStore.saveAppeal(newWorkflow.value).then(itog => {
+        if (!itog) return false
+        ElMessage({message: 'Обращение успешно добавлено', type: 'success'})
+        isOpen.value = false
+        cb()
+      })
+    }
   })
 }
 

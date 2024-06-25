@@ -60,6 +60,7 @@ function saveAppeal(obj: any) {
 }
 
 function saveAppealComission(obj: any) {
+    console.log('obj', obj)
     return axios.post(`/api/commission/add`, obj).then((res) => res)
 }
 
