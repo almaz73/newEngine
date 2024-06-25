@@ -187,8 +187,7 @@ const appealModal = ref(null)
 const addAppealModal = ref(null)
 
 function addAppeal() {
-  console.log('Добавляем ')
-  addAppealModal.value.open()
+  addAppealModal.value.open(getData)
 }
 
 function highlightCell(deal) {

@@ -107,7 +107,7 @@
           <small>
                <label class="label-right l_100">Тип клиента</label>
                 <el-select
-                    :disabled="isClientChosen"
+                    :disabled="disablePerson"
                     style="width: 200px"
                     v-model="newWorkflow.lead.leadType"
                     filterable>
@@ -115,55 +115,116 @@
             </el-select>
             </small>
           <br>
+          <div v-if="newWorkflow.lead.leadType===10">
             <small>
-               <label class="label-right l_100">Фамилия</label>
-               <el-input v-model="newWorkflow.lead.person.lastName" :disabled="isClientChosen"/>
+              <label class="label-right l_100">Фамилия</label>
+              <el-autocomplete
+                  v-model="newWorkflow.lead.person.lastName"
+                  :disabled="disablePerson"
+                  :fetch-suggestions="getAgent"
+                  :trigger-on-focus="false"
+                  @select="setClient"
+                  clearable
+                  placeholder="Введите телефон"
+              />
             </small><br>
+
             <small>
               <label class="label-right l_100">Имя</label>
               <el-form-item prop="lead.person['firstName']" style="display: table-cell"
                             :rules="{required: true, message: 'Имя', trigger: ['blur']}">
-                 <el-input v-model="newWorkflow.lead.person.firstName" :disabled="isClientChosen"/>
+                 <el-input v-model="newWorkflow.lead.person.firstName" :disabled="disablePerson"/>
               </el-form-item>
             </small><br>
-          <small>
+            <small>
                <label class="label-right l_100">Отчество</label>
-               <el-input v-model="newWorkflow.lead.person.middleName" :disabled="isClientChosen"/>
+               <el-input v-model="newWorkflow.lead.person.middleName" :disabled="disablePerson"/>
             </small><br>
 
-          <small>
-               <label class="label l_200">Контактный телефон</label>
-            
-            <el-form-item prop="lead.person['phone']" style="display: table-cell"
-                          :rules="{required: true, message: 'Контактный телефон', trigger: ['blur']}">
-               <el-autocomplete
-                   v-model="newWorkflow.lead.person.phone"
-                   :disabled="isClientChosen"
-                   :formatter="(value) =>value && formattingPhone(value, (val)=>newWorkflow.lead.person.phone=val)"
-                   :fetch-suggestions="telChanged"
-                   :trigger-on-focus="false"
-                   @select="handlePhone"
-                   clearable
-                   placeholder="Введите телефон"
-               />
-            </el-form-item>
+            <small>
+              <label class="label l_200">Контактный телефон</label>
 
+              <el-form-item prop="lead.person['phone']" style="display: table-cell"
+                            :rules="{required: true, message: 'Контактный телефон', trigger: ['blur']}">
+                <el-autocomplete
+                    v-model="newWorkflow.lead.person.phone"
+                    :disabled="disablePerson"
+                    :fetch-suggestions="getAgent"
+                    :trigger-on-focus="false"
+                    @select="setClient"
+                    clearable
+                    placeholder="Введите телефон"
+                />
+              </el-form-item>
 
-          </small>
-          <small>
+            </small>
+            <small>
 
              <label class="label l_200">Контактная эл.почта</label>
                <el-input placeholder="Email"
-                         :disabled="isClientChosen"
+                         :disabled="disablePerson"
                          @change="emailValidate(newWorkflow.lead.person.email)"
                          title="Email" v-model="newWorkflow.lead.person.email"/>
+              </small><br>
+          </div>
+
+           <div v-if="newWorkflow.lead.leadType===20">
+            <small>
+               <label class="label-right l_100">ИНН</label>
+               <el-input v-model="newWorkflow.lead.legalEntity.inn" :disabled="disablePerson"/>
             </small><br>
 
+            <small>
+               <label class="label-right l_100">НДС</label>
+               <el-checkbox v-model="newWorkflow.lead.legalEntity.nds" :disabled="disablePerson"/>
+            </small><br>
 
+            <small>
+               <label class="label-right l_100">Наименование организации </label>
+               <el-input v-model="newWorkflow.lead.legalEntity.name" :disabled="disablePerson"/>
+            </small><br>
+
+            <small>
+               <label class="label-right l_100">Фамилия</label>
+               <el-input v-model="newWorkflow.lead.legalEntity.person.lastName" :disabled="disablePerson"/>
+            </small><br>
+
+            <small>
+               <label class="label-right l_100">Имя</label>
+               <el-input v-model="newWorkflow.lead.legalEntity.person.firstName" :disabled="disablePerson"/>
+            </small><br>
+
+            <small>
+              <label class="label l_200">Контактный телефон</label>
+
+              <el-form-item prop="lead.legalEntity.person['phone']" style="display: table-cell"
+                            :rules="{required: true, message: 'Контактный телефон', trigger: ['blur']}">
+                 <el-autocomplete
+                     v-model="newWorkflow.lead.legalEntity.person.phone"
+                     :disabled="disablePerson"
+
+                     :fetch-suggestions="getAgent"
+                     :trigger-on-focus="false"
+                     @select="setClient"
+                     clearable
+                     placeholder="Введите телефон"
+                 />
+              </el-form-item>
+
+            </small>
+            <small>
+
+             <label class="label l_200">Контактная эл.почта</label>
+               <el-input placeholder="Email"
+                         :disabled="disablePerson"
+                         @change="emailValidate(newWorkflow.lead.person.email)"
+                         title="Email" v-model="newWorkflow.lead.legalEntity.person.email"/>
+              </small><br>
+           </div>
 
           <span class="modal-buttons-bottom">
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-            <el-button type="info" @click="isOpen = false; resetForm()">Отмена</el-button>
+            <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </span>
         </el-form>
       </span>
@@ -178,12 +239,11 @@ import AppModal from '@/components/AppModal.vue'
 import {useAppealStore} from '@/stores/appealStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {LeadType, WorkflowsVariants, Years} from '@/utils/globalConstants'
-import {useAdminStore} from '@/stores/adminStore'
 import {ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import UsersDirModal_History from '@/pages/admin/dirs/UsersDirModal_History.vue'
-import {emailValidate, formattingPhone, checkEmptyFields} from '@/utils/globalFunctions'
+import {emailValidate, checkEmptyFields} from '@/utils/globalFunctions'
 
 const currentButton = ref({title: 'Выкуп', value: 2})
 const globalStore = useGlobalStore()
@@ -192,15 +252,15 @@ const isOpen = ref(false)
 const treatmentSources = ref([])
 const managers = ref([])
 const modalHistory = ref(null)
-const adminStore = useAdminStore()
 const form = ref(null)
 const brands = ref([])
 const models = ref([])
-const isClientChosen = ref(false)
+const disablePerson = ref(false)
+
 const account = localStorage.getItem('account')
 const user = account && JSON.parse(account);
-const newLead = {source: 10, leadId: 0, leadType: 10, person: {}}
-const newWorkflow = ref({managerId: user.id, lead: newLead, type: 15});
+const newLead = {source: 10, leadId: 0, leadType: 10, person: {}, legalEntity:{person: {}}}
+const newWorkflow = ref({});
 const workflowTypes = ref([])
 
 
@@ -209,19 +269,19 @@ globalStore.getBrands().then(res => brands.value = res)
 
 // В зависимости от аккаунта, позволяется создать разный подбор типов обращений
 function getWorkflowTypeEnum(userRole) {
-  if (userRole == 'BuyerEmployee' || userRole == 'BuyerManager') {
+  if (userRole === 'BuyerEmployee' || userRole === 'BuyerManager') {
     workflowTypes.value = WorkflowsVariants.Buyers;
     workflowTypes.value = makeArr(WorkflowsVariants.Buyers)
     newWorkflow.value.workflowLeadType = 2;
-  } else if (userRole == 'SalesEmployee' || userRole == 'SalesManager' || userRole == 'Agent') {
+  } else if (userRole === 'SalesEmployee' || userRole === 'SalesManager' || userRole === 'Agent') {
     workflowTypes.value = WorkflowsVariants.Sell;
     workflowTypes.value = makeArr(WorkflowsVariants.Sell)
     newWorkflow.value.workflowLeadType = 1;
-  } else if (userRole == 'SimpleEmployee') {
+  } else if (userRole === 'SimpleEmployee') {
     workflowTypes.value = WorkflowsVariants.Other;
     workflowTypes.value = makeArr(WorkflowsVariants.Other)
     newWorkflow.value.workflowLeadType = 6;
-  } else if (userRole == 'GenManager') {
+  } else if (userRole === 'GenManager') {
     workflowTypes.value = WorkflowsVariants.GenManager;
     workflowTypes.value = makeArr(WorkflowsVariants.GenManager)
     newWorkflow.value.workflowLeadType = 2;
@@ -242,11 +302,6 @@ function changeBrand(id) {
   id && globalStore.getModels(id).then((res) => models.value = res)
 }
 
-const resetForm = formEl => {
-  formEl && formEl.resetFields()
-  newWorkflow.value = {managerId: user.id, lead: newLead, type: 15}
-}
-
 let cb
 const BuyCategoryTypes = ref([
   {id: 10, title: 'Свободный выкуп'},
@@ -259,16 +314,15 @@ const closeModal = () => {
   isOpen.value = false
 }
 
-function open(row, cbModal) {
+function open(cbModal) {
+  newWorkflow.value = {managerId: user.id, lead: newLead, type: 15, workflowLeadType: 2};
   cb = cbModal
   isOpen.value = true
-  isClientChosen.value = false
+  disablePerson.value = false
   globalStore.getTreatmentSources().then(res => {
     treatmentSources.value = res.items
   })
   globalStore.getenabledemployeers().then(res => {
-    console.log('res', res)
-
     managers.value = res.items
     managers.value.map(user => user.fullName = user.lastName + ' '
         + user.firstName + ' ' + (user.middleName == null ? ' ' : user.middleName))
@@ -279,10 +333,10 @@ function changeWorkflowType(flow) {
   currentButton.value = flow
 }
 
-const telChanged = value => {
+const getAgent = value => {
   if (value.length < 3) return []
-  value = value.replace(/\D/g, '')
-  return appealStore.getContragent(value).then(res => {
+  let type = newWorkflow.value.lead.leadType
+  return appealStore.getContragent(value, type).then(res => {
     res = res.map(el => {
       el.value = el.lastName + ' ' + el.firstName + ' ' + el.middleName + ' ( ' + el.phone + ' ) '
       return el
@@ -291,10 +345,23 @@ const telChanged = value => {
   })
 }
 
-function handlePhone(val) {
-  newWorkflow.value.lead.person = val
-  isClientChosen.value = true
-}
+
+//При выборе телефона или фамилии
+//Отправляя Id получаем правильноогого клиента, физ или юр
+ function setClient(val) {
+  let id = val.id
+   appealStore.getLead(id).then(function (data) {
+     disablePerson.value = true;
+
+     if (data.leadType === 10 && data.person.phone) {
+       data.person.phone = parseInt(data.person.phone);
+     }
+     if (data.leadType === 20 && data.legalEntity.person.phone) {
+       data.legalEntity.person.phone = parseInt(data.legalEntity.person.phone);
+     }
+     newWorkflow.value.lead = data;
+   })
+ }
 
 
 function save() {

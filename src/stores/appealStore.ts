@@ -78,8 +78,8 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/lead/${id}`).then(q => q)
             return res.data
         },
-        async getContragent(phone: number) {
-            const res = await axios.get('/api/lead/getContragent/10/?search=' + phone).then(q => q)
+        async getContragent(search: number, type: number) {
+            const res = await axios.get(`/api/lead/getContragent/${type}/?search=` + search).then(q => q)
             return res.data
         }
     }
