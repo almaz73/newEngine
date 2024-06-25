@@ -48,6 +48,7 @@ import PossibleDamages from "@/pages/admin/dirs/PossibleDamages.vue";
 import TiresDir from "@/pages/admin/dirs/TiresDir.vue"
 import BanksDir from "@/pages/admin/dirs/BanksDir.vue"
 import ColorsPTSDir from "@/pages/admin/dirs/ColorsPTSDir.vue"
+import BrendsPTSDir from "@/pages/admin/dirs/BrendsPTSDir.vue";
 
 const globalStore = useGlobalStore()
 const tab = ref(null)
@@ -56,7 +57,7 @@ const AdminDirectories = {
   'Пользователи': UsersDir,
   'Орг. структура': OrgsDir,
   'Марки': BrendsDir,
-  '🚧Марки по ПТС': ClientsDir,
+  'Марки по ПТС': BrendsPTSDir,
   'Цвета кузова': ColorsDir,
   'Цвета кузова по ПТС': ColorsPTSDir,
   'Лист осмотра': InspectionTabs,

@@ -315,6 +315,18 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.post(`/api/TurnoverRate/SwitchTurnover/${id}`).then(q => q)
             return res.data
         },
-
+        async getBrands(entityType = 20) {
+            return await axios.get(`/api/brands/?entityType=${entityType}`).then(res => res.data)
+        },
+        async getMarks(brend:string,entityType = 20) {
+            return await axios.get(`/api/brands/${brend}/?entityType=${entityType}`).then(res => res.data)
+        },
+        async saveBrands(params:any) {
+            return await axios.post(`/api/carmodel/add`,params).then(res => res.data)
+        },
+        async deleteBrands(id:number){
+            const res = await axios.delete(`/api/carmodel/${id}`).then(q => q)
+            return res.data 
+        }
     }
 })

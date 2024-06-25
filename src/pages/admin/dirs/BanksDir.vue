@@ -94,7 +94,6 @@ function find() {
         if (!search.value) filialsData.value = filialsDataMemory
     }
     else{
-        console.log("Asdasd")
         tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
         if (!search.value) tableData.value = tableDataMemory
     }
