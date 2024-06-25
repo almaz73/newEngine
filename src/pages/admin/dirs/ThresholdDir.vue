@@ -71,7 +71,7 @@
             <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteRow(scope.row.id)" alt=""
+            <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
