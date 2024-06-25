@@ -6,7 +6,9 @@
             :title="'Категория наценки'"
             draggable>
     <el-scrollbar maxHeight="480px">
+      <el-form ref="form" :model="model" class="error-to-message">
         <span class="modal-field">
+          <el-form-item prop="colorName" :rules="{required: true, message: 'Цвет', trigger: ['change']}">
           <small>
             <label class="label-right l_100">Цвет</label>
             <el-input
@@ -16,6 +18,8 @@
                 placeholder="Цвет">
            </el-input>
           </small>
+        </el-form-item>
+        <el-form-item prop="colorCode" :rules="{required: true, message: 'Цветовой код', trigger: ['change']}">
           <small>
             <label class="label-right l_100">Цветовой код</label>
             <el-color-picker v-model="model.colorCode"/>
@@ -24,7 +28,9 @@
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </small>
+      </el-form-item>
         </span>
+        </el-form>
     </el-scrollbar>
   </AppModal>
 </template>
@@ -35,9 +41,10 @@ import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-
+import {checkEmptyFields} from "@/utils/globalFunctions";
 const isOpen = ref(false);
 const model = ref({});
+const form = ref(null)
 const closeModal = () => isOpen.value = false;
 const adminStore = useAdminStore();
 let cb;
@@ -49,22 +56,15 @@ function open(row, cbModal) {
 }
 
 
-function checking() {
-  if (!model.value.colorName) {
-    return ElMessage({message: 'Поле "Цвет" обязетелен для заполнения', type: "warning"});
-  }
-  if (!model.value.colorCode) {
-    return ElMessage({message: 'Поле "Цветовой код" обязетелен для заполнения', type: "warning"});
-  }
-}
-
 function save() {
-  if (checking()) return false;
-  adminStore.addColor(model.value, 20).then(() => {
+  checkEmptyFields(form.value).then(res => {
+    res && adminStore.addColor(model.value, 20).then(() => {
     ElMessage({message: "Запись успешно сохранена", type: "success"});
     isOpen.value = false;
     cb();
   });
+  }) 
+
 }
 
 defineExpose({open});
