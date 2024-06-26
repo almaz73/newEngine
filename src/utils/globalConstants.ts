@@ -332,6 +332,22 @@ export const colorTypeList = [
     { name: 'Красная',code:20, color: 'rgb(255, 221, 221)' },
 ];
 
+export const locationType = [
+    { code: 10, name: 'Выкуп' },
+    { code: 20, name: 'Транзит' },
+    { code: 30, name: 'ПСО' },
+    { code: 40, name: 'СТО' },
+    { code: 50, name: 'Доп. оборудование' },
+    { code: 60, name: 'Реализация' },
+    { code: 70, name: 'Запчасти и материалы' },
+    { code: 80, name: 'Fleet' },
+    { code: 90, name: 'Шины' },
+    { code: 100, name: 'Индивидуальный' },
+    { code: 110, name: 'ПСО - бокс' },
+    { code: 120, name: 'СТО - бокс' }
+];
+
+
 const some_years = []
 for (let z = new Date().getFullYear(); z > 1939; z--) {
     some_years.push({name: z})
