@@ -269,7 +269,7 @@ import {ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
 import UsersDirModal_History from '@/pages/admin/dirs/UsersDirModal_History.vue'
-import {emailValidate, checkEmptyFields} from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate} from '@/utils/globalFunctions'
 
 const desktopStore = useDesktopStore()
 const currentButton = ref({title: 'Выкуп', value: 2})
@@ -370,6 +370,7 @@ function changeWorkflowType(flow) {
 }
 
 const getAgent = value => {
+  if (newWorkflow.value.workflowLeadType === '8') return [] // для комиссии по фамилии не ищем
   if (value.length < 3) return []
   let type = newWorkflow.value.lead.leadType
   return appealStore.getContragent(value, type).then(res => {
@@ -397,28 +398,7 @@ const getSeller = value => {
 //При выборе телефона или фамилии
 //Отправляя Id получаем правильноогого клиента, физ или юр
 function setClient(val) {
-
-  console.log('val', val)
-  if (newWorkflow.value.workflowLeadType === '8') {
-    // Для комиссии
-    newWorkflow.value.client.leadId = val.id;
-    newWorkflow.value.client.person.firstName = val.firstName;
-    newWorkflow.value.client.person.lastName = val.lastName;
-
-    newWorkflow.value.lead.person.firstName = val.firstName;
-    newWorkflow.value.lead.person.lastName = val.lastName;
-
-    newWorkflow.value.client.person.phone = val.phone;
-    newWorkflow.value.client.person.id = val.personId;
-    disablePerson.value = true;
-
-    desktopStore.getHostessUser().then().then(res => {
-      newWorkflow.value.locationId = res.location.id
-    })
-
-    return false
-  }
-
+  if (newWorkflow.value.workflowLeadType === '8') return setComissionFromTelephon(val)
 
   let id = val.id
   appealStore.getLead(id).then(function (data) {
@@ -434,6 +414,65 @@ function setClient(val) {
   })
 }
 
+function setComissionFromTelephon(val) {
+  newWorkflow.value.client.leadId = val.id;
+  newWorkflow.value.client.person.firstName = val.firstName;
+  newWorkflow.value.client.person.lastName = val.lastName;
+
+  newWorkflow.value.lead.person.firstName = val.firstName;
+  newWorkflow.value.lead.person.lastName = val.lastName;
+
+  newWorkflow.value.client.person.phone = val.phone;
+  newWorkflow.value.client.person.id = val.personId;
+  disablePerson.value = true;
+}
+
+function saveInComission() {
+  let params = {
+    leadType: newWorkflow.value.lead.leadType,
+    client: newWorkflow.value.client,
+    appeal: {
+      carModel: {id: newWorkflow.value.carModelId},
+      yearReleased: newWorkflow.value.yearReleased
+    },
+    locationId: newWorkflow.value.locationId,
+    treatmentSourceId: newWorkflow.value.treatmentSourceId
+  }
+
+  params.client.person.firstName = newWorkflow.value.lead.person.firstName
+  params.client.person.lastName = newWorkflow.value.lead.person.lastName
+
+  if (newWorkflow.value.lead.leadType === 10) params.client.treatmentSourceId = 2;
+  if (newWorkflow.value.lead.leadType === 20) {
+    params.legal.typeCompany = 10;
+    params.legal.treatmentSourceId = 2;
+    params.legal.typeLegal = 10;
+  }
+
+
+  if (newWorkflow.value.leadType === 20) {
+    $scope.model.legal.typeCompany = 10;
+    $scope.model.legal.treatmentSourceId = 2;
+    $scope.model.legal.typeLegal = 10;
+  }
+
+  console.log('params', params)
+
+  desktopStore.getHostessUser().then().then(res => {
+    params.locationId = res.location.id
+
+    desktopStore.saveAppealComission(params).then(itog => {
+      if (itog.data) {
+        ElMessage({message: 'Обращение "Комиссия" успешно добавлено', type: 'success'})
+        isOpen.value = false
+        cb()
+      }
+    })
+  })
+
+
+}
+
 
 function save() {
   checkEmptyFields(form.value).then(res => { // проверка заполненности обязательных полей
@@ -443,37 +482,7 @@ function save() {
     console.log('(newWorkflow.value.workflowLeadType', newWorkflow.value.workflowLeadType)
 
     if (newWorkflow.value.workflowLeadType === '8') {
-      console.log('zzzzzzzzzz')
-
-      let params = {
-        leadType: newWorkflow.value.lead.leadType,
-        client: newWorkflow.value.client,
-        appeal: {
-          carModel: {id: newWorkflow.value.carModelId},
-          yearReleased: newWorkflow.value.yearReleased
-        },
-        locationId: newWorkflow.value.locationId, // todo нужно вытащить
-        treatmentSourceId: newWorkflow.value.treatmentSourceId
-      }
-
-      if (newWorkflow.value.leadType === 10) {
-        newWorkflow.value.client.treatmentSourceId = 2;
-      }
-
-      if (newWorkflow.value.leadType === 20) {
-        $scope.model.legal.typeCompany = 10;
-        $scope.model.legal.treatmentSourceId = 2;
-        $scope.model.legal.typeLegal = 10;
-      }
-
-
-      res && desktopStore.saveAppealComission(params).then(itog => {
-        console.log('itog', itog)
-        if (!itog) return false
-        ElMessage({message: 'Обращение "Комиссия" успешно добавлено', type: 'success'})
-        isOpen.value = false
-        cb()
-      })
+      res && saveInComission()
     } else {
       res && appealStore.saveAppeal(newWorkflow.value).then(itog => {
         if (!itog) return false
