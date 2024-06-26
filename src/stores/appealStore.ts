@@ -85,6 +85,10 @@ export const useAppealStore = defineStore("appealStore", {
         async getIndividual(search: number) {
             const res = await axios.get(`/api/lead/find/individual?search=${search}&take=5&type=phone` ).then(q => q)
             return res.data
+        },
+        async getInn(search: number, type: number) {
+            const res = await axios.get(`/api/lead/client/find?search=${search}&type=${type}`).then(q => q)
+            return res.data
         }
     }
 })
