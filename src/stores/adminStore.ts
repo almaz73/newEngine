@@ -327,6 +327,25 @@ export const useAdminStore = defineStore("adminStore", {
         async deleteBrands(id:number){
             const res = await axios.delete(`/api/carmodel/${id}`).then(q => q)
             return res.data 
-        }
+        },
+        async getLocation(IsDeleted:boolean,IsActive:boolean){
+            return  await axios.get(`/api/Location/GetAll?IsDeleted=${IsDeleted}&IsActive=${IsActive}`).then(res => res.data)
+        },
+        async saveLocation(params:any) {
+            return await axios.post(`/api/location`,params).then(res => res.data)
+        },
+        async switchLocation(id: number){
+            const res = await axios.post(`/api/Location/SwitchLocation?locationId=${id}`).then(q => q)
+            return res.data
+        },
+        async deleteLocation(id:number){
+            const res = await axios.delete(`/api/location/${id}`).then(q => q)
+            return res.data 
+        },
+        async getAllOrgWithDep() {
+            if (cache.getAllOrgWithDep) return cache.getAllOrgWithDep
+            const res = await axios.get('/api/orgElement/').then(q => q)
+            return (cache.getAllOrgWithDep = res.data)
+        },
     }
 })
