@@ -53,16 +53,20 @@
               </el-form-item>
 
               <label class="label l_150">Поколение</label>
-               <el-select
-                   v-model="model.generations"
-                   @change="getModifications(model.generations, true)"
-                   multiple
-                   style="width: 220px; margin-bottom: 10px"
-                   filterable
-                   clearable>
-                <el-option v-for="item in allGenerations"
-                           :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+                <el-form-item prop="generations"
+                              style="display: inline-block; width: 220px"
+                              :rules="{required: true, message: 'Поколение', trigger: ['change']}">
+                   <el-select
+                       v-model="model.generations"
+                       @change="getModifications(model.generations, true)"
+                       multiple
+                       style="width: 220px; margin-bottom: 10px"
+                       filterable
+                       clearable>
+                    <el-option v-for="item in allGenerations"
+                               :key="item.id" :label="item.name" :value="item.id"/>
+                  </el-select>
+                </el-form-item>
 
               <label class="label 150">Модификация</label>
                <el-select
@@ -73,10 +77,14 @@
                    clearable>
                 <el-option v-for="item in allModifications"
                            :key="item.id" :label="item.name" :value="item.id"/>
-            </el-select>
+               </el-select>
 
               <label class="label l_150">Возможные неисправности</label>
-               <el-input type="textarea" v-model="model.description" style="width: 310px"/>
+              <el-form-item prop="description"
+                            style="display: inline-block; width: 220px"
+                            :rules="{required: true, message: 'Возможные неисправности', trigger: ['change']}">
+                   <el-input type="textarea" v-model="model.description" style="width: 310px"/>
+              </el-form-item>
          <br><br>
         </el-form>
         <div style="text-align: right">
