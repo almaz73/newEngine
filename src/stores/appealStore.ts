@@ -89,7 +89,16 @@ export const useAppealStore = defineStore("appealStore", {
         async getInn(search: number, type: number) {
             const res = await axios.get(`/api/lead/client/find?search=${search}&type=${type}`).then(q => q)
             return res.data
-        }
+        },
+        async setComissionResponsible(modelId: number, userId: number) {
+            const res = await axios.get('/api/commission/set/responsible/' + modelId + '/' + userId).then(q => q)
+            return res.data
+        },
+        async startAppeal(id:number, description: string) {
+            const res = await axios.get('api/deal/'+id+'/'+description).then(q => q)
+            return res.data
+        },
+
     }
 })
 

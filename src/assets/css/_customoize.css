@@ -235,3 +235,7 @@ li.el-menu-item {
 .el-red-lock{
     color:#D34439 !important;
 }
+
+.el-collapse-item__header{
+    font-size: 18px !important;
+}
