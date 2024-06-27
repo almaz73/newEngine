@@ -7,20 +7,23 @@
             draggable
             resizable>
     <el-scrollbar maxHeight="480px">
-
+      <el-form ref="form" :model="tire" class="error-to-message">
       <span class="modal-fields">
-        <span>
+        <el-form-item prop="brand" :rules="{required: false, message: 'Марка', trigger: ['change']}">
         <label class="label l_100">Марка</label>
         <el-input v-model="tire.brand" disabled/>
+      </el-form-item>
+      <el-form-item prop="model" :rules="{required: true, message: 'Модель', trigger: ['change']}">
            <label class="label l_100">Модель</label>
         <el-input v-model="tire.model"/>
-        </span>
+        </el-form-item>
         <br><br>
         <div style="text-align: right">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </div>
       </span>
+      </el-form>  
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
@@ -38,12 +41,12 @@ import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
-
+import {checkEmptyFields} from "@/utils/globalFunctions";
 const globalStore = useGlobalStore();
 const isOpen = ref(false);
 const tire = ref({});
 const closeModal = () => isOpen.value = false;
-
+const form = ref(null)
 const modalHistory = ref(null);
 const adminStore = useAdminStore();
 let cb;
@@ -57,22 +60,14 @@ function open(row, cbModal) {
 }
 
 
-function checking() {
-  if (!tire.value.brand) {
-    return ElMessage({message: 'Поле "Марка" обязетелен для заполнения', type: "warning"});
-  }
-  if (!tire.value.model) {
-    return ElMessage({message: 'Поле "Модель" обязетелен для заполнения', type: "warning"});
-  }
-}
-
 function save() {
-  if (checking()) return false;
-  adminStore.saveTire(tire.value).then(() => {
-    ElMessage({message: "Шина успешно сохранена", type: "success"});
-    isOpen.value = false;
-    cb();
-  });
+  checkEmptyFields(form.value).then(res => {
+    res && adminStore.saveTire(tire.value).then(() => {
+      ElMessage({message: "Шина успешно сохранен", type: "success"});
+      isOpen.value = false;
+      cb();
+    });
+  }) 
 }
 
 defineExpose({open});

@@ -65,7 +65,7 @@ const AdminDirectories = {
   // '🚧Ремонтируемые элементы': ClientsDir,
   // '🚧Запчасти': ClientsDir,
   'Место хранения': StorageDir,
-  'V🚧Шины': TiresDir,
+  'Шины': TiresDir,
   'V🚧Банки(Сохранение поправить)': BanksDir,
   'V🚧Кредитные программы': ClientsDir,
   // '🚧Тарифы': ClientsDir,
