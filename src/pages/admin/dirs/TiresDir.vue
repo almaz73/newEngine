@@ -16,8 +16,8 @@
     <h4 style="color: #999">
       {{
         (selectedBrand && selectedBrand.name) ?
-            'Автомобильный бренд: ' + selectedBrand.name + '.   (моделей шин: ' + modelsTotal + ' )' :
-            'Все бренды ( ' + brandsTotal + ')'
+            'Марка шины: ' + selectedBrand.name + '.   (моделей шин: ' + modelsTotal + ' )' :
+            'Все шины ( ' + brandsTotal + ')'
       }}
     </h4>
     <br>
@@ -135,6 +135,6 @@ function getData() {
 }
 
 getData()
-globalStore.setTitle('Автомобильные бренды')
+globalStore.setTitle('Марки шин')
 globalStore.steps = []
 </script>
