@@ -7,17 +7,17 @@
             draggable>
     <div>
         <span class="modal-field">
-            <label class="label ">Менеджер</label>
+          Для изменения типа сделки необходимо указать тип направления
+
             <el-select
                 title="Тип"
-                placeholder="Выберите менеджера"
+                placeholder="Выберите тип направления"
                 v-model="mod.type"
-
                 filterable
                 clearable>
-              <el-option v-for="item in types" :key="item.id" :label="item.title" :value="item.id"/>
+              <el-option v-for="item in types" :key="item.value" :label="item.title" :value="item.value"/>
             </el-select>
-
+<br><br>
             <label class="label">Комментарий</label>
             <el-input
                 v-model="mod.comment"
@@ -40,6 +40,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
+import {ElMessage} from "element-plus";
 
 const globalStore = useGlobalStore();
 const appealStoreStatus = useAppealStoreStatus()
@@ -50,30 +51,29 @@ const types = ref([])
 let cb;
 
 function open(val, appeal, cbModal) {
-  console.log('val', val)
   mod.value = val
   mod.value.appealId = appeal.id
   cb = cbModal;
   isOpen.value = true;
 
-  globalStore.getRoles([10, 20]).then(res => {
-    types.value = res.items
+  globalStore.пetTradeInDirectionTypes().then(res => {
+    types.value = res
   })
-
 }
 
 function save() {
+
+  if(!mod.value.type) return ElMessage.warning('Тип направвления обязателен для выбора')
   let params = {
     comment: mod.value.comment,
-    id: mod.value.appealId,
-    newStatus: mod.value.id,
-    ResponsibleUser: mod.value.type
+    appealId: mod.value.appealId,
+    directionType: mod.value.type
   }
 
   useGlobalStore().isWaiting = true
-  appealStoreStatus.setStatus(params).then(() => {
+  appealStoreStatus.setDirectionType(params).then(() => {
     isOpen.value = false
-    setTimeout(location.reload, 1000)
+    location.reload()
   })
 }
 

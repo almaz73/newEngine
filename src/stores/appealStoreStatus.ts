@@ -25,6 +25,11 @@ export const useAppealStoreStatus = defineStore("appealStoreStatus", {
             const res = await axios.post('/api/deal/appealToArchiveRequest' + link).then(q => q)
             return res.data
         },
+        async setDirectionType(params: { comment: string; appealId: number; directionType: number; }) {
+            const link = '?appealId='+params.appealId+'&directionType='+params.directionType;  // ???
+            const res = await axios.post('/api/appeals/SetDirectionType'+link, params).then(q => q)
+            return res.data
+        },
 
     }
 })

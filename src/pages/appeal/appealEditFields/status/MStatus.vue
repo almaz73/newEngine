@@ -17,6 +17,7 @@
   <MStatusModalStart ref="mStatusModalStart"/>
   <MStatusModalArchive ref="mStatusModalArchive"/>
   <MStatusModaComission ref="mStatusModaComission"/>
+  <MStatusModaTradeIn ref="mStatusModaTradeIn"/>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +27,7 @@ import {AppealStatusTable} from "@/utils/globalConstants";
 import MStatusModalStart from "@/pages/appeal/appealEditFields/status/MStatusModalStart.vue";
 import MStatusModalArchive from "@/pages/appeal/appealEditFields/status/MStatusModalArchive.vue";
 import MStatusModaComission from "@/pages/appeal/appealEditFields/status/MStatusModaComission.vue";
+import MStatusModaTradeIn from "@/pages/appeal/appealEditFields/status/MStatusModaTradeIn.vue";
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
@@ -35,6 +37,7 @@ const oldStatus = ref({})
 const mStatusModalStart = ref(null)
 const mStatusModalArchive = ref(null)
 const mStatusModaComission = ref(null)
+const mStatusModaTradeIn = ref(null)
 
 watchEffect(() => {
   props.appeal.id && appealStore.getStatuses(props.appeal.id).then(res => {
@@ -57,6 +60,7 @@ function makeChoice(val) {
   if (val.id === 11) mStatusModalStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
   if (val.id === 17) mStatusModalArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
   if (val.id === 263) mStatusModaComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
+  if (val.id === 265) mStatusModaTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
 }
 
 function reset() {
