@@ -347,5 +347,19 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('/api/orgElement/').then(q => q)
             return (cache.getAllOrgWithDep = res.data)
         },
+        async getCreditProgram(){
+            return  await axios.get(`/api/creditprogram/`).then(res => res.data)
+        },
+        async saveCreditProgram(params:any){
+            return await axios.post(`/api/creditprogram`,params).then(res => res.data)
+        },
+        async deleteCreditProgram(id:number){
+            const res = await axios.delete(`/api/creditprogram/${id}`).then(q => q)
+            return res.data 
+        },
+        async getBankFilials2(id: number | null) {
+            const res = await axios.get(`/api/bankitem/${id}`).then(q => q)
+            return res.data
+        },
     }
 })

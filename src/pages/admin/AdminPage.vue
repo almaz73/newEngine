@@ -50,6 +50,7 @@ import BanksDir from "@/pages/admin/dirs/BanksDir.vue"
 import ColorsPTSDir from "@/pages/admin/dirs/ColorsPTSDir.vue"
 import BrendsPTSDir from "@/pages/admin/dirs/BrendsPTSDir.vue";
 import StorageDir from "@/pages/admin/dirs/StorageDir.vue"
+import CreditProgramDir from "@/pages/admin/dirs/CreditProgramDir.vue"
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
@@ -67,7 +68,7 @@ const AdminDirectories = {
   'Место хранения': StorageDir,
   'Шины': TiresDir,
   'V🚧Банки(Сохранение поправить)': BanksDir,
-  'V🚧Кредитные программы': ClientsDir,
+  'Кредитные программы': CreditProgramDir,
   // '🚧Тарифы': ClientsDir,
   // '🚧Акции': ClientsDir,
   // '🚧Тарифы страховых компаний': ClientsDir,
