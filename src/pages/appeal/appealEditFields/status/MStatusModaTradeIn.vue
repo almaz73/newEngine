@@ -10,7 +10,7 @@
           Для изменения типа сделки необходимо указать тип направления
 
             <el-select
-                title="Тип"
+                title="тип направления"
                 placeholder="Выберите тип направления"
                 v-model="mod.type"
                 filterable
@@ -63,7 +63,7 @@ function open(val, appeal, cbModal) {
 
 function save() {
 
-  if(!mod.value.type) return ElMessage.warning('Тип направвления обязателен для выбора')
+  if(!mod.value.type) return ElMessage.warning('Поле "Тип направвления" обязателен для заполнения')
   let params = {
     comment: mod.value.comment,
     appealId: mod.value.appealId,

@@ -231,7 +231,9 @@ export const Hostes = [
 
 export const BuyCategoryTypes = [
     {id: 10, title: 'Свободный выкуп'},
-    {id: 20, title: 'Выездной выкуп'}
+    {id: 20, title: 'Выездной выкуп'},
+    {id: 30, title: 'Регион'},
+    {id: 40, title: 'Fleet'},
 ]
 
 export const GearboxType = [
@@ -359,3 +361,4 @@ for (let z = 800; z <= 6000; z = z + 100) {
     some_capacities.push({name: z})
 }
 export const Capacities = some_capacities
+

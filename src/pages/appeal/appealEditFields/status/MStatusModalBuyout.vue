@@ -7,17 +7,17 @@
             draggable>
     <div>
         <span class="modal-field">
-            <label class="label ">Менеджер</label>
-            <el-select
-                title="Тип"
-                placeholder="Выберите менеджера"
-                v-model="mod.type"
+          Для изменения типа сделки необходимо указать вид выкупа
 
+            <el-select
+                title="вид выкупа"
+                placeholder="Выберите вид выкупа"
+                v-model="mod.type"
                 filterable
                 clearable>
-              <el-option v-for="item in types" :key="item.id" :label="item.title" :value="item.id"/>
+              <el-option v-for="item in BuyCategoryTypes" :key="item.id" :label="item.title" :value="item.id"/>
             </el-select>
-
+<br><br>
             <label class="label">Комментарий</label>
             <el-input
                 v-model="mod.comment"
@@ -36,46 +36,39 @@
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
-import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import {ElMessage} from "element-plus";
+import {BuyCategoryTypes} from "@/utils/globalConstants";
 
-const globalStore = useGlobalStore();
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false);
 const mod = ref({});
 const closeModal = () => isOpen.value = false;
-const types = ref([])
 let cb;
 
 function open(val, appeal, cbModal) {
-  console.log('val', val)
   mod.value = val
   mod.value.appealId = appeal.id
   cb = cbModal;
   isOpen.value = true;
 
-  globalStore.getRoles([10, 20]).then(res => {
-    types.value = res.items
-  })
-
 }
 
 function save() {
-  if(!mod.value.type) return ElMessage.warning('Менеджер обязателен для выбора')
+
+  if(!mod.value.type) return ElMessage.warning('Поле "Вид выкупа" обязателен для заполнения')
   let params = {
     comment: mod.value.comment,
-    id: mod.value.appealId,
-    newStatus: mod.value.id,
-    ResponsibleUser: mod.value.type
+    appealId: mod.value.appealId,
+    buyCategory: mod.value.type
   }
 
   useGlobalStore().isWaiting = true
-  appealStoreStatus.setStatus(params).then(() => {
+  appealStoreStatus.setBuyCategory(params).then(() => {
     isOpen.value = false
-    setTimeout(location.reload, 1000)
+    location.reload()
   })
 }
 
