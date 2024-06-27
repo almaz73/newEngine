@@ -5,7 +5,7 @@
 </template>
 <script setup>
 
-import AppealEditFields from "@/pages/appeal/AppealEditFields.vue";
+import AppealEditFields from "@/pages/appeal/appealEditFields/AppealEditFields.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {onMounted, ref} from "vue";
 

@@ -29,7 +29,7 @@ import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
-import AppealEditFields from "@/pages/appeal/AppealEditFields.vue";
+import AppealEditFields from "@/pages/appeal/appealEditFields/AppealEditFields.vue";
 
 
 const globalStore = useGlobalStore();

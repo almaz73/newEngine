@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div style="display: flex; align-items: center; flex-wrap: wrap">
     <div class="appealStat">
       <small class="label-right">Статус</small>
@@ -17,25 +17,7 @@
       </el-dropdown>
       <br>
 
-      <small class="label-right" v-if="appeal.workflowLeadType === 1">Продавец</small>
-      <small class="label-right" v-if="appeal.workflowLeadType === 2">Выкупщик</small>
-      <small class="label-right" v-if="![1,2].includes(appeal.workflowLeadType)">Ответственный</small>
-
-      <span v-if="!isEditManagerName">
-            <small v-if="appeal.managerName">{{ appeal.managerName }}</small>
-            <small v-if="!appeal.managerName">Прикрепить менеджера</small>
-            &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                        @click="toGetManagers()"
-                        style="cursor: pointer">
-          </span>
-      <span v-else>
-            <el-select
-                style="width: 220px"
-                v-model="appeal.managerId"
-                @change="toChangeManager" filterable>
-              <el-option v-for="item in responsibles" :key="item.id" :label="item.title" :value="item.id"/>
-            </el-select>
-          </span>
+      <mResponsible :appeal="appeal"/><br>
     </div>
 
     <div class="appealStatRight">
@@ -81,22 +63,24 @@
             <div><span class="label">Тип клиента: </span>
               <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
               <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
-              &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
+              &nbsp; <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
-              {{ appeal.lead.person.firstName }} {{ appeal.lead.person.middleName }} {{ appeal.lead.person.lastName }}
+              {{ appeal.lead.person && appeal.lead.person.firstName }}
+              {{ appeal.lead.person &&  appeal.lead.person.middleName }}
+              {{ appeal.lead.person && appeal.lead.person.lastName }}
               &nbsp;
 
-              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
+              <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
               {{ formattingPhone(appeal.leadPhone) }}
             </div>
             <div v-if="appeal.swapPhone">Подменный номер телефона: {{ appeal.swapPhone }}</div>
-            <div v-if="appeal.lead && appeal.lead.person.phone2"><span class="label">
-              Доп. телефон: </span> {{ appeal.lead.person.phone2 }}
+            <div v-if="appeal.lead && appeal.lead.person && appeal.lead.person.phone2"><span class="label">
+              Доп. телефон: </span> {{appeal.lead && appeal.lead.person && appeal.lead.person.phone2 }}
             </div>
             <div v-if="appeal.email"><span class="label">Эл. почта: </span> {{ appeal.email }}</div>
             <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
@@ -125,7 +109,7 @@
         <div style="padding: 0 30px">
           <span v-if="appeal.carModel"><span class="label">
             Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
-            <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+            <img src="../../../assets/icons/icon-pencil-gray.png" alt=""
                  @click="editCar()"
                  style="cursor: pointer">
           <br></span>
@@ -178,6 +162,7 @@ import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalF
 import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
+import mResponsible from "@/pages/appeal/appealEditFields/mResponsible.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -185,8 +170,6 @@ const isOpen = ref(false);
 const appeal = ref({});
 const appealAvailableStatuses = ref([])
 const AppealStatusTypes = ref([])
-const isEditManagerName = ref(false)
-const responsibles = ref([])
 const carPhoto = ref(null)
 const appealTabs = ref(null)
 const lastTaskAndResult = ref('')
@@ -208,20 +191,6 @@ function workFlowType(type) {
 }
 
 
-function toGetManagers() {
-  globalStore.isWaiting = true
-  appealStore.getRoles(appeal.value.workflowLeadType).then(res => {
-    responsibles.value = res.data.items;
-    isEditManagerName.value = true
-    globalStore.isWaiting = false
-  })
-}
-
-function toChangeManager(row) {
-  let item = responsibles.value.find(el => el.id === row)
-  if (item) appeal.value.managerName = item.title
-  isEditManagerName.value = false
-}
 
 function openClient() {
   сlientModal.value.open(appeal.value)

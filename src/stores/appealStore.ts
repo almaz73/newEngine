@@ -90,12 +90,16 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/lead/client/find?search=${search}&type=${type}`).then(q => q)
             return res.data
         },
-        async setComissionResponsible(modelId: number, userId: number) {
+        async setComissionResponsible(mcodelId: number, userId: number) {
             const res = await axios.get('/api/commission/set/responsible/' + modelId + '/' + userId).then(q => q)
             return res.data
         },
         async startAppeal(id:number, description: string) {
-            const res = await axios.get('api/deal/'+id+'/'+description).then(q => q)
+            const res = await axios.get('/api/deal/'+id+'/'+description).then(q => q)
+            return res.data
+        },
+        async changeResponsible(appealId: number, managerId: number) {
+            const res = await axios.post(`/api/workflow/changeResponsible/${appealId}/${managerId}`).then(q => q)
             return res.data
         },
 
