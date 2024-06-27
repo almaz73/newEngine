@@ -149,7 +149,7 @@ import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vu
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
-import MStatus from "@/pages/appeal/appealEditFields/MStatus.vue";
+import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
