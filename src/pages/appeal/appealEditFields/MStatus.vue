@@ -15,6 +15,7 @@
   </el-dropdown>
   <br>
   <MStatusModalStart ref="mStatusModalStart"/>
+  <MStatusModalArchive ref="mStatusModalArchive"/>
 </template>
 
 <script setup lang="ts">
@@ -22,13 +23,14 @@ import {useAppealStore} from "@/stores/appealStore";
 import {ref, watchEffect} from "vue";
 import {AppealStatusTable} from "@/utils/globalConstants";
 import MStatusModalStart from "@/pages/appeal/appealEditFields/MStatusModalStart.vue";
-
+import MStatusModalArchive from "@/pages/appeal/appealEditFields/MStatusModalArchive.vue";
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
 const mStatusModalStart = ref(null)
+const mStatusModalArchive = ref(null)
 const oldStatus = ref({})
 
 watchEffect(() => {
@@ -46,7 +48,10 @@ function makeChoice(val) {
   props.appeal.status = val.id
   props.appeal.statusTitle = val.name
 
-  mStatusModalStart.value.open(val, props.appeal.id, reset)
+  console.log('val', val)
+  if (val.id === 11) mStatusModalStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
+  if (val.id === 17) mStatusModalArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
+  // if (val.id === 263) mStatusModalStart.value.open(val, props.appeal.id, reset) //'Передать на комиссию'
 }
 
 function reset() {
