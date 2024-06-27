@@ -21,7 +21,7 @@
   <template v-if="oldResponsibleId && oldResponsibleId !==props.appeal.managerId">
     &nbsp;
     <el-button size="small" :icon="Select" @click="saveResponsible(true)"></el-button>
-    <el-button size="small" :icon="Close" @click="saveResponsible()"></el-button>
+    <el-button size="small" :icon="Close" @click="saveResponsible(false)"></el-button>
   </template>
 </template>
 
@@ -56,7 +56,7 @@ function toChangeManager(row) {
   isEditManagerName.value = false
 }
 
-function saveResponsible(val) {
+function saveResponsible(val: boolean) {
   if (val) appealStore.changeResponsible(props.appeal.id, props.appeal.managerId)
   else toChangeManager(oldResponsibleId.value)
 
