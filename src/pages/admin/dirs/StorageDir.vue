@@ -103,7 +103,6 @@
   const modal = ref(null)
   const total = ref(0)
   const rowsPerPage = ref(10)
-  const currentPage = ref(1)
   const search = ref({orgElement:'',department:''})
   const departments = ref([])
   const organizations = ref([])
@@ -167,11 +166,9 @@
     selectedRow.value = false
 
     adminStore.getLocation(false,true).then(res => {
-      console.log(res)
       tableData.value = res.items
       total.value = res.total
       tableData.value = tableData.value.map(item => ({...item,"typeName": getLocationType(item.type)}));
-      console.log(tableData.value)
     })
     globalStore.getOrganizations().then(res => organizations.value = res.items)
   }

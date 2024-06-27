@@ -1,14 +1,14 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="340"
+              :width="680"
               :top="40"
               :title="'Место хранения'"
-              draggable>
-      <el-scrollbar maxHeight="480px">
+              draggable
+              resizable>
+      <el-scrollbar maxHeight="520px">
         <el-form ref="form" :model="model" class="error-to-message">
-        <span class="modal-fields">
-  
+        <span class="modal-fields modal-fields-2">
           <el-form-item prop="title" :rules="{required: true, message: 'Название', trigger: ['change']}">
               <label class="label-right l_100">Название</label>
               <el-input
@@ -87,14 +87,14 @@
                     clearable
                     placeholder="Авито" />
             </el-form-item>
-            <el-form-item prop="orgelements" :rules="{required: true, message: 'Организация', trigger: ['change']}">
+            <el-form-item prop="orgElementsIds" :rules="{required: true, message: 'Организация', trigger: ['change']}">
             <label class="label-right l_100">Организация</label>
                 <el-select
                     style="width: 190px"
-                    v-model="model.orgelements"
+                    v-model="model.orgElementsIds"
                     multiple
                     placeholder="Организация"
-                    @change="test"
+                    @change="changeArrById"
                     >
 
 
@@ -119,14 +119,15 @@
               <label class="label-right l_100">Синхронизация с DNM (Только для KIA)</label>
               <el-checkbox style="width: 190px"></el-checkbox>
             </el-form-item>
-            <hr>
+            <span>
             <label class="label-right l_100">Кладовщики</label>
             <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
-          <span class="modal-buttons-bottom">
+          </span>
+        </span>
+        <span class="modal-buttons-bottom">
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </span>
-        </span>
       </el-form>
       </el-scrollbar>
     </AppModal>
@@ -136,7 +137,13 @@
     width: 100px;
     overflow-x: hidden;
   }
-
+  .modal-fields-2{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 10px; 
+    justify-items: center; 
+    align-items: center; 
+  }
   </style>
 
   <script setup>
@@ -146,12 +153,9 @@
   import {ref} from "vue";
   import {Plus} from "@element-plus/icons-vue";
   import {ElMessage} from "element-plus";
-  import {colorTypeList} from "@/utils/globalConstants";
   import {checkEmptyFields} from "@/utils/globalFunctions";
   import {locationType} from "@/utils/globalConstants";
   const org = ref([])
-  const departments = ref([])
-  const globalStore = useGlobalStore();
   const isOpen = ref(false);
   const model = ref({ })
   const form = ref(null)
@@ -159,40 +163,28 @@
 
   const adminStore = useAdminStore();
   let cb;
-function test(){
-    console.log(model.value.orgelements)
+function changeArrById(){
+    model.value.orgelements = model.value.orgElementsIds.map(modelId => org.value.find(el => el.id == modelId))
 }
   function open(row, cbModal) {
     cb = cbModal;
     isOpen.value = true;
-    console.log(row)
-    if (!row) model.value = {orgElement:{id:null}, department:{id:null}, rate: null };
-    else{
+    if(row){
         model.value = JSON.parse(JSON.stringify(row))
+        model.value.orgElementsIds = [model.value.orgElementId]
     }
-    if(!model.value.orgelements)  model.value.orgelements = []
-    if(!model.value.storekeepers) model.value.storekeepers = []
-    if(!model.value.avitoShop) model.value.avitoShop = ''
-    console.log(model.value)
-    if (row) model.value.orgelements.push({name:model.value.orgElementName,id:model.value.orgElementId})
-    
+    model.value.orgelements = model.value.orgelements || [];
+    model.value.storekeepers = model.value.storekeepers || [];
+    model.value.orgElementsIds = model.value.orgElementsIds || [];
+    changeArrById()
     adminStore.getAllOrgWithDep().then(res => org.value = res.items)
-    console.log(org.value)
-    // if (model.value.orgElement.id) changeOrg(model.value.orgElement.id)
   }
 
-  function checkPercentage(category) {
-  if (model.value[category] > 100) {
-    model.value[category] = 100;
-  }
-  if (model.value[category] < 0) {
-    model.value[category] = 0;
-  }
-}
 
 
   function save() {
     model.value.isActive = true
+    model.value.typeName = locationType.find(el => el.code === model.value.type)?.name
     checkEmptyFields(form.value).then(res => {
     if(!res) return 
 
