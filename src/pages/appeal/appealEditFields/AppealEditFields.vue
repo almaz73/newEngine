@@ -1,21 +1,7 @@
 ﻿<template>
   <div style="display: flex; align-items: center; flex-wrap: wrap">
     <div class="appealStat">
-      <small class="label-right">Статус</small>
-      <el-dropdown style="margin-bottom: 4px">
-        <el-button type="primary">
-          {{ appeal.statusTitle }}
-        </el-button>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-                @click="clickDropDown(item)"
-                v-for="(item, ind) in AppealStatusTypes" :key="ind">{{ item.name }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-      <br>
+      <MStatus :appeal="appeal"/>
 
       <mResponsible :appeal="appeal"/><br>
     </div>
@@ -156,20 +142,19 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
-import {AppealStatusTable, statuses, Workflows} from "@/utils/globalConstants";
+import {statuses, Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
-import mResponsible from "@/pages/appeal/appealEditFields/mResponsible.vue";
+import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
+import MStatus from "@/pages/appeal/appealEditFields/MStatus.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
 const isOpen = ref(false);
 const appeal = ref({});
-const appealAvailableStatuses = ref([])
-const AppealStatusTypes = ref([])
 const carPhoto = ref(null)
 const appealTabs = ref(null)
 const lastTaskAndResult = ref('')
@@ -178,12 +163,6 @@ const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
 const carModal = ref(null)
-
-
-const clickDropDown = (val) => {
-  appeal.value.status = val.id
-  appeal.value.statusTitle = val.name
-}
 
 function workFlowType(type) {
   let el = appeal.value.workflowLeadType && Workflows.find(el => el.id === type)
@@ -208,17 +187,6 @@ function open(row) {
     getEvents()
     appealTabs.value.open(res)
     init()
-  })
-
-
-  AppealStatusTypes.value = []
-  appealStore.getStatuses(row.id).then(res => {
-    appealAvailableStatuses.value = res.items
-
-    res.items.forEach(el => {
-      let item = AppealStatusTable.find(item => item.id === el)
-      item && AppealStatusTypes.value.push(item)
-    })
   })
 
 

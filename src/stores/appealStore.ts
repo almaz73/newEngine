@@ -5,7 +5,7 @@ import cache from "@/utils/globalCach";
 const path = '/api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
     state: () => ({
-        currentRow:null
+        currentRow: null
     }),
     actions: {
         async getAppeals(params: any) {
@@ -17,7 +17,7 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async saveAppeal(params: number) {
-            const res = await axios.post('/api/workflow/' , params)
+            const res = await axios.post('/api/workflow/', params)
             return res.data
         },
         async getEvents(id: number, noCach: boolean) {
@@ -70,8 +70,10 @@ export const useAppealStore = defineStore("appealStore", {
         },
         async getEvent(obj: any) {
             const name = obj.filter.replaceAll('{', '').replaceAll('}', '').replaceAll('"', '').replaceAll(':', '').replaceAll(',', '')
+            // @ts-ignore
             if (cache[name]) return cache[name] // список статичный - кэшируем
             const res = await axios.get('/api/event/?filter=' + obj.filter).then(q => q)
+            // @ts-ignore
             return (cache[name] = res.data)
         },
         async getLead(id: number) {
@@ -83,19 +85,19 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async getIndividual(search: number) {
-            const res = await axios.get(`/api/lead/find/individual?search=${search}&take=5&type=phone` ).then(q => q)
+            const res = await axios.get(`/api/lead/find/individual?search=${search}&take=5&type=phone`).then(q => q)
             return res.data
         },
         async getInn(search: number, type: number) {
             const res = await axios.get(`/api/lead/client/find?search=${search}&type=${type}`).then(q => q)
             return res.data
         },
-        async setComissionResponsible(mcodelId: number, userId: number) {
-            const res = await axios.get('/api/commission/set/responsible/' + modelId + '/' + userId).then(q => q)
-            return res.data
-        },
-        async startAppeal(id:number, description: string) {
-            const res = await axios.get('/api/deal/'+id+'/'+description).then(q => q)
+        // async setComissionResponsible(mcodelId: number, userId: number) {
+        //     const res = await axios.get('/api/commission/set/responsible/' + modelId + '/' + userId).then(q => q)
+        //     return res.data
+        // },
+        async setStatus(params: { comment: string; id: number; newStatus: number; }) {
+            const res = await axios.post('/api/deal/' + params.id + '/updatedealstatus', params).then(q => q)
             return res.data
         },
         async changeResponsible(appealId: number, managerId: number) {
