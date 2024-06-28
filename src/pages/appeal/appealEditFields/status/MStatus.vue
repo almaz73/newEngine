@@ -49,8 +49,20 @@ watchEffect(() => {
       let item = AppealStatusTable.find(item => item.id === el)
       item && AppealStatusTypes.value.push(item)
     })
+    sortFunction()
   })
 })
+
+// Список приходит разный, но будем выдавать в едином установленном порядке
+function sortFunction() {
+  let newList=[]
+  let myList = [11, 263, 264, 265, 8, 14, 16, 17, 400, 340, 100, 111, 149, 100, 104, 300, 340, 310, 320, 350, 330, 360]
+  myList.forEach(el=>{
+    let founded = AppealStatusTypes.value.find(item => el === item.id)
+    if (founded) newList.push(founded)
+  })
+  AppealStatusTypes.value = newList
+}
 
 function makeChoice(val) {
   oldStatus.value = {id: props.appeal.status, name: props.appeal.statusTitle}
