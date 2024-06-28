@@ -28,7 +28,11 @@
       <el-tab-pane label="О целях">
         <TabGoals/>
       </el-tab-pane>
+
     </el-tabs>
+
+
+    <RouterLink to="/ideas">Еще Идеи по редизайну</RouterLink>
   </div>
 </template>
 <style>

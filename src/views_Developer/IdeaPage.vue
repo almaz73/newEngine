@@ -30,6 +30,10 @@
       <el-tab-pane label="Идеальный вариант программы">
         <TabIdeal/>
       </el-tab-pane>
+
+      <el-tab-pane label="Блок схемы">
+        <TabImages/>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -47,6 +51,8 @@ import TabErrors from "@/views_Developer/TabErrors.vue";
 import TabAsks from "@/views_Developer/TabAsks.vue";
 import TabDone from "@/views_Developer/TabDone.vue";
 import TabRequirements from "@/views_Developer/TabRequirements.vue";
+import TabImages from '@/views_Developer/TabImages.vue'
+
 import {ref} from "vue";
 
 const activeName = ref('first')

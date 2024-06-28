@@ -5,13 +5,13 @@
 
     <div style="border: 5px double #ccc; padding: 30px">
       <el-radio-group v-model="textButtons" @click="toggleDark();themeChanged()">
-        <el-radio-button value="Светлая тема"/>
-        <el-radio-button value="Темная тема"/>
+        <el-radio-button value="Светлая тема">Темная тема</el-radio-button>
+        <el-radio-button value="Темная тема">Светлая тема</el-radio-button>
       </el-radio-group>
     </div>
     <br>
     <p>
-      <RouterLink to="/myView"><h2>Как я вижу развитие веб-направления</h2></RouterLink>
+      <RouterLink to="/myView">Видение развития веб-направления</RouterLink>
       <br><br><br>
       <RouterLink to="/ideas">Идеи по редизайну</RouterLink>
     </p>

@@ -10,7 +10,7 @@
     <el-collapse>
       <el-collapse-item
           v-if="!globalStore.isMobileView"
-          title="&nbsp; При необходимости можете добавить рисунок из буфера обмена Ctrl + V}"
+          title="&nbsp; При необходимости добавить рисунок из буфера обмена Ctrl + V"
           class="collapse">
         <div class="div">
           Создать снимок экрана можно программой Ножницы от Windows ✂ <br>
