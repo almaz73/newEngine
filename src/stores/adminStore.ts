@@ -369,5 +369,30 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/TreatmentSource/${id}`).then(q => q)
             return res.data 
         },
+        async getSMSTemplates(){
+            const res = await axios.get(`/api/sms/getTemplates`).then(q => q)
+            return res.data
+        },
+        async saveSMSTemplates(params:any){
+            const res = await axios.post(`/api/sms/addTemplate`,params).then(q => q)
+            return res.data
+        },
+        async deleteSMSTemplates(id:number){
+            const res = await axios.delete(`/api/sms/${id}`).then(q => q)
+            return res.data
+        },
+        async getReasonTemplates(){
+            const res = await axios.get(`/api/ReasonTemplates/getItems/`).then(q => q)
+            return res.data
+        },
+        async saveReasonTemplates(params:any){
+            const res = await axios.post(`/api/ReasonTemplates/addTemplate`,params).then(q => q)
+            return res.data
+        },
+        async deleteReasonTemplates(id:number){
+            const res = await axios.delete(`/api/ReasonTemplates/${id}`).then(q => q)
+            return res.data
+        },
     }
+    
 })
