@@ -19,6 +19,7 @@
   <MStatusModaComission ref="mStatusModaComission"/>
   <MStatusModaTradeIn ref="mStatusModaTradeIn"/>
   <MStatusModalBuyout ref="mStatusModalBuyout"/>
+  <MStatusModalToArchive ref="mStatusModalToArchive"/>
 </template>
 
 <script setup lang="ts">
@@ -31,6 +32,7 @@ import MStatusModalArchive from "@/pages/appeal/appealEditFields/status/MStatusM
 import MStatusModaComission from "@/pages/appeal/appealEditFields/status/MStatusModaComission.vue";
 import MStatusModaTradeIn from "@/pages/appeal/appealEditFields/status/MStatusModaTradeIn.vue";
 import MStatusModalBuyout from "@/pages/appeal/appealEditFields/status/MStatusModalBuyout.vue";
+import MStatusModalToArchive from "@/pages/appeal/appealEditFields/status/MStatusModalToArchive.vue";
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
@@ -43,6 +45,7 @@ const mStatusModalArchive = ref(null)
 const mStatusModaComission = ref(null)
 const mStatusModaTradeIn = ref(null)
 const mStatusModalBuyout = ref(null)
+const mStatusModalToArchive = ref(null)
 
 watchEffect(() => {
   props.appeal.id && appealStore.getStatuses(props.appeal.id).then(res => {
@@ -61,6 +64,7 @@ const deleteNode = (val: number) => myList = myList.filter(el => el !== val)
 
 function sortFunction() {
   // доступы и ограничения
+  deleteNode(14) // неясно, когда показать  selectedSellInAppeal в старой проге всегда null
   if (props.appeal.workflowLeadType != 6) deleteNode(8)
   if (props.appeal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
 
@@ -85,6 +89,8 @@ function makeChoice(val) {
   if (val.id === 263) mStatusModaComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
   if (val.id === 265) mStatusModaTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
   if (val.id === 264) mStatusModalBuyout.value.open(val, props.appeal, reset) //'Передать на выкуп'
+  if (val.id === 16) mStatusModalToArchive.value.open(val, props.appeal, reset) //'Передать на выкуп'
+
 }
 
 function reset() {
