@@ -23,6 +23,7 @@
 
 <script setup lang="ts">
 import {useAppealStore} from "@/stores/appealStore";
+import {useGlobalStore} from "@/stores/globalStore";
 import {ref, watchEffect} from "vue";
 import {AppealStatusTable} from "@/utils/globalConstants";
 import MStatusModalStart from "@/pages/appeal/appealEditFields/status/MStatusModalStart.vue";
@@ -33,6 +34,7 @@ import MStatusModalBuyout from "@/pages/appeal/appealEditFields/status/MStatusMo
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
+const globalStore = useGlobalStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
 const oldStatus = ref({})
@@ -54,10 +56,16 @@ watchEffect(() => {
 })
 
 // Список приходит разный, но будем выдавать в едином установленном порядке
+let myList = [11, 263, 264, 265, 8, 14, 16, 17, 400, 340, 100, 111, 149, 100, 104, 300, 340, 310, 320, 350, 330, 360]
+const deleteNode = (val: number) => myList = myList.filter(el => el !== val)
+
 function sortFunction() {
-  let newList=[]
-  let myList = [11, 263, 264, 265, 8, 14, 16, 17, 400, 340, 100, 111, 149, 100, 104, 300, 340, 310, 320, 350, 330, 360]
-  myList.forEach(el=>{
+  // доступы и ограничения
+  if (props.appeal.workflowLeadType != 6) deleteNode(8)
+  if (props.appeal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
+
+  let newList = []
+  myList.forEach(el => {
     let founded = AppealStatusTypes.value.find(item => el === item.id)
     if (founded) newList.push(founded)
   })
