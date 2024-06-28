@@ -14,12 +14,12 @@
     </template>
   </el-dropdown>
   <br>
-  <MStatusModalStart ref="mStatusModalStart"/>
-  <MStatusModalArchive ref="mStatusModalArchive"/>
-  <MStatusModaComission ref="mStatusModaComission"/>
-  <MStatusModaTradeIn ref="mStatusModaTradeIn"/>
-  <MStatusModalBuyout ref="mStatusModalBuyout"/>
-  <MStatusModalToArchive ref="mStatusModalToArchive"/>
+  <StatusStart ref="statusStart"/>
+  <StatusArchive ref="statusArchive"/>
+  <StatusComission ref="statusComission"/>
+  <StatusTradeIn ref="statusTradeIn"/>
+  <StatusBuyout ref="statusBuyout"/>
+  <StatusToArchive ref="statusToArchive"/>
 </template>
 
 <script setup lang="ts">
@@ -27,12 +27,12 @@ import {useAppealStore} from "@/stores/appealStore";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref, watchEffect} from "vue";
 import {AppealStatusTable} from "@/utils/globalConstants";
-import MStatusModalStart from "@/pages/appeal/appealEditFields/status/MStatusModalStart.vue";
-import MStatusModalArchive from "@/pages/appeal/appealEditFields/status/MStatusModalArchive.vue";
-import MStatusModaComission from "@/pages/appeal/appealEditFields/status/MStatusModaComission.vue";
-import MStatusModaTradeIn from "@/pages/appeal/appealEditFields/status/MStatusModaTradeIn.vue";
-import MStatusModalBuyout from "@/pages/appeal/appealEditFields/status/MStatusModalBuyout.vue";
-import MStatusModalToArchive from "@/pages/appeal/appealEditFields/status/MStatusModalToArchive.vue";
+import StatusStart from "@/pages/appeal/appealEditFields/status/StatusStart.vue";
+import StatusArchive from "@/pages/appeal/appealEditFields/status/StatusArchive.vue";
+import StatusComission from "@/pages/appeal/appealEditFields/status/StatusComission.vue";
+import StatusTradeIn from "@/pages/appeal/appealEditFields/status/StatusTradeIn.vue";
+import StatusBuyout from "@/pages/appeal/appealEditFields/status/StatusBuyout.vue";
+import StatusToArchive from "@/pages/appeal/appealEditFields/status/StatusToArchive.vue";
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
@@ -40,12 +40,12 @@ const globalStore = useGlobalStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
 const oldStatus = ref({})
-const mStatusModalStart = ref(null)
-const mStatusModalArchive = ref(null)
-const mStatusModaComission = ref(null)
-const mStatusModaTradeIn = ref(null)
-const mStatusModalBuyout = ref(null)
-const mStatusModalToArchive = ref(null)
+const statusStart = ref(null)
+const statusArchive = ref(null)
+const statusComission = ref(null)
+const statusTradeIn = ref(null)
+const statusBuyout = ref(null)
+const statusToArchive = ref(null)
 
 watchEffect(() => {
   props.appeal.id && appealStore.getStatuses(props.appeal.id).then(res => {
@@ -84,12 +84,12 @@ function makeChoice(val) {
   props.appeal.statusTitle = val.name
 
   console.log('val', val)
-  if (val.id === 11) mStatusModalStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
-  if (val.id === 17) mStatusModalArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
-  if (val.id === 263) mStatusModaComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
-  if (val.id === 265) mStatusModaTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
-  if (val.id === 264) mStatusModalBuyout.value.open(val, props.appeal, reset) //'Передать на выкуп'
-  if (val.id === 16) mStatusModalToArchive.value.open(val, props.appeal, reset) //'Передать на выкуп'
+  if (val.id === 11) statusStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
+  if (val.id === 17) statusArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
+  if (val.id === 263) statusComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
+  if (val.id === 265) statusTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
+  if (val.id === 264) statusBuyout.value.open(val, props.appeal, reset) //'Передать на выкуп'
+  if (val.id === 16) statusToArchive.value.open(val, props.appeal, reset) //'Передать на выкуп'
 
 }
 
