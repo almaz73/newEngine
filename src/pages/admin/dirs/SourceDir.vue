@@ -11,14 +11,14 @@
                    type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
         </el-button>
       </div>
-  
+
       <el-table
           :data="tableData"
           empty-text="Нет данных"
           highlight-current-row>
         <el-table-column label="Категория" prop="name" sortable />
         <el-table-column label="Категория" prop="parentName" sortable />
-  
+
         <el-table-column width="73">
           <template #default="scope">
             <div style="" class="admin-table-editors">
@@ -49,17 +49,17 @@
   const InspectionModal = ref(null)
   let tableDataMemory = []
   const search = ref('')
-  
+
   function openModal(row: any | null) {
   InspectionModal.value.open(row, getData)
 }
 
-  
+
   function find() {
     tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
     if (!search.value) tableData.value = tableDataMemory
   }
-  
+
 
   function deleteRow(row: any) {
     ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
@@ -73,17 +73,17 @@
           })
         })
   }
-  
+
   function getData() {
     globalStore.getTreatments().then(res => {
       tableData.value = res.items
       tableDataMemory = JSON.parse(JSON.stringify(res.items))
     })
   }
-  
+
   globalStore.setTitle('Источник')
   globalStore.steps = []
   getData()
-  
-  
+
+
   </script>

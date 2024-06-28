@@ -3,14 +3,14 @@
               @closeModal="closeModal()"
               :width="340"
               :top="40"
-              :title="'Категория'"
+              :title="'Источник'"
               draggable>
       <el-scrollbar maxHeight="480px">
         <el-form ref="form" :model="model" class="error-to-message">
         <span class="modal-fields">
           <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
                <label class="label-right l_100">Название</label>
-               <el-input v-model="model.name" class="input-width"/>
+               <el-input v-model="model.name"/>
           </el-form-item>
           <el-form-item prop="parentName" :rules="{required: false, message: 'Категория', trigger: ['change']}">
               <label class="label-right l_100">Категория</label>

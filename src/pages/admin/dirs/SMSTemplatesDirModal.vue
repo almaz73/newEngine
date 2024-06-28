@@ -3,13 +3,14 @@
             @closeModal="closeModal()"
             :width="340"
             :top="40"
-            :title="'Категория наценки'"
+            :title="'СМС шаблон'"
             draggable>
     <el-scrollbar maxHeight="480px">
       <el-form ref="form" :model="model" class="error-to-message">
         <span class="modal-field">
           <div class="text-info">
             <label>Теги: </label>
+            <el-divider/>
             <label><span>[accost]</span> - форма обращения (Уважаемый -ая)</label>
             <label><span>[clientIO]</span> - ио клиента</label>
             <label><span>[appealId]</span> - номер обращения</label>
@@ -19,17 +20,16 @@
             <label><span>[appealManagerName]</span> - менеджер обращения (Имя)</label>
         </div>
           <el-form-item prop="title" :rules="{required: true, message: 'Название', trigger: ['change']}">
-            <label class="label-right l_100">Название</label>
+            <label class="label">Название</label>
             <el-input
-                style="width: 190px"
                 v-model="model.title"
                 clearable
                 placeholder="Название" />
         </el-form-item>
         <el-form-item prop="text" :rules="{required: true, message: 'Текст', trigger: ['change']}">
-            <label class="label-right l_100">Текст</label>
+            <label class="label-right">Текст</label>
             <el-input
-                style="width: 190px"
+                type="textarea"
                 v-model="model.text"
                 clearable
                 placeholder="Текст" />

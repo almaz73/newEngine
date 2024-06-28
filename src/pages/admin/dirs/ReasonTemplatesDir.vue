@@ -81,7 +81,7 @@
     })
   }
   
-  globalStore.setTitle('СМС шаблоны')
+  globalStore.setTitle('Шаблоны причин')
   globalStore.steps = []
   getData()
   
