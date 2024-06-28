@@ -43,7 +43,6 @@
   import {ref} from "vue";
   import {Plus} from "@element-plus/icons-vue";
   import {ElMessage} from "element-plus";
-  import UsersDirModal_History from "@/pages/admin/dirs/UsersDirModal_History.vue";
   import {checkEmptyFields} from "@/utils/globalFunctions";
   import {CommunicationTypes} from "@/utils/globalConstants";
   const isOpen = ref(false);
