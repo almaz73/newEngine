@@ -380,7 +380,19 @@ export const useAdminStore = defineStore("adminStore", {
         async deleteSMSTemplates(id:number){
             const res = await axios.delete(`/api/sms/${id}`).then(q => q)
             return res.data
-        }
+        },
+        async getReasonTemplates(){
+            const res = await axios.get(`/api/ReasonTemplates/getItems/`).then(q => q)
+            return res.data
+        },
+        async saveReasonTemplates(params:any){
+            const res = await axios.post(`/api/ReasonTemplates/addTemplate`,params).then(q => q)
+            return res.data
+        },
+        async deleteReasonTemplates(id:number){
+            const res = await axios.delete(`/api/ReasonTemplates/${id}`).then(q => q)
+            return res.data
+        },
     }
     
 })
