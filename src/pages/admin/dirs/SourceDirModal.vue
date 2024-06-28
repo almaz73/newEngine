@@ -10,21 +10,20 @@
         <span class="modal-fields">
           <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
                <label class="label-right l_100">Название</label>
-               <el-input v-model="model.name" class="input-width"/>
+               <el-input v-model="model.name" placeholder="Введи название"/>
           </el-form-item>
-          <el-form-item prop="parentName" :rules="{required: false, message: 'Категория', trigger: ['change']}">
-              <label class="label-right l_100">Категория</label>
-              <el-select
-                  style="width: 190px"
-                  title="Категория"
-                  placeholder="Категория"
-                  v-model="model.parentName"
-                  filterable
-                  clearable>
-                <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name"
-                           :value="item.id"/>
-             </el-select>
-          </el-form-item>
+          
+          <label class="label-right l_100">Категория</label>
+          <el-select
+              style="width: 190px"
+              title="Выбери категорию"
+              placeholder="Выбери категорию"
+              v-model="model.parentName"
+              filterable
+              clearable>
+            <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name"
+                        :value="item.id"/>
+          </el-select>
           <span class="modal-buttons-bottom">
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
