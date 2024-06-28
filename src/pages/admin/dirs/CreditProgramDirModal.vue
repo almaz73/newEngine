@@ -42,11 +42,13 @@
             />
           </el-select> 
         </el-form-item> 
-        <el-form-item prop="bankItemId" :rules="{required: true, message: 'Филиал', trigger: ['change']}">
+        <el-form-item prop="bankItem.bankId" :rules="{required: true, message: 'Филиал', trigger: ['change']}">
            <label class="label-right l_100">Филиал</label>
            <el-select
-            v-model="model.bankItemId"
+
+            v-model="model.bankItem.bankId"
             style="width: 190px"
+            @change="changeFilial"
           >
             <el-option
               v-for="item in filials"
@@ -86,26 +88,32 @@
   function open(row, cbModal) {
     cb = cbModal;
     isOpen.value = true;
+
     if(!row)model.value.bankItem = {bank:{bankName:null,bankId:null}}
     else{
         model.value = JSON.parse(JSON.stringify(row))
-        changeOrg(model.value.bankItemId)
+        changeBank(model.value.bankItemId)
+        
     }
     adminStore.getBanks().then(res => {
-        console.log(res.items)
         banks.value = res.items
     })
+
   }
 
   function changeBank(id){
-    model.value.bankItemId = null
     if(id){
         adminStore.getBankFilials2(id).then(res => {
         filials.value = res.items
     })
     }
-
   }
+
+  function changeFilial(){
+    model.value.bankItem = filials.value.find(el => el.bankItemId == model.value.bankItem.bankId)
+    model.value.bankItemId = model.value.bankItem.bankItemId
+  }
+
   function save() {
     checkEmptyFields(form.value).then(res => {
       res && adminStore.saveCreditProgram(model.value, 20).then(() => {
