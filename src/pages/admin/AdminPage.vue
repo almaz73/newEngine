@@ -52,6 +52,7 @@ import BrendsPTSDir from "@/pages/admin/dirs/BrendsPTSDir.vue";
 import StorageDir from "@/pages/admin/dirs/StorageDir.vue"
 import CreditProgramDir from "@/pages/admin/dirs/CreditProgramDir.vue"
 import SourceDir from "@/pages/admin/dirs/SourceDir.vue"
+import SMSTemplatesDir from "@/pages/admin/dirs/SMSTemplatesDir.vue"
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
@@ -76,7 +77,7 @@ const AdminDirectories = {
   // '🚧Доп. оборудование': ClientsDir,
   // '🚧Агентские услуги': ClientsDir,
   'Источник': SourceDir,
-  'V🚧СМС шаблоны': ClientsDir,
+  'СМС шаблоны': SMSTemplatesDir,
   'V🚧Политики': ClientsDir,
   'V🚧Шаблоны причин': ClientsDir,
   'V🚧Подпись документов': ClientsDir,
