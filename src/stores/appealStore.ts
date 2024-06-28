@@ -100,7 +100,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.post(`/api/workflow/changeResponsible/${appealId}/${managerId}`).then(q => q)
             return res.data
         },
-
+        async getStatusHistory(id: number) {
+            const res = await axios.get(`/api/deal/${id}/getStatusHistory`).then(q => q)
+            return res.data
+        },
     }
 })
 

@@ -1,11 +1,41 @@
 <template>
   <el-tabs v-model="activeName" @tab-change="tabChange" style="padding-right: 8px">
-    <el-tab-pane :label="'События '+(countEvents?`( ${countEvents} )`:'')" name="eventsTab">
+    <el-tab-pane :label="'Активность'" name="eventsTab">
       <el-scrollbar maxHeight="300px">
         <el-button :icon="Plus" @click="openModalEvent()"
                    type="success" style="margin: 0 8px">
           Создать событие
         </el-button>
+
+        <el-button @click="isOnlyEvents=!isOnlyEvents"
+                   v-if="countEvents"
+                   type="info" style="margin: 0 8px">
+          Cобытия - {{countEvents}}
+        </el-button>
+
+
+        <div v-if="!isOnlyEvents">
+
+          <div v-for="sth in statusHistory" :key="sth.userId" style="padding: 4px 24px; background: #fff5f5; margin: 18px 20px">
+            🏠 {{sth.lastName}} {{sth.firstName}}. <b> Смена статуса обращения: {{statuses.find(el=>el.id===sth.status).name}}</b><br>
+            {{formatDMY_hm(sth.createDate)}} &nbsp; &nbsp; {{sth.comment?' Комментарий:'+sth.comment:''}}
+
+            Х{{sth}}
+          </div>
+
+          <el-timeline>
+            <el-timeline-item
+
+              v-for="(hist, index) in history"
+              :key="index"
+              :hollow="true"
+              :timestamp="hist.createDate"
+            >
+              {{ hist.action }}: <b>{{ hist.comment }}</b> <span>{{ hist.userTitle }}</span>
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+
 
         <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
@@ -27,7 +57,7 @@
         </div>
       </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'SMS '+(countSms?`( ${countSms} )`:'')" name="smsTab">
+    <el-tab-pane :label="'SMS '+(countSms?` - ${countSms} `:'')" name="smsTab">
       <el-scrollbar maxHeight="220px">
         <el-button @click="openModalSms()" :icon="Plus" style="margin: 0 8px">Отправить СМС-сообщение клиенту
         </el-button>
@@ -43,7 +73,7 @@
 
     </el-tab-pane>
 
-    <el-tab-pane :label="'История '+(countHistory?`( ${countHistory} )`:'')" name="historyTab">
+    <el-tab-pane :label="'История '+(countHistory?` - ${countHistory}`:'')" name="historyTab">
       <el-scrollbar maxHeight="220px">
         <el-timeline>
           <el-timeline-item
@@ -58,7 +88,7 @@
         </el-timeline>
       </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'Комментарии '+(countComments?`( ${countComments} )`:'')" name="commentsTab">
+    <el-tab-pane :label="'Комментарии '+(countComments?` - ${countComments}`:'')" name="commentsTab">
 
       <el-scrollbar maxHeight="220px">
         <div>
@@ -90,7 +120,7 @@ import {Plus} from "@element-plus/icons-vue";
 import SendEventModal from "@/components/appalCtrl/SendEventModal.vue";
 import SendSmsModal from "@/components/appalCtrl/SendSmsModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {EventStatusEnums} from "@/utils/globalConstants";
+import {EventStatusEnums, statuses} from "@/utils/globalConstants";
 
 
 const globalStore = useGlobalStore()
@@ -109,6 +139,8 @@ const sendModal = ref(null)
 const sendSmsModal = ref(null)
 const appeal = ref(null)
 const commentTxt = ref('')
+const isOnlyEvents = ref(false)
+const statusHistory = ref([])
 
 
 function getPeriods(ev) {
@@ -122,6 +154,14 @@ function getEvents(noCach) {
   appealStore.getEvents(appeal.value.id, noCach).then(res => {
     events.value = res.items
     countEvents.value = res.items.length
+  })
+
+  appealStore.getHistory(appeal.value.id).then(res => {
+    history.value = res.models
+    countHistory.value = res.models.length
+  })
+  appealStore.getStatusHistory(appeal.value.id).then(res => {
+    statusHistory.value = res.items
   })
 }
 
@@ -168,12 +208,6 @@ function getSms(noCach) {
   })
 }
 
-function getHistory() {
-  appealStore.getHistory(appeal.value.id).then(res => {
-    history.value = res.models
-    countHistory.value = res.models.length
-  })
-}
 
 function getComments() {
   appealStore.getComments(appeal.value.id).then(res => {
@@ -186,7 +220,6 @@ function getComments() {
 function tabChange(val) {
   if (val === 'eventsTab') getEvents()
   if (val === 'smsTab') getSms()
-  if (val === 'historyTab') getHistory()
   if (val === 'commentsTab') getComments()
 }
 
