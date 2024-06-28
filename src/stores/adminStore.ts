@@ -361,5 +361,13 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/bankitem/${id}`).then(q => q)
             return res.data
         },
+        async saveTreatment(params:any){
+            cache.getTreatments = null
+            return await axios.post(`/api/TreatmentSource`,params).then(res => res.data)
+        },
+        async deleteTreatment(id:number){
+            const res = await axios.delete(`/api/TreatmentSource/${id}`).then(q => q)
+            return res.data 
+        },
     }
 })
