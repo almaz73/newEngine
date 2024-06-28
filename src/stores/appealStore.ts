@@ -96,10 +96,6 @@ export const useAppealStore = defineStore("appealStore", {
         //     const res = await axios.get('/api/commission/set/responsible/' + modelId + '/' + userId).then(q => q)
         //     return res.data
         // },
-        async setStatus(params: { comment: string; id: number; newStatus: number; }) {
-            const res = await axios.post('/api/deal/' + params.id + '/updatedealstatus', params).then(q => q)
-            return res.data
-        },
         async changeResponsible(appealId: number, managerId: number) {
             const res = await axios.post(`/api/workflow/changeResponsible/${appealId}/${managerId}`).then(q => q)
             return res.data

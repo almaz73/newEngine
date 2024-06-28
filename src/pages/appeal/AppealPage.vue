@@ -209,7 +209,10 @@ function highlightCell(deal) {
 
 function colorBox(txt) {
   if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
-  if (txt === 'В работе') return {background: '#3cac71', color: 'white'}
+  if (['В работе', 'Оформление', 'Запрос на архивирование'].includes(txt)) return {
+    background: '#3cac71',
+    color: 'white'
+  }
 }
 
 function getButType(buyWorkflowDealType) {

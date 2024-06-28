@@ -20,6 +20,7 @@
   <StatusTradeIn ref="statusTradeIn"/>
   <StatusBuyout ref="statusBuyout"/>
   <StatusToArchive ref="statusToArchive"/>
+  <StatusDecor ref="statusDecor"/>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +34,7 @@ import StatusComission from "@/pages/appeal/appealEditFields/status/StatusComiss
 import StatusTradeIn from "@/pages/appeal/appealEditFields/status/StatusTradeIn.vue";
 import StatusBuyout from "@/pages/appeal/appealEditFields/status/StatusBuyout.vue";
 import StatusToArchive from "@/pages/appeal/appealEditFields/status/StatusToArchive.vue";
+import StatusDecor from "@/pages/appeal/appealEditFields/status/StatusDecor.vue";
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
@@ -46,6 +48,7 @@ const statusComission = ref(null)
 const statusTradeIn = ref(null)
 const statusBuyout = ref(null)
 const statusToArchive = ref(null)
+const statusDecor = ref(null)
 
 watchEffect(() => {
   props.appeal.id && appealStore.getStatuses(props.appeal.id).then(res => {
@@ -85,11 +88,12 @@ function makeChoice(val) {
 
   console.log('val', val)
   if (val.id === 11) statusStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
-  if (val.id === 17) statusArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
+  if (val.id === 17) statusArchive.value.open(val, props.appeal, reset) //'Обращение. Архивировать'
   if (val.id === 263) statusComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
   if (val.id === 265) statusTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
   if (val.id === 264) statusBuyout.value.open(val, props.appeal, reset) //'Передать на выкуп'
-  if (val.id === 16) statusToArchive.value.open(val, props.appeal, reset) //'Передать на выкуп'
+  if (val.id === 16) statusToArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
+  if (val.id === 400) statusDecor.value.open(val, props.appeal, reset) //'Обращение. Оформление'
 
 }
 
