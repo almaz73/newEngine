@@ -393,6 +393,18 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/ReasonTemplates/${id}`).then(q => q)
             return res.data
         },
+        async getCertification(id:number){
+            const res = await axios.get(`/api/certification/${id}`).then(q => q)
+            return res.data
+        },
+        async saveCertification(params:any){
+            const res = await axios.post(`/api/certification`,params).then(q => q)
+            return res.data
+        },
+        async deleteCertification(id:number){
+            const res = await axios.delete(`/api/certification/${id}`).then(q => q)
+            return res.data
+        },
     }
     
 })
