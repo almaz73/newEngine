@@ -39,7 +39,7 @@
 
   <br>
 
-  <div class="demo-collapse">
+  <div class="big-collapse">
     <el-collapse>
       <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+formattingPhone(appeal.leadPhone)"
                         name="1">

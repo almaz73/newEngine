@@ -236,6 +236,6 @@ li.el-menu-item {
     color:#D34439 !important;
 }
 
-.el-collapse-item__header{
+.big-collapse .el-collapse-item__header{
     font-size: 18px !important;
 }

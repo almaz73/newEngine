@@ -15,7 +15,7 @@
 
 
         <div v-if="!isOnlyEvents">
-
+          <br>
           <div v-for="sth in statusHistory" :key="sth.userId" style="padding: 4px 24px; background: #fff5f5; margin: 18px 20px">
             🏠 {{sth.lastName}} {{sth.firstName}}. <b> Смена статуса обращения: {{statuses.find(el=>el.id===sth.status).name}}</b><br>
             {{formatDMY_hm(sth.createDate)}} &nbsp; &nbsp; {{sth.comment?' Комментарий:'+sth.comment:''}}

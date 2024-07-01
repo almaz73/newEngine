@@ -117,6 +117,9 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/buy/GetTradeInDirectionTypes`).then(q => q)
             return (cache.пetTradeInDirectionTypes = res.data)
         },
-
+        async getServerTime() {
+            const res = await axios.get(`/api/deal/getServerTime`).then(q => q)
+            return res.data
+        },
     }
 })
