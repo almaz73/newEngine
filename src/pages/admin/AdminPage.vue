@@ -54,6 +54,7 @@ import CreditProgramDir from "@/pages/admin/dirs/CreditProgramDir.vue"
 import SourceDir from "@/pages/admin/dirs/SourceDir.vue"
 import SMSTemplatesDir from "@/pages/admin/dirs/SMSTemplatesDir.vue"
 import ReasonTemplatesDir from "@/pages/admin/dirs/ReasonTemplatesDir.vue"
+import CertificationDir from "@/pages/admin/dirs/CertificationDir.vue"
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
@@ -85,7 +86,7 @@ const AdminDirectories = {
   // '🚧Договора': ClientsDir,
   // '🚧Шаблоны документов': ClientsDir,
   'V🚧Клиенты(Раздел юрлица доделать)': ClientsDir,
-  'V🚧Программы сертификации': ClientsDir,
+  'Программы сертификации': CertificationDir,
   'Возможные неисправности': PossibleDamages,
   'Пороговое значение': ThresholdDir,
   'Оценки': EstimateTabs,
