@@ -55,6 +55,7 @@ import SourceDir from "@/pages/admin/dirs/SourceDir.vue"
 import SMSTemplatesDir from "@/pages/admin/dirs/SMSTemplatesDir.vue"
 import ReasonTemplatesDir from "@/pages/admin/dirs/ReasonTemplatesDir.vue"
 import CertificationDir from "@/pages/admin/dirs/CertificationDir.vue"
+import PolicyDir from "@/pages/admin/dirs/PolicyDir.vue"
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
@@ -80,7 +81,7 @@ const AdminDirectories = {
   // '🚧Агентские услуги': ClientsDir,
   'Источник': SourceDir,
   'СМС шаблоны': SMSTemplatesDir,
-  'V🚧Политики': ClientsDir,
+  'V🚧Политики': PolicyDir,
   'Шаблоны причин': ReasonTemplatesDir,
   'V🚧Подпись документов': ClientsDir,
   // '🚧Договора': ClientsDir,
