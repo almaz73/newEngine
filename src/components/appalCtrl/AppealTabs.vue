@@ -15,7 +15,6 @@
 
 
         <div v-if="!isOnlyEvents">
-          <br>
           <div v-for="sth in statusHistory" :key="sth.userId" style="padding: 4px 24px; background: #fff5f5; margin: 18px 20px">
             🏠 {{sth.lastName}} {{sth.firstName}}. <b> Смена статуса обращения: {{statuses.find(el=>el.id===sth.status).name}}</b><br>
             {{formatDMY_hm(sth.createDate)}} &nbsp; &nbsp; {{sth.comment?' Комментарий:'+sth.comment:''}}
@@ -23,7 +22,7 @@
             Х{{sth}}
           </div>
 
-          <el-timeline>
+          <el-timeline style="background: #ddd; margin: 8px 50px; padding-top: 12px">
             <el-timeline-item
 
               v-for="(hist, index) in history"
@@ -75,7 +74,7 @@
 
     <el-tab-pane :label="'История '+(countHistory?` - ${countHistory}`:'')" name="historyTab">
       <el-scrollbar maxHeight="220px">
-        <el-timeline>
+        <el-timeline  style="background: #ddd; margin: 8px 50px; padding: 12px 12px 0 12px">
           <el-timeline-item
 
               v-for="(hist, index) in history"
@@ -204,7 +203,7 @@ function openModalEvent() {
 function getSms(noCach) {
   appealStore.getSMS(appeal.value.id, noCach).then(res => {
     listSMS.value = res.items.reverse()
-    countSms.value = res.items.length
+    if(res.items) countSms.value = res.items.length
   })
 }
 

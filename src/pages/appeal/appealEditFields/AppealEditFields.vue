@@ -102,7 +102,10 @@
                  style="cursor: pointer">
           <br></span>
 
-          <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}<br>
+          <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
+          <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
+
+
           <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
           {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
           <br>

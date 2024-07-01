@@ -239,3 +239,11 @@ li.el-menu-item {
 .big-collapse .el-collapse-item__header{
     font-size: 18px !important;
 }
+
+.no-color-collapse .el-collapse-item__header{
+    font-size: 18px !important;
+}
+.no-color-collapse .el-collapse-item__wrap,
+.no-color-collapse .el-collapse-item__header{
+    background-color: inherit;
+}

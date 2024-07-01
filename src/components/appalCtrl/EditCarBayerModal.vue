@@ -8,115 +8,133 @@
             :subtitle="subtitle"
             draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'600px'">
-      <svg xmlns="http://www.w3.org/2000/svg" :width="globalStore.isMobileView?43:73"
-           :height="globalStore.isMobileView?43:73" viewBox="0 0 24 24"
-           style="position: absolute" :style="{fill:svgColor}">
-        <path
-            d="M23.5 7c.276 0 .5.224.5.5v.511c0 .793-.926.989-1.616.989l-1.086-2h2.202zm-1.441 3.506c.639 1.186.946 2.252.946 3.666 0 1.37-.397 2.533-1.005 3.981v1.847c0 .552-.448 1-1 1h-1.5c-.552 0-1-.448-1-1v-1h-13v1c0 .552-.448 1-1 1h-1.5c-.552 0-1-.448-1-1v-1.847c-.608-1.448-1.005-2.611-1.005-3.981 0-1.414.307-2.48.946-3.666.829-1.537 1.851-3.453 2.93-5.252.828-1.382 1.262-1.707 2.278-1.889 1.532-.275 2.918-.365 4.851-.365s3.319.09 4.851.365c1.016.182 1.45.507 2.278 1.889 1.079 1.799 2.101 3.715 2.93 5.252zm-16.059 2.994c0-.828-.672-1.5-1.5-1.5s-1.5.672-1.5 1.5.672 1.5 1.5 1.5 1.5-.672 1.5-1.5zm10 1c0-.276-.224-.5-.5-.5h-7c-.276 0-.5.224-.5.5s.224.5.5.5h7c.276 0 .5-.224.5-.5zm2.941-5.527s-.74-1.826-1.631-3.142c-.202-.298-.515-.502-.869-.566-1.511-.272-2.835-.359-4.441-.359s-2.93.087-4.441.359c-.354.063-.667.267-.869.566-.891 1.315-1.631 3.142-1.631 3.142 1.64.313 4.309.497 6.941.497s5.301-.184 6.941-.497zm2.059 4.527c0-.828-.672-1.5-1.5-1.5s-1.5.672-1.5 1.5.672 1.5 1.5 1.5 1.5-.672 1.5-1.5zm-18.298-6.5h-2.202c-.276 0-.5.224-.5.5v.511c0 .793.926.989 1.616.989l1.086-2z"/>
-      </svg>
+      <el-form ref="form" :model="auto" class="error-to-message">
+        <svg xmlns="http://www.w3.org/2000/svg" :width="globalStore.isMobileView?43:73"
+             :height="globalStore.isMobileView?43:73" viewBox="0 0 24 24"
+             style="position: absolute" :style="{fill:svgColor}">
+          <path
+              d="M23.5 7c.276 0 .5.224.5.5v.511c0 .793-.926.989-1.616.989l-1.086-2h2.202zm-1.441 3.506c.639 1.186.946 2.252.946 3.666 0 1.37-.397 2.533-1.005 3.981v1.847c0 .552-.448 1-1 1h-1.5c-.552 0-1-.448-1-1v-1h-13v1c0 .552-.448 1-1 1h-1.5c-.552 0-1-.448-1-1v-1.847c-.608-1.448-1.005-2.611-1.005-3.981 0-1.414.307-2.48.946-3.666.829-1.537 1.851-3.453 2.93-5.252.828-1.382 1.262-1.707 2.278-1.889 1.532-.275 2.918-.365 4.851-.365s3.319.09 4.851.365c1.016.182 1.45.507 2.278 1.889 1.079 1.799 2.101 3.715 2.93 5.252zm-16.059 2.994c0-.828-.672-1.5-1.5-1.5s-1.5.672-1.5 1.5.672 1.5 1.5 1.5 1.5-.672 1.5-1.5zm10 1c0-.276-.224-.5-.5-.5h-7c-.276 0-.5.224-.5.5s.224.5.5.5h7c.276 0 .5-.224.5-.5zm2.941-5.527s-.74-1.826-1.631-3.142c-.202-.298-.515-.502-.869-.566-1.511-.272-2.835-.359-4.441-.359s-2.93.087-4.441.359c-.354.063-.667.267-.869.566-.891 1.315-1.631 3.142-1.631 3.142 1.64.313 4.309.497 6.941.497s5.301-.184 6.941-.497zm2.059 4.527c0-.828-.672-1.5-1.5-1.5s-1.5.672-1.5 1.5.672 1.5 1.5 1.5 1.5-.672 1.5-1.5zm-18.298-6.5h-2.202c-.276 0-.5.224-.5.5v.511c0 .793.926.989 1.616.989l1.086-2z"/>
+        </svg>
 
 
-      <small v-if="!auto.vinNotExist">
-        <label class="label-right l_150">VIN</label>
-        <el-input
-            v-model="auto.vin"
-            @keyup.enter="chosenVin(auto.vin)"
-            maxlength="17"
-            minlength="17"
-            clearable
-        />
-      </small>
+        <small v-if="!auto.vinNotExist">
+          <label class="label-right l_150">VIN</label>
 
-      <small>
-        <label class="label-right l_150"></label>
-        <el-checkbox v-model="auto.vinNotExist" label="VIN отсутствует"/>
-      </small>
+          <el-form-item prop="vin"
+                        style="display: table-cell"
+                        :rules="{required: true, message: 'VIN', trigger: ['change']}">
+            <el-input
+                v-model="auto.vin"
+                @keyup.enter="chosenVin(auto.vin)"
+                maxlength="17"
+                minlength="17"
+                clearable
+            />
+          </el-form-item>
+        </small>
 
-      <small>
-        <label class="label-right l_150">Тип ТС</label>
-        <el-select
-            style="width: 200px"
-            v-model="auto.autoType"
-            :filterable="!globalStore.isMobileView"
-            @change="changeBrand(auto.carBrandId)"
-            clearable
-        >
-          <el-option v-for="type in autoTypes" :key="type.value" :label="type.title" :value="type.value"/>
-        </el-select>
-      </small>
+        <small>
+          <label class="label-right l_150"></label>
+          <el-checkbox v-model="auto.vinNotExist" label="VIN отсутствует"/>
+        </small>
 
-      <small>
-        <label class="label-right l_150">Марка</label>
-        <el-select
-            style="width: 200px"
-            v-model="auto.carBrandId"
-            :filterable="!globalStore.isMobileView"
-            @change="changeBrand(auto.carBrandId)"
-            clearable
-        >
-          <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id"/>
-        </el-select>
-      </small>
+        <small>
+          <label class="label-right l_150">Тип ТС</label>
+          <el-select
+              style="width: 200px"
+              v-model="auto.autoType"
+              :filterable="!globalStore.isMobileView"
+              @change="changeBrand(auto.carBrandId)"
+              clearable
+          >
+            <el-option v-for="type in autoTypes" :key="type.value" :label="type.title" :value="type.value"/>
+          </el-select>
+        </small>
 
-      <small>
-        <label class="label-right l_150">Модель</label>
-        <el-select
-            style="width: 200px"
-            v-model="auto.carModelId"
-            :filterable="!globalStore.isMobileView"
-            @change="chanheModel(auto.carModelId)"
-            placeholder="Модель">
-          <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
-      </small>
+        <small>
+          <label class="label-right l_150">Марка</label>
+          <el-select
+              style="width: 200px"
+              v-model="auto.carBrandId"
+              :filterable="!globalStore.isMobileView"
+              @change="changeBrand(auto.carBrandId)"
+              clearable
+          >
+            <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id"/>
+          </el-select>
+        </small>
 
-      <small>
-        <label class="label-right l_150">Поколение</label>
-        <el-select
-            style="width: 200px"
-            v-model="auto.generationId"
-            placeholder="Модель">
-          <el-option v-for="item in carGenerations" :key="item.id" :label="item.name" :value="item.id"/>
-        </el-select>
-      </small>
+        <small>
+          <label class="label-right l_150">Модель</label>
+          <el-select
+              style="width: 200px"
+              :disabled="!auto.carBrandId"
+              v-model="auto.carModelId"
+              :filterable="!globalStore.isMobileView"
+              @change="chanheModel(auto.carModelId)"
+              placeholder="Модель">
+            <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </small>
 
-
-      <small>
-        <label class="label-right l_150">Цвет</label>
-        <el-select
-            style="width: 200px"
-            v-model="auto.bodyColorId"
-            :filterable="!globalStore.isMobileView"
-            clearable
-            @change="changeColor(auto.bodyColorId)"
-        >
-          <el-option v-for="color in colors" :key="color.id" :label="color.colorName" :value="color.id"/>
-        </el-select>
-      </small>
-
-      <small>
-        <label class="label-right l_150">Год выпуска</label>
+        <small>
+          <label class="label-right l_150">Поколение</label>
+          <el-select
+              style="width: 200px"
+              v-model="auto.generationId"
+              placeholder="Модель">
+            <el-option v-for="item in carGenerations" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </small>
 
 
-        <el-date-picker
-            class="auto-panel"
-            v-model="auto.yearReleased"
-            placeholder="Выберите год"
-            type="year"
-            :clearable="false"
-        />
-      </small>
-      <small>
-        <label class="label-right l_150">Пробег автомобиля</label>
-        <el-input type="number" title="Пробег" show-word-limit maxlength="6" v-model="auto.mileageAuto"/>
-      </small>
+        <small>
+          <label class="label-right l_150">Цвет</label>
+          <el-select
+              style="width: 200px"
+              v-model="auto.bodyColorId"
+              :filterable="!globalStore.isMobileView"
+              clearable
+              @change="changeColor(auto.bodyColorId)"
+          >
+            <el-option v-for="color in colors" :key="color.id" :label="color.colorName" :value="color.id"/>
+          </el-select>
+        </small>
+
+        <small>
+          <label class="label-right l_150">Год выпуска</label>
+          <el-date-picker
+              class="auto-panel"
+              v-model="auto.yearReleased"
+              placeholder="Выберите год"
+              type="year"
+              :clearable="false"
+          />
+        </small>
+
+        <small>
+          <label class="label-right l_150">Номер регистрации</label>
+          <el-input
+              v-model="auto.registrationMark"
+              placeholder="Номер регистрации"
+          />
+        </small>
+
+        <small>
+          <label class="label-right l_150">Пробег автомобиля</label>
+          <el-input v-model="auto.mileageAuto"
+                    title="Пробег"/>
+        </small>
 
 
-      <el-collapse>
-        <el-collapse-item title="vbvbvb" name="1">
+        <el-collapse class="no-color-collapse">
+          <el-collapse-item title=" &nbsp Детали . . . " name="1">
 
-          <small>
-            <label class="label-right l_150">Тип кузова</label>
+
+
+
+
+            <label class="label-right l_150">Салон</label>
             <el-select
                 style="width: 200px"
                 v-model="smsTemplate"
@@ -126,88 +144,22 @@
             >
               <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
             </el-select>
-          </small>
-          <small>
-            <label class="label-right l_150">Тип двигателя</label>
-            <el-select
-                style="width: 200px"
-                v-model="smsTemplate"
-                :filterable="!globalStore.isMobileView"
-                clearable
-                @change="changeTeplate()"
-            >
-              <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-            </el-select>
-          </small>
-          <small>
-            <label class="label-right l_150">Объем двигателя</label>
-            <el-select
-                style="width: 200px"
-                v-model="smsTemplate"
-                :filterable="!globalStore.isMobileView"
-                clearable
-                @change="changeTeplate()"
-            >
-              <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-            </el-select>
-          </small>
 
-        </el-collapse-item>
+
+
+
+            <div>
+              <el-input v-model="smsText" type="textarea" placeholder="Комлпектация"/>
+            </div>
+
+
+          </el-collapse-item>
+
       </el-collapse>
 
 
-      <small>
-        <label class="label-right l_150">Тип КПП</label>
-        <el-select
-            style="width: 200px"
-            v-model="smsTemplate"
-            :filterable="!globalStore.isMobileView"
-            clearable
-            @change="changeTeplate()"
-        >
-          <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-        </el-select>
-      </small>
-      <small>
-        <label class="label-right l_150">Тип привода</label>
-        <el-select
-            style="width: 200px"
-            v-model="smsTemplate"
-            :filterable="!globalStore.isMobileView"
-            clearable
-            @change="changeTeplate()"
-        >
-          <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-        </el-select>
-      </small>
-      <small>
-        <label class="label-right l_150">Салон</label>
-        <el-select
-            style="width: 200px"
-            v-model="smsTemplate"
-            :filterable="!globalStore.isMobileView"
-            clearable
-            @change="changeTeplate()"
-        >
-          <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-        </el-select>
-      </small>
-      <small>
-        <label class="label-right l_150">Комфорт</label>
-        <el-select
-            style="width: 200px"
-            v-model="smsTemplate"
-            :filterable="!globalStore.isMobileView"
-            clearable
-            @change="changeTeplate()"
-        >
-          <el-option v-for="tmpl in smsTemplates" :key="tmpl.id" :label="tmpl.title" :value="tmpl.id"/>
-        </el-select>
-      </small>
-      <div>
-        <el-input v-model="smsText" type="textarea" placeholder="Комлпектация"/>
-      </div>
       <br>
+      </el-form>
     </el-scrollbar>
     <div style="text-align: right">
       <el-button type="danger" @click="save()">Сохранить</el-button>
@@ -231,6 +183,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {ElMessage, ElMessageBox} from "element-plus";
+import {checkEmptyFields} from "@/utils/globalFunctions";
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()
@@ -248,6 +201,7 @@ const autoTypes = ref(null)
 const subtitle = ref('')
 const carGenerations = ref([])
 const serverTime = ref('')
+const form = ref(null)
 let cb = null
 
 function chosenVin(vin) {
@@ -259,7 +213,7 @@ function chosenVin(vin) {
     }).then(yes => {
       if (yes) {
         auto.value.autoType = res.autoType
-        auto.value.value.bodyColorId = res.bodyColorId
+        auto.value.bodyColorId = res.bodyColorId
         svgColor.value = res.bodyColorCode
         subtitle.value = res.additionalInformation
         auto.value.carBrandId = res.carBrandId
@@ -274,11 +228,12 @@ function chosenVin(vin) {
 
 
 function open(row, cbModal) {
-  console.log('', row)
+  console.log('row = ', row)
   cb = cbModal
 
   auto.value = row.auto || {}
-  auto.value.yearReleased = new Date(row.yearReleased || '')
+  if (!row.yearReleased) auto.value.yearReleased = new Date('')
+  if (row.yearReleased) auto.value.yearReleased = new Date(row.yearReleased)
 
   if (!auto.value.carBrandId) auto.value.carBrandId = row.carBrandId
 
@@ -294,15 +249,15 @@ function open(row, cbModal) {
   globalStore.getBrands().then(res => brands.value = res)
   globalStore.getColors().then(res => colors.value = res.items)
 
-  setTimeout(() => {
-    changeBrand(auto.value.carBrandId)
-    changeColor(auto.value.bodyColorId)
-  })
+  // setTimeout(() => {
+  //   changeBrand(auto.value.carBrandId)
+  //   changeColor(auto.value.bodyColorId)
+  // })
 
 }
 
 function changeBrand(id) {
-  globalStore.getModels(id).then(res => models.value = res)
+  id && globalStore.getModels(id).then(res => models.value = res)
 }
 
 function chanheModel(modelId) {
@@ -336,8 +291,10 @@ function check() {
 
 
 function save() {
-  if (check()) return false
-  console.log('ЭТО НЕ СОХРАНЯЕТСЯ ПОКА TODO auto.value', auto.value)
+  checkEmptyFields(form.value).then(res => {
+
+    console.log('ЭТО НЕ СОХРАНЯЕТСЯ ПОКА TODO auto.value', auto.value)
+  })
 }
 
 defineExpose({open});
