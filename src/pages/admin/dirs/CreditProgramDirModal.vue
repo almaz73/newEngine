@@ -11,7 +11,7 @@
             <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
               <label class="label-right l_100">Название</label>
               <el-input
-                  style="width: 190px"
+                  style="width: 220px; overflow: hidden"
                   v-model="model.name"
                   clearable
                   placeholder="Название">
@@ -20,7 +20,7 @@
           <el-form-item prop="creditPercent" :rules="{required: true, message: 'Процентная ставка', trigger: ['change']}">
               <label class="label-right l_100">Процентная ставка</label>
               <el-input
-                  style="width: 190px"
+                  style="width: 220px; overflow: hidden"
                   v-model="model.creditPercent"
                   clearable
                   placeholder="Процентная ставка">

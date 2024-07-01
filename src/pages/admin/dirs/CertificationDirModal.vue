@@ -10,7 +10,7 @@
         <span class="modal-fields">
           <el-form-item prop="title" :rules="{required: true, message: 'Название', trigger: ['change']}">
                  <label class="label-right l_100">Название</label>
-                 <el-input v-model="model.title" class="input-width"/>
+                 <el-input v-model="model.title"/>
           </el-form-item>
   
           <span class="modal-buttons-bottom">
