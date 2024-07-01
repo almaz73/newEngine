@@ -49,16 +49,18 @@
             <div><span class="label">Тип клиента: </span>
               <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
               <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
-              &nbsp; <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
+              &nbsp; <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
+                          style="cursor: pointer">
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
               {{ appeal.lead.person && appeal.lead.person.firstName }}
-              {{ appeal.lead.person &&  appeal.lead.person.middleName }}
+              {{ appeal.lead.person && appeal.lead.person.middleName }}
               {{ appeal.lead.person && appeal.lead.person.lastName }}
               &nbsp;
 
-              <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()" style="cursor: pointer">
+              <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
+                   style="cursor: pointer">
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
@@ -66,7 +68,7 @@
             </div>
             <div v-if="appeal.swapPhone">Подменный номер телефона: {{ appeal.swapPhone }}</div>
             <div v-if="appeal.lead && appeal.lead.person && appeal.lead.person.phone2"><span class="label">
-              Доп. телефон: </span> {{appeal.lead && appeal.lead.person && appeal.lead.person.phone2 }}
+              Доп. телефон: </span> {{ appeal.lead && appeal.lead.person && appeal.lead.person.phone2 }}
             </div>
             <div v-if="appeal.email"><span class="label">Эл. почта: </span> {{ appeal.email }}</div>
             <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
@@ -115,6 +117,7 @@
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
   <EditCarModal ref="carModal"/>
+  <EditCarBayerModal ref="editCarBayerModal"/>
 </template>
 
 <style>
@@ -150,6 +153,7 @@ import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
+import EditCarBayerModal from "@/components/appalCtrl/EditCarBayerModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -163,6 +167,7 @@ const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
 const carModal = ref(null)
+const editCarBayerModal = ref(null)
 
 function workFlowType(type) {
   let el = appeal.value.workflowLeadType && Workflows.find(el => el.id === type)
@@ -170,13 +175,13 @@ function workFlowType(type) {
 }
 
 
-
 function openClient() {
   сlientModal.value.open(appeal.value)
 }
 
 function editCar() {
-  carModal.value.open(appeal.value)
+  if (globalStore.account.role === 'BuyerEmployee') editCarBayerModal.value.open(appeal.value)
+  else carModal.value.open(appeal.value)
 }
 
 function open(row) {

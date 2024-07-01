@@ -31,6 +31,7 @@ const leftPanelPermissions = {
         'Hostess',
         'AnalystEmployee',
         'BuyerManager',
+        'BuyerEmployee',
         'CallEmployee'
     ],
     appeal: [
@@ -41,18 +42,21 @@ const leftPanelPermissions = {
         'LocalCallManager',
         'Hostess',
         'BuyerManager',
+        'BuyerEmployee',
         'CallEmployee'
     ],
     deal: [
         'Admin',
         'GenManager',
-        'BuyerManager'
+        'BuyerManager',
+        'BuyerEmployee',
     ],
     sell: [
         'Admin',
         'GenManager',
         'Hostess',
-        'PsmManager'
+        'PsmManager',
+        'BuyerEmployee',
     ],
     calendar: [
         'Admin',
@@ -63,10 +67,12 @@ const leftPanelPermissions = {
         'Hostess',
         'AnalystEmployee',
         'BuyerManager',
-        'CallEmployee'
+        'CallEmployee',
+        'BuyerEmployee',
     ],
     calls: [
-        'Admin'
+        'Admin',
+        'BuyerEmployee',
     ],
     reports: [
         'Admin',
@@ -76,7 +82,8 @@ const leftPanelPermissions = {
         'Hostess',
         'AnalystEmployee',
         'BuyerManager',
-        'CallEmployee'
+        'CallEmployee',
+        'BuyerEmployee',
     ],
     importExport: [
         'Admin',
@@ -84,11 +91,13 @@ const leftPanelPermissions = {
     ],
     admin: [
         'Admin',
-        'GenManager'
+        'GenManager',
+        'BuyerEmployee',
     ],
     plan: [
         'Admin',
-        'BuyerManager'
+        'BuyerManager',
+        'BuyerEmployee',
     ],
     map: [
         'Admin'
@@ -131,6 +140,9 @@ const reportPermissions = {
         'LocalCallEmployee',
         'LocalCallManager',
         'CallEmployee'
+    ],
+    rCountEmployers:[
+        'BuyerEmployee',
     ]
 }
 const reportTabs = {
@@ -161,6 +173,10 @@ const reportTabs = {
         'Admin',
         'LocalCallEmployee',
         'LocalCallManager'
-    ]
+    ],
+    reportBayer: [
+        'BuyerEmployee'
+    ],
+
 }
 

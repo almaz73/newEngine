@@ -16,6 +16,9 @@
       <el-tab-pane label="Автосеть РФ" name="autoSet" v-if="permit( 'reportTabs', 'reportAutoSet')">
         <ReportAutoSet ref="refAutoSet"/>
       </el-tab-pane>
+      <el-tab-pane label="Отдел выкупа" name="bayer" v-if="permit( 'reportTabs', 'reportBayer')">
+        <ReportBayer ref="refBayer"/>
+      </el-tab-pane>
     </el-tabs>
   </main>
 
@@ -31,6 +34,7 @@ import ReportSell from "@/pages/report/reportSell/ReportSell.vue";
 import ReportAutoSet from "@/pages/report/reportAutoSet/ReportAutoSet.vue";
 import ReportAnalitic from "@/pages/report/rAnalitic/ReportAnalitic.vue"
 import {permit} from "@/utils/permit";
+import ReportBayer from "@/pages/report/rBayer/ReportBayer.vue";
 
 
 const globalStore = useGlobalStore()
@@ -39,6 +43,7 @@ const refCommon = ref(null)
 const refSell = ref(null)
 const refAnalitic = ref(null)
 const refAutoSet = ref(null)
+const refBayer = ref(null)
 const activeName = ref('callCenter')
 
 
@@ -50,6 +55,7 @@ function tabchange(tab) {
   if (tabName === 'sell') refSell.value.open(link)
   if (tabName === 'autoSet') refAutoSet.value.open(link)
   if (tabName === 'analitic') refAnalitic.value.open(link)
+  if (tabName === 'bayer') refBayer.value.open(link)
 }
 
 
@@ -63,10 +69,6 @@ onMounted(() => {
     LastReport = JSON.parse(LastReport)
     activeName.value = LastReport.tab
     tabchange({props: {name: LastReport.tab}, LastReport})
-  } else {
-    // Если ничего не выбрано
-    activeName.value = 'callCenter'
-    refCallCenter.value.open({tab: 'callCenter'})
   }
 })
 
