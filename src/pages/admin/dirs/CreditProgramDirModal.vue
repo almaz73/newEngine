@@ -46,7 +46,7 @@
            <label class="label-right l_100">Филиал</label>
            <el-select
 
-            v-model="model.bankItem.bankId"
+            v-model="model.bankItem.bankItemId"
             style="width: 190px"
             @change="changeFilial"
           >
@@ -92,7 +92,8 @@
     if(!row)model.value.bankItem = {bank:{bankName:null,bankId:null}}
     else{
         model.value = JSON.parse(JSON.stringify(row))
-        changeBank(model.value.bankItemId)
+
+        changeBank(model.value.bankItem.bankId)
         
     }
     adminStore.getBanks().then(res => {
@@ -102,6 +103,7 @@
   }
 
   function changeBank(id){
+
     if(id){
         adminStore.getBankFilials2(id).then(res => {
         filials.value = res.items
@@ -110,7 +112,7 @@
   }
 
   function changeFilial(){
-    model.value.bankItem = filials.value.find(el => el.bankItemId == model.value.bankItem.bankId)
+    model.value.bankItem = filials.value.find(el => el.bankItemId == model.value.bankItem.bankItemId)
     model.value.bankItemId = model.value.bankItem.bankItemId
   }
 
