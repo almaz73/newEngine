@@ -25,7 +25,7 @@
                         :rules="{required: true, message: 'VIN', trigger: ['change']}">
             <el-input
               v-model="newDeal.auto.vin"
-              @keyup.enter="chosenVin(newDeal.auto.vin)"
+              @change="chosenVin(newDeal.auto.vin)"
               maxlength="17"
               minlength="17"
               clearable
@@ -93,8 +93,7 @@
 
         <small>
           <label class="label-right l_150">Пробег автомобиля</label>
-          <el-form-item prop="mileageAuto"
-                        style="display: table-cell"
+          <el-form-item prop="mileageAuto" style="display: table-cell"
                         :rules="{required: true, message: 'Пробег автомобиля', trigger: ['change']}">
             <el-input v-model="newDeal.mileageAuto" placeholder="Введите пробег"
                       maxlength="6"
@@ -176,7 +175,8 @@
               <label class="label-right l_150">Двигатель родной</label>
               <el-form-item prop="auto['isNativeEngine']" style="display: inline-block; margin: 0 !important;"
                             :rules="{required: true, message: 'Двигатель родной', trigger: ['change']}">
-                <el-radio-group v-model="newDeal.auto.isNativeEngine" size="small">
+                <el-radio-group v-model="newDeal.auto.isNativeEngine" @change="changeEngine()"
+                                size="small">
                   <el-radio-button label="Да" value="true" />
                   <el-radio-button label="Нет" value="false" />
                 </el-radio-group>
@@ -206,7 +206,7 @@
 
             <div>
               <label class="label-right l_150">Руль</label>
-              <el-form-item prop="steeringWheelType" style="display: inline-block; margin: 0 !important;"
+              <el-form-item prop="auto['steeringWheelType']" style="display: inline-block; margin: 0 !important;"
                             :rules="{required: true, message: 'Руль', trigger: ['change']}">
                 <el-select
                   style="width: 200px"
@@ -224,7 +224,7 @@
 
             <div v-if="!newDeal.auto.Elpts">
               <label class="label-right l_150">Номер ПТС</label>
-              <el-form-item prop="certificateNumber" style="display: inline-block; margin: 0 !important;"
+              <el-form-item prop="auto['certificateNumber']" style="display: inline-block; margin: 0 !important;"
                             :rules="{required: true, message: 'Номер ПТС', trigger: ['change']}">
                 <el-input v-model="newDeal.auto.certificateNumber" />
               </el-form-item>
@@ -343,19 +343,26 @@ import AppModal from '@/components/AppModal.vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useAdminStore } from '@/stores/adminStore'
 import { useDesktopStore } from '@/stores/desktopStore'
+import { useAppealStore } from '@/stores/appealStore'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { checkEmptyFields, vetRegNumber } from '@/utils/globalFunctions'
 import { CategoryAuto, SteeringWheelType } from '@/utils/globalConstants'
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()
+const appealStore = useAppealStore()
 const adminStore = useAdminStore()
 const smsText = ref('')
-const smsTemplates = ref([])
 const smsTemplate = ref(null)
 const smsDate = ref(null)
 const isOpen = ref(false)
-const newDeal = ref({ auto: { yearReleased: '' } })
+const newDeal = ref({
+  dealStatus: 0,
+  type: 0,
+  lead: { leadType: 10 },
+  auto: { vinNotExist: false, yearReleased: null, autoType: 10 },
+  arrest: false
+})
 const brands = ref([])
 const models = ref([])
 const colors = ref([])
@@ -364,7 +371,6 @@ const autoTypes = ref(null)
 const subtitle = ref('')
 const carGenerations = ref([])
 const carModifications = ref([])
-const serverTime = ref('')
 const form = ref(null)
 const dealType = [
   { id: 20, name: 'Trade-in' },
@@ -373,6 +379,13 @@ const dealType = [
   { id: 60, name: 'A/м через салон' }
 ]
 let cb = null
+let row = null
+
+function changeEngine() {
+  let en = newDeal.value.auto.isNativeEngine === 'true'
+  if (en) newDeal.value.auto.isRegisteredEngine = true
+  else newDeal.value.auto.isRegisteredEngine = null
+}
 
 function changeRegistartionMark(name: string) {
   // eslint-disable-next-line vue/no-mutating-props
@@ -387,13 +400,35 @@ function chosenVin(vin: string) {
       cancelButtonText: 'Нет'
     }).then(yes => {
       if (yes) {
+        newDeal.value.auto.carBrandId = res.carBrandId
         newDeal.value.auto.autoType = res.autoType
+        if (res.carBrandId) changeBrand(res.carBrandId)
+        newDeal.value.auto.carModelId = res.carModelId
         newDeal.value.auto.bodyColorId = res.bodyColorId
         svgColor.value = res.bodyColorCode
-        subtitle.value = res.additionalInformation
-        newDeal.value.auto.carBrandId = res.carBrandId
-        newDeal.value.auto.carModelId = res.carModelId
-        newDeal.value.auto.yearReleased = new Date(res.yearReleased)
+        newDeal.value.auto.categoryAuto = res.categoryAuto
+        newDeal.value.auto.certificateNumber = res.certificateNumber
+        newDeal.value.auto.countFreeHostsByVC = res.countFreeHostsByVC
+        newDeal.value.auto.yearReleased = res.yearReleased
+        newDeal.value.auto.vin = res.vin
+        newDeal.value.auto.vinNotExist = res.vinNotExist
+        newDeal.value.auto.steeringWheelType = res.steeringWheelType
+        newDeal.value.auto.registrationMark = res.registrationMark
+        newDeal.value.auto.modificationId = res.modificationId
+        newDeal.value.auto.issuedDateText = res.issuedDateText
+        newDeal.value.auto.issuedBy = res.issuedBy
+        newDeal.value.auto.isRegisteredEngine = res.isRegisteredEngine
+        newDeal.value.auto.isOriginalVC = res.isOriginalVC
+        newDeal.value.auto.isNativeEngine = res.isNativeEngine
+        newDeal.value.auto.Elpts = res.isElpts
+        newDeal.value.auto.isCertifiedPreOwned = res.isCertifiedPreOwned
+        newDeal.value.auto.generationId = res.generationId
+        newDeal.value.auto.enginePowerVC = res.enginePowerVC
+        newDeal.value.auto.enginePowerInKWByVC = res.enginePowerInKWByVC
+        newDeal.value.auto.elCertificateNumber = res.elCertificateNumber
+        newDeal.value.auto.elCertificateIssuedDateText = res.elCertificateIssuedDateText
+        newDeal.value.auto.countHostsByVC = res.countHostsByVC
+        newDeal.value.auto.additionalInformation = res.additionalInformation
       }
 
     })
@@ -402,43 +437,37 @@ function chosenVin(vin: string) {
 }
 
 
-function open(row: any, cbModal: Function) {
-  console.log('row = ', row)
+function open(_row: any, cbModal: Function) {
+  row = _row
   cb = cbModal
-
-  newDeal.value.auto = row.auto || {}
-  if (row.yearReleased) newDeal.value.auto.yearReleased = new Date('' + row.yearReleased)
-
-
   isOpen.value = true
 
-  globalStore.getServerTime().then(res => {
-    serverTime.value = res.time
-  })
+  newDeal.value.parentEntityId = row.id
+  if (!newDeal.value.auto) newDeal.value.auto = row.auto || {}
 
-  useAdminStore().getAutoTypes().then(res => {
-    autoTypes.value = res.items
-  })
+  if (row.yearReleased) newDeal.value.auto.yearReleased = new Date('' + row.yearReleased)
+  if (row.carModelId) newDeal.value.auto.carModelId = row.carModelId
 
-  function setBrand() {
-    if (!newDeal.value.auto.carBrandId && newDeal.value.auto.carBrand) {
-      let brand = brands.value.find(el => el.name === newDeal.value.auto.carBrand)
-      if (brand) newDeal.value.auto.carBrandId = brand.id
-    }
-    changeBrand(newDeal.value.auto.carBrandId)
-    if (newDeal.value.auto.carModelId) chanheModel(newDeal.value.auto.carModelId)
-    if (newDeal.value.auto.generationId) getModifications(newDeal.value.auto.generationId)
-  }
-
+  globalStore.getServerTime().then(res => newDeal.value.dealInfoCollectStartTime = res.time)
+  adminStore.getAutoTypes().then(res => autoTypes.value = res.items)
   globalStore.getBrands().then(res => brands.value = res).then(i => setBrand())
   globalStore.getColors().then(res => colors.value = res.items)
+}
 
-
-
+function setBrand() {
+  if (!newDeal.value.auto || !newDeal.value.auto.carBrandId && row.carBrand) {
+    let brand = brands.value.find(el => el.name === row.carBrand)
+    if (brand) newDeal.value.auto.carBrandId = brand.id
+  }
+  changeBrand(newDeal.value.auto.carBrandId)
 }
 
 function changeBrand(id: number) {
-  id && globalStore.getModels(id).then(res => models.value = res)
+  id && globalStore.getModels(id).then(res => {
+    models.value = res
+
+    chanheModel(row.carModelId || newDeal.value.auto.carModelId)
+  })
 }
 
 function chanheModel(modelId: number) {
@@ -477,6 +506,11 @@ function save() {
   checkEmptyFields(form.value).then(res => {
 
     console.log('ЭТО НЕ СОХРАНЯЕТСЯ ПОКА TODO \n newDeal.value', newDeal.value)
+
+    res && appealStore.saveCarDetails(newDeal.value).then(res => {
+      console.log('???? res', res)
+      // todo НУЖНО ОТКРЫТЬ сохраненное обещание
+    })
   })
 }
 

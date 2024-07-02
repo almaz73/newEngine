@@ -1,7 +1,6 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 
-const path = '/api/workflow/'
 export const useDealStore = defineStore("dealStore", {
     state: () => ({
         list: [{
@@ -31,7 +30,7 @@ export const useDealStore = defineStore("dealStore", {
 
 function getDeals(params: any) {
     const {filter, limit, mainFilter, offset, search} = params
-    let url = path + 'GetBuyWorkflows';
+    let url = '/api/workflow/GetBuyWorkflows';
     if (filter) url += '?filter=' + filter
     if (offset) url += '&offset=' + offset
     if (search) url += '&search=' + search

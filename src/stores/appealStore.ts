@@ -104,6 +104,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/deal/${id}/getStatusHistory`).then(q => q)
             return res.data
         },
+        async saveCarDetails(params: any) {
+            const res = await axios.post('/api/deal/', params)
+            return res.data
+        },
     }
 })
 
