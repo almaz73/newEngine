@@ -405,6 +405,42 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/certification/${id}`).then(q => q)
             return res.data
         },
+        async getSignAuthority(params: any){
+            const limit = params.limit || 10;
+            const filter = {
+                deleted: false,
+                offset: params.offset || 0,
+                limit: limit
+            };
+
+            const res = await axios.get(`/api/SignAuthority/getItems`,{params: {
+                filter: JSON.stringify(filter),
+                
+            }}).then(q => q)
+            return res.data
+        },
+    
+        async getSignAuthorityUser(id: number){ 
+            const res = await axios.get(`/api/SignAuthority/getItem/?id=${id}`).then(q => q)
+            return res.data
+        },
+        async saveSignAuthority(params:any){
+            const res = await axios.post(`/api/SignAuthority/addItem/`,params).then(q => q)
+            return res.data
+        },
+        async deleteSignAuthority(id:number){
+            const res = await axios.post(`/api/SignAuthority/deleteItem?id=${id}`).then(q => q)
+            return res.data
+        },
+        async findUser(params: any){
+            const res = await axios.get(`/api/user/FindUser?search=${params.search}&userId=`).then(q => q)
+            return res.data
+        },
+        async getAvaliableSignUser(id:number){
+            const res = await axios.get(`/api/SignAuthority/getAvaliableSign?id=${id}`).then(q => q)
+            return res.data
+        }
+        
     }
     
 })
