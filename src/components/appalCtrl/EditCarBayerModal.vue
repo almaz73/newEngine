@@ -97,6 +97,8 @@
                         style="display: table-cell"
                         :rules="{required: true, message: 'Пробег автомобиля', trigger: ['change']}">
             <el-input v-model="newDeal.mileageAuto" placeholder="Введите пробег"
+                      maxlength="6"
+                      type="number"
                       title="Пробег" />
           </el-form-item>
         </small>
@@ -122,15 +124,18 @@
 
             <div>
               <label class="label-right l_150">Цвет</label>
-              <el-select
-                style="width: 200px"
-                v-model="newDeal.auto.bodyColorId"
-                :filterable="!globalStore.isMobileView"
-                clearable
-                @change="changeColor(newDeal.auto.bodyColorId)"
-              >
-                <el-option v-for="color in colors" :key="color.id" :label="color.colorName" :value="color.id" />
-              </el-select>
+              <el-form-item prop="auto['bodyColorId']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Цвет', trigger: ['change']}">
+                <el-select
+                  style="width: 200px"
+                  v-model="newDeal.auto.bodyColorId"
+                  :filterable="!globalStore.isMobileView"
+                  clearable
+                  @change="changeColor(newDeal.auto.bodyColorId)"
+                >
+                  <el-option v-for="color in colors" :key="color.id" :label="color.colorName" :value="color.id" />
+                </el-select>
+              </el-form-item>
             </div>
 
             <div v-if="newDeal.auto.carModelId">
@@ -156,33 +161,162 @@
 
             <div>
               <label class="label-right l_150">Тип оценки</label>
-              <el-select
-                style="width: 200px"
-                v-model="newDeal.dealType"
-                placeholder="Выберите поколение">
-                <el-option v-for="item in dealType" :key="item.id" :label="item.name" :value="item.id" />
-              </el-select>
+              <el-form-item prop="dealType" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Тип оценки', trigger: ['change']}">
+                <el-select
+                  style="width: 200px"
+                  v-model="newDeal.dealType"
+                  placeholder="Выберите тип оценки">
+                  <el-option v-for="item in dealType" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
             </div>
 
             <div>
               <label class="label-right l_150">Двигатель родной</label>
-              <el-radio-group v-model="newDeal.auto.isNativeEngine" size="small">
-                <el-radio-button label="Да" value="true" />
-                <el-radio-button label="Нет" value="false" />
-              </el-radio-group>
+              <el-form-item prop="auto['isNativeEngine']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Двигатель родной', trigger: ['change']}">
+                <el-radio-group v-model="newDeal.auto.isNativeEngine" size="small">
+                  <el-radio-button label="Да" value="true" />
+                  <el-radio-button label="Нет" value="false" />
+                </el-radio-group>
+              </el-form-item>
             </div>
 
             <div>
-              <label class="label-right l_150">Двигатель зарегистрирован</label>
-              <el-radio-group v-model="newDeal.auto.isRegisteredEngine" size="small">
-                <el-radio-button label="Да" value="true" />
-                <el-radio-button label="Нет" value="false" />
-              </el-radio-group>
+              <label class="label-right l_150">Двиг.Зарегистрирован</label>
+              <el-form-item prop="auto['isRegisteredEngine']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Двиг.Зарегистрирован', trigger: ['change']}">
+                <el-radio-group v-model="newDeal.auto.isRegisteredEngine" size="small">
+                  <el-radio-button label="Да" value="true" />
+                  <el-radio-button label="Нет" value="false" />
+                </el-radio-group>
+              </el-form-item>
+            </div>
+
+            <div>
+              <label class="label-right l_150">Категория автомобиля</label>
+              <el-select
+                style="width: 200px"
+                v-model="newDeal.auto.categoryAuto"
+                placeholder="Выберите поколение">
+                <el-option v-for="item in CategoryAuto" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </div>
+
+            <div>
+              <label class="label-right l_150">Руль</label>
+              <el-form-item prop="steeringWheelType" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Руль', trigger: ['change']}">
+                <el-select
+                  style="width: 200px"
+                  v-model="newDeal.auto.steeringWheelType"
+                  placeholder="Выберите поколение">
+                  <el-option v-for="item in SteeringWheelType" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </div>
+
+            <div>
+              <label class="label-right l_150">Электронный ПТС?</label>
+              <el-checkbox v-model="newDeal.auto.Elpts" />
+            </div>
+
+            <div v-if="!newDeal.auto.Elpts">
+              <label class="label-right l_150">Номер ПТС</label>
+              <el-form-item prop="certificateNumber" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Номер ПТС', trigger: ['change']}">
+                <el-input v-model="newDeal.auto.certificateNumber" />
+              </el-form-item>
+            </div>
+
+            <div v-if="!newDeal.auto.Elpts">
+              <label class="label-right l_150">Дата выдачи ПТС</label>
+              <el-date-picker
+                class="auto-panel"
+                v-model="newDeal.auto.issuedDateText"
+                placeholder="Дату выдачи"
+                :clearable="false"
+              />
+            </div>
+
+
+            <div v-if="newDeal.auto.Elpts">
+              <label class="label-right l_150">Номер ЭПТС</label>
+              <el-input v-model="newDeal.auto.elCertificateNumber" />
+            </div>
+
+            <div v-if="newDeal.auto.Elpts">
+              <label class="label-right l_150">Дата выдачи ЭПТС</label>
+              <el-date-picker
+                class="auto-panel"
+                v-model="newDeal.auto.elCertificateIssuedDateText"
+                placeholder="Дату выдачи"
+                :clearable="false"
+              />
             </div>
 
 
             <div>
-              <el-input v-model="smsText" type="textarea" placeholder="Дополнительная информация" />
+              <label class="label-right l_150">ПТС выдан</label>
+              <el-input v-model="newDeal.auto.issuedBy" />
+            </div>
+
+            <div>
+              <label class="label-right l_150">Кол-во хозяев по ПТС
+              </label>
+              <el-form-item prop="auto['countHostsByVC']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Количество хозяев по ПТС', trigger: ['change']}">
+                <el-select
+                  style="width: 200px"
+                  v-model="newDeal.auto.countHostsByVC"
+                  placeholder="Выберите количество">
+                  <el-option v-for="item in [1,2,3,4,5,6,7,8,9,10]" :key="item" :label="item" :value="item" />
+                </el-select>
+              </el-form-item>
+            </div>
+
+            <div>
+              <label class="label-right l_150">Мощность л.с. по ПТС</label>
+              <el-input v-model="newDeal.auto.enginePowerVC" />
+            </div>
+
+            <div>
+              <label class="label-right l_150">Мощность л.с. по ПТС</label>
+              <el-input v-model="newDeal.auto.enginePowerInKWByVC" />
+            </div>
+
+            <div>
+              <label class="label-right l_150">Кол-во св. мест в ПТС</label>
+              <el-input v-model="newDeal.auto.countFreeHostsByVC" />
+            </div>
+
+            <div>
+              <label class="label-right l_150">ПТС оригинальный</label>
+              <el-form-item prop="auto['isOriginalVC']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'ПТС оригинальный', trigger: ['change']}">
+                <el-radio-group v-model="newDeal.auto.isOriginalVC" size="small">
+                  <el-radio-button label="Да" value="true" />
+                  <el-radio-button label="Нет" value="false" />
+                </el-radio-group>
+              </el-form-item>
+            </div>
+
+            <div>
+              <label class="label-right l_150">Certified Pre-Owned</label>
+              <el-form-item prop="auto['isCertifiedPreOwned']" style="display: inline-block; margin: 0 !important;"
+                            :rules="{required: true, message: 'Certified Pre-Owned', trigger: ['change']}">
+                <el-radio-group v-model="newDeal.auto.isCertifiedPreOwned" size="small">
+                  <el-radio-button label="Да" value="true" />
+                  <el-radio-button label="Нет" value="false" />
+                </el-radio-group>
+              </el-form-item>
+            </div>
+
+
+            <div>
+              <el-input v-model="newDeal.auto.additionalInformation" type="textarea"
+                        placeholder="Дополнительная информация" />
             </div>
 
 
@@ -211,6 +345,7 @@ import { useAdminStore } from '@/stores/adminStore'
 import { useDesktopStore } from '@/stores/desktopStore'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { checkEmptyFields, vetRegNumber } from '@/utils/globalFunctions'
+import { CategoryAuto, SteeringWheelType } from '@/utils/globalConstants'
 
 const closeModal = () => isOpen.value = false
 const globalStore = useGlobalStore()
@@ -220,7 +355,7 @@ const smsTemplates = ref([])
 const smsTemplate = ref(null)
 const smsDate = ref(null)
 const isOpen = ref(false)
-const newDeal = ref({auto:{ yearReleased: '' }})
+const newDeal = ref({ auto: { yearReleased: '' } })
 const brands = ref([])
 const models = ref([])
 const colors = ref([])
