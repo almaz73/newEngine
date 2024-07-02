@@ -130,6 +130,7 @@
             <small>
               <label class="label-right l_100">Фамилия</label>
               <el-autocomplete
+                  style="display: table-cell"
                   v-model="newWorkflow.lead.person.lastName"
                   :disabled="disablePerson"
                   :fetch-suggestions="getAgent"
@@ -167,6 +168,7 @@
                     @select="setClient"
                     clearable
                     placeholder="Введите телефон"
+                    maxlength="11"
                 />
               </el-form-item>
 

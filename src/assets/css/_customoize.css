@@ -143,7 +143,7 @@ li.el-menu-item {
     margin-top: -8px;
 }
 
-.error-to-message .el-form-item__error{
+.error-to-message .el-form-item__error {
     display: none;
 }
 
@@ -232,18 +232,16 @@ li.el-menu-item {
     padding-right: 4px;
 }
 
-.el-red-lock{
-    color:#D34439 !important;
+.el-red-lock {
+    color: #D34439 !important;
 }
 
-.big-collapse .el-collapse-item__header{
+.big-collapse .el-collapse-item__header {
     font-size: 18px !important;
 }
 
-.no-color-collapse .el-collapse-item__header{
-    font-size: 18px !important;
-}
+
 .no-color-collapse .el-collapse-item__wrap,
-.no-color-collapse .el-collapse-item__header{
+.no-color-collapse .el-collapse-item__header {
     background-color: inherit;
 }

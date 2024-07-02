@@ -19,7 +19,6 @@
             🏠 {{sth.lastName}} {{sth.firstName}}. <b> Смена статуса обращения: {{statuses.find(el=>el.id===sth.status).name}}</b><br>
             {{formatDMY_hm(sth.createDate)}} &nbsp; &nbsp; {{sth.comment?' Комментарий:'+sth.comment:''}}
 
-            Х{{sth}}
           </div>
 
           <el-timeline style="background: #ddd; margin: 8px 50px; padding-top: 12px">
