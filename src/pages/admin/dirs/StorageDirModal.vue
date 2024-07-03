@@ -12,7 +12,6 @@
           <el-form-item prop="title" :rules="{required: true, message: 'Название', trigger: ['change']}">
               <label class="label-right l_100">Название</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.title"
                     clearable
                     placeholder="Название" />
@@ -34,7 +33,6 @@
             <el-form-item prop="places" :rules="{required: true, message: 'Количество мест', trigger: ['change']}">
               <label class="label-right l_100">Количество мест</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.places"
                     clearable
                     placeholder="Количество мест" />
@@ -42,7 +40,6 @@
             <el-form-item prop="region" :rules="{required: true, message: 'Регион', trigger: ['change']}">
               <label class="label-right l_100">Регион</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.region"
                     clearable
                     placeholder="Регион" />
@@ -50,7 +47,6 @@
             <el-form-item prop="city" :rules="{required: true, message: 'Город', trigger: ['change']}">
               <label class="label-right l_100">Город</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.city"
                     clearable
                     placeholder="Город" />
@@ -58,7 +54,6 @@
             <el-form-item prop="address" :rules="{required: false, message: 'Адрес', trigger: ['change']}">
               <label class="label-right l_100">Адрес</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.address"
                     clearable
                     placeholder="Адрес" />
@@ -66,7 +61,6 @@
             <el-form-item prop="latitude" :rules="{required: false, message: 'Широта', trigger: ['change']}">
               <label class="label-right l_100">Широта</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.latitude"
                     clearable
                     placeholder="Широта" />
@@ -74,7 +68,6 @@
             <el-form-item prop="longitude" :rules="{required: false, message: 'Долгота', trigger: ['change']}">
               <label class="label-right l_100">Долгота</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.longitude"
                     clearable
                     placeholder="Долгота" />
@@ -82,7 +75,6 @@
             <el-form-item prop="avitoShop" :rules="{required: false, message: 'Авито', trigger: ['change']}">
               <label class="label-right l_100">Авито</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.avitoShop"
                     clearable
                     placeholder="Авито" />
@@ -109,7 +101,6 @@
             <el-form-item prop="phone" :rules="{required: true, message: 'Контактный телефон', trigger: ['change']}">
               <label class="label-right l_100">Контактный телефон</label>
               <el-input
-                  style="width: 190px"
                   v-model="model.phone"
                     clearable
                     placeholder="Контактный телефон"
@@ -117,7 +108,7 @@
             </el-form-item>
             <el-form-item prop="phone" :rules="{required: true, message: 'Контактный телефон', trigger: ['change']}">
               <label class="label-right l_100">Синхронизация с DNM (Только для KIA)</label>
-              <el-checkbox style="width: 190px"></el-checkbox>
+              <el-checkbox></el-checkbox>
             </el-form-item>
             <span>
             <label class="label-right l_100">Кладовщики</label>
@@ -141,8 +132,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 10px; 
-    justify-items: center; 
-    align-items: center; 
   }
   </style>
 

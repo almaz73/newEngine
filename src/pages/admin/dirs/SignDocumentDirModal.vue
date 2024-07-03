@@ -1,7 +1,7 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="340"
+              :width="360"
               :top="40"
               :title="'Подпись документов'"
               draggable>

@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="360"
             :top="40"
-            :title="'Категория наценки'"
+            :title="'Пороговые значения'"
             draggable>
     <el-scrollbar maxHeight="480px">
       <el-form ref="form" :model="model" class="error-to-message">
@@ -12,7 +12,7 @@
             <small>
               <label class="label-right l_100">Организация</label>
               <el-select
-                style="width: 220px"
+                style="width: 190px"
                 placeholder="Организация"
                 v-model="model.orgId"
                 filterable
@@ -42,6 +42,7 @@
           <el-form-item prop="validFrom" :rules="{required: true, message: 'Период действия, c', trigger: ['change']}">
               <label class="label-right l_100">Период действия, c</label>
               <el-date-picker
+                style="width: 190px; overflow-x: hidden;"
                 v-model="model.validFrom"
                 format="DD.MM.YYYY"
             />
@@ -49,6 +50,7 @@
           <el-form-item prop="validTo" :rules="{required: true, message: 'Период действия, до', trigger: ['change']}">
               <label class="label-right l_100">Период действия, до</label>
               <el-date-picker
+              style="width: 190px; overflow-x: hidden;"
               v-model="model.validTo"
               format="DD.MM.YYYY"
           />
