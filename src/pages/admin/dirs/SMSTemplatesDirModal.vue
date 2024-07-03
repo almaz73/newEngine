@@ -10,7 +10,7 @@
         <span class="modal-field">
           <div class="text-info">
             <label>Теги: </label>
-            <el-divider/>
+            <el-divider style="margin:10px 0" />
             <label><span>[accost]</span> - форма обращения (Уважаемый -ая)</label>
             <label><span>[clientIO]</span> - ио клиента</label>
             <label><span>[appealId]</span> - номер обращения</label>

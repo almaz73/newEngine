@@ -1,11 +1,10 @@
 <template>
-    <div class="admin-filter-field">
-  
+    <div>
+      <div class="admin-filter-field">
         <el-input v-model="search" :prefix-icon="Search" @clear="find()" clearable
             placeholder="Фильтр"
                 :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }" @keydown.enter="find()" />
   
-      <div style="display: flex; align-items: center;">
         <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
       </div>
       <br><br>
@@ -36,17 +35,21 @@
       </el-table>
   
       <div class="vertical-table" v-if="globalStore.isMobileView">
-        <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-          <span>{{ row.orgElement.name }}
-            {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
-          </span>
-        </div>
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
+        <span>{{ row.userTitle }}
+           <el-button @click="openModal(row)">
+             <img  alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button>
+        </span>
+        <div v-if="row.legalTitle"><small>Юр. Лицо:</small> {{ row.legalTitle }}</div>
+        <div v-if="row.signDocument"><small>Документ подписи:</small> {{ row.signDocument }}</div>
+        <div v-if="row.data"><small>Дата:</small> {{ row.data }}</div>
+        <div v-if="row.number"><small>Номер:</small> {{ row.number }}</div>
+        <div v-if="row.defaultSignText"><small>За кого подписывает:</small> {{ row.defaultSignText }}</div>
       </div>
+    </div>
   
       <template v-if="total>2">
         <el-pagination

@@ -1,9 +1,9 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="340"
+            :width="360"
             :top="40"
-            :title="'Категория наценки'"
+            :title="'Цвет кузова'"
             draggable>
     <el-scrollbar maxHeight="480px">
       <el-form ref="form" :model="model" class="error-to-message">

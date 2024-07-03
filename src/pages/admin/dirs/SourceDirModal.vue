@@ -1,7 +1,7 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="340"
+              :width="360"
               :top="40"
               :title="'Источник'"
               draggable>
@@ -10,7 +10,7 @@
         <span class="modal-fields">
           <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
                <label class="label-right l_100">Название</label>
-               <el-input v-model="model.name"/>
+               <el-input style="width: 190px" v-model="model.name"/>
           </el-form-item>
           <el-form-item prop="parentName" :rules="{required: false, message: 'Категория', trigger: ['change']}">
               <label class="label-right l_100">Категория</label>

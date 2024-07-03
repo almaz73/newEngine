@@ -2,66 +2,27 @@
   <div>
     <div style="margin-bottom: 30px">
       <el-button @click="openModal(null)"
-                 type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+                 type="danger" :icon="Plus">Добавить
       </el-button>
     </div>
 
     <el-table
+        v-if="!globalStore.isMobileView"
         :data="tableData"
         empty-text="Нет данных"
         highlight-current-row>
-      <el-table-column label="Организация" prop="colorName">
-        <template #default="scope">
-          <el-select v-if="isEdit && selectedRow.id===scope.row.id"
-                     placeholder="Организация"
-                     v-model="scope.row.orgId"
-                     @change="changeOrg(scope.row.orgId)"
-                     clearable
-                     filterable>
-            <el-option v-for="(item, ind) in organizations"
-                       :key="ind" :label="item.name"
-                       :value="item.id"/>
-          </el-select>
-          <span v-else>{{ scope.row.orgName }}</span>
-        </template>
-      </el-table-column>
-
-
-      <el-table-column label="Максимальный порог, руб.">
-        <template #default="scope">
-          <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
-                    v-model="selectedRow.maxPrice"></el-input>
-          <span v-else>{{ scope.row.maxPrice }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="Максимальный порог, процент.">
-        <template #default="scope">
-          <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
-                    v-model="selectedRow.maxPercentage"></el-input>
-          <span v-else>{{ scope.row.maxPercentage }}</span>
-        </template>
-      </el-table-column>
-
+      <el-table-column label="Организация" prop="orgName" />
+      <el-table-column label="Максимальный порог, руб." prop="maxPrice" />
+      <el-table-column label="Максимальный порог, процент." prop="maxPercentage" />
       <el-table-column label="Период действия, с">
         <template #default="scope">
-          <span v-if="isEdit && selectedRow.id===scope.row.id">
-            <el-date-picker
-                v-model="scope.row.validFrom"
-                format="DD.MM.YYYY"
-            /></span>
-          <span v-else> {{ formatDateDDMMYYYY(scope.row.validFrom) }}</span>
+          <span> {{ formatDateDDMMYYYY(scope.row.validFrom) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="Период действия, до">
         <template #default="scope">
-          <span v-if="isEdit && selectedRow.id===scope.row.id"><el-date-picker
-              v-model="scope.row.validTo"
-              format="DD.MM.YYYY"
-          /></span>
-
-          <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
+          <span> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
         </template>
       </el-table-column>
 
@@ -79,6 +40,23 @@
       </el-table-column>
 
     </el-table>
+    <div class="vertical-table" v-if="globalStore.isMobileView">
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
+        <span>{{ row.title }}
+           <el-button @click="openModal(row)">
+             <img  alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button>
+        </span>
+        
+        <div><small>Организация:</small> {{ row.orgName }}</div>
+        <div><small>Максимальный порог, руб.:</small> {{ row.maxPrice }}</div>
+        <div><small>Максимальный порог, процент.:</small> {{ row.maxPercentage }}</div>
+        <div><small>Период действия, с:</small> {{ formatDateDDMMYYYY(row.validFrom) }}</div>
+        <div><small>Период действия, до:</small> {{ formatDateDDMMYYYY(row.validTo) }}</div>
+      </div>
+    </div>
     <template v-if="total>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
@@ -154,6 +132,7 @@ function getData() {
   isEdit.value = false
   selectedRow.value = false
   adminStore.getMaxPrices(filter).then((res: any) => {
+    console.log(res)
     tableData.value = res.models
     total.value = res.totalCount
   })
