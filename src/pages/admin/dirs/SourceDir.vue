@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div style="margin-bottom: 30px">
+      <div class="admin-filter-field">
         <el-input v-model="search"
                   :prefix-icon="Search"
                   @clear="find()"
@@ -8,7 +8,7 @@
                   :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
                   @input="find()"/>
         <el-button @click="openModal"
-                   type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+                   type="danger" :icon="Plus">Добавить
         </el-button>
       </div>
 

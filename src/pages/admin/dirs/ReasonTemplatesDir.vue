@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div style="margin-bottom: 30px">
+      <div class="admin-filter-field">
         <el-input v-model="search"
                   :prefix-icon="Search"
                   @clear="find()"
@@ -8,11 +8,11 @@
                   :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
                   @input="find()"/>
         <el-button @click="openModal"
-                   type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' : 'Добавить' }}
+                   type="danger" :icon="Plus">Добавить
         </el-button>
       </div>
   
-      <el-table
+      <el-table v-if="!globalStore.isMobileView"
           :data="tableData"
           empty-text="Нет данных"
           highlight-current-row>   
@@ -33,6 +33,20 @@
         </el-table-column>
   
       </el-table>
+      <div class="vertical-table" v-if="globalStore.isMobileView">
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
+        <span>{{ row.typeTitle }}
+           <el-button>
+             <img @click="openModal(row)" alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button>
+        </span>
+        
+        <div v-if="row.subTypeTitle"><small>Подтип:</small> {{ row.subTypeTitle }}</div>
+        <div v-if="row.title"><small>Текст:</small> {{ row.title }}</div>
+      </div>
+    </div>
     </div>
     <ReasonTemplatesDirModal ref="InspectionModal"/>
   </template>

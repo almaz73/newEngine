@@ -1,6 +1,6 @@
 <template>
-    <div class="admin-filter-field">
-      <div style="display: flex; align-items: center;">
+    <div >
+      <div class="admin-filter-field">
         <span style="margin-right:15px;">Организация</span>
 
           <el-select
@@ -70,19 +70,28 @@
           </template>
         </el-table-column>
       </el-table>
-
       <div class="vertical-table" v-if="globalStore.isMobileView">
-        <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-          <span>{{ row.orgElement.name }}
-            {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
-          </span>
-        </div>
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
+        <span>{{ row.title }}
+           <el-button>
+             <img @click="openModal(row)" alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button>
+        </span>
+        
+        <div v-if="row.region"><small>Регион:</small> {{ row.region }}</div>
+        <div v-if="row.city"><small>Город:</small> {{ row.city }}</div>
+        <div v-if="row.places"><small>Место:</small> {{ row.places }}</div>
+        <div v-if="row.avitoShop"><small>АВИТО:</small> {{ row.avitoShop }}</div>
+        <div v-if="row.orgElementName"><small>Организация:</small>&nbsp;&nbsp;&nbsp; {{ row.orgElementName }}</div>
+        <div v-if="row.typeName"><small>Тип склада:</small> {{ row.typeName }}</div>
+        <div v-if="row.phone"><small>Телефон:</small> {{ row.phone }}</div>
+        <div v-if="row.latitude"><small>Широта:</small> {{ row.latitude }}</div>
+        <div v-if="row.longitude"><small>Долгота:</small> {{ row.longitude }}</div>
+        <div v-if="row.address"><small>Адрес:</small> {{ row.address }}</div>
       </div>
+    </div>
     </div>
     <StorageDirModal  ref="modal"/>
   </template>

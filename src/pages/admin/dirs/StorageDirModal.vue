@@ -1,7 +1,7 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="680"
+              :width="globalStore.isMobileView ? '360' : '680'"
               :top="40"
               :title="'Место хранения'"
               draggable
@@ -155,6 +155,7 @@
   import {ElMessage} from "element-plus";
   import {checkEmptyFields} from "@/utils/globalFunctions";
   import {locationType} from "@/utils/globalConstants";
+  const globalStore = useGlobalStore()
   const org = ref([])
   const isOpen = ref(false);
   const model = ref({ })
