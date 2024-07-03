@@ -3,7 +3,8 @@
     <div class="appealStat">
       <MStatus :appeal="appeal"/>
 
-      <mResponsible :appeal="appeal"/><br>
+      <mResponsible :appeal="appeal"/>
+      <br>
     </div>
 
     <div class="appealStatRight">
@@ -28,7 +29,7 @@
       <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
     </span>
     <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
-          <span class="label-red" >
+          <span class="label-red">
             Тип направления: {{ appeal.tradeInDirectionTypeTitle }}
           </span>
         </span>
@@ -41,7 +42,7 @@
 
   <div class="big-collapse">
     <el-collapse>
-      <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎:'+formattingPhone(appeal.leadPhone)"
+      <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
                         name="1">
         <div class="collapse" style="">
           <div class="collapse-left">
@@ -49,7 +50,7 @@
             <div><span class="label">Тип клиента: </span>
               <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
               <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
-              &nbsp; <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
+              &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
                           style="cursor: pointer">
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
@@ -59,7 +60,7 @@
               {{ appeal.lead.person && appeal.lead.person.lastName }}
               &nbsp;
 
-              <img src="../../../assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
+              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
                    style="cursor: pointer">
             </div>
 
@@ -97,9 +98,14 @@
         <div style="padding: 0 30px">
           <span v-if="appeal.carModel"><span class="label">
             Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
-            <img src="../../../assets/icons/icon-pencil-gray.png" alt=""
+            <img src="@/assets/icons/icon-pencil-gray.png" alt=""
+                 title="Данные со слов клиента"
                  @click="editCar()"
-                 style="cursor: pointer">
+                 style="cursor: pointer; margin: 0 12px">
+
+            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`">
+              <el-button :icon="Edit">Оформление байером </el-button>
+            </RouterLink>
           <br></span>
 
           <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
@@ -157,6 +163,7 @@ import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 import EditCarBayerModal from "@/components/appalCtrl/EditCarBayerModal.vue";
+import {Edit} from "@element-plus/icons-vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()

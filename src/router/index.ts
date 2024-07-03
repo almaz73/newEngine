@@ -86,6 +86,10 @@ const router = createRouter({
             name: 'reports',
             component: () => import('@/pages/report/ReportPage.vue').catch(val => fail(val))
         }, {
+            path: '/auto/deal/add/clientId/:clientId/parentId/:parentId',
+            name: 'addDeal',
+            component: () => import('@/pages/appeal/appealEditFields/EditCarToDeal.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },
