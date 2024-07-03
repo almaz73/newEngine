@@ -1,13 +1,14 @@
 <template>
   <div>
-    <span>
+    <span class="admin-filter-field">
      <el-input v-model="search"
                :prefix-icon="Search"
+               placeholder="Фильтр"
                clearable
                @clear="find()"
                @input="find()"
+               :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
                @keydown.enter="find()"/>
-      &nbsp; &nbsp;
     <el-button v-if="selectedBrand" @click="openModal(selectedBrand)" type="danger" :icon="Plus"> Добавить</el-button>
     <br><br>
 
@@ -54,12 +55,17 @@
       </el-table-column>
     </el-table>
     <div class="vertical-table" v-if="globalStore.isMobileView">
-      <div v-for="(row, ind) in tableData"
-           @click="showModel(row)"
-           :key="ind" style="border-top:5px double #ddd">
-        <span v-if="selectedBrand && selectedBrand.name"> - - {{ row.name }}</span>
-        <span v-else>{{ row.name }}</span>
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:5px double #ddd">
+        <span v-if="selectedBrand && selectedBrand.name"> 
+          <span @click="showModel(row)">&nbsp; ↶ &nbsp;</span>
+          {{ row.model }} <el-button @click="openModal(row)">
+             <img  alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button></span>
+        <span  @click="showModel(row)" v-else> {{ row.name }}             </span>
       </div>
+      
     </div>
 
   </div>
