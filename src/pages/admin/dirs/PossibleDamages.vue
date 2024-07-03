@@ -48,30 +48,40 @@
         </template>
       </el-table-column>
     </el-table>
-
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.brand.name }} {{ row.model.name }}
-           <el-button>
-             <img @click="openModal(row)" alt=""
+           <el-button @click="openModal(row)">
+             <img  alt=""
                   title="Редактировать"
                   src="@/assets/icons/icon-pencil-gray.png">
            </el-button>
         </span>
-        <div v-if="row.generations.length">
-          <span v-for="(a, ind) in row.generations" :key="ind">
-            Поколение-{{ ind + 1 }},
-          </span></div>
-        <div v-if="row.modifications.length">
-          <span v-for="(a, ind) in row.modifications" :key="ind">
-            Модификация-{{ ind + 1 }}
-          </span></div>
-        <div v-if="row.description"><span style="font-size: small"> {{ row.description }}</span></div>
+        
+        <div v-if="row.generations && row.generations.length !== 0"><small>Поколение:</small>          
+          <div v-for="(generation, ind) in row.generations"
+               style="cursor:pointer"
+               :key="ind" :title="generation.name">Поколение-{{ ind + 1 }}
+          </div></div>
+        <div v-if="row.modifications && row.modifications.length !== 0"><small>Модификации:</small>           <div v-for="(modification, ind) in row.modifications"
+               style="cursor:pointer"
+               :key="ind" :title="modification.name">Модификация-{{ ind + 1 }}
+          </div></div>
+        <div v-if="row.description"><small>Возможные неисправности:</small> {{ row.description }}</div>
       </div>
     </div>
   </div>
   <PossibleDamagesModal ref="possibleDamModal"/>
 </template>
+<style>
+.vertical-table small{
+  width:110px;
+  text-align: left;
+}
+.vertical-table div{
+  padding:0px;
+}
+</style>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
@@ -114,6 +124,7 @@ function getData() {
   selectedRow.value = false
 
   adminStore.getMalfunctions().then((res: any) => {
+    console.log(res)
     tableData.value = res
   })
 }

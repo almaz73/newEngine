@@ -39,8 +39,8 @@
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
             {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
+             <el-button @click="openModal(row)">
+               <img  alt=""
                     title="Редактировать"
                     src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
