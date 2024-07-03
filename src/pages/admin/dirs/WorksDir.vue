@@ -1,5 +1,6 @@
 <template>
-  <div class="admin-filter-field">
+  <div >
+    <span class="admin-filter-field">
     <el-input v-model="like"
               :prefix-icon="Search"
               placeholder="Фильтр"
@@ -7,8 +8,11 @@
               clearable
               :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
               @input="toSearch()"/>
+
     <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
+
     <br><br>
+  </span>
     <el-table v-if="!globalStore.isMobileView"
               :data="tableData"
               style="width: 100%; margin-bottom: 20px"

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <span>
+      <span class="admin-filter-field">
        <el-input v-model="search"
                  :prefix-icon="Search"
                  placeholder="Фильтр"
@@ -8,12 +8,10 @@
                  @clear="find()"
                  @input="find()"
                  :style="{ marginRight: globalStore.isMobileView ? '80px' : '30px' }"/>
-      </span>
-      <el-button @click="openModal()"  type="danger" :icon="Plus">{{ globalStore.isMobileView ? '' :
-                'Добавить' }}
-            </el-button>
+
+      <el-button v-if="selectedBrand" @click="openModal(selectedBrand)" type="danger" :icon="Plus"> Добавить</el-button>
       <br><br>
-      
+    </span>
       <h4 style="color: #999">
         {{
           (selectedBrand && selectedBrand.model) ?
@@ -21,7 +19,7 @@
               'Все бренды ( ' + brandsTotal + ')'
         }}
 
-      <el-button v-if="selectedBrand && selectedBrand.model" @click="showBrands()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
+      <el-button  v-if="selectedBrand && selectedBrand.model && !globalStore.isMobileView" @click="showBrands()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
                   'Вернуться к брендам' }}
               </el-button>
             </h4>
@@ -56,13 +54,18 @@
         </el-table-column>
       </el-table>
       <div class="vertical-table" v-if="globalStore.isMobileView">
-        <div v-for="(row, ind) in tableData"
-             @click="showModel(row)"
-             :key="ind" style="border-top:5px double #ddd">
-          <span>{{ row.name }}</span>
+        <div v-for="(row, ind) in tableData" :key="ind" style="border-top:5px double #ddd">
+          <span v-if="selectedBrand && selectedBrand.model"> 
+            <span @click="showBrands(row)">&nbsp; ↶ &nbsp;</span>
+            {{ row.model }} <el-button @click="openModal(row)">
+              <img  alt=""
+                    title="Редактировать"
+                    src="@/assets/icons/icon-pencil-gray.png">
+            </el-button></span>
+          <span  @click="showModel(row)" v-else> {{ row.model }}             </span>
         </div>
+      
       </div>
-  
     </div>
     <BrendsPTSDirModal ref="modal" />
   </template>
