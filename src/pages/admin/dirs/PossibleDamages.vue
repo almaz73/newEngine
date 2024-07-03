@@ -73,7 +73,7 @@
   </div>
   <PossibleDamagesModal ref="possibleDamModal"/>
 </template>
-<style>
+<style scoped>
 .vertical-table small{
   width:110px;
   text-align: left;
