@@ -74,7 +74,7 @@
       
   
       adminStore.saveReasonTemplates(model.value).then(() => {
-        ElMessage({message: "Категория наценки успешно сохранена", type: "success"});
+        ElMessage({message: "Поддпись документов успешно сохранена", type: "success"});
         isOpen.value = false;
         cb();
       });
