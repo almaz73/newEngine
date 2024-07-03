@@ -80,7 +80,7 @@
         <template #default="scope">
           <img :src="scope.row.smallPhoto[0]" alt=""
                v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
-               style="height:60px; border-radius: 4px"/>
+               class="img-in-table"/>
         </template>
       </el-table-column>
 

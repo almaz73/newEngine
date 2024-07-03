@@ -29,6 +29,7 @@
         :data="dealStore.list"
         ref="singleTableRef"
         empty-text="Нет данных"
+        @row-dblclick="openPage"
         highlight-current-row
     >
       <el-table-column label="Автомобиль">
@@ -61,6 +62,14 @@
         </template>
       </el-table-column>
 
+      <el-table-column width="120">
+        <template #default="scope">
+          <img :src="scope.row.smallPhoto[0]" alt=""
+               v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
+               class="img-in-table"/>
+        </template>
+      </el-table-column>
+
       <el-table-column label="" width="60px">
         <template #default="scope">
           <div style="border-radius: 50%; width: 35px; height: 35px;
@@ -79,6 +88,8 @@
           </div>
         </template>
       </el-table-column>
+
+
     </el-table>
 
     <!-- для мобилки таблица -->
@@ -123,6 +134,7 @@ import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef';
 import {categoryAutos} from "@/utils/globalConstants";
+import router from "@/router";
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -154,9 +166,6 @@ const pageDescription = computed(() => {
   return start + ' - ' + end
 })
 const singleTableRef = ref()
-// const setCurrent = (row) => {
-//   singleTableRef.value.setCurrentRow(row)
-// }
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
@@ -168,6 +177,11 @@ function buttonFilterSelect(val) {
   filter.offset = 0
   getData()
   isFilterOpened.value = false
+}
+
+
+function openPage(row) {
+  router.push({name: 'editDeal', params: {id: row.autoId, appealId: row.id}})
 }
 
 function changePage(val) {

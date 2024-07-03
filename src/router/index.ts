@@ -90,9 +90,15 @@ const router = createRouter({
             name: 'addDeal',
             component: () => import('@/pages/appeal/appealEditFields/EditCarToDeal.vue').catch(val => fail(val))
         }, {
+            path: '/auto/:id/deal/:appealId',
+            name: 'editDeal',
+            component: () => import('@/pages/deal/DealEditor.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },
+
+        //auto/124583/deal/392372
     ]
 })
 

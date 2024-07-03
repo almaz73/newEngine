@@ -195,10 +195,6 @@ function openClient() {
   сlientModal.value.open(appeal.value)
 }
 
-// function editCar() {
-//   carModal.value.open(appeal.value)
-// }
-
 function open(row) {
   if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
   isOpen.value = true;
@@ -242,7 +238,7 @@ function getEvents() {
 }
 
 function init() {
-  globalStore.setTitle(appeal.value.id + '- Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
+  globalStore.setTitle(appeal.value.id + ' - Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
   globalStore.steps = [{name: 'Обращение', done: true},
     {name: 'Сбор данных', done: true}, {name: 'Оценка'}, {name: 'Договор'}, {name: 'Банк'}, {name: 'Выкуп'}]
 }
