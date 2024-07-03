@@ -188,7 +188,6 @@ const brands = ref([])
 const models = ref([])
 const colors = ref([])
 const svgColor = ref('white')
-let cb = null
 
 
 function changeBrand(id) {
@@ -222,9 +221,8 @@ function save() {
   console.log('ЭТО НЕ СОХРАНЯЕТСЯ ПОКА TODO auto.value', auto.value)
 }
 
-function open(row, cbModal) {
+function open(row) {
   console.log('', row)
-  cb = cbModal
   auto.value = row.auto || {}
 
   if (!auto.value.carBrandId) auto.value.carBrandId = row.carBrandId

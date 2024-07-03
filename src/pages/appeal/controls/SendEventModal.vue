@@ -43,7 +43,7 @@
     <small>
       <label class="label-right l_150">Дата:</label>
 
-      <el-button @click="openHourly()">{{eventTime?formatDMY_hm(eventTime):'Календарь'}}</el-button>
+      <el-button @click="openHourly()">{{ eventTime ? formatDMY_hm(eventTime) : 'Календарь' }}</el-button>
 
       <div>
         <label style="cursor: pointer" @click="checkResponsible()">
@@ -72,7 +72,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
 import {EventType} from "@/utils/globalConstants";
-import HourlyCalendarModal from "@/components/appalCtrl/HourlyCalendarModal.vue";
+import HourlyCalendarModal from "@/pages/appeal/controls/HourlyCalendarModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -222,7 +222,7 @@ function getSelects() {
 }
 
 function openHourly() {
-  if(!title.value) return ElMessage.info('Выберите тип вызова')
+  if (!title.value) return ElMessage.info('Выберите тип вызова')
   hourlyModal.value.open(event.value, backFromHourly)
 }
 
@@ -230,7 +230,7 @@ function backFromHourly(time) {
   eventTime.value = time
   let dateStart = time
   let dateEnd = new Date(time)
-  dateEnd.setMinutes( new Date(time).getMinutes()+15)
+  dateEnd.setMinutes(new Date(time).getMinutes() + 15)
 
 
   event.value.dateStart = formatDateDDMMYYYY(dateStart)//  dateStart.format('DD.MM.YYYY');

@@ -42,8 +42,9 @@
 
   <div class="big-collapse">
     <el-collapse>
-      <el-collapse-item :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
-                        name="1">
+      <el-collapse-item
+          :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
+          name="1">
         <div class="collapse" style="">
           <div class="collapse-left">
 
@@ -98,13 +99,14 @@
         <div style="padding: 0 30px">
           <span v-if="appeal.carModel"><span class="label">
             Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
-            <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                 title="Данные со слов клиента"
-                 @click="editCar()"
-                 style="cursor: pointer; margin: 0 12px">
+<!--            <img src="@/assets/icons/icon-pencil-gray.png" alt=""-->
+<!--                 title="Данные со слов клиента"-->
+<!--                 @click="editCar()"-->
+<!--                 style="cursor: pointer; margin: 0 12px">-->
 
-            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`">
-              <el-button :icon="Edit">Оформление байером </el-button>
+            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
+                        v-if="permit_locale()">
+              <el-button :icon="Edit" size="small">Оценивать </el-button>
             </RouterLink>
           <br></span>
 
@@ -125,7 +127,7 @@
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
-  <EditCarModal ref="carModal"/>
+<!--  <EditCarModal ref="carModal"/>-->
   <EditCarBayerModal ref="editCarBayerModal"/>
 </template>
 
@@ -155,14 +157,14 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {statuses, Workflows} from "@/utils/globalConstants";
-import AppealTabs from "@/components/appalCtrl/AppealTabs.vue";
+import AppealTabs from "@/pages/appeal/controls/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
-import InfoAboutClientModal from "@/components/appalCtrl/InfoAboutClientModal.vue";
+import InfoAboutClientModal from "@/pages/appeal/controls/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
-import EditCarModal from "@/components/appalCtrl/EditCarModal.vue";
+import EditCarModal from "@/pages/appeal/controls/EditCarModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
-import EditCarBayerModal from "@/components/appalCtrl/EditCarBayerModal.vue";
+import EditCarBayerModal from "@/pages/appeal/controls/EditCarBayerModal.vue";
 import {Edit} from "@element-plus/icons-vue";
 
 const globalStore = useGlobalStore();
@@ -176,8 +178,12 @@ const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
-const carModal = ref(null)
+// const carModal = ref(null)
 const editCarBayerModal = ref(null)
+
+function permit_locale() {
+  return ['BuyerEmployee', 'Admin'].includes(globalStore.account.role)
+}
 
 function workFlowType(type) {
   let el = appeal.value.workflowLeadType && Workflows.find(el => el.id === type)
@@ -189,10 +195,9 @@ function openClient() {
   сlientModal.value.open(appeal.value)
 }
 
-function editCar() {
-  if (globalStore.account.role === 'BuyerEmployee') editCarBayerModal.value.open(appeal.value)
-  else carModal.value.open(appeal.value)
-}
+// function editCar() {
+//   carModal.value.open(appeal.value)
+// }
 
 function open(row) {
   if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]

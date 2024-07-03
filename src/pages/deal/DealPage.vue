@@ -61,7 +61,24 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="" label=""/>
+      <el-table-column label="" width="60px">
+        <template #default="scope">
+          <div style="border-radius: 50%; width: 35px; height: 35px;
+          display: flex; justify-content: center;align-items: center;
+           cursor: pointer; color: white; text-shadow: 0 0 5px black"
+           :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][scope.row.categoryAuto-1]}">
+            {{scope.row.categoryAuto && categoryAutos.find((el=>el.id === scope.row.categoryAuto )).name}}
+          </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label=""  width="60px">
+        <template #default="scope">
+          <div v-if="scope.row.additionalInformation"
+               :title="scope.row.additionalInformation" style="cursor: pointer">⌘
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- для мобилки таблица -->
@@ -96,16 +113,16 @@
 </template>
 
 <script setup>
-import {reactive, ref, computed, onMounted} from 'vue'
-import {ElMessage} from 'element-plus'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {ElMessage, ElTable} from 'element-plus'
 import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {carColor, formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
-import {ElTable} from 'element-plus'
 import DealFilter from '@/pages/deal/DealFilter.vue'
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef';
+import {categoryAutos} from "@/utils/globalConstants";
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -198,7 +215,9 @@ function validateFilter() {
 function getData() {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
-  dealStore.getDeals(filter).then((res) => {
+  dealStore.getDeals(filter).then(res => {
+
+    console.log('res', res)
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)

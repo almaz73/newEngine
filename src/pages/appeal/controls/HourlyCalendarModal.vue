@@ -30,7 +30,8 @@
     <div style="text-align: right">
       <el-button type="danger" @click="save()"
                  :disabled="!isReady"
-                 :icon="Plus">Добавить</el-button>
+                 :icon="Plus">Добавить
+      </el-button>
       <el-button type="info" @click="closeModal()">Отмена</el-button>
     </div>
   </AppModal>
