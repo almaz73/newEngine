@@ -102,10 +102,14 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get('/api/orgelement/get?id=' + id).then(q => q)
             return (cache.getOrganization = res.data)
         },
-        async getPolicy() {
-            if (cache.getPolicy) return cache.getPolicy
+        async getPolicy(noCach: string) {
+            if (!noCach && cache.getPolicy) return cache.getPolicy
             const res = await axios.get('/api/policy/getPolicyList').then(q => q)
             return (cache.getPolicy = res.data)
+        },
+        async savePolicy(params:any){
+            const res = await axios.post(`/api/policy/`,params).then(q => q)
+            return res.data
         },
         async getInspection(id: number | null) {
             let url = '/api/inspectionitemtype'
@@ -129,6 +133,7 @@ export const useAdminStore = defineStore("adminStore", {
         async saveDamage(params:any) {
             cache.getDomage = null
             const res = await axios.post('/api/damageitem',params).then(q => q)
+            return res.data
         },
         async deleteDamage(deleteId: number) {
             cache.getDomage = null
@@ -136,7 +141,6 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getBanks() {
-
             if (cache.getBanks) return cache.getBanks
             const res = await axios.get('/api/bank/').then(q => q)
             return (cache.getBanks = res.data)
@@ -257,7 +261,7 @@ export const useAdminStore = defineStore("adminStore", {
         async getDepartmentsWithBuyLocations(orgId: number) {
             return await axios.get('/api/OrgElement/GetDepartmentsWithBuyLocations?orgId=' + orgId).then(res => res.data)
         },
-        async saveMarkupCategory(params) {
+        async saveMarkupCategory(params: any) {
             const res = await axios.post('/api/markupCategory', params).then(q => q)
             return res.data
         },
@@ -439,8 +443,8 @@ export const useAdminStore = defineStore("adminStore", {
         async getAvaliableSignUser(id:number){
             const res = await axios.get(`/api/SignAuthority/getAvaliableSign?id=${id}`).then(q => q)
             return res.data
-        }
-        
+        },
+
     }
     
 })

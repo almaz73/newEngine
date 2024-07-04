@@ -57,7 +57,7 @@
         <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
       </template>
     </div>
-    <PolicyDirModal ref="InspectionModal"/>
+    <PolicyDirModal ref="policyDirModal"/>
   </template>
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
@@ -65,19 +65,18 @@
   import { ElMessage, ElMessageBox } from 'element-plus'
   import {useGlobalStore} from "@/stores/globalStore";
   import PolicyDirModal from "@/pages/admin/dirs/PolicyDirModal.vue";
-  import {Plus, Search} from "@element-plus/icons-vue";
+  import {Plus} from "@element-plus/icons-vue";
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])
   const isEdit = ref(false)
   const selectedRow = ref(false)
-  const InspectionModal = ref(null)
+  const policyDirModal = ref(null)
   const total = ref(0)
   const rowsPerPage = ref(10)
   const currentPage = ref(1)
   const departments = ref([])
-  const organizations = ref([])
   const search = ref({orgElement:'',department:''})
   const filter = {
     filter: {},
@@ -90,19 +89,9 @@
       else filter.search = `OrgId=${search.value.orgElement}&DepartmentId=${search.value.department}`;
       getData()
     }
-    function changeOrg(id) {
-      if(id) adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
-      else{
-        search.value.orgElement = ''
-        search.value.department = ''   
-      }
-      find()
-    }
+
   
-    function changeDep(id){
-      if(!id)  search.value.department = ''
-      find()
-    }
+
   const pageDescription = computed(() => {
     let start = (currentPage.value - 1) * rowsPerPage.value + 1
     let end = start + rowsPerPage.value - 1
@@ -124,7 +113,7 @@
   }
   
   function openModal(row: any | null) {
-    InspectionModal.value.open(row, getData)
+    policyDirModal.value.open(row, getData)
   }
   
   
@@ -135,7 +124,7 @@
     })
         .then((res) => {
           res && adminStore.deleteMarkupCategory(id).then(() => {
-            ElMessage({message: 'Категория наценки успешно удалена', type: 'success'})
+            ElMessage({message: 'Политика успешно удалена', type: 'success'})
             getData()
           })
         })
@@ -143,16 +132,16 @@
   
   
   
-  function getData() {
+  function getData(noCach: string) {
     isEdit.value = false
     selectedRow.value = false
-    adminStore.getPolicy().then(res => {
+    adminStore.getPolicy(noCach).then(res => {
       tableData.value = res.items
       total.value = res.totalCount
     })
   }
   
-  globalStore.setTitle('Категория наценки')
+  globalStore.setTitle('Политики')
   globalStore.steps = []
   getData()
   
