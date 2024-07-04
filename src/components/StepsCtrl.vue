@@ -1,43 +1,34 @@
 <template>
   <div class="step">
-    <div v-for="(s, ind) in globalStore.steps" :key="ind">
-      <div class="step__circle"
-           :title="s.name"
-           :class="{'done':s.done}">{{ ind + 1 }}
-      </div>
+    <div v-for="(chain, ind) in globalStore.steps" :key="ind">
+      <RouterLink :to="workflowsChainBuild(chain)">
+        <div class="done"> ➔ {{ chain.title }} &nbsp;</div>
+      </RouterLink>
     </div>
-    <span class="step__line"></span>
   </div>
 </template>
 <style>
 .step {
   display: flex;
   width: 100%;
-  min-width: 400px;
-  max-width: 400px;
   flex-wrap: nowrap;
-  justify-content: space-between;
-  position: relative;
-  color: white;
+  justify-content: start;
+}
+
+@media (width < 400px) {
+  .step {
+    width: 2000px;
+    flex-wrap: inherit;
+  }
+}
+
+.step .done {
+  color: #308a5a;
+  cursor: pointer;
 }
 
 .step > div {
   z-index: 11;
-}
-
-.step__circle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 20px;
-  height: 20px;
-  background: #4d5356;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.step__circle.done {
-  background: var(--main-color);
 }
 
 @media (width < 500px) {
@@ -46,19 +37,40 @@
   }
 }
 
-
-.step__line {
-  position: absolute;
-  height: 1px;
-  width: 100%;
-  background: #999;
-  margin-top: 10px;
-  z-index: 0;
+.step a:hover {
+  text-decoration: none;
 }
 </style>
 <script setup>
-import {useGlobalStore} from "@/stores/globalStore";
+import { useGlobalStore } from '@/stores/globalStore'
 
-const globalStore=useGlobalStore()
+const globalStore = useGlobalStore()
+
+function workflowsChainBuild(chain) {
+  let href = ''
+  switch (chain.type) {
+    case 1:
+      href = '/storage/sell/' + chain.id
+      break
+    case 2:
+      href = '/auto/' + chain.autoId + '/deal/' + chain.id
+      break
+    case 3:
+      href = '/auto/' + chain.autoId + '/deal/' + chain.id
+      break
+    case 4:
+      href = '/auto/' + chain.autoId + '/deal/' + chain.id
+      break
+    case 5:
+      if (chain.appealType === 8) {
+        href = '/appeal/commission/' + chain.id
+      } else {
+        href = '/appeal/' + chain.id
+      }
+   }
+
+  return href
+}
+
 </script>
 

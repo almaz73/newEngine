@@ -161,7 +161,6 @@ import AppealTabs from "@/pages/appeal/controls/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import InfoAboutClientModal from "@/pages/appeal/controls/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
-import EditCarModal from "@/pages/appeal/controls/EditCarModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 import EditCarBayerModal from "@/pages/appeal/controls/EditCarBayerModal.vue";
@@ -178,7 +177,6 @@ const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
-// const carModal = ref(null)
 const editCarBayerModal = ref(null)
 
 function permit_locale() {
@@ -239,8 +237,8 @@ function getEvents() {
 
 function init() {
   globalStore.setTitle(appeal.value.id + ' - Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
-  globalStore.steps = [{name: 'Обращение', done: true},
-    {name: 'Сбор данных', done: true}, {name: 'Оценка'}, {name: 'Договор'}, {name: 'Банк'}, {name: 'Выкуп'}]
+  globalStore.steps = [{name: 'Обращение', done: true},{name: 'Сбор данных'}]
+//[{ name: 'Обращение' }, { name: 'Сбор данных' }, { name: 'Оценка' }, { name: 'Договор' }, { name: 'Банк' }, { name: 'Выкуп' }]
 }
 
 defineExpose({open})

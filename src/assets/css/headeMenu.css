@@ -108,7 +108,8 @@
 
 .head-text {
     margin: 48px;
-    line-height: .1;
+    line-height: .3;
+    height: 60px;
 }
 
 @media (width < 500px) {

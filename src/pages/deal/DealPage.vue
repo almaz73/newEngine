@@ -1,47 +1,47 @@
 <template>
   <main>
     <FilterButtonsCtrl
-        :buttons="filterButtons"
-        :isOpen="isFilterOpened"
-        :placeholder="'Поиск по VIN'"
-        @buttonFilterSelect="buttonFilterSelect"
-        @openFilter="openFilter"
-        @updateSearchText="val=>searchText=val"
-        @getData="getData"
+      :buttons="filterButtons"
+      :isOpen="isFilterOpened"
+      :placeholder="'Поиск по VIN'"
+      @buttonFilterSelect="buttonFilterSelect"
+      @openFilter="openFilter"
+      @updateSearchText="val=>searchText=val"
+      @getData="getData"
     />
 
     <div class="open-filter" :class="{ open: isFilterOpened }">
       <DealFilter
-          ref="dealFilter"
-          style="min-height: 0; overflow: hidden"
-          v-model="searchFilter"
-          @keyup.enter="getData"
-          @getData="getData"
+        ref="dealFilter"
+        style="min-height: 0; overflow: hidden"
+        v-model="searchFilter"
+        @keyup.enter="getData"
+        @getData="getData"
       />
     </div>
 
-    <FilterTagsCtrl @getData="getData"/>
+    <FilterTagsCtrl @getData="getData" />
 
     <!-- для компа таблица -->
     <el-table
-        class="big-table"
-        v-if="!globalStore.isMobileView"
-        :data="dealStore.list"
-        ref="singleTableRef"
-        empty-text="Нет данных"
-        @row-dblclick="openPage"
-        highlight-current-row
+      class="big-table"
+      v-if="!globalStore.isMobileView"
+      :data="dealList"
+      ref="singleTableRef"
+      empty-text="Нет данных"
+      @row-dblclick="openPage"
+      highlight-current-row
     >
       <el-table-column label="Автомобиль">
         <template #default="scope">
           <span class="red-text">
             {{ scope.row.brand }} {{ scope.row.model }} {{ scope.row.yearReleased }}<br
           /></span>
-          {{ scope.row.vin }}<br/>
+          {{ scope.row.vin }}<br />
           <button
-              class="deal-car-color"
-              disabled
-              :style="{ 'background-color': scope.row.bodyColorCode }"
+            class="deal-car-color"
+            disabled
+            :style="{ 'background-color': scope.row.bodyColorCode }"
           ></button>
           &nbsp; Пробег:{{ scope.row.rowmileage }}
         </template>
@@ -49,15 +49,15 @@
       <el-table-column label="Менеджер">
         <template #default="scope">
           <b>{{ scope.row.userName }}</b
-          ><br/>
-          {{ scope.row.location }}<br/>
+          ><br />
+          {{ scope.row.location }}<br />
           <b>{{ scope.row.locationCity }}</b>
         </template>
       </el-table-column>
       <el-table-column label="Статус">
         <template #default="scope">
-          <span class="red-text"> {{ scope.row.statusTitle }} </span><br/>
-          {{ scope.row.dealTypeTitle }}<br/>
+          <span class="red-text"> {{ scope.row.statusTitle }} </span><br />
+          {{ scope.row.dealTypeTitle }}<br />
           {{ formatDate(scope.row.created) }}
         </template>
       </el-table-column>
@@ -66,7 +66,7 @@
         <template #default="scope">
           <img :src="scope.row.smallPhoto[0]" alt=""
                v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
-               class="img-in-table"/>
+               class="img-in-table" />
         </template>
       </el-table-column>
 
@@ -75,13 +75,13 @@
           <div style="border-radius: 50%; width: 35px; height: 35px;
           display: flex; justify-content: center;align-items: center;
            cursor: pointer; color: white; text-shadow: 0 0 5px black"
-           :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][scope.row.categoryAuto-1]}">
-            {{scope.row.categoryAuto && categoryAutos.find((el=>el.id === scope.row.categoryAuto )).name}}
+               :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][scope.row.categoryAuto-1]}">
+            {{ scope.row.categoryAuto && categoryAutos.find((el => el.id === scope.row.categoryAuto)).name }}
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column label=""  width="60px">
+      <el-table-column label="" width="60px">
         <template #default="scope">
           <div v-if="scope.row.additionalInformation"
                :title="scope.row.additionalInformation" style="cursor: pointer">⌘
@@ -94,7 +94,7 @@
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
-      <div v-for="(row, ind) in dealStore.list" :key="ind">
+      <div v-for="(row, ind) in dealList" :key="ind">
         <div class="head">
           <span class="deal-car-color" :style="carColor(row)"></span>
           <span>Пробег: {{ row.rowmileage }} </span>
@@ -107,16 +107,16 @@
         <div><small>Клиент:</small> {{ row.clientTitle }}</div>
         <div><small>Дата:</small> {{ formatDate(row.created) }}</div>
       </div>
-      <div v-if="!dealStore.list.length" style="text-align: center">Нет данных</div>
+      <div v-if="!dealList.length" style="text-align: center">Нет данных</div>
     </div>
-    <template v-if="dealStore.list.length>2">
+    <template v-if="dealList.length>2">
       <el-pagination
-          v-model:page-size="rowsPerPage"
-          :page-sizes="[5, 10, 20, 50]"
-          layout="prev, pager, next, sizes"
-          @current-change="changePage"
-          @size-change="changePageSize"
-          :total="total"
+        v-model:page-size="rowsPerPage"
+        :page-sizes="[5, 10, 20, 50]"
+        layout="prev, pager, next, sizes"
+        @current-change="changePage"
+        @size-change="changePageSize"
+        :total="total"
       />
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
@@ -124,17 +124,17 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
-import {ElMessage, ElTable} from 'element-plus'
-import {useDealStore} from '@/stores/dealStore'
-import {useGlobalStore} from '@/stores/globalStore'
-import {carColor, formatDate, gotoTop, validateVin} from '@/utils/globalFunctions'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { ElMessage, ElTable } from 'element-plus'
+import { useDealStore } from '@/stores/dealStore'
+import { useGlobalStore } from '@/stores/globalStore'
+import { carColor, formatDate, gotoTop, validateVin } from '@/utils/globalFunctions'
 import DealFilter from '@/pages/deal/DealFilter.vue'
-import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
-import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
-import {globalRef} from '@/components/filterCtrl/FilterGlobalRef';
-import {categoryAutos} from "@/utils/globalConstants";
-import router from "@/router";
+import FilterButtonsCtrl from '@/components/filterCtrl/FilterButtonsCtrl.vue'
+import FilterTagsCtrl from '@/components/filterCtrl/FilterTagsCtrl.vue'
+import { globalRef } from '@/components/filterCtrl/FilterGlobalRef'
+import { categoryAutos } from '@/utils/globalConstants'
+import router from '@/router'
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -142,12 +142,13 @@ const searchText = ref('')
 const total = ref(0)
 const rowsPerPage = ref(5)
 const currentPage = ref(1)
+const dealList = ref([])
 const filterButtons = reactive([
-  {type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true},
-  {type: 'buyByActiveCount', count: 0, name: 'По активным:', code: 12},
-  {type: 'buyOnSellAutoCount', count: 0, name: 'На продаже:', code: 11},
-  {type: 'buySoldAutoCount', count: 0, name: 'Продано:', code: 13},
-  {type: 'buyReturnedAutoCount', count: 0, name: 'Возврат:', code: 14}
+  { type: 'buyDealsCount', count: 0, name: 'Все оценки:', code: 10, active: true },
+  { type: 'buyByActiveCount', count: 0, name: 'По активным:', code: 12 },
+  { type: 'buyOnSellAutoCount', count: 0, name: 'На продаже:', code: 11 },
+  { type: 'buySoldAutoCount', count: 0, name: 'Продано:', code: 13 },
+  { type: 'buyReturnedAutoCount', count: 0, name: 'Возврат:', code: 14 }
 ])
 const isFilterOpened = ref(false)
 const dealFilter = ref(null)
@@ -181,7 +182,7 @@ function buttonFilterSelect(val) {
 
 
 function openPage(row) {
-  router.push({name: 'editDeal', params: {id: row.autoId, appealId: row.id}})
+  router.push({ name: 'editDeal', params: { id: row.autoId, appealId: row.id } })
 }
 
 function changePage(val) {
@@ -205,11 +206,11 @@ function changePageSize(val) {
 function validateFilter() {
   if (searchText.value) {
     filter.search = searchText.value
-    if (!validateVin(filter.search)) ElMessage({message: 'Неверный VIN.', type: 'warning',})
+    if (!validateVin(filter.search)) ElMessage({ message: 'Неверный VIN.', type: 'warning' })
   }
 
   if (searchFilter.value.registrationMark && searchFilter.value.registrationMark.length < 12) {
-    ElMessage({message: 'Неверный ГосНомер.', type: 'warning',})
+    ElMessage({ message: 'Неверный ГосНомер.', type: 'warning' })
     return false
   }
 
@@ -227,11 +228,10 @@ function validateFilter() {
 }
 
 function getData() {
-  if (validateFilter()) return false;
+  if (validateFilter()) return false
   globalStore.isWaiting = true
   dealStore.getDeals(filter).then(res => {
-
-    console.log('res', res)
+    dealList.value = res.deals
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
@@ -241,6 +241,7 @@ function getData() {
 
 onMounted(() => {
   globalStore.setTitle('Оценки')
+  globalStore.steps = []
   let dealFilters = localStorage.getItem('dealFilters') || ''
   if (dealFilters) {
     dealFilters = JSON.parse(dealFilters)
