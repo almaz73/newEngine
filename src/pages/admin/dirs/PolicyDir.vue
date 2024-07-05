@@ -32,18 +32,22 @@
         </el-table-column>
       </el-table>
   
+        
       <div class="vertical-table" v-if="globalStore.isMobileView">
-        <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-          <span>{{ row.orgElement.name }}
-            {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
-          </span>
-        </div>
+      <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
+        <span>{{ row.title }}
+           <el-button @click="openModal(row)">
+             <img  alt=""
+                  title="Редактировать"
+                  src="@/assets/icons/icon-pencil-gray.png">
+           </el-button>
+        </span>
+          <div v-if="row.description"><small>Описание:</small> {{ row.description }}</div>
+          <div v-if="row.typeTitle"><small>Тип:</small> {{ row.typeTitle }}</div>
+          <div v-if="row.sectionTitle"><small>Раздел:</small> {{ row.sectionTitle }}</div>
+          <div v-if="row.itemTitle"><small>Элемент:</small> {{ row.itemTitle }}</div>
       </div>
+    </div>
   
       <template v-if="total>2">
         <el-pagination
