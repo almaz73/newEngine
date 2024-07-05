@@ -115,7 +115,7 @@
     adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
   }
 
-  function open(row, cbModal) {
+  function open(row, cbModal,copy) {
     cb = cbModal;
     isOpen.value = true;
     if (!row) model.value = {orgElement:{id:null}, department:{id:null}, rate: null };
@@ -123,7 +123,9 @@
         model.value = JSON.parse(JSON.stringify(row))
         if(!row.department) model.value.department = {id:null};
     }
-
+    if (copy) {
+      model.value.id = 0
+    }
 
     globalStore.getOrganizations().then(res => organizations.value = res.items)
     if (model.value.orgElement.id) changeOrg(model.value.orgElement.id)

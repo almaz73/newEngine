@@ -76,6 +76,9 @@
               <img v-if="!scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
                  title="Заблокировать"
                  src="@/assets/icons/icon-blocked-red.png">
+                 <img @click="openModal(scope.row, 'copy')" alt=""
+                 src="@/assets/icons/copy.gif"
+                 title="Создать новый на основе этого" >
             <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
@@ -179,8 +182,8 @@
     getData()
   }
   
-  function openModal(row: any | null) {
-    InspectionModal.value.open(row, getData)
+  function openModal(row: any | null,copy: string | null) {
+    InspectionModal.value.open(row, getData,copy)
   }
 
   function toggleActive(id:number) {

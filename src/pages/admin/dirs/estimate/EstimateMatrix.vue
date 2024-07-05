@@ -73,6 +73,9 @@
         <el-table-column prop="roleTitle" width="73px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
+              <img @click="openModal(scope.row, 'copy')" alt=""
+                 src="@/assets/icons/copy.gif"
+                 title="Создать новый на основе этого" >
               <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
@@ -177,8 +180,8 @@
     getData()
   }
   
-  function openModal(row: any | null) {
-    InspectionModal.value.open(row, getData)
+  function openModal(row: any | null,copy: string | null) {
+    InspectionModal.value.open(row, getData,copy)
   }
 
   
