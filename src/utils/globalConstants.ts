@@ -210,6 +210,96 @@ export const AppealStatusTable = [
     {id: 400, name: 'Обращение. Оформление'},
 ]
 
+export const DealStatusTable = [
+    {id: 20, name: 'Осмотр'},
+    {id: 30, name: 'Подтверждение аналитика'},
+    {id: 261, name: 'Переговоры завершены, клиент согласен'},
+    {id: 262, name: 'Переговоры завершены, клиент не согласен'},
+    {id: 75, name: 'Отказ со стороны клиента'},
+    {id: 23, name: 'Уточнить данные'},
+    {id: 70, name: 'Отказ со стороны АЦ'},
+    // {id: , name: 'Установить цену'},
+    // {id: , name: 'Установить цену новая'},
+    {id: 73, name: 'Аналитик согласовал цену'},
+
+    {id: 50, name: 'Запросить подтверждение выкупа'},
+    {id: 45, name: 'Уточнить данные (у менеджера по зхакупкам)'},
+    {id: 60, name: 'Подтвердить заявку'},
+    {id: 77, name: 'Оформить выкуп'},
+    {id: 80, name: 'Выкупить автомобиль'},
+
+  // смотреть deal-general.tpl.html
+    // ng-if="(currentUser.role=='Admin'?true: printForm.error == false)"
+    // {id: 20, name: 'Выкупить автомобиль'},
+
+  //ng-if="::checkStatus(dealStatusEnum.transit) && deal.dealStatus < dealStatusEnum.photoSession"
+    {id: 90, name: 'Транзит'},
+    {id: 150, name: 'Перевести в ожидание СТО'},
+
+    {id: 160, name: 'Перевести в работу СТО'},
+    {id: 170, name: 'Кузовные работы СТО'},
+    {id: 175, name: 'Перевести в ожидание зап части'},
+    {id: 180, name: 'Завершить работы СТО'},
+
+  //ng-if="::checkStatus(dealStatusEnum.transit) && deal.dealStatus > dealStatusEnum.photoSession"
+    {id: 90, name: 'Вернуть в сервис'},
+    {id: 185, name: '"Выдать клиенту'},
+    // {id: 20, name: 'Начать фотосессию'},
+    // {id: 20, name: 'Закончить фотосессию'},
+    // {id: 20, name: 'Выставить на продажу'},
+    {id: 28, name: 'Вернуть клиенту'},
+
+  //<li ng-if="::checkStatus(dealStatusEnum.analyticResponse) && deal.dealStatus == 80">
+    {id: 40, name: 'Oтмена выкупа'},
+
+  // <ul ng-if="deal.dealType == 30 && availableStatuses.length > 0">
+    {id: 25, name: 'Перевести на хранение'},
+    {id: 28, name: 'Возвратить авто'},
+    // {id: 20, name: 'Выкупить а/м'}, ???? как у осмотра ID
+
+    {id: 100, name: 'ПСО. Поступление'},
+    {id: 101, name: 'ПСО. Мойка'},
+    {id: 108, name: 'ПСО. В работе'},
+    {id: 103, name: 'ПСО. Отправить в СТО'},
+    {id: 104, name: 'ПСО. Отправить в КЦ'},
+    {id: 105, name: 'ПСО. Сервисные работы завершены'},
+    {id: 106, name: 'ПСО. В работу'},
+    {id: 107, name: 'ПСО. Дополнительное оборудование'},
+    {id: 108, name: 'ПСО. Работы завершены'},
+    {id: 109, name: 'ПСО. На сдачу'},
+    {id: 110, name: 'ПСО. Осмотр'},
+    {id: 111, name: 'ПСО. Запрос бронирования'},
+
+  //  <ul ng-if="availableStatuses.length > 0 && deal.type == 4">
+    {id: 340, name: 'Продажа. На продажу'},
+    {id: 300, name: 'Продажа. Фотосессия'},
+    {id: 310, name: 'Продажа. Установить цену'},
+    {id: 350, name: 'Продажа. Запрос бронирования'},
+
+  //   <ul ng-if="availableStatuses.length > 0 && (deal.type == 1 || deal.type == 3)">
+    //                                         <div user-permission="dealGeneral.sellStatusChange">
+    {id: 149, name: 'Продажа. Отправить в СТО'},
+  // <div user-permission="dealGeneral.sellStatusChange">
+    {id: 100, name: 'Продажа. Отправить в ПСО'},
+
+  //<div user-permission="dealGeneral.sellStatusChange">
+    {id: 104, name: 'Продажа. Отправить в КЦ'},
+    {id: 300, name: 'Продажа. Фотосессия'},
+    {id: 340, name: 'Продажа. На продажу'},
+    {id: 310, name: 'Продажа. Установить цену'},
+    {id: 320, name: 'Продажа. Оформление'},
+    {id: 350, name: 'Продажа. Запрос бронирования'},
+    {id: 330, name: 'Продажа. В резерв'},
+    {id: 360, name: 'Продажа. Продано'},
+
+    //  ng-if="changeLocation.allow"
+    // {id: 20, name: ' Перемещение а/м'},
+    // <ul ng-if="show.sendForAuction">
+    // {id: 20, name: 'Направить на аукцион'},
+    {id: 20, name: 'Осмотр'},
+    {id: 20, name: 'Осмотр'},
+  ]
+
 export const EventStatusEnums = {'Открыта': 10, 'В работе': 20, 'Закрыта': 30}
 export const CommunicationTypes = [
     {id: 10, name: 'Входящий звонок'},

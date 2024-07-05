@@ -72,9 +72,7 @@
 
       <el-table-column label="" width="60px">
         <template #default="scope">
-          <div style="border-radius: 50%; width: 35px; height: 35px;
-          display: flex; justify-content: center;align-items: center;
-           cursor: pointer; color: white; text-shadow: 0 0 5px black"
+          <div class="category-auto"
                :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][scope.row.categoryAuto-1]}">
             {{ scope.row.categoryAuto && categoryAutos.find((el => el.id === scope.row.categoryAuto)).name }}
           </div>

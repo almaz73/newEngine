@@ -31,10 +31,6 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/History/getHistory/${id}/20`)
             return res.data
         },
-        async getStatuses(id: number) {
-            const res = await axios.get(`/api/deal/${id}/getStatuses`)
-            return res.data
-        },
         async getRoles(id: number) {
             return await axios.get(`/api/user/list/policy?WorkflowLeadType=${id}`).then(q => q)
         },

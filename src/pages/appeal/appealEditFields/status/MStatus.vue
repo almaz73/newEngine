@@ -1,6 +1,6 @@
 <template>
   <small class="label-right">Статус</small>
-  <el-dropdown style="margin-bottom: 4px">
+  <el-dropdown style="margin: -6px 0 6px">
     <el-button type="primary">
       {{ appeal.statusTitle }}
     </el-button>
@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import {useAppealStore} from "@/stores/appealStore";
 import {useGlobalStore} from "@/stores/globalStore";
+import {useDealStore} from '@/stores/dealStore'
 import {ref, watchEffect} from "vue";
 import {AppealStatusTable} from "@/utils/globalConstants";
 import StatusStart from "@/pages/appeal/appealEditFields/status/StatusStart.vue";
@@ -37,8 +37,8 @@ import StatusToArchive from "@/pages/appeal/appealEditFields/status/StatusToArch
 import StatusDecor from "@/pages/appeal/appealEditFields/status/StatusDecor.vue";
 
 const props = defineProps(['appeal'])
-const appealStore = useAppealStore()
 const globalStore = useGlobalStore()
+const dealStore = useDealStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
 const oldStatus = ref({})
@@ -51,7 +51,7 @@ const statusToArchive = ref(null)
 const statusDecor = ref(null)
 
 watchEffect(() => {
-  props.appeal.id && appealStore.getStatuses(props.appeal.id).then(res => {
+  props.appeal.id && dealStore.getStatuses(props.appeal.id).then(res => {
     appealAvailableStatuses.value = res.items
     res.items.forEach(el => {
       let item = AppealStatusTable.find(item => item.id === el)

@@ -2,7 +2,7 @@
   <div>
     <el-tabs @tab-click="tabchange" v-model="activeName">
       <el-tab-pane label="Общая информация" name="first">
-        <MainInfo :mod="mod" />
+        <MainInfo :deal="mod" />
       </el-tab-pane>
       <el-tab-pane label="Листы осмотра" name="second">
       </el-tab-pane>
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useDealStore } from '@/stores/dealStore'
 import { ref } from 'vue'
-import MainInfo from '@/pages/deal/MainInfo.vue'
+import MainInfo from '@/pages/deal/tabs/MainInfo.vue'
 import { useGlobalStore } from '@/stores/globalStore'
 
 const globalStore = useGlobalStore()

@@ -82,7 +82,7 @@ const AdminDirectories = {
   // '🚧Агентские услуги': ClientsDir,
   'Источник': SourceDir,
   'СМС шаблоны': SMSTemplatesDir,
-  'V🚧Политики': PolicyDir,
+  'Политики': PolicyDir,
   'Шаблоны причин': ReasonTemplatesDir,
   'Подпись документов': SignDocumentDir,
   // '🚧Договора': ClientsDir,

@@ -105,8 +105,13 @@
 <!--                 style="cursor: pointer; margin: 0 12px">-->
 
             <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
-                        v-if="permit_locale()">
+                        v-if="permit_locale() && !appeal.auto">
               <el-button :icon="Edit" size="small">Оценивать </el-button>
+            </RouterLink>
+
+             <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
+                         v-if="permit_locale() && appeal.auto && appeal.auto.vin">
+              <el-button :icon="Edit" size="small">Открыть в оценквх</el-button>
             </RouterLink>
           <br></span>
 
@@ -237,8 +242,7 @@ function getEvents() {
 
 function init() {
   globalStore.setTitle(appeal.value.id + ' - Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
-  globalStore.steps = [{name: 'Обращение', done: true},{name: 'Сбор данных'}]
-//[{ name: 'Обращение' }, { name: 'Сбор данных' }, { name: 'Оценка' }, { name: 'Договор' }, { name: 'Банк' }, { name: 'Выкуп' }]
+  globalStore.steps = [{title: 'Обращение', done: true}]
 }
 
 defineExpose({open})

@@ -18,7 +18,11 @@ export const useDealStore = defineStore('dealStore', {
     async getDeal(id: string) {
       const res = await axios.get('/api/deal/' + id)
       return res.data
-    }
+    },
+    async getStatuses(id: number) {
+      const res = await axios.get(`/api/deal/${id}/getStatuses`)
+      return res.data
+    },
 
   }
 })

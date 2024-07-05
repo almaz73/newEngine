@@ -24,12 +24,7 @@ export const useGlobalStore = defineStore('globalStore', {
             role:''
         },
         steps: [
-            // {name: 'Обращение', done: true},
-            // {name: 'Осмотр', done: true},
-            // {name: 'Оценка', done: true},
-            // {name: 'Договор', done: true},
-            // {name: 'Банк'},
-            // {name: 'Выкуп'},
+          // приходит с сервера внутри workflowsChain
         ]
     }),
     actions: {
