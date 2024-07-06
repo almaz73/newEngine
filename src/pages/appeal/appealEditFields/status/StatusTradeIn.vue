@@ -27,7 +27,7 @@
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-           <el-button type="info" @click="cb(false); isOpen = false">Отмена</el-button>
+           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
     </div>
@@ -48,12 +48,11 @@ const isOpen = ref(false);
 const mod = ref({});
 const closeModal = () => isOpen.value = false;
 const types = ref([])
-let cb;
+;
 
-function open(val, appeal, cbModal) {
+function open(val, appeal) {
   mod.value = val
   mod.value.appealId = appeal.id
-  cb = cbModal;
   isOpen.value = true;
 
   globalStore.пetTradeInDirectionTypes().then(res => {
@@ -71,9 +70,9 @@ function save() {
   }
 
   useGlobalStore().isWaiting = true
-  appealStoreStatus.setDirectionType(params).then(() => {
-    isOpen.value = false
-    location.reload()
+  appealStoreStatus.setDirectionType(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
   })
 }
 

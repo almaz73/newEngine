@@ -27,7 +27,7 @@
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-           <el-button type="info" @click="cb(false); isOpen = false">Отмена</el-button>
+           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
     </div>
@@ -36,22 +36,22 @@
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
+import {useGlobalStore} from '@/stores/globalStore'
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import {ElMessage} from "element-plus";
 import {BuyCategoryTypes} from "@/utils/globalConstants";
 
+const globalStore=useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false);
 const mod = ref({});
 const closeModal = () => isOpen.value = false;
-let cb;
 
-function open(val, appeal, cbModal) {
+function open(val, appeal) {
   mod.value = val
   mod.value.appealId = appeal.id
-  cb = cbModal;
   isOpen.value = true;
 
 }
@@ -60,15 +60,15 @@ function save() {
 
   if(!mod.value.type) return ElMessage.warning('Поле "Вид выкупа" обязателен для заполнения')
   let params = {
-    comment: mod.value.comment,
+    // comment: mod.value.comment,
     appealId: mod.value.appealId,
     buyCategory: mod.value.type
   }
 
-  useGlobalStore().isWaiting = true
-  appealStoreStatus.setBuyCategory(params).then(() => {
-    isOpen.value = false
-    location.reload()
+  globalStore.isWaiting = true
+  appealStoreStatus.setBuyCategory(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
   })
 }
 

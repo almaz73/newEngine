@@ -27,7 +27,7 @@
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-           <el-button type="info" @click="cb(false); isOpen = false">Отмена</el-button>
+           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
     </div>
@@ -48,13 +48,10 @@ const isOpen = ref(false);
 const mod = ref({});
 const closeModal = () => isOpen.value = false;
 const types = ref([])
-let cb;
 
-function open(val, appeal, cbModal) {
-  console.log('val', val)
+function open(val, appeal) {
   mod.value = val
   mod.value.appealId = appeal.id
-  cb = cbModal;
   isOpen.value = true;
 
   globalStore.getRoles([10, 20]).then(res => {
@@ -72,10 +69,10 @@ function save() {
     ResponsibleUser: mod.value.type
   }
 
-  useGlobalStore().isWaiting = true
-  appealStoreStatus.setStatus(params).then(() => {
-    isOpen.value = false
-    location.reload()
+  globalStore.isWaiting = true
+  appealStoreStatus.setStatus(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
   })
 }
 

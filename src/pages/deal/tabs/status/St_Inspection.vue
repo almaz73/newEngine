@@ -30,6 +30,7 @@ import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false)
 const mod = ref({})
@@ -47,10 +48,10 @@ function save() {
     id: mod.value.dealId,
     newStatus: mod.value.id
   }
-  useGlobalStore().isWaiting = true
-  appealStoreStatus.setStatus(params).then(() => {
-    isOpen.value = false
-    location.reload()
+  globalStore.isWaiting = true
+  appealStoreStatus.setStatus(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
   })
 }
 

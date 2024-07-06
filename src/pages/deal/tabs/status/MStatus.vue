@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 import { useDealStore } from '@/stores/dealStore'
 import { DealStatusTable } from '@/utils/globalConstants'
@@ -40,7 +40,11 @@ const st_AnalistConfimation = ref(null)
 const st_clientsRefusal = ref(null)
 const st_ATrefused = ref(null)
 
-function makeChoice(status) {
+interface Status {
+  id: number,
+  name: string
+}
+function makeChoice(status: Status) {
   console.log('status=', status)
 
   if (status.id === 20) st_Inspection.value.open(status, deal.dealId) //Осмотр
@@ -52,7 +56,7 @@ function makeChoice(status) {
 watchEffect(() => {
   deal.dealId && dealStore.getStatuses(deal.dealId).then(res => {
     availableStatuses.value = res.items
-    res.items.forEach(el => {
+    res.items.forEach((el:any) => {
       let item = DealStatusTable.find(item => item.id === el)
       item && StatusTypes.value.push(item)
     })
@@ -69,7 +73,7 @@ function sortFunction() {
   // if (deal.workflowLeadType != 6) deleteNode(8)
   // if (deal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
 
-  let newList = []
+  let newList:[] = []
   myList.forEach(el => {
     let founded = StatusTypes.value.find(item => el === item.id)
     if (founded) newList.push(founded)

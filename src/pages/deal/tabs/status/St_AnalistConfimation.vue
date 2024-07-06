@@ -27,11 +27,10 @@
 import AppModal from '@/components/AppModal.vue'
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
 
-const appealStoreStatus = useAppealStoreStatus()
+const globalStore = useGlobalStore()
 const isOpen = ref(false)
 const mod = ref({})
 const closeModal = () => isOpen.value = false
@@ -50,10 +49,11 @@ function save() {
   }
 
 
-  useGlobalStore().isWaiting = true
-  useDealStore().setConfirmation(params).then(() => {
+  globalStore.isWaiting = true
+  useDealStore().setConfirmation(params).then(res => {
+    globalStore.isWaiting = false
     isOpen.value = false
-    location.reload()
+    if (res.status === 200) location.reload()
   })
 }
 

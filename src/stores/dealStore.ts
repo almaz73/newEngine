@@ -24,12 +24,10 @@ export const useDealStore = defineStore('dealStore', {
       return res.data
     },
     async setConfirmation(params: { comment: string; buyId: number; newStatus: number}) {
-      const res = await axios.post('/api/buy/status/set', params).then(q => q)
-      return res.data
+      return await axios.post('/api/buy/status/set', params).then(q => q)
     },
-    async changePrice(params: { id: number; price: number; }) {
-      const res = await axios.post(`/api/deal/${params.id}/changeClientPrice/${params.price}`, params).then(q => q)
-      return res.data
+    async clientRefusal(params: { id: number; price: number; }) {
+      return await axios.post(`/api/deal/${params.id}/changeClientPrice/${params.price}`, params).then(q => q)
     },
     async getBuyEditHistory(id: number) {
       const res = await axios.get('/api/History/GetBuyEditHistory?buyId='+id)

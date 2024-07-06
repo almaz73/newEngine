@@ -28,7 +28,7 @@
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-         <el-button type="info" @click="cb(false); isOpen = false">Отмена</el-button>
+         <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
     </div>
@@ -43,18 +43,17 @@ import {ElMessage} from "element-plus";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import {useGlobalStore} from "@/stores/globalStore";
 
+const globalStore=useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false);
 const mod = ref({type: []});
 const closeModal = () => isOpen.value = false;
-let cb;
 const types = ref([])
 
-function open(val, appeal, cbModal) {
+function open(val, appeal) {
   mod.value = val
   mod.value.appealId = appeal.id
   mod.value.workflowLeadType = appeal.workflowLeadType
-  cb = cbModal;
   isOpen.value = true;
 
   appealStoreStatus.getReasonTemplates(appeal.workflowLeadType).then(res => {
@@ -75,10 +74,10 @@ function save() {
     reason: mod.value.type
   }
 
-  useGlobalStore().isWaiting = true
-  appealStoreStatus.setArchive(params).then(() => {
-    isOpen.value = false
-    location.reload()
+  globalStore.isWaiting = true
+  appealStoreStatus.setArchive(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
   })
 }
 

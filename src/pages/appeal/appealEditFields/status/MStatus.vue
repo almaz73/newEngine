@@ -41,7 +41,6 @@ const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
-const oldStatus = ref({})
 const statusStart = ref(null)
 const statusArchive = ref(null)
 const statusComission = ref(null)
@@ -53,7 +52,7 @@ const statusDecor = ref(null)
 watchEffect(() => {
   props.appeal.id && dealStore.getStatuses(props.appeal.id).then(res => {
     appealAvailableStatuses.value = res.items
-    res.items.forEach(el => {
+    res.items.forEach((el:any) => {
       let item = AppealStatusTable.find(item => item.id === el)
       item && AppealStatusTypes.value.push(item)
     })
@@ -71,7 +70,7 @@ function sortFunction() {
   if (props.appeal.workflowLeadType != 6) deleteNode(8)
   if (props.appeal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
 
-  let newList = []
+  let newList:[] = []
   myList.forEach(el => {
     let founded = AppealStatusTypes.value.find(item => el === item.id)
     if (founded) newList.push(founded)
@@ -80,30 +79,14 @@ function sortFunction() {
 }
 
 function makeChoice(val) {
-  oldStatus.value = {id: props.appeal.status, name: props.appeal.statusTitle}
-  // eslint-disable-next-line vue/no-mutating-props
-  props.appeal.status = val.id
-  // eslint-disable-next-line vue/no-mutating-props
-  props.appeal.statusTitle = val.name
-
-  console.log('val', val)
-  if (val.id === 11) statusStart.value.open(val, props.appeal.id, reset) //'Обращение. В работу'
-  if (val.id === 17) statusArchive.value.open(val, props.appeal, reset) //'Обращение. Архивировать'
-  if (val.id === 263) statusComission.value.open(val, props.appeal, reset) //'Передать на комиссию'
-  if (val.id === 265) statusTradeIn.value.open(val, props.appeal, reset) //'Передать на комиссию'
-  if (val.id === 264) statusBuyout.value.open(val, props.appeal, reset) //'Передать на выкуп'
-  if (val.id === 16) statusToArchive.value.open(val, props.appeal, reset) //'Обращение. Запрос архивирования'
-  if (val.id === 400) statusDecor.value.open(val, props.appeal, reset) //'Обращение. Оформление'
-
+  if (val.id === 11) statusStart.value.open(val, props.appeal.id) //'Обращение. В работу'
+  if (val.id === 17) statusArchive.value.open(val, props.appeal) //'Обращение. Архивировать'
+  if (val.id === 263) statusComission.value.open(val, props.appeal) //'Передать на комиссию'
+  if (val.id === 265) statusTradeIn.value.open(val, props.appeal) //'Передать на комиссию'
+  if (val.id === 264) statusBuyout.value.open(val, props.appeal) //'Передать на выкуп'
+  if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
+  if (val.id === 400) statusDecor.value.open(val, props.appeal) //'Обращение. Оформление'
 }
-
-function reset() {
-  // eslint-disable-next-line vue/no-mutating-props
-  props.appeal.status = oldStatus.value.id
-  // eslint-disable-next-line vue/no-mutating-props
-  props.appeal.statusTitle = oldStatus.value.name
-}
-
 
 </script>
 
