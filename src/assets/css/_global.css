@@ -39,7 +39,7 @@ body {
 }
 
 .router-window {
-    height: calc(100vh - 130px);
+    /*height: calc(100vh - 130px);*/
 }
 
 @media (width < 500px) {
@@ -47,9 +47,9 @@ body {
         right: inherit;
     }
 
-    .router-window {
-        height: inherit;
-    }
+    /*.router-window {*/
+    /*    height: inherit;*/
+    /*}*/
 }
 
 .gototop {

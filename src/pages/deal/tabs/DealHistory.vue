@@ -42,23 +42,19 @@ import { formatDMY_hm } from '@/utils/globalFunctions'
 import { ref } from 'vue'
 
 const dealStore = useDealStore()
-let deal = null
 const radio = ref(10)
 const tableData = ref([])
-console.log('deal', deal)
 
-
-function open(_deal: any) {
-  deal = _deal
-  deal.dealId && getGrade()
+function open() {
+  getGrade()
 }
 
 function getGrade() {
-  dealStore.getBuyEditHistory(deal.dealId).then(res => tableData.value = res.items)
+  dealStore.getBuyEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
 function getAuto() {
-  dealStore.getBuyAutoEditHistory(deal.dealId).then(res => tableData.value = res.items)
+  dealStore.getBuyAutoEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
 defineExpose({ open })

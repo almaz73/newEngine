@@ -102,6 +102,10 @@ const router = createRouter({
     ]
 })
 
+router.beforeEach(res=>{
+    // console.log('???res=',res)
+})
+
 function fail(val: any) {
     if (val.toString().includes('Failed to fetch') && !navigator.onLine) {
         ElMessage({message: 'Страница недоступна, сайт работает офлайн!', type: 'warning',})

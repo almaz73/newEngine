@@ -30,11 +30,15 @@ const mod = ref(null)
 const dealHistory = ref(null)
 
 function tabchange(val) {
-  if (val.props.name === 'fourth') dealHistory.value.open(mod.value)
+
+  console.log('val',val)
+
+  if (val.props.name === 'fourth') dealHistory.value.open()
 }
 
 dealStore.getDeal(appealId).then(res => {
   mod.value = res
+  dealStore.deal = res
   init()
 })
 

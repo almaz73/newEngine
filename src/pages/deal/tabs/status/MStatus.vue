@@ -3,7 +3,7 @@
     <div class="label l_200">Этап выкупа</div>
     <el-dropdown style="margin: -6px 0 6px">
       <el-button type="primary">
-        {{ deal.dealStatusTitle }}
+        {{ dealStore.deal.dealStatusTitle }}
       </el-button>
       <template #dropdown>
         <el-dropdown-menu>
@@ -32,7 +32,7 @@ import St_clientsRefusal from '@/pages/deal/tabs/status/St_clientsRefusal.vue'
 import St_ATrefused from '@/pages/deal/tabs/status/St_ATrefused.vue'
 
 const dealStore = useDealStore()
-const { deal } = defineProps(['deal'])
+
 const StatusTypes = ref([])
 const availableStatuses = ref([])
 const st_Inspection = ref(null)
@@ -47,14 +47,14 @@ interface Status {
 function makeChoice(status: Status) {
   console.log('status=', status)
 
-  if (status.id === 20) st_Inspection.value.open(status, deal.dealId) //Осмотр
-  if (status.id === 30) st_AnalistConfimation.value.open(status, deal.dealId) //Подтверждение аналитика'}
-  if (status.id === 75) st_clientsRefusal.value.open(status, deal.dealId) //Отказ со стороны клиента
-  if (status.id === 70) st_ATrefused.value.open(status, deal.dealId) //Отказ со стороны клиента
+  if (status.id === 20) st_Inspection.value.open(status, dealStore.deal.dealId) //Осмотр
+  if (status.id === 30) st_AnalistConfimation.value.open(status, dealStore.deal.dealId) //Подтверждение аналитика'}
+  if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
+  if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
 }
 
 watchEffect(() => {
-  deal.dealId && dealStore.getStatuses(deal.dealId).then(res => {
+  dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
     availableStatuses.value = res.items
     res.items.forEach((el:any) => {
       let item = DealStatusTable.find(item => item.id === el)
@@ -69,9 +69,6 @@ let myList = [20, 30, 261, 262, 75, 23, 70, 76, 40, 50, 45, 60, 77, 80, 90, 150,
   108, 109, 110, 111, 340, 310, 350, 149, 100, 300, 320, 350, 330, 360]
 
 function sortFunction() {
-  // доступы и ограничения
-  // if (deal.workflowLeadType != 6) deleteNode(8)
-  // if (deal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
 
   let newList:[] = []
   myList.forEach(el => {

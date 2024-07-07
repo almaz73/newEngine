@@ -236,6 +236,13 @@ li.el-menu-item {
     color: #D34439 !important;
 }
 
+.el-collapse-item__header, .el-collapse-item__content {
+    padding: 0 30px !important;
+}
+.el-collapse-item__header{
+    color: #999 !important;
+}
+
 .big-collapse .el-collapse-item__header {
     font-size: 18px !important;
 }
@@ -248,4 +255,7 @@ li.el-menu-item {
 
 .el-collapse-item__header {
     line-height: 1.1 !important;
+}
+.big-collapse.no-color-collapse .el-collapse-item__header{
+    border-top: 1px solid #ddd;
 }

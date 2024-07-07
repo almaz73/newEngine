@@ -57,6 +57,7 @@
 .red-text {
     color: var(--main-color)
 }
+
 .green-text {
     color: #3cac71
 }
@@ -201,4 +202,12 @@
 
 .big-table .el-table__cell {
     padding: 0 !important;
+}
+
+.deal_two_col {
+    width: 49%;
+    min-width: 600px;
+    display: inline-block;
+    float: left;
+    /*border: 1px solid red;*/
 }

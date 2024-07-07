@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import cache from "@/utils/globalCach";
 
 export const useDealStore = defineStore('dealStore', {
-  state: () => ({}),
+  state: () => ({
+    deal:{zzz:'zzzz'} // используем модель, чтобы подключиться в модулях
+  }),
   actions: {
     async getDeals(params: any) {
         const { filter, limit, mainFilter, offset, search } = params
@@ -37,7 +40,13 @@ export const useDealStore = defineStore('dealStore', {
       const res = await axios.get('/api/History/GetBuyAutoEditHistory?buyId='+id)
       return res.data
     },
-
+    async getInspection(id: number, noCach: boolean) {
+      // @ts-ignore
+      if (!noCach && cache['getInspection' + id]) return cache['getInspection' + id]
+      const res = await axios.get('/api/inspection/' + id)
+      // @ts-ignore
+      return (cache['getInspection' + id] = res.data)
+    }
   }
 })
 
