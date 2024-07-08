@@ -1,9 +1,6 @@
 <template>
-  <div class="admin-filter-field">
-
-
-
-    <div style="display: flex; align-items: center;">
+  <div>
+    <div  class="admin-filter-field">
         <span style="margin-right:15px;">Организация</span>
 
           <el-select
@@ -73,7 +70,7 @@
           <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="roleTitle" width="73px">
+      <el-table-column prop="roleTitle" width="95px">
         <template #default="scope">
           <div style="" class="admin-table-editors">
             <img @click="openModal(scope.row, 'copy')" alt=""
@@ -93,13 +90,23 @@
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.orgElement.name }}
-          {{ formatDateDDMMYYYY(row.validFrom) }}
-           <el-button>
-             <img @click="openModal(row)" alt=""
+           <el-button @click="openModal(row)">
+             <img  alt=""
                   title="Редактировать"
                   src="@/assets/icons/icon-pencil-gray.png">
            </el-button>
         </span>
+               
+        <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department.name }}</div>
+        <div><small>Цена продажи, от:</small> {{ row.priceLow }}</div>
+        <div><small>Цена продажи, до:</small> {{ row.priceHigh }}</div>
+        <div><small>A, %:</small> {{ row.categoryA }}</div>
+        <div><small>B, %:</small> {{ row.categoryB }}</div>
+        <div><small>C, %:</small> {{ row.categoryC }}</div>
+        <div><small>D, %:</small> {{ row.categoryD }}</div>
+        <div><small>S, %:</small> {{ row.categoryS }}</div>
+        <div><small>Период действия, с:</small> {{ formatDateDDMMYYYY(row.validFrom) }} </div>
+        <div><small>Период действия, до:</small> {{ formatDateDDMMYYYY(row.validTo) }}</div>
       </div>
     </div>
 
@@ -117,6 +124,15 @@
   </div>
   <EstimateCategoryModal ref="InspectionModal"/>
 </template>
+<style scoped>
+.vertical-table small{
+  width:110px;
+  text-align: left;
+}
+.vertical-table div{
+  padding:0px;
+}
+</style>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";

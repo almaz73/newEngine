@@ -1,6 +1,6 @@
 <template>
-    <div class="admin-filter-field">
-      <div style="display: flex; align-items: center;">
+    <div >
+      <div class="admin-filter-field">
         <span style="margin-right:15px;">Организация</span>
 
           <el-select
@@ -34,7 +34,6 @@
         </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
-      <br><br>
       <el-table v-if="!globalStore.isMobileView"
               :data="tableData"
                 style="width: 100%; margin-bottom: 20px"
@@ -67,7 +66,7 @@
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="roleTitle" width="73px">
+        <el-table-column prop="roleTitle" width="120px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
               <img v-if="scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
@@ -76,13 +75,13 @@
               <img v-if="!scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
                  title="Заблокировать"
                  src="@/assets/icons/icon-blocked-red.png">
-                 <img @click="openModal(scope.row, 'copy')" alt=""
+              <img @click="openModal(scope.row, 'copy')" alt=""
                  src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого" >
-            <img @click="openModal(scope.row)" alt=""
+              <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteCategory(scope.row.id)" alt=""
+              <img @click="deleteCategory(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">          
             </div>
@@ -93,13 +92,17 @@
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
-            {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
+             <el-button @click="openModal(row)">
+               <img  alt=""
                     title="Редактировать"
                     src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
           </span>
+            <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department?.name }}</div>
+            <div v-if="row.typeTitle"><small>Название:</small> {{ row.typeTitle }}</div>
+            <div ><small>Процент, %:</small> {{ row.rate }}</div>
+            <div v-if="row.validFrom"><small>Период действия, с:</small> {{ formatDateDDMMYYYY(row.validFrom) }}</div>
+            <div v-if="row.validTo"><small>Период действия, до:</small> {{ formatDateDDMMYYYY(row.validTo) }}</div>
         </div>
       </div>
   
