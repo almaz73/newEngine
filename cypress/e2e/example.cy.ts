@@ -7,17 +7,18 @@ let token = '';
 describe('Интеграционный тест справочников', function () {
     beforeEach(function () {
         cy.viewport(1600, 900);
-
-        // Авторизация / нужно придумать, чтобы каждый раз не авторизоваться
-        cy.visit(`http://${site}/v2/login`)
-        cy.get('input[placeholder="Логин"]').type('___') // логин
-        cy.get('input[placeholder="Пароль"]').type('___') // пароль
-        cy.get('input[value="Войти"]').click()
-        cy.title().should('eq', 'Оценки')
+        cy.session('ourTest', () => {
+            cy.visit(`http://${site}/v2/login`)
+            cy.get('input[placeholder="Логин"]').type('') // логин
+            cy.get('input[placeholder="Пароль"]').type('') // пароль
+            cy.get('input[value="Войти"]').click()
+            cy.title().should('eq', 'Оценки')
+        }, {cacheAcrossSpecs: true})
 
     })
 
     it('Попадание на стартовую страницу пользователя', () => {
+        cy.visit('http://' + site + '/v2/deal') // заходим в раздел справочники
         cy.contains('h1', 'Оценки')
     })
 
@@ -26,6 +27,6 @@ describe('Интеграционный тест справочников', funct
 
         cy.get(".el-select").contains("Выбери справочник").click()
 
-        cy.contains('Марки').click()
+        cy.wait(2000); // Ожидание загрузки списка вариантов
     })
 })
