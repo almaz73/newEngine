@@ -70,7 +70,7 @@
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="roleTitle" width="73px">
+        <el-table-column prop="roleTitle" width="95px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
               <img @click="openModal(scope.row, 'copy')" alt=""
@@ -92,8 +92,8 @@
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
             {{ formatDateDDMMYYYY(row.validFrom) }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
+             <el-button @click="openModal(row)">
+               <img  alt=""
                     title="Редактировать"
                     src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
