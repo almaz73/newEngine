@@ -1,6 +1,6 @@
 <template>
-    <div class="admin-filter-field">
-      <div style="display: flex; align-items: center;">
+    <div >
+      <div class="admin-filter-field">
         <span style="margin-right:15px;">Организация</span>
 
           <el-select
@@ -99,6 +99,11 @@
                     src="@/assets/icons/icon-pencil-gray.png">
              </el-button>
           </span>
+          <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department?.name }}</div>
+            <div v-if="row.typeTitle"><small>Название:</small> {{ row.typeTitle }}</div>
+            <div ><small>Процент, %:</small> {{ row.rate }}</div>
+            <div v-if="row.validFrom"><small>Период действия, с:</small> {{ formatDateDDMMYYYY(row.validFrom) }}</div>
+            <div v-if="row.validTo"><small>Период действия, до:</small> {{ formatDateDDMMYYYY(row.validTo) }}</div>
         </div>
       </div>
 
