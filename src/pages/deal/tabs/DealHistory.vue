@@ -4,15 +4,15 @@
 
 
     <el-radio-group v-model="radio">
-      <el-radio-button @click="getGrade()" label="Оценка" value="10" />
-      <el-radio-button @click="getAuto()" label="Авто" value="20" />
+      <el-radio-button @click="getGrade()" label="Оценка" value="10"/>
+      <el-radio-button @click="getAuto()" label="Авто" value="20"/>
     </el-radio-group>
 
     <el-table
-      style="margin-top: 24px"
-      :data="tableData"
-      empty-text="Нет данных"
-      highlight-current-row
+        style="margin-top: 24px"
+        :data="tableData"
+        empty-text="Нет данных"
+        highlight-current-row
     >
       <el-table-column label="Пользователь">
         <template #default="scope">
@@ -37,9 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { useDealStore } from '@/stores/dealStore'
-import { formatDMY_hm } from '@/utils/globalFunctions'
-import { ref } from 'vue'
+import {useDealStore} from '@/stores/dealStore'
+import {formatDMY_hm} from '@/utils/globalFunctions'
+import {ref} from 'vue'
 
 const dealStore = useDealStore()
 const radio = ref(10)
@@ -50,14 +50,14 @@ function open() {
 }
 
 function getGrade() {
-  dealStore.getBuyEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
+  dealStore.getBuyEditHistory(dealStore.dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
 function getAuto() {
   dealStore.getBuyAutoEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
-defineExpose({ open })
+defineExpose({open})
 
 </script>
 

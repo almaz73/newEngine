@@ -55,9 +55,13 @@ describe('Интеграционный тест справочников', funct
         cy.get('[placeholder="Порядок"]').type('17')
 
         cy.contains('Сохранить').click(); // Смотрим все модели Киа
-        /// Теперь удаляем
-        cy.wait(1000);
-        // cy.get('.el-table__row').contains('ambulance17').get('img').get('[title="Редактировать"]')
+        /// Теперь удаляем (пока не получается нажать на кноку выбранной строки)
+        // либо киприс не умеет, либо нужно хорошенько поискать
+        cy.wait(2000);
+
+
+        // cy.get('.el-table__row').parent().contains('ambulance17').get('img')
+        // .get('img').get('[title="Редактировать"]')
         // cy.get('img').click()
 
 
@@ -74,7 +78,13 @@ describe('Интеграционный тест справочников', funct
         // // Нажмите на комбобокс, чтобы открыть список вариантов
         // cy.get('@select').click();
 
-      //  cy.get('.el-table__row').contains('ambulance17').parent().parent().contains('img').first().click()
+
+
+       // cy.get('.el-table__row').contains('tr','Картотека арбитражных дел').as('select');
+       //
+       //  cy.get('@select').get('img')
+       //  cy.get('[title="Редактировать"]').last().click()
+
 
     })
 })

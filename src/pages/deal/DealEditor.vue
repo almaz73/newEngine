@@ -2,7 +2,7 @@
   <div>
     <el-tabs @tab-click="tabchange" v-model="activeName">
       <el-tab-pane label="Общая информация" name="first">
-        <MainInfo :deal="mod" />
+        <MainInfo/>
       </el-tab-pane>
       <el-tab-pane label="Листы осмотра" name="second">
 
@@ -10,16 +10,16 @@
       <el-tab-pane label="Заказ наряды" name="third">
       </el-tab-pane>
       <el-tab-pane label="История" name="fourth">
-        <DealHistory ref="dealHistory" />
+        <DealHistory ref="dealHistory"/>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script setup lang="ts">
-import { useDealStore } from '@/stores/dealStore'
-import { ref } from 'vue'
+import {useDealStore} from '@/stores/dealStore'
+import {ref} from 'vue'
 import MainInfo from '@/pages/deal/tabs/MainInfo.vue'
-import { useGlobalStore } from '@/stores/globalStore'
+import {useGlobalStore} from '@/stores/globalStore'
 import DealHistory from '@/pages/deal/tabs/DealHistory.vue'
 
 const globalStore = useGlobalStore()
@@ -31,7 +31,7 @@ const dealHistory = ref(null)
 
 function tabchange(val) {
 
-  console.log('val',val)
+  console.log('val', val)
 
   if (val.props.name === 'fourth') dealHistory.value.open()
 }

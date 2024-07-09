@@ -206,8 +206,7 @@
 
 .deal_two_col {
     width: 49%;
-    min-width: 600px;
+    min-width: 500px;
     display: inline-block;
     float: left;
-    /*border: 1px solid red;*/
 }
