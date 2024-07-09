@@ -3,7 +3,7 @@
               @closeModal="closeModal()"
               :width="360"
               :top="40"
-              :title="'Категория наценки'"
+              :title="isFilialsModal?'Филиал банка':'Банк'"
               draggable>
       <div v-if="!isFilialsModal">
         <el-form ref="form" :model="model" class="error-to-message">
@@ -99,7 +99,7 @@
   const adminStore = useAdminStore();
   let cb;
   
-  function open(row, cbModal,_isFilialsModal) {
+  function open(row, cbModal,_isFilialsModal, activeBankId) {
     cb = cbModal;
     isOpen.value = true;
     isFilialsModal.value = _isFilialsModal
@@ -110,13 +110,27 @@
     } 
     else model.value = JSON.parse(JSON.stringify(row))
     model.value.address = ''
+    model.value.activeBankId = activeBankId
   }
 
   
   function save() {
-    checkEmptyFields(form.value).then(res => { 
-    res && console.log("todo на сайте нужно поправить сохранение на сервере")
-      //todo на сайте нужно поправить сохранение на сервере
+    checkEmptyFields(form.value).then(res => {
+      res && console.log('todo на сайте нужно поправить сохранение на сервере')
+      if (!res) return false
+
+      if (!isFilialsModal.value) {
+        adminStore.saveBank({ name: model.value.name, shortName: model.value.shortName })
+      } else {
+        let params = {
+          address: model.value.registrationAddress,
+          bankId: model.value.activeBankId,
+          bik: model.value.bik,
+          correspondentAccount: model.value.correspondentAccount,
+          name: model.value.name
+        }
+        adminStore.saveBankFilial(params)
+      }
   })
 
   }

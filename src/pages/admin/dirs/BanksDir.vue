@@ -11,7 +11,7 @@
             <h4 style="color: #999">
             {{
                 (isFilialsPage) ?
-                    'Филиалы банка: ' + activeBank + '.   ( ' + filialsData.length + ' )' :
+                    'Филиалы банка: ' + activeBank.name + '.   ( ' + filialsData.length + ' )' :
                     'Все Банки ( ' + banksLength + ')'
             }}
               <el-button v-if="isFilialsPage" @click="showBanks()"  :icon="ArrowLeft">{{ globalStore.isMobileView ? '' :
@@ -39,7 +39,7 @@
                             src="@/assets/icons/icon-cross-gray.png"
                             title="Удалить">
                     </div>
-                    
+
                 </template>
             </el-table-column>
 
@@ -60,7 +60,7 @@
                             src="@/assets/icons/icon-cross-gray.png"
                             title="Удалить">
                     </div>
-                    
+
                 </template>
             </el-table-column>
 
@@ -79,7 +79,7 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const banksLength = ref(0)
-const activeBank = ref('')
+const activeBank = ref({})
 const filialsData = ref([])
 const modal = ref(null)
 const BankIdFilials = ref(0)
@@ -101,7 +101,8 @@ function find() {
 }
 
 function showFilials(id: number, name: string){
-    activeBank.value = name
+    activeBank.value.name = name
+    activeBank.value.id = id
     getFilials(id)
     isFilialsPage.value = true
     search.value = ''
@@ -116,7 +117,7 @@ function showBanks(id: number){
 
 
 function openModal(row: any | null) {
-  modal.value.open(row, getData, isFilialsPage.value)
+  modal.value.open(row, getData, isFilialsPage.value, activeBank.value.id)
 }
 
 function deleteRow(row: any) {
@@ -147,7 +148,7 @@ function deleteFilials(row){
         })
         .catch(() => {
         })
-    
+
 }
 
 function getData() {
@@ -158,7 +159,7 @@ function getData() {
         banksLength.value = res.count
         tableDataMemory = JSON.parse(JSON.stringify(res.items))
     })
-} 
+}
 function getFilials(id:number = BankIdFilials.value) {
     globalStore.isWaiting = true
     BankIdFilials.value = id
