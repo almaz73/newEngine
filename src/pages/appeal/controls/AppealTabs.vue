@@ -37,7 +37,7 @@
         </div>
 
 
-        <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
+        <div v-for="ev in events" :key="ev.id" class="collapse-blocks" style="background: #ddd">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
             <u><a @click="closeEvent(ev)" v-if="canCloseEvent(ev)">
               ❌ Закрыть
@@ -113,11 +113,11 @@
   <SendSmsModal ref="sendSmsModal"/>
 </template>
 <script setup>
-import {formatDateDDMMYYYY, formatDMY_hm} from "@/utils/globalFunctions";
+import {getPeriods, formatDMY_hm} from "@/utils/globalFunctions";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {Plus} from "@element-plus/icons-vue";
-import SendEventModal from "@/pages/appeal/controls/SendEventModal.vue";
+import SendEventModal from "@/controls/SendEventModal.vue";
 import SendSmsModal from "@/pages/appeal/controls/SendSmsModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {EventStatusEnums, statuses} from "@/utils/globalConstants";
@@ -143,12 +143,6 @@ const isOnlyEvents = ref(false)
 const statusHistory = ref([])
 
 
-function getPeriods(ev) {
-  let startTime = new Date(ev.dateStart).getHours() + ':' + new Date(ev.dateStart).getMinutes()
-  let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
-
-  return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
-}
 
 function getEvents(noCach) {
   appealStore.getEvents(appeal.value.id, noCach).then(res => {
@@ -197,7 +191,11 @@ function sendComment() {
 }
 
 function openModalEvent() {
-  sendModal.value.open(appeal.value, getEvents, events.value[0])
+
+  console.log('events.value[0]',events.value[0])
+
+
+  sendModal.value.open(appeal.value, getEvents)
   getEvents(appeal.value.id, 'noCach')
 }
 

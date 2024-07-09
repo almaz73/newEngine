@@ -15,11 +15,10 @@
       </el-select>
     </small>
 
-
     <div style="text-align: center; margin: 12px">
       <el-button type="success" style="padding: 22px 12px; border: none"
-                 :style="{background: model.id===event.type?'#999':''}"
-                 v-for="(model, ind) in EventTypes" :key="ind">
+                 :style="{background: model.id===event.type?'#999999 !important':''}"
+                 v-for="(model, ind) in EventTypes" :key="ind" :title="'Тип вызова: '+ model.value">
         <img :src="'/v2/src/assets/icons/'+eventTypeButtonClass(model)" alt=""
              @click="changeEventType(model.id)"/>
       </el-button>
@@ -64,6 +63,17 @@
 </style>
 
 <script setup>
+/*
+*
+            $scope.newEvent.managerId = $scope.currentUser.id;
+            $scope.newEvent.appealId = event.entityId;
+            $scope.newEvent.lastTaskId = event.id;
+            $scope.newEvent.lastTaskType = event.type;
+            $scope.newEvent.appealType = event.entityType;
+* */
+
+
+
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {computed, ref} from "vue";
@@ -77,7 +87,7 @@ import HourlyCalendarModal from "@/pages/appeal/controls/HourlyCalendarModal.vue
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
 const isOpen = ref(false);
-const appeal = ref({});
+const entity = ref({});
 const closeModal = () => isOpen.value = false;
 let cb;
 const responsible = ref(false)
@@ -155,8 +165,11 @@ const CallCenterEventsMeet = [
 ]
 
 
-function getSelects() {
-  switch (lastTaskType.value) {
+function getSelects(lastTaskType) {
+
+  console.log('lastTaskTyp = ',lastTaskType)
+
+  switch (lastTaskType) {
       // звонок
     case 1:
       closeEnums.value = EventClosePhoneEnums;
@@ -341,17 +354,30 @@ function eventTypeButtonClass(button) {
 
 function checkResponsible() {
   responsible.value = !responsible.value;
-  event.value.userResponsibleId = responsible.value ? account.id : appeal.value.managerId;
+  event.value.userResponsibleId = responsible.value ? account.id : entity.value.managerId;
 }
 
-function open(row, cbModal, lastTask) {
+/**
+ *
+ * @param row
+ * @param cbModal - метод, где что делать после закрытия модалки
+ * @param lastTaskType - type послежднего события
+ */
+function open(row, cbModal) {
+
+  console.log('row = ',row)
   cb = cbModal
-  appeal.value = row
-  lastTaskType.value = lastTask.type
+  entity.value = row
   isOpen.value = true
-  event.value.userResponsibleTitle = appeal.value.managerName
-  event.value.userResponsibleId = appeal.value.managerId
-  getSelects()
+
+  console.log('entity.valu = ',entity.value)
+
+  if(entity.value.managerName){
+    event.value.userResponsibleTitle = entity.value.managerName
+    event.value.userResponsibleId = entity.value.managerId
+  }
+
+  getSelects(entity.value.type)
 }
 
 function getDateTime(myDate, time) {
@@ -414,7 +440,7 @@ function save() {
     // deleted: event.value.deleted,
     description: event.value.description,
     // created: event.value.created,
-    entityId: appeal.value.id,
+    entityId: entity.value.id,
     entityType: 20, // тут нужно разбираться todo
     // typeEntityId: event.value.typeEntityId,
   };

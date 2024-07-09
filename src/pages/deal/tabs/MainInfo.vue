@@ -142,13 +142,14 @@
     <div class="deal_two_col">
       <el-tabs v-model="activeTab" style="padding-right: 8px">
         <el-tab-pane :label="'События'" name="eventsTab">
-          <el-scrollbar maxHeight="300px">
+          <el-scrollbar maxHeight="400px">
 
             <MainInfoEvents/>
           </el-scrollbar>
         </el-tab-pane>
       </el-tabs>
     </div>
+    <div style="clear: both"></div>
 
 
     <el-collapse class="big-collapse no-color-collapse" @change="changeCollapse">

@@ -317,3 +317,9 @@ export function checkEmptyFields(formEl: any) {
         return !valid
     })
 }
+
+export function getPeriods(ev) {
+    let startTime = new Date(ev.dateStart).getHours() + ':' + new Date(ev.dateStart).getMinutes()
+    let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
+    return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
+}

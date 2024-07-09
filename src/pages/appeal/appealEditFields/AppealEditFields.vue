@@ -109,7 +109,7 @@
               <el-button :icon="Edit" size="small">Оценивать </el-button>
             </RouterLink>
 
-             <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.dealStore.deal.id}`"
+             <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
                          v-if="permit_locale() && appeal.auto && appeal.auto.vin">
               <el-button :icon="Edit" size="small">Открыть в оценквх</el-button>
             </RouterLink>
@@ -119,8 +119,8 @@
           <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
 
 
-          <span class="label" v-if="appeal.deal && appeal.dealStore.deal.dealStatus"> Статус: </span>
-          {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.dealStore.deal.dealStatus).name }}
+          <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
+          {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
           <br>
         </div>
       </el-collapse-item>
