@@ -3,17 +3,17 @@
 Cypress.on('uncaught:exception', (err, runnable) => { // чтобы тест не падал на неожиданных ошибках
     return false
 })
-
-const site = 'localhost:5173'
+const env = Cypress.env()
+const site = env.BASE_URL
 let token = '';
 
 describe('Интеграционный тест справочников', function () {
     beforeEach(function () {
         cy.viewport(1600, 900);
         cy.session('ourTest', () => {
-            cy.visit(`http://${site}/v2/login`)
-            cy.get('input[placeholder="Логин"]').type('d.gumerov') // логин
-            cy.get('input[placeholder="Пароль"]').type('gumerov123') // пароль
+            cy.visit(`${site}/v2/login`)
+            cy.get('input[placeholder="Логин"]').type(env.LOGIN) // логин
+            cy.get('input[placeholder="Пароль"]').type(env.PASSWORD) // пароль
             cy.get('input[value="Войти"]').click()
             cy.title().should('eq', 'Оценки')
         }, {cacheAcrossSpecs: true})
@@ -37,7 +37,7 @@ describe('Интеграционный тест справочников', funct
     // })
 
     it('Справочник Лист осмотра.  Добавляем и удаляем Осмотр', () => {
-        cy.visit('http://' + site + '/v2/admin') // заходим в раздел справочники
+        cy.visit(site + '/v2/admin') // заходим в раздел справочники
 
         cy.get('.el-select').contains("Выбери справочник").click();
         cy.get('.el-select-dropdown__item').contains('Лист осмотра').click();

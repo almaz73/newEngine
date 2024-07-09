@@ -22,7 +22,7 @@
         highlight-current-row>
       <el-table-column label="Цвет" prop="colorName">
         <template #default="scope">
-          <el-input autofocus v-if="isEdit && selectedRow.id===scope.row.id"
+          <el-input placeholder="Цвет" autofocus v-if="isEdit && selectedRow.id===scope.row.id"
                     v-model="scope.row.colorName"></el-input>
           <span v-else>{{ scope.row.colorName }}</span>
         </template>
@@ -43,7 +43,7 @@
             <img @click="edit(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteRow(scope.row.id)" alt=""
+            <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
           </div>
