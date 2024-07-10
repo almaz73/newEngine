@@ -2,8 +2,8 @@
   <div v-if="dealStore.deal  && dealStore.deal.auto">
 
     <h3>
-      {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }} г.в,
-      ( {{ dealStore.deal.auto.vin }} )
+      {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }} г.в.
+      ( VIN: {{ dealStore.deal.auto.vin }} )
 
     </h3>
 
@@ -140,14 +140,7 @@
     </div>
 
     <div class="deal_two_col">
-      <el-tabs v-model="activeTab" style="padding-right: 8px">
-        <el-tab-pane :label="'События'" name="eventsTab">
-          <el-scrollbar maxHeight="400px">
-
-            <MainInfoEvents/>
-          </el-scrollbar>
-        </el-tab-pane>
-      </el-tabs>
+      <MainInfoEvents/>
     </div>
     <div style="clear: both"></div>
 
@@ -254,8 +247,6 @@ import MainInfoEvents from "@/pages/deal/tabs/MainInfoEvents.vue";
 import {useDealStore} from "@/stores/dealStore";
 
 const dealStore = useDealStore()
-
-const activeTab = ref('eventsTab')
 const c_InspectionList = ref(null)
 
 function getOwnerTitle(owner: any) {

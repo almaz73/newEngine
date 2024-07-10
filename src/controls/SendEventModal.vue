@@ -3,10 +3,11 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 350: 600"
             :top="73"
-            :title="'Создать событие: '+title"
+            :title="'Создать событие '+(title?' : '+title:'')"
             draggable>
-    <small>
-      <label class="label-right l_150">Результат встречи:</label>
+
+    <small v-if="closeEnums.length">
+      <label class="label-right l_150">{{ commentLabel }}</label>
       <el-select
           style="width: 210px"
           placeholder="Выберите значение"
@@ -14,6 +15,13 @@
         <el-option v-for="item in closeEnums" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
     </small>
+
+    <!--    в старом коде не работает, отключил-->
+    <!--    <small v-if="!closeEnums.length">-->
+    <!--      <label class="label-right l_150">Результат события</label>-->
+    <!--      <el-input ng-model="event.comment" type="text"/>-->
+    <!--    </small>-->
+
 
     <div style="text-align: center; margin: 12px">
       <el-button type="success" style="padding: 22px 12px; border: none"
@@ -73,7 +81,6 @@
 * */
 
 
-
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {computed, ref} from "vue";
@@ -98,6 +105,16 @@ const eventselectedDateTime = ref(null)
 const hourlyModal = ref(null)
 const eventTime = ref(null)
 const isReady = ref(false)
+
+const props = defineProps([
+  'leadlId',
+  'entityType',
+  'parentEntityId',
+  'currentResponsibleTitle',
+  'currentResponsible',
+  'lastTaskId',
+  'lastTaskType',
+])
 
 const title = computed(() => {
   let elem = event.value.type && EventTypes.value.find(el => el.id === event.value.type)
@@ -166,9 +183,6 @@ const CallCenterEventsMeet = [
 
 
 function getSelects(lastTaskType) {
-
-  console.log('lastTaskTyp = ',lastTaskType)
-
   switch (lastTaskType) {
       // звонок
     case 1:
@@ -357,27 +371,16 @@ function checkResponsible() {
   event.value.userResponsibleId = responsible.value ? account.id : entity.value.managerId;
 }
 
-/**
- *
- * @param row
- * @param cbModal - метод, где что делать после закрытия модалки
- * @param lastTaskType - type послежднего события
- */
-function open(row, cbModal) {
-
-  console.log('row = ',row)
+function open(cbModal) {
   cb = cbModal
-  entity.value = row
   isOpen.value = true
 
-  console.log('entity.valu = ',entity.value)
-
-  if(entity.value.managerName){
-    event.value.userResponsibleTitle = entity.value.managerName
-    event.value.userResponsibleId = entity.value.managerId
+  if (props.currentResponsibleTitle) {
+    event.value.userResponsibleTitle = props.currentResponsibleTitle
+    event.value.userResponsibleId = props.currentResponsible
   }
 
-  getSelects(entity.value.type)
+  getSelects(props.lastTaskType)
 }
 
 function getDateTime(myDate, time) {
@@ -440,7 +443,7 @@ function save() {
     // deleted: event.value.deleted,
     description: event.value.description,
     // created: event.value.created,
-    entityId: entity.value.id,
+    entityId: props.parentEntityId,
     entityType: 20, // тут нужно разбираться todo
     // typeEntityId: event.value.typeEntityId,
   };

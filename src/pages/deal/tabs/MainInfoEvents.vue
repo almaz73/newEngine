@@ -1,27 +1,32 @@
 <template>
-  <div>
-    <el-button :icon="Plus" @click="openModalEvent()"
-               type="success" style="margin: 0 8px">
-      Запланировать следующее событие
-    </el-button>
+  <el-tabs v-model="activeTab" style="padding-right: 8px">
+    <el-tab-pane :label="'События - '+events.length" name="eventsTab">
+      <el-scrollbar maxHeight="400px">
+        <el-button :icon="Plus" @click="openModalEvent()"
+                   type="success" style="margin: 0 8px">
+          Запланировать следующее событие
+        </el-button>
 
-    <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
-      <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
-        <div style="float: right" v-html="getPeriods(ev)"/>
-      </div>
-      <div><span class="label-right">Описание:</span> {{ ev.description }}</div>
-      <div><span class="label-right">Ответственный:</span> {{ ev.responsible.person.lastName }}
-        {{ ev.responsible.person.firstName }}
-      </div>
-      <div><span class="label-right">Создал(а):</span> {{ ev.createdUser.person.lastName }}
-        {{ ev.createdUser.person.firstName }}
-      </div>
+        <div v-for="ev in events" :key="ev.id" class="collapse-blocks">
+          <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
+            <div style="float: right" v-html="getPeriods(ev)"/>
+          </div>
+          <div><span class="label-right">Описание:</span> {{ ev.description }}</div>
+          <div><span class="label-right">Ответственный:</span> {{ ev.responsible.person.lastName }}
+            {{ ev.responsible.person.firstName }}
+          </div>
+          <div><span class="label-right">Создал(а):</span> {{ ev.createdUser.person.lastName }}
+            {{ ev.createdUser.person.firstName }}
+          </div>
 
-    </div>
+        </div>
 
-  </div>
-<!--  <SendEventModal ref="sendModal"/>-->
-  <SendEventModal ref="sendModal"/>
+
+      </el-scrollbar>
+    </el-tab-pane>
+  </el-tabs>
+
+  <SendEventModal ref="sendEventModal"/>
 </template>
 
 <script setup lang="ts">
@@ -31,19 +36,17 @@ import SendEventModal from "@/controls/SendEventModal.vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useDealStore} from "@/stores/dealStore";
 import {useAppealStore} from "@/stores/appealStore";
-import { getPeriods } from '@/utils/globalFunctions'
+import {getPeriods} from '@/utils/globalFunctions'
 
 const appealStore = useAppealStore()
 const dealStore = useDealStore()
-const sendModal = ref(null)
+const sendEventModal = ref(null)
 const events = ref([])
+const activeTab = ref('eventsTab')
 
 function openModalEvent() {
-  console.log('dealStore.deal = ',dealStore.deal)
-
-  sendModal.value.open(dealStore.deal, getEvents)
+  sendEventModal.value.open(dealStore.deal, getEvents)
 }
-// console.log('dealStore.deal',dealStore.deal, events.value.length && events.value[0].type)
 
 getEvents('nocach')
 
@@ -52,8 +55,6 @@ function getEvents(noCach: string) {
 
   appealStore.getEvents(dealStore.deal.parentEntityId, noCach).then(res => {
     events.value = res.items
-    console.log(' res.items', res.items)
-    // countEvents.value = res.items.length
   })
 }
 

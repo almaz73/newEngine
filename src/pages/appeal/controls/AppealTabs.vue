@@ -8,9 +8,9 @@
         </el-button>
 
         <el-button @click="isOnlyEvents=!isOnlyEvents"
-                   v-if="countEvents"
+                   v-if="events.length"
                    type="info" style="margin: 0 8px">
-          Cобытия - {{ countEvents }}
+          Cобытия - {{ events.length }}
         </el-button>
 
 
@@ -108,12 +108,22 @@
       <img style="width:500px; padding-left: calc(50% - 250px)" :src="carPhoto" alt=""/>
     </el-tab-pane>
   </el-tabs>
-  <SendEventModal ref="sendModal"/>
+  <SendEventModal
+      ref="sendEventModal"
+      v-if="appeal && lastTask"
+      :leadlId="appeal.leadId"
+      :entityType="20"
+      :parentEntityId="appeal.id"
+      :currentResponsible="appeal.managerId"
+      :currentResponsibleTitle="appeal.managerName"
+      :lastTaskId="lastTask.id"
+      :lastTaskType="lastTask.type"
+  />
 
   <SendSmsModal ref="sendSmsModal"/>
 </template>
 <script setup>
-import {getPeriods, formatDMY_hm} from "@/utils/globalFunctions";
+import {formatDMY_hm, getPeriods} from "@/utils/globalFunctions";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
 import {Plus} from "@element-plus/icons-vue";
@@ -132,22 +142,24 @@ const countSms = ref(0)
 const history = ref([])
 const countHistory = ref(0)
 const events = ref([])
-const countEvents = ref(0)
 const comments = ref([])
 const countComments = ref(0)
-const sendModal = ref(null)
+const sendEventModal = ref(null)
 const sendSmsModal = ref(null)
 const appeal = ref(null)
 const commentTxt = ref('')
 const isOnlyEvents = ref(false)
 const statusHistory = ref([])
-
+const lastTask = ref(null)
 
 
 function getEvents(noCach) {
   appealStore.getEvents(appeal.value.id, noCach).then(res => {
     events.value = res.items
-    countEvents.value = res.items.length
+
+    events.value.forEach(value => {
+      if (value.status != 30 && lastTask.value == null) lastTask.value = value;
+    })
   })
 
   appealStore.getHistory(appeal.value.id).then(res => {
@@ -192,10 +204,7 @@ function sendComment() {
 
 function openModalEvent() {
 
-  console.log('events.value[0]',events.value[0])
-
-
-  sendModal.value.open(appeal.value, getEvents)
+  sendEventModal.value.open(getEvents)
   getEvents(appeal.value.id, 'noCach')
 }
 
