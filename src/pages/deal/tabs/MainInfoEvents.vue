@@ -25,8 +25,19 @@
       </el-scrollbar>
     </el-tab-pane>
   </el-tabs>
-
-  <SendEventModal ref="sendEventModal"/>
+  <SendEventModal
+      ref="sendEventModal"
+      v-if="dealStore.deal"
+      :currentResponsible="dealStore.deal.responsibleUserId"
+      :currentResponsibleTitle="dealStore.deal.responsibleUserName"
+      :leadlId="dealStore.deal.leadId"
+      :entityType="20"
+      :parentEntityId="dealStore.deal.parentEntityId"
+      :lastTaskId="''"
+      :lastTaskType="NaN"
+      :dealStatus="dealStore.deal.statusDeal"
+      :dealType="dealStore.deal.dealType"
+  />
 </template>
 
 <script setup lang="ts">
@@ -45,7 +56,7 @@ const events = ref([])
 const activeTab = ref('eventsTab')
 
 function openModalEvent() {
-  sendEventModal.value.open(dealStore.deal, getEvents)
+  sendEventModal.value.open(getEvents)
 }
 
 getEvents('nocach')

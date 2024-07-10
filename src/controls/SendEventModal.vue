@@ -114,6 +114,8 @@ const props = defineProps([
   'currentResponsible',
   'lastTaskId',
   'lastTaskType',
+  'dealStatus',
+  'dealType'
 ])
 
 const title = computed(() => {
@@ -381,6 +383,17 @@ function open(cbModal) {
   }
 
   getSelects(props.lastTaskType)
+}
+
+if ((props.dealStatus == 262 || props.dealStatus == 75) && props.dealType != 10) {
+  let events = [];
+  // для оценок  уменьшаем список
+
+  EventTypes.value.forEach(item => {
+    if (item.id == 1 || item.id == 2) events.push(item);
+  })
+
+  EventTypes.value = events;
 }
 
 function getDateTime(myDate, time) {
