@@ -29,6 +29,13 @@ import dayjs from 'dayjs'
 
 
 const app = createApp(App)
+
+app.directive('focus', { // чтобы автофокус ставить, теперь достаточно прописать v-focus
+  mounted(el) {
+    el.focus()
+  }
+})
+
 dayjs.Ls.en.weekStart = 1 // Неделя начинается с понедельника
 
 

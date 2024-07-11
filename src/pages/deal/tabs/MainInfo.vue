@@ -18,7 +18,7 @@
     <!--    </button>-->
 
     <div class="deal_two_col">
-      <MStatus/>
+      <MStatus />
 
 
       <div class="info-filed">
@@ -140,7 +140,7 @@
     </div>
 
     <div class="deal_two_col">
-      <MainInfoEvents/>
+      <MainInfoEvents />
     </div>
     <div style="clear: both"></div>
 
@@ -176,7 +176,7 @@
         </div>
       </el-collapse-item>
 
-      <el-collapse-item title="Порядок расчета" name="4"/>
+      <el-collapse-item title="Порядок расчета" name="4" />
 
       <el-collapse-item title="Собственник" name="5">
         <div class="info-filed">
@@ -218,12 +218,12 @@
       </el-collapse-item>
 
       <el-collapse-item title="Проверка ТС" name="9">
-
+        <C_InspectionGibdd ref="c_InspectionGibdd" />
 
       </el-collapse-item>
 
       <el-collapse-item title="Лист осмотра" name="8">
-        <C_InspectionList ref="c_InspectionList"/>
+        <C_InspectionList ref="c_InspectionList" />
       </el-collapse-item>
 
     </el-collapse>
@@ -240,14 +240,16 @@
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import {bodyTypes, categoryAutos, driveTypies, EngineType, GearboxType} from '@/utils/globalConstants'
-import {ref} from 'vue'
+import { bodyTypes, categoryAutos, driveTypies, EngineType, GearboxType } from '@/utils/globalConstants'
+import { ref } from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
-import MainInfoEvents from "@/pages/deal/tabs/MainInfoEvents.vue";
-import {useDealStore} from "@/stores/dealStore";
+import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
+import { useDealStore } from '@/stores/dealStore'
+import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
+const c_InspectionGibdd = ref(null)
 
 function getOwnerTitle(owner: any) {
   let title = ''
@@ -272,6 +274,7 @@ function getOwnerTitle(owner: any) {
 
 function changeCollapse(node: string[]) {
   if (node.includes('8')) c_InspectionList.value.open() // Лист осмотра
+  if (node.includes('9')) c_InspectionGibdd.value.open() // Проверка ТС (данные с Гибдд)
 }
 
 </script>
