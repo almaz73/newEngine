@@ -56,7 +56,7 @@ export const useDealStore = defineStore('dealStore', {
       return await axios.get(`/api/auto/getGibddCaptcha`)
     },
     async getDataByParams(params: any) {
-      let link = '?captcha=' + params.captcha + '&captchaToken=' + params.captchaToken
+      let link = '?captcha=' + params.captcha + '&captchaToken=' + encodeURIComponent(params.captchaToken)
       link += '&type=' + params.type + '&vin=' + params.vin
       return await axios.post('/api/auto/setGibddCaptcha' + link, params)
 
