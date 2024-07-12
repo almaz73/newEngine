@@ -5,17 +5,10 @@
       {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }} г.в.
       ( VIN: {{ dealStore.deal.auto.vin }} )
 
+      &nbsp; &nbsp;
+      <div class="krug" @click="openDealHistory()" />
     </h3>
 
-
-    <!--    <button-->
-    <!--      user-permission="dealGeneral.historyAutoDeals"-->
-    <!--      ng-show="historyAutoDealsCount && dealStore.deal.type==2"-->
-    <!--      class="a-button-circle-red"-->
-    <!--      data-uk-modal="{target:'#historyAutoDeals', center:true}"-->
-    <!--    >-->
-    <!--      <span ng-model="historyAutoDealsCount">{{historyAutoDealsCount}}</span>-->
-    <!--    </button>-->
 
     <div class="deal_two_col">
       <MStatus />
@@ -114,12 +107,7 @@
 
       <div class="info-filed" style="display: flex; margin: 10px 0; align-items: center">
         <label class="label l_200">Категория автомобиля</label>
-        <div class="category-auto"
-             :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][dealStore.deal.auto.categoryAuto-1]}">
-          {{
-            dealStore.deal.auto.categoryAuto && categoryAutos.find((el => el.id === dealStore.deal.auto.categoryAuto)).name
-          }}
-        </div>
+        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto" />
       </div>
 
 
@@ -146,7 +134,7 @@
 
 
     <el-collapse class="big-collapse no-color-collapse" @change="changeCollapse">
-      <el-collapse-item title="Дополниельная информация" name="1">
+      <el-collapse-item title="Дополниельная информация" name="1" v-if=" dealStore.deal.auto.additionalInformation">
         {{ dealStore.deal.auto.additionalInformation }}
       </el-collapse-item>
 
@@ -163,17 +151,8 @@
         </div>
       </div>
 
-      <el-collapse-item title="Финансовый расчет" name="3"
-      >
-        <div class="info-filed">
-          <label class="label l_200">Максимальная цена выкупа</label>
-          {{ dealStore.deal.auto.maxPriceBought || '_' }}₽
-        </div>
-
-        <div class="info-filed">
-          <label class="label l_200">Комиссионное вознаграждение</label>
-          {{ dealStore.deal.auto.commissionFee || '_' }}₽
-        </div>
+      <el-collapse-item title="Финансовый расчет" name="3">
+        <C_FinanceCalculation />
       </el-collapse-item>
 
       <el-collapse-item title="Порядок расчета" name="4" />
@@ -229,12 +208,23 @@
     </el-collapse>
 
 
+    <HistoryDealsModal ref="historyDealsModal" />
   </div>
 </template>
 <style>
-.info-filed {
-  height: 30px;
+
+
+.krug {
+  position: absolute;
+  background: #a12d24;
+  border-radius: 35px;
+  width: 35px;
+  height: 35px;
+  display: inline-block;
+  margin-top: -8px;
+  cursor: pointer;
 }
+
 </style>
 <script setup lang="ts">
 
@@ -246,10 +236,18 @@ import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
 import { useDealStore } from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
+import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
+import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
+import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
 const c_InspectionGibdd = ref(null)
+const historyDealsModal = ref(null)
+
+function openDealHistory() {
+  historyDealsModal.value.open()
+}
 
 function getOwnerTitle(owner: any) {
   let title = ''

@@ -72,10 +72,7 @@
 
       <el-table-column label="" width="60px">
         <template #default="scope">
-          <div class="category-auto"
-               :style="{background:['#518468', '#c6e0cc', '#f0d089', '#c0c5ce', '#d84e4e'][scope.row.categoryAuto-1]}">
-            {{ scope.row.categoryAuto && categoryAutos.find((el => el.id === scope.row.categoryAuto)).name }}
-          </div>
+          <CircleCateforyAvtoCtrl :categoryNumber="scope.row.categoryAuto" />
         </template>
       </el-table-column>
 
@@ -131,8 +128,8 @@ import DealFilter from '@/pages/deal/DealFilter.vue'
 import FilterButtonsCtrl from '@/components/filterCtrl/FilterButtonsCtrl.vue'
 import FilterTagsCtrl from '@/components/filterCtrl/FilterTagsCtrl.vue'
 import { globalRef } from '@/components/filterCtrl/FilterGlobalRef'
-import { categoryAutos } from '@/utils/globalConstants'
 import router from '@/router'
+import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()

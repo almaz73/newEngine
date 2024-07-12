@@ -59,8 +59,13 @@ export const useDealStore = defineStore('dealStore', {
       let link = '?captcha=' + params.captcha + '&captchaToken=' + encodeURIComponent(params.captchaToken)
       link += '&type=' + params.type + '&vin=' + params.vin
       return await axios.post('/api/auto/setGibddCaptcha' + link, params)
+    },
 
+    async getDealsByVin(id: number) {
+      return await axios.get('/api/deal/getDealsByVin/' + id)
     }
+
+
   }
 })
 
