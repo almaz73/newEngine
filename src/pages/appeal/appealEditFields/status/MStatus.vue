@@ -53,7 +53,7 @@ watchEffect(() => {
   props.appeal.id && dealStore.getStatuses(props.appeal.id).then(res => {
     appealAvailableStatuses.value = res.items
     res.items.forEach((el:any) => {
-      let item = AppealStatusTable.find(item => item.id === el)
+      let item = AppealStatusTable.find(item => item.id === el.value)
       item && AppealStatusTypes.value.push(item)
     })
     sortFunction()
