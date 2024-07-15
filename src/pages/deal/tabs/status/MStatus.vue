@@ -57,7 +57,7 @@ watchEffect(() => {
   dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
     availableStatuses.value = res.items
     res.items.forEach((el:any) => {
-      let item = DealStatusTable.find(item => item.id === el)
+      let item = DealStatusTable.find(item => item.id === el.value)
       item && StatusTypes.value.push(item)
     })
     sortFunction()

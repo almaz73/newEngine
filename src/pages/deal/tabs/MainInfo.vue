@@ -1,5 +1,5 @@
 <template>
-  <div v-if="dealStore.deal  && dealStore.deal.auto">
+  <div v-if="dealStore.deal  && dealStore.deal.auto" style="line-height: 1.3">
 
     <h3>
       {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }} г.в.
@@ -174,25 +174,7 @@
       </el-collapse-item>
 
       <el-collapse-item title="ПТС" name="6">
-        <div class="info-filed">
-          <label class="label l_200">Гос. номер</label>
-          {{ dealStore.deal.auto.registrationMark }}
-        </div>
-
-        <div class="info-filed">
-          <label class="label l_200">Номер номер</label>
-          {{ dealStore.deal.auto.certificateNumber }}
-        </div>
-
-        <div class="info-filed">
-          <label class="label l_200">Количество хозяев по ПТС</label>
-          {{ dealStore.deal.auto.countHostsByVC }}
-        </div>
-
-        <div class="info-filed">
-          <label class="label l_200">ПТС оригинальный</label>
-          {{ dealStore.deal.auto.isOriginalVC ? 'Да' : 'Нет' }}
-        </div>
+        <C_PTS :deal="dealStore.deal" />
       </el-collapse-item>
 
       <el-collapse-item title="Фото, Видео, Файлы" name="7">
@@ -249,6 +231,7 @@ import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculati
 import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from "@/controls/DealTypeEditorCtrl.vue";
+import C_PTS from "@/pages/deal/tabs/collapses/C_PTS.vue";
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
