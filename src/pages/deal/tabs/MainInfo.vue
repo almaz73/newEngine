@@ -6,12 +6,12 @@
       ( VIN: {{ dealStore.deal.auto.vin }} )
 
       &nbsp; &nbsp;
-      <div class="krug" @click="openDealHistory()" />
+      <div class="krug" @click="openDealHistory()"/>
     </h3>
 
 
     <div class="deal_two_col">
-      <MStatus />
+      <MStatus/>
 
 
       <div class="info-filed">
@@ -25,8 +25,8 @@
       </div>
 
       <div class="info-filed">
-        <label class="label l_200">Тип направления</label>
-        {{ dealStore.deal.dealStatus }}
+
+        <DealTypeEditorCtrl :deal="dealStore.deal"/>
       </div>
 
 
@@ -67,6 +67,15 @@
         <label class="label l_200">Пробег автомобиля</label>
         {{ dealStore.deal.mileageAuto }}
 
+        <span title="Не оригинальный пробег" style="cursor: pointer"
+              v-if="!dealStore.deal.additionalAutoInfo.isMileageOriginal">
+          ❗
+        </span>
+
+        <span title="Оригинальный пробег" style="cursor: pointer"
+              v-if="dealStore.deal.additionalAutoInfo.isMileageOriginal">
+          ✔️
+        </span>
       </div>
 
       <div class="info-filed">
@@ -107,7 +116,7 @@
 
       <div class="info-filed" style="display: flex; margin: 10px 0; align-items: center">
         <label class="label l_200">Категория автомобиля</label>
-        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto" />
+        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto"/>
       </div>
 
 
@@ -128,7 +137,7 @@
     </div>
 
     <div class="deal_two_col">
-      <MainInfoEvents />
+      <MainInfoEvents/>
     </div>
     <div style="clear: both"></div>
 
@@ -152,10 +161,10 @@
       </div>
 
       <el-collapse-item title="Финансовый расчет" name="3">
-        <C_FinanceCalculation />
+        <C_FinanceCalculation/>
       </el-collapse-item>
 
-      <el-collapse-item title="Порядок расчета" name="4" />
+      <el-collapse-item title="Порядок расчета" name="4"/>
 
       <el-collapse-item title="Собственник" name="5">
         <div class="info-filed">
@@ -197,18 +206,18 @@
       </el-collapse-item>
 
       <el-collapse-item title="Проверка ТС" name="9">
-        <C_InspectionGibdd ref="c_InspectionGibdd" />
+        <C_InspectionGibdd ref="c_InspectionGibdd"/>
 
       </el-collapse-item>
 
       <el-collapse-item title="Лист осмотра" name="8">
-        <C_InspectionList ref="c_InspectionList" />
+        <C_InspectionList ref="c_InspectionList"/>
       </el-collapse-item>
 
     </el-collapse>
 
 
-    <HistoryDealsModal ref="historyDealsModal" />
+    <HistoryDealsModal ref="historyDealsModal"/>
   </div>
 </template>
 <style>
@@ -230,15 +239,16 @@
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import { bodyTypes, categoryAutos, driveTypies, EngineType, GearboxType } from '@/utils/globalConstants'
-import { ref } from 'vue'
+import {bodyTypes, driveTypies, EngineType, GearboxType} from '@/utils/globalConstants'
+import {ref} from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
-import { useDealStore } from '@/stores/dealStore'
+import {useDealStore} from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
 import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
+import DealTypeEditorCtrl from "@/controls/DealTypeEditorCtrl.vue";
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)

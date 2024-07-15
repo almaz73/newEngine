@@ -254,7 +254,7 @@ import AppModal from '@/components/AppModal.vue'
 import {useAppealStore} from '@/stores/appealStore'
 import {useGlobalStore} from '@/stores/globalStore'
 import {useDesktopStore} from "@/stores/desktopStore";
-import {LeadType, WorkflowsVariants, Years} from '@/utils/globalConstants'
+import {LeadType, WorkflowsVariants, Years, BuyCategoryTypes} from '@/utils/globalConstants'
 import {markRaw, ref} from 'vue'
 import {Plus} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
@@ -325,12 +325,6 @@ function changeBrand(id) {
 }
 
 let cb
-const BuyCategoryTypes = ref([
-  {id: 10, title: 'Свободный выкуп'},
-  {id: 20, title: 'Выездной выкуп'},
-  {id: 30, title: 'Регион'},
-  {id: 40, title: 'Fleet'}
-])
 
 const closeModal = () => {
   isOpen.value = false

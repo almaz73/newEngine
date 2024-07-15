@@ -116,5 +116,11 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/deal/getServerTime`).then(q => q)
             return res.data
         },
+
+        async getTradeinDirectionTypes() {
+            if (cache.getTradeinDirectionTypes) return cache.getTradeinDirectionTypes // список статичный - кэшируем
+            const res = await axios.get(`/api/Lead/GetTradeinDirectionTypes`).then(q => q)
+            return (cache.getTradeinDirectionTypes = res)
+        },
     }
 })

@@ -24,6 +24,7 @@ const cache = {
     getDocumentTypes: null,
     getenabledemployeers: null,
     пetTradeInDirectionTypes: null,
-    getAllOrgWithDep: null
+    getAllOrgWithDep: null,
+    getTradeinDirectionTypes: null,
 }
 export default cache

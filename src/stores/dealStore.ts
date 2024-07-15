@@ -8,7 +8,7 @@ export const useDealStore = defineStore('dealStore', {
   }),
   actions: {
     async getDeals(params: any) {
-      const { filter, limit, mainFilter, offset, search } = params
+      const {filter, limit, mainFilter, offset, search} = params
       let url = '/api/workflow/GetBuyWorkflows'
       if (filter) url += '?filter=' + filter
       if (offset) url += '&offset=' + offset
@@ -63,6 +63,13 @@ export const useDealStore = defineStore('dealStore', {
 
     async getDealsByVin(id: number) {
       return await axios.get('/api/deal/getDealsByVin/' + id)
+    },
+
+    async setBuyCategory(dealId: number, id: number) {
+      return await axios.post(`/api/buy/setBuyCategory?dealId=${dealId}&categoryId=${id}`)
+    },
+    async changeTradeInDirectionType(dealId: number, id: number) {
+      return await axios.post(`/api/Deal/ChangeTradeInDirectionType?dealId=${dealId}&directionTypeId=${id}`)
     }
 
 
