@@ -1,43 +1,61 @@
 <template>
-  <div style="margin-left: 30px">
-    <el-checkbox v-model="gibdd.type10">
-      Сведения о периодах регистрации
-    </el-checkbox>
-    <div v-if="gibdd.text10" v-html="gibdd.text10"></div>
-    <br>
-
-    <el-checkbox v-model="gibdd.type20">
-      Проверка на участие в ДТП"
-    </el-checkbox>
-    <div v-if="gibdd.text20" v-html="gibdd.text20"></div>
-    <br>
-
-    <el-checkbox v-model="gibdd.type30">
-      Сведения о розыске"
-    </el-checkbox>
-    <div v-if="gibdd.text30" v-html="gibdd.text30"></div>
-    <br>
-
-    <el-checkbox v-model="gibdd.type40">
-      Сведения об ограничениях"
-    </el-checkbox>
-    <div v-if="gibdd.text40" v-html="gibdd.text40"></div>
-    <br>
-
+  <div>
+    <div class="boxes">
+      <div>
+        <el-checkbox v-model="gibdd.type10">
+          Сведения о периодах регистрации
+        </el-checkbox>
+        <div v-if="gibdd.text10" v-html="gibdd.text10"></div>
+        <br>
+      </div>
+      <div>
+        <el-checkbox v-model="gibdd.type20">
+          Проверка на участие в ДТП"
+        </el-checkbox>
+        <div v-if="gibdd.text20" v-html="gibdd.text20"></div>
+        <br>
+      </div>
+      <div>
+        <el-checkbox v-model="gibdd.type30">
+          Сведения о розыске"
+        </el-checkbox>
+        <div v-if="gibdd.text30" v-html="gibdd.text30"></div>
+        <br>
+      </div>
+      <div>
+        <el-checkbox v-model="gibdd.type40">
+          Сведения об ограничениях"
+        </el-checkbox>
+        <div v-if="gibdd.text40" v-html="gibdd.text40"></div>
+        <br>
+      </div>
+    </div>
     <el-button type="primary" @click="getCapcha()"> Получить данные</el-button>
-    <br /><br />
+    <br/><br/>
   </div>
-  <C_InspectionGibddModal ref="c_InspectionGibddModal" :gibdd="gibdd" />
+  <C_InspectionGibddModal ref="c_InspectionGibddModal" :gibdd="gibdd"/>
 </template>
 
-<style>
+<style scoped>
+.boxes {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap
+}
+
+.boxes > div {
+  border: 4px solid #ddd;
+  width: 300px;
+  padding: 5px 20px;
+  margin-bottom: 12px;
+}
 </style>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useDealStore } from '@/stores/dealStore'
+import {ref} from 'vue'
+import {useDealStore} from '@/stores/dealStore'
 import C_InspectionGibddModal from '@/pages/deal/tabs/collapses/C_InspectionGibddModal.vue'
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 
 const dealStore = useDealStore()
 const gibdd = ref({
@@ -53,6 +71,7 @@ function open() {
 
 
 // отментим поля с неимеющимися данными по гибдд
+
 function getFieldsWithoutData(data: any, type: number) {
   gibdd.value['type' + type] = !data.vin
 }
@@ -69,7 +88,7 @@ function putData(data: any, type: number) {
         html10 = ''
         data.requestResult.ownerShipPeriods.ownerShipPeriod.forEach((el: any) => {
           html10 += 'C ' + new Date(el.from).toLocaleDateString() + (el.to ? '  до ' + new Date(el.to).toLocaleDateString() : ' по настоящее время') +
-            ': &nbsp; ' + el.simplePersonType + '<br>'
+              ': &nbsp; ' + el.simplePersonType + '<br>'
         })
         if (data.status === 200) html10 += '<span style="color:green">Регистрация действующая</span><br>'
       }
@@ -81,7 +100,7 @@ function putData(data: any, type: number) {
         html20 = ''
         data.requestResult.accidents.forEach((el: any) => {
           html20 += el.accidentDateTime + ':  '
-            + '<span style="color:red">' + el.accidentType + '</span>  (' + el.vehicleDamageState + ') <br>' + el.accidentPlace + '<br>'
+              + '<span style="color:red">' + el.accidentType + '</span>  (' + el.vehicleDamageState + ') <br>' + el.accidentPlace + '<br>'
         })
       }
       gibdd.value.text20 = html20 + '<small>Aктуальность на: ' + (data.requestTime || '') + '</small>'
@@ -97,14 +116,14 @@ function putData(data: any, type: number) {
       break
     case 40: //Сведения об ограничениях
       html40 = 'Не найдена информация о наложении ' +
-        'ограничений на регистрационные действия с транспортным средством.<br>'
+          'ограничений на регистрационные действия с транспортным средством.<br>'
       if (data.requestResult && data.requestResult.records && data.requestResult.records.length) {
         html40 = ''
         data.requestResult.records.forEach((el: any) => {
           html40 += '<span style="color:red">Дата наложения ограничения: ' + el.dateadd + '</span><br>' +
-            'Регион инициатора ограничения: ' + el.regname + '<br>' +
-            'Телефон инициатора: ' + el.phone + '<br>' +
-            'Основание: <i>' + el.osnOgr + '</i><br>'
+              'Регион инициатора ограничения: ' + el.regname + '<br>' +
+              'Телефон инициатора: ' + el.phone + '<br>' +
+              'Основание: <i>' + el.osnOgr + '</i><br>'
         })
       }
       gibdd.value.text40 = html40 + '<small>Aктуальность на: ' + (data.requestTime || '') + '</small>'
@@ -118,7 +137,7 @@ function getCapcha(upd: string) {
     gibdd.value.token = ''
 
     dealStore.getGibddCaptcha().then(res => {
-      let { base64jpg, token } = res.data
+      let {base64jpg, token} = res.data
       gibdd.value.captcha = base64jpg
       gibdd.value.token = token
     })
@@ -156,6 +175,6 @@ function getGibddDataWithVin() {
 }
 
 
-defineExpose({ open })
+defineExpose({open})
 
 </script>
