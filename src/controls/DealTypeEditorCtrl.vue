@@ -6,11 +6,7 @@
     <div v-if="!isEdit" style="display: inline-block">
       &nbsp;{{ deal.tradeInDirectionTypeTitle }}
 
-      <img @click="toEdit()"
-           alt=""
-           style="cursor: pointer"
-           title="Редактировать"
-           src="@/assets/icons/icon-pencil-gray.png">
+      <EditPensilCtrl  @click="toEdit()"/>
     </div>
 
     <el-select
@@ -57,6 +53,7 @@ import {ref} from "vue";
 import {useDealStore} from "@/stores/dealStore";
 import {useGlobalStore} from "@/stores/globalStore";
 import {ElMessage} from "element-plus";
+import EditPensilCtrl from "@/controls/EditPensilCtrl.vue";
 
 const {deal} = defineProps(['deal'])
 const isEdit = ref(false)

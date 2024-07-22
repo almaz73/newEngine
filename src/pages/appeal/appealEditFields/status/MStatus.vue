@@ -73,7 +73,7 @@ function sortFunction() {
   let newList:[] = []
   myList.forEach(el => {
     let founded = AppealStatusTypes.value.find(item => el === item.id)
-    if (founded) newList.push(founded)
+    if (founded && !newList.includes(founded)) newList.push(founded)
   })
   AppealStatusTypes.value = newList
 }

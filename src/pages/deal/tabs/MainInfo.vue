@@ -6,6 +6,10 @@
       ( VIN: {{ dealStore.deal.auto.vin }} )
 
       &nbsp; &nbsp;
+
+
+      <EditPensilCtrl @click="alert()" />
+      &nbsp;
       <div class="krug" @click="openDealHistory()"/>
     </h3>
 
@@ -69,7 +73,7 @@
 
         <span title="Не оригинальный пробег" style="cursor: pointer"
               v-if="!dealStore.deal.additionalAutoInfo.isMileageOriginal">
-          ❗
+          ⚠️
         </span>
 
         <span title="Оригинальный пробег" style="cursor: pointer"
@@ -152,7 +156,7 @@
         <div class="info-filed">
           <label class="label l_200"><small>ФИО</small></label>
           {{ dealStore.deal.leadFullName }}
-          <img alt="" src="@/assets/icons/icon-pencil-gray.png">
+          <EditPensilCtrl/>
         </div>
         <div class="info-filed">
           <label class="label l_200"><small>Контактный телефон</small></label>
@@ -232,6 +236,7 @@ import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from "@/controls/DealTypeEditorCtrl.vue";
 import C_PTS from "@/pages/deal/tabs/collapses/C_PTS.vue";
+import EditPensilCtrl from "@/controls/EditPensilCtrl.vue";
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)

@@ -19,7 +19,7 @@
           {{ scope.row.userFirstName }} {{ scope.row.userLastName }}
         </template>
       </el-table-column>
-      <el-table-column label="Дата">
+      <el-table-column label="Дата" width="100">
         <template #default="scope">
           {{ formatDMY_hm(scope.row.dateOfChanges) }}
         </template>
@@ -50,7 +50,7 @@ function open() {
 }
 
 function getGrade() {
-  dealStore.getBuyEditHistory(dealStore.dealStore.deal.dealId).then(res => tableData.value = res.items)
+  dealStore.getBuyEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
 function getAuto() {
