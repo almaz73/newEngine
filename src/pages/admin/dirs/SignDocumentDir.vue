@@ -23,9 +23,7 @@
         <el-table-column prop="roleTitle" width="73px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
-              <img @click="openModal(scope.row)" alt=""
-                   title="Редактировать"
-                   src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)"/>
               <img @click="deleteCategory(scope.row.id)" alt=""
                    src="@/assets/icons/icon-cross-gray.png"
                    title="Удалить">
@@ -38,9 +36,7 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.userTitle }}
            <el-button @click="openModal(row)">
-             <img  alt=""
-                  title="Редактировать"
-                  src="@/assets/icons/icon-pencil-gray.png">
+             <EditPensilCtrl/>
            </el-button>
         </span>
         <div v-if="row.legalTitle"><small>Юр. Лицо:</small> {{ row.legalTitle }}</div>
@@ -72,7 +68,8 @@
   import {useGlobalStore} from "@/stores/globalStore";
   import SignDocumentDirModal from "@/pages/admin/dirs/SignDocumentDirModal.vue";
   import {Plus, Search} from "@element-plus/icons-vue";
-  import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
+  import {gotoTop} from "@/utils/globalFunctions";
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])
@@ -82,8 +79,6 @@
   const total = ref(0)
   const rowsPerPage = ref(10)
   const currentPage = ref(1)
-  const departments = ref([])
-  const organizations = ref([])
   const search = ref('')
   const filter = {
     filter: {},

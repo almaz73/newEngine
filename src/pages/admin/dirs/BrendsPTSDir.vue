@@ -43,9 +43,7 @@
         <el-table-column v-if="selectedBrand && selectedBrand.model"  prop="roleTitle" width="73px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
-              <img @click="openModal(scope.row)" alt=""
-                   title="Редактировать"
-                   src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)" />
               <img @click="deleteRow(scope.row)" alt=""
                    src="@/assets/icons/icon-cross-gray.png"
                    title="Удалить">
@@ -58,9 +56,8 @@
           <span v-if="selectedBrand && selectedBrand.model"> 
             <span @click="showBrands(row)">&nbsp; ↶ &nbsp;</span>
             {{ row.model }} <el-button @click="openModal(row)">
-              <img  alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
+
+            <EditPensilCtrl />
             </el-button></span>
           <span  @click="showModel(row)" v-else> {{ row.model }}             </span>
         </div>
@@ -72,10 +69,11 @@
   <script setup lang="ts">
   import {useGlobalStore} from "@/stores/globalStore";
   import {useAdminStore} from "@/stores/adminStore";
-  import {ref, computed} from "vue";
+  import {ref} from "vue";
   import { ElMessage, ElMessageBox, ElTable } from "element-plus";
   import {Search,ArrowLeft,Plus} from "@element-plus/icons-vue";
   import BrendsPTSDirModal from "@/pages/admin/dirs/BrendsPTSDirModal.vue"
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
@@ -119,7 +117,7 @@ function deleteRow(row){
       cancelButtonText: 'Нет'
     })
         .then(() => {
-          adminStore.deleteBrands(row.id).then(res => {
+          adminStore.deleteBrands(row.id).then(() => {
             ElMessage({message: 'Строка удалена.', type: 'success'})
             getData()
             showBrands()

@@ -29,10 +29,7 @@
     <div v-if="!isEdit" style="display: inline-block">
       &nbsp;{{ deal.buyCategoryTitle }}
 
-      <img @click="isEdit=true" alt=""
-           style="cursor: pointer"
-           title="Редактировать"
-           src="@/assets/icons/icon-pencil-gray.png">
+      <EditPensilCtrl @click="isEdit=true"/>
     </div>
     <el-select
         v-if="isEdit"

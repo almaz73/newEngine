@@ -112,8 +112,7 @@
              @click="openModal(row)"
              :style="colorBox(row.statusTitle)">
           <span> {{ row.statusTitle }}. &nbsp; &nbsp; {{ formatDate(row.lastTaskDate) }}</span>
-          <img src="@/assets/icons/icon-pencil-gray.png" alt=""/>
-
+          <EditPensilCtrl/>
         </div>
         <div><small>Авто:</small> {{ row.carBrandModel }} {{ row.yearReleased }}</div>
         <div><small>Клиент:</small> {{ row.leadName }}</div>
@@ -157,6 +156,7 @@ import {buyTypes, EventType} from '@/utils/globalConstants';
 import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
 import router from "@/router";
 import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 
 const tableData = ref([])

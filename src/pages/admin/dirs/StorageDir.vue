@@ -60,9 +60,7 @@
               <img v-if="!scope.row.isActive" @click="toggleActive(scope.row.id)" alt=""
                  title="Заблокировать"
                  src="@/assets/icons/icon-blocked-red.png">
-            <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)"/>
             <img @click="deleteRow(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -74,9 +72,7 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.title }}
            <el-button @click="openModal(row)">
-             <img  alt=""
-                  title="Редактировать"
-                  src="@/assets/icons/icon-pencil-gray.png">
+             <EditPensilCtrl/>
            </el-button>
         </span>
         
@@ -97,13 +93,13 @@
   </template>
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
-  import {computed, ref} from "vue";
+  import {ref} from "vue";
   import { ElMessage, ElMessageBox } from 'element-plus'
   import {useGlobalStore} from "@/stores/globalStore";
   import StorageDirModal from "@/pages/admin/dirs/StorageDirModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
-  import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
   import {locationType} from "@/utils/globalConstants";
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

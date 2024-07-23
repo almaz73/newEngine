@@ -31,7 +31,7 @@
                 <el-option v-for="item in departments" :key="item.id" :label="item.name"
                            :value="item.id"/>
              </el-select>
-             </span>  
+             </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
@@ -59,14 +59,14 @@
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validFrom) }}</span>
           </template>
         </el-table-column>
-  
+
         <el-table-column label="Период действия, до" sortable>
           <template #default="scope">
             <span v-if="isEdit && selectedRow.id===scope.row.id"><el-date-picker
                 v-model="scope.row.validTo"
                 format="DD.MM.YYYY"
             /></span>
-  
+
             <span v-else> {{ formatDateDDMMYYYY(scope.row.validTo) }}</span>
           </template>
         </el-table-column>
@@ -76,28 +76,22 @@
               <img @click="openModal(scope.row, 'copy')" alt=""
                  src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого" >
-              <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)"/>
             <img @click="deleteCategory(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
-                    
+
             </div>
           </template>
         </el-table-column>
       </el-table>
-  
+
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
-             <el-button @click="openModal(row)">
-               <img  alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
+            <EditPensilCtrl @click="openModal(row)"/>
           </span>
-                         
+
         <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department.name }}</div>
         <div><small>Цена продажи, от:</small> {{ row.priceLow }}</div>
         <div><small>Цена продажи, до:</small> {{ row.priceHigh }}</div>
@@ -110,7 +104,7 @@
         <div><small>Период действия, до:</small> {{ formatDateDDMMYYYY(row.validTo) }}</div>
         </div>
       </div>
-  
+
       <template v-if="total>2">
         <el-pagination
             v-model:page-size="rowsPerPage"
@@ -131,7 +125,7 @@
     text-align: left;
   }
   .vertical-table div{
-    padding:0px;
+    padding: 0;
   }
   </style>
   <script setup lang="ts">
@@ -142,6 +136,7 @@
   import EstimateMatrixModal from "@/pages/admin/dirs/estimate/EstimateMatrixModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])
@@ -184,26 +179,26 @@
     let end = start + rowsPerPage.value - 1
     return start + ' - ' + end
   })
-  
+
   function changePage(val) {
     currentPage.value = val
     filter.offset = (val - 1) * rowsPerPage.value
     getData()
     if (globalStore.isMobileView) gotoTop()
   }
-  
+
   function changePageSize(val) {
     rowsPerPage.value = val
     filter.offset = 0
     filter.limit = rowsPerPage.value
     getData()
   }
-  
+
   function openModal(row: any | null,copy: string | null) {
     InspectionModal.value.open(row, getData,copy)
   }
 
-  
+
   function deleteCategory(id: number) {
     ElMessageBox.confirm('Вы действительно хотите удалить запись?', 'Внимание', {
       confirmButtonText: 'Да',
@@ -216,7 +211,7 @@
           })
         })
   }
-  
+
   function getData() {
     isEdit.value = false
     selectedRow.value = false
@@ -234,5 +229,5 @@
   }
 
   defineExpose({open});
-  
+
   </script>

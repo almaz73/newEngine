@@ -78,9 +78,7 @@
               <img @click="openModal(scope.row, 'copy')" alt=""
                  src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого" >
-              <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)"/>
               <img @click="deleteCategory(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">          
@@ -92,11 +90,7 @@
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.orgElement.name }}
-             <el-button @click="openModal(row)">
-               <img  alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
+            <EditPensilCtrl @click="openModal(row)"/>
           </span>
             <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department?.name }}</div>
             <div v-if="row.typeTitle"><small>Название:</small> {{ row.typeTitle }}</div>
@@ -128,6 +122,7 @@
   import EstimateHistoryModal from "@/pages/admin/dirs/estimate/EstimateHistoryModal.vue";
   import {Plus, Search} from '@element-plus/icons-vue'
   import {formatDateDDMMYYYY, gotoTop} from "@/utils/globalFunctions";
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

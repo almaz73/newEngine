@@ -32,12 +32,10 @@
             <el-table-column width="73">
                 <template #default="scope">
                     <div style="" class="admin-table-editors">
-                        <img @click="openModal(scope.row)" alt=""
-                            title="Редактировать"
-                            src="@/assets/icons/icon-pencil-gray.png">
-                        <img @click="deleteRow(scope.row.id)" alt=""
-                            src="@/assets/icons/icon-cross-gray.png"
-                            title="Удалить">
+                      <EditPensilCtrl @click="openModal(scope.row)" />
+                      <img @click="deleteRow(scope.row.id)" alt=""
+                           src="@/assets/icons/icon-cross-gray.png"
+                           title="Удалить">
                     </div>
 
                 </template>
@@ -53,12 +51,10 @@
             <el-table-column width="73">
                 <template #default="scope">
                     <div style="" class="admin-table-editors">
-                        <img @click="openModal(scope.row)" alt=""
-                            title="Редактировать"
-                            src="@/assets/icons/icon-pencil-gray.png">
-                        <img @click="deleteFilials(scope.row)" alt=""
-                            src="@/assets/icons/icon-cross-gray.png"
-                            title="Удалить">
+                      <EditPensilCtrl @click="openModal(scope.row)" />
+                      <img @click="deleteFilials(scope.row)" alt=""
+                           src="@/assets/icons/icon-cross-gray.png"
+                           title="Удалить">
                     </div>
 
                 </template>
@@ -75,6 +71,7 @@ import { ElMessage, ElMessageBox, ElTable } from "element-plus";
 import { useGlobalStore } from "@/stores/globalStore";
 import {ArrowLeft, Search, Plus } from '@element-plus/icons-vue'
 import BanksDirModal from "@/pages/admin/dirs/BanksDirModal.vue"
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
@@ -107,7 +104,7 @@ function showFilials(id: number, name: string){
     isFilialsPage.value = true
     search.value = ''
 }
-function showBanks(id: number){
+function showBanks(){
     getData()
     isFilialsPage.value = false
     filialsDataMemory = []
@@ -126,7 +123,7 @@ function deleteRow(row: any) {
       cancelButtonText: 'Нет'
     })
         .then(() => {
-          adminStore.deleteBanks(row.id).then(res => {
+          adminStore.deleteBanks(row.id).then(() => {
             ElMessage({message: 'Банк удален.', type: 'success'})
             getData()
           })
@@ -141,7 +138,7 @@ function deleteFilials(row){
       cancelButtonText: 'Нет'
     })
         .then(() => {
-            adminStore.deleteBankFilials(row.id).then(res => {
+            adminStore.deleteBankFilials(row.id).then(() => {
             ElMessage({message: 'Филиал удален.', type: 'success'})
             getFilials()
           })

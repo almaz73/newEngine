@@ -49,9 +49,7 @@
 
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img @click="openModalUserDir(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="openModalUserDir(scope.row)" />
           </div>
         </template>
       </el-table-column>
@@ -62,9 +60,8 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <div><small>Клиент:</small> {{ row.person.lastName }} {{ row.person.firstName }} {{ row.person.middleName }}
 
-          <el-button><img @click="openModalUserDir(row)" alt=""
-                          title="Редактировать"
-                          src="@/assets/icons/icon-pencil-gray.png">
+          <el-button>
+            <EditPensilCtrl @click="openModalUserDir(row)" />
           </el-button>
         </div>
 
@@ -93,6 +90,7 @@ import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()

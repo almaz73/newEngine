@@ -29,9 +29,7 @@
       <el-table-column width="73">
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="openModal(scope.row)"/>
             <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -44,9 +42,7 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.title }}
            <el-button @click="openModal(row)">
-             <img  alt=""
-                  title="Редактировать"
-                  src="@/assets/icons/icon-pencil-gray.png">
+             <EditPensilCtrl/>
            </el-button>
         </span>
         
@@ -79,6 +75,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {Plus} from '@element-plus/icons-vue'
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import ThresholdDirModal from "@/pages/admin/dirs/ThresholdDirModal.vue"
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
@@ -92,11 +89,6 @@ const pageDescription = ref('')
 const filter = {offset: 0, limit: 10}
 const organizations = ref([])
 
-
-function changeOrg(id: number) {
-  let el = organizations.value.find((el: any) => el.id === id)
-  if (tableData.value[selectedIndex]) tableData.value[selectedIndex].orgName = el.name
-}
 
 globalStore.getOrganizations().then(res => organizations.value = res.items)
 

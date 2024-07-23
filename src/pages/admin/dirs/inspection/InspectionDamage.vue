@@ -18,9 +18,7 @@
         <el-table-column prop="roleTitle" width="73px">
           <template #default="scope">
             <div style="" class="admin-table-editors">
-              <img @click="openModal(scope.row)" alt=""
-                   title="Редактировать"
-                   src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)"/>
               <img @click="deleteInsp(scope.row.id)" alt=""
                    src="@/assets/icons/icon-cross-gray.png"
                    title="Удалить">
@@ -32,11 +30,7 @@
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
           <span>{{ row.name }}
-             <el-button>
-               <img @click="openModal(row)" alt=""
-                    title="Редактировать"
-                    src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
+            <EditPensilCtrl @click="openModal(row)"/>
           </span>
           <div><small>Категория:</small> {{ row.inspectionItemCategory }}</div>
           <div><small>Порядок:</small> {{ row.order }}</div>
@@ -52,7 +46,7 @@
   import {useGlobalStore} from "@/stores/globalStore";
   import InspectionDamageModal from "@/pages/admin/dirs/inspection/InspectionDamageModal.vue";
   import {Plus, Search} from "@element-plus/icons-vue";
-  import {inspectionItemCategories} from "@/utils/globalConstants"
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

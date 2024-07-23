@@ -40,9 +40,7 @@
       <el-table-column width="73">
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img @click="edit(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="edit(scope.row)" />
             <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -61,7 +59,8 @@ import {useAdminStore} from "@/stores/adminStore";
 import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
-import {EditPen, CloseBold, Search, Plus} from '@element-plus/icons-vue'
+import {Search, Plus} from '@element-plus/icons-vue'
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
@@ -101,7 +100,7 @@ function deleteRow(row: any) {
     cancelButtonText: 'Нет'
   })
       .then(() => {
-        adminStore.deleteColor(row.id).then(res => {
+        adminStore.deleteColor(row.id).then(() => {
           ElMessage({message: 'Цвет удален.', type: 'success'})
           getData()
         })

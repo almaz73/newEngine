@@ -30,9 +30,7 @@
                  title="Нeактивный"
                  src="@/assets/icons/icon-plus-gray-row.png">
 
-            <img @click="openUrgsModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl  @click="openUrgsModal(scope.row)"/>
             <img v-if="scope.row.id!==1"
                  @click="deleteUser(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
@@ -51,11 +49,11 @@ import {ref} from "vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import OrgsDirModal from "@/pages/admin/dirs/OrgsDirModal.vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
-let tableDataMemory = []
 const isEdit = ref(false)
 const selectedRow = ref(false)
 const orgsModal = ref(null)
@@ -71,7 +69,6 @@ function getData() {
 
   adminStore.getAllOrganizations().then(res => {
     tableData.value = res.items
-    tableDataMemory = JSON.parse(JSON.stringify(res.items))
   })
 }
 

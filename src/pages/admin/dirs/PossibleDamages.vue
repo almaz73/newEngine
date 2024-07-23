@@ -38,9 +38,7 @@
             <img v-else @click="switchuser(scope.row)" alt=""
                  title="Нeактивный"
                  src="@/assets/icons/icon-blocked-red.png">
-            <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="openModal(scope.row)" />
             <img @click="deleteIRow(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -52,10 +50,9 @@
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.brand.name }} {{ row.model.name }}
            <el-button @click="openModal(row)">
-             <img  alt=""
-                  title="Редактировать"
-                  src="@/assets/icons/icon-pencil-gray.png">
+             <EditPensilCtrl/>
            </el-button>
+
         </span>
         
         <div v-if="row.generations && row.generations.length !== 0"><small>Поколение:</small>          
@@ -79,7 +76,7 @@
   text-align: left;
 }
 .vertical-table div{
-  padding:0px;
+  padding: 0;
 }
 </style>
 <script setup lang="ts">
@@ -89,6 +86,7 @@ import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus} from "@element-plus/icons-vue";
 import PossibleDamagesModal from "@/pages/admin/dirs/PossibleDamagesModal.vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()

@@ -1,21 +1,28 @@
 <template>
   <div v-if="dealStore.deal  && dealStore.deal.auto" style="line-height: 1.3">
 
-    <h3>
-      {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }} г.в.
-      ( VIN: {{ dealStore.deal.auto.vin }} )
+    <div style="display: flex; justify-content: space-between; flex-wrap: wrap">
+      <h3>
+        {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }}
+        г.в.
+        ( VIN: {{ dealStore.deal.auto.vin }} )
+        &nbsp;
+        <EditPensilCtrl />
+        &nbsp; &nbsp;
+        <div class="krug" @click="openDealHistory()" />
 
+
+      </h3>
+      <RightMenuButtons />
+    </div>
       &nbsp; &nbsp;
 
 
-      <EditPensilCtrl @click="alert()" />
-      &nbsp;
-      <div class="krug" @click="openDealHistory()"/>
-    </h3>
+
 
 
     <div class="deal_two_col">
-      <MStatus/>
+      <MStatus />
 
 
       <div class="info-filed">
@@ -30,7 +37,7 @@
 
       <div class="info-filed">
 
-        <DealTypeEditorCtrl :deal="dealStore.deal"/>
+        <DealTypeEditorCtrl :deal="dealStore.deal" />
       </div>
 
 
@@ -120,7 +127,7 @@
 
       <div class="info-filed" style="display: flex; margin: 10px 0; align-items: center">
         <label class="label l_200">Категория автомобиля</label>
-        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto"/>
+        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto" />
       </div>
 
 
@@ -141,7 +148,7 @@
     </div>
 
     <div class="deal_two_col">
-      <MainInfoEvents/>
+      <MainInfoEvents />
     </div>
     <div style="clear: both"></div>
 
@@ -152,15 +159,15 @@
       </el-collapse-item>
 
       <div style="border-top: 1px solid #ddd">
-        <h4 style="padding-left: 30px; color: #999">Клиент</h4>
+        <p style="padding-left: 30px; color: #999">Клиент</p>
         <div class="info-filed">
-          <label class="label l_200"><small>ФИО</small></label>
+          <label class="label"><small>ФИО</small></label>
           {{ dealStore.deal.leadFullName }}
           <EditPensilCtrl/>
         </div>
         <div class="info-filed">
-          <label class="label l_200"><small>Контактный телефон</small></label>
-          {{ dealStore.deal.lead.person.phone }}
+          <label class="label"><small>Контактный телефон</small></label>
+          ☎: {{ formattingPhone(dealStore.deal.lead.person.phone) }}
         </div>
       </div>
 
@@ -168,7 +175,7 @@
         <C_FinanceCalculation/>
       </el-collapse-item>
 
-      <el-collapse-item title="Порядок расчета" name="4"/>
+      <el-collapse-item title="Порядок расчета" name="4" />
 
       <el-collapse-item title="Собственник" name="5">
         <div class="info-filed">
@@ -192,18 +199,19 @@
       </el-collapse-item>
 
       <el-collapse-item title="Проверка ТС" name="9">
-        <C_InspectionGibdd ref="c_InspectionGibdd"/>
+        <C_InspectionGibdd ref="c_InspectionGibdd" />
 
       </el-collapse-item>
 
       <el-collapse-item title="Лист осмотра" name="8">
-        <C_InspectionList ref="c_InspectionList"/>
+        <C_InspectionList ref="c_InspectionList" />
       </el-collapse-item>
 
     </el-collapse>
 
 
-    <HistoryDealsModal ref="historyDealsModal"/>
+    <HistoryDealsModal ref="historyDealsModal" />
+
   </div>
 </template>
 <style>
@@ -225,23 +233,26 @@
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import {bodyTypes, driveTypies, EngineType, GearboxType} from '@/utils/globalConstants'
-import {ref} from 'vue'
+import { bodyTypes, driveTypies, EngineType, GearboxType } from '@/utils/globalConstants'
+import { ref } from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
-import {useDealStore} from '@/stores/dealStore'
+import { useDealStore } from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
 import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
-import DealTypeEditorCtrl from "@/controls/DealTypeEditorCtrl.vue";
-import C_PTS from "@/pages/deal/tabs/collapses/C_PTS.vue";
-import EditPensilCtrl from "@/controls/EditPensilCtrl.vue";
+import DealTypeEditorCtrl from '@/controls/DealTypeEditorCtrl.vue'
+import C_PTS from '@/pages/deal/tabs/collapses/C_PTS.vue'
+import { formattingPhone } from '@/utils/globalFunctions'
+import RightMenuButtons from '@/pages/deal/RightMenuButtons.vue'
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
 const c_InspectionGibdd = ref(null)
 const historyDealsModal = ref(null)
+
 
 function openDealHistory() {
   historyDealsModal.value.open()

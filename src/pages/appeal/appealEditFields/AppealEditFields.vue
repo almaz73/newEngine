@@ -51,8 +51,8 @@
             <div><span class="label">Тип клиента: </span>
               <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
               <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
-              &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
-                          style="cursor: pointer">
+              &nbsp;
+              <EditPensilCtrl @click="openClient()"/>
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
@@ -60,9 +60,7 @@
               {{ appeal.lead.person && appeal.lead.person.middleName }}
               {{ appeal.lead.person && appeal.lead.person.lastName }}
               &nbsp;
-
-              <img src="@/assets/icons/icon-pencil-gray.png" alt="" @click="openClient()"
-                   style="cursor: pointer">
+              <EditPensilCtrl @click="openClient()"/>
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
@@ -170,6 +168,7 @@ import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 import EditCarBayerModal from "@/pages/appeal/controls/EditCarBayerModal.vue";
 import {Edit} from "@element-plus/icons-vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()

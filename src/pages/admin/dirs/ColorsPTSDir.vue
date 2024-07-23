@@ -39,9 +39,7 @@
         <el-table-column width="73">
           <template #default="scope">
             <div style="" class="admin-table-editors">
-            <img @click="openModal(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+              <EditPensilCtrl @click="openModal(scope.row)" />
             <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -60,6 +58,7 @@
   import {useGlobalStore} from "@/stores/globalStore";
   import {Search, Plus} from '@element-plus/icons-vue'
   import ColorsPTSDirModal from '@/pages/admin/dirs/ColorsPTSDirModal.vue'
+  import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

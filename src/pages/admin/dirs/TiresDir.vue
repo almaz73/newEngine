@@ -44,9 +44,7 @@
       <el-table-column prop="roleTitle" width="73px" v-if="selectedBrand && selectedBrand.name ">
         <template #default="scope">
           <div style="" class="admin-table-editors">
-            <img @click="openModal(scope.row, $event)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="openModal(scope.row, $event)"/>
             <img @click="deleteTire(scope.row.id, $event)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -59,9 +57,7 @@
         <span v-if="selectedBrand && selectedBrand.name"> 
           <span @click="showModel(row)">&nbsp; ↶ &nbsp;</span>
           {{ row.model }} <el-button @click="openModal(row)">
-             <img  alt=""
-                  title="Редактировать"
-                  src="@/assets/icons/icon-pencil-gray.png">
+          <EditPensilCtrl />
            </el-button></span>
         <span  @click="showModel(row)" v-else> {{ row.name }}             </span>
       </div>
@@ -78,6 +74,7 @@ import {ref} from "vue";
 import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {Plus, Search} from "@element-plus/icons-vue";
 import TiresDirModal from "@/pages/admin/dirs/TiresDirModal.vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()

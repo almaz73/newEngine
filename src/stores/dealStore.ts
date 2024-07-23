@@ -4,7 +4,7 @@ import cache from '@/utils/globalCach'
 
 export const useDealStore = defineStore('dealStore', {
   state: () => ({
-    deal: { zzz: 'zzzz' } // используем модель, чтобы подключиться в модулях
+    deal: {} // используем модель, чтобы иметь доступ в модулях
   }),
   actions: {
     async getDeals(params: any) {

@@ -80,9 +80,7 @@
                  src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого"
             >
-            <img @click="openModalUserDir(scope.row)" alt=""
-                 title="Редактировать"
-                 src="@/assets/icons/icon-pencil-gray.png">
+            <EditPensilCtrl @click="openModalUserDir(scope.row)"/>
             <img @click="deleteUser(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -95,10 +93,7 @@
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.login }}
-           <el-button><img @click="openModalUserDir(row)" alt=""
-                           title="Редактировать"
-                           src="@/assets/icons/icon-pencil-gray.png">
-             </el-button>
+             <EditPensilCtrl @click="openModalUserDir(row)" />
           &nbsp;
            <img v-if="row.isActive" @click="switchuser(row)" alt=""
                 title="Активный"
@@ -138,6 +133,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
 import {encryptPassword} from "@/utils/globalFunctions";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()

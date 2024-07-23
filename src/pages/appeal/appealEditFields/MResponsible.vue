@@ -6,9 +6,8 @@
   <span v-if="!isEditManagerName">
             <small v-if="props.appeal.managerName">{{ props.appeal.managerName }}</small>
             <small v-if="!props.appeal.managerName">Прикрепить менеджера</small>
-            &nbsp; <img src="@/assets/icons/icon-pencil-gray.png" alt=""
-                        @click="toGetManagers()"
-                        style="cursor: pointer">
+            &nbsp;
+            <EditPensilCtrl @click="toGetManagers()"/>
           </span>
   <span v-else>
             <el-select
@@ -30,6 +29,7 @@ import {useAppealStore} from "@/stores/appealStore";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Close, Select} from "@element-plus/icons-vue";
 import {ref} from "vue";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const props = defineProps(['appeal'])
 const appealStore = useAppealStore()
@@ -50,7 +50,7 @@ function toGetManagers() {
   })
 }
 
-function toChangeManager(row) {
+function toChangeManager(row: number) {
   let item = responsibles.value.find(el => el.id === row)
   if (item) props.appeal.managerName = item.title
   isEditManagerName.value = false
