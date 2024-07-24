@@ -6,7 +6,7 @@
     </div>
 
     <div class="info-filed">
-      <label class="label l_200">Номер номер</label>
+      <label class="label l_200">Номер ПТС</label>
       {{ deal.auto.certificateNumber }}
     </div>
 

@@ -122,5 +122,12 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/Lead/GetTradeinDirectionTypes`).then(q => q)
             return (cache.getTradeinDirectionTypes = res)
         },
+        async getComments(type: number, id: number) {
+            const res = await axios.get(`/api/comment/${type}/${id}`)
+            return res.data
+        },
+        async sendComment(obj: any) {
+            return await axios.post('/api/comment/', obj).then(q => q)
+        },
     }
 })

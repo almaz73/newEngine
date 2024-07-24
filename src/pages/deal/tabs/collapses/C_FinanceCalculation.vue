@@ -1,12 +1,12 @@
 <template>
   <div class="a-report-data" v-if="dealStore.deal">
 
-    <div class="info-filed" v-show="dealStore.deal.maxPriceBought">
+    <div class="info-filed" v-show="dealStore.deal.maxPriceBought!==null">
       <label class="label l_200">Максимальная цена выкупа</label>
       {{ dealStore.deal.maxPriceBought }} ₽
     </div>
 
-    <div class="info-filed" v-show="dealStore.deal.priceMarket">
+    <div class="info-filed" v-show="dealStore.deal.priceMarket!==null">
       <label class="label l_200">Максимальная цена выкупа</label>
       {{ dealStore.deal.priceMarket }} ₽
     </div>
@@ -17,16 +17,16 @@
     <!--      {{ analystComment }} ₽-->
     <!--    </div>-->
 
-    <div class="info-filed" v-show="dealStore.deal.priceDemanded">
+    <div class="info-filed" v-show="dealStore.deal.priceDemanded!==null">
       <label class="label l_200">Комментарий аналитика</label>
       {{ dealStore.deal.priceDemanded }} ₽
     </div>
 
 
     <div
-      class="a-report-data-item a-no-clearfix"
-      user-permission="dealStore.dealGeneral.priceDemanded"
-      v-show="dealStore.deal.priceDemanded"
+        class="a-report-data-item a-no-clearfix"
+<!--        user-permission="dealStore.dealGeneral.priceDemanded"-->
+        v-show="dealStore.deal.priceDemanded!==null"
     >
       <div class="a-report-data-label">Цена клиента</div>
       <div class="a-report-data-text">
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div class="info-filed" v-show="dealStore.deal.managerPrice">
+    <div class="info-filed" v-show="dealStore.deal.managerPrice!==null">
       <label class="label l_200">Цена руководителя</label>
       {{ dealStore.deal.managerPrice }} ₽
     </div>
@@ -68,7 +68,7 @@
     <!--      {{ declineBuyerManagerComment }}-->
     <!--    </div>-->
 
-    <div class="info-filed">
+    <div class="info-filed" v-show="dealStore.deal.commissionFee!==null">
       <label class="label l_200">Комиссионное вознаграждение</label>
       {{ dealStore.deal.commissionFee }} ₽
     </div>
@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDealStore } from '@/stores/dealStore'
+import {useDealStore} from '@/stores/dealStore'
 
 const dealStore = useDealStore()
 

@@ -95,13 +95,11 @@ margin: 30px  130px;
 <script setup>
 import {onMounted, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {useFeedBackStore} from "@/stores/feedbackStore";
 import {formatDMY_hm} from "@/utils/globalFunctions";
 import FeedBackModal from "@/pages/feedback/FeedBackModal.vue";
 
 const EntityId = 392110;
 
-const feedBackStore = useFeedBackStore()
 const globalStore = useGlobalStore()
 const autor = ref('')
 const text = ref('')
@@ -142,7 +140,7 @@ function toBase64(file) {
 
 function sendMessageToDeveloper() {
   console.log(imgBase64)
-  feedBackStore.sendMessage({
+  globalStore.sendComment({
     text: autor.value + ':::' + text.value + ':::' + imgBase64,
     EntityId: EntityId,
     entityType: 20
@@ -153,7 +151,7 @@ function sendMessageToDeveloper() {
 
 function getdMessagesToDevelop() {
   console.log(imgBase64)
-  feedBackStore.getMessages(EntityId).then(res => {
+  globalStore.getComments(20, EntityId).then(res => {
     res.items.map(el => {
       let part = el.text.split(':::')
       el.fio = part[0]

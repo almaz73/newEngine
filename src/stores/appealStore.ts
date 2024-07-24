@@ -49,10 +49,6 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get('/api/sms/getTemplates').then(q => q)
             return (cache.getSmsTemplates = res.data)
         },
-        async getComments(id: number) {
-            const res = await axios.get(`/api/comment/20/${id}`)
-            return res.data
-        },
         async saveComment(obj: any) {
             return await axios.post('/api/comment', obj).then(q => q)
         },

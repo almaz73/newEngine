@@ -217,7 +217,7 @@ function getSms(noCach) {
 
 
 function getComments() {
-  appealStore.getComments(appeal.value.id).then(res => {
+  globalStore.getComments(20, appeal.value.id).then(res => {
     comments.value = res.items.reverse()
     countComments.value = res.count
   })
