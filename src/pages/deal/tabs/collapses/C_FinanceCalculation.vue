@@ -25,7 +25,6 @@
 
     <div
         class="a-report-data-item a-no-clearfix"
-<!--        user-permission="dealStore.dealGeneral.priceDemanded"-->
         v-show="dealStore.deal.priceDemanded!==null"
     >
       <div class="a-report-data-label">Цена клиента</div>

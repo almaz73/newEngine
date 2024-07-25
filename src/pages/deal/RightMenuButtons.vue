@@ -1,23 +1,11 @@
 <template>
   <div class="rightMenu">
-    <el-dropdown style="display: inline-block">
-      <el-button>
-        Необходимые документы
-      </el-button>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item
-            @click="makeChoice(item)"
-            v-for="(item, ind) in documents" :key="ind">{{ item.name }}
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
+    <PrintDocumentsCtrl />
 
-    <el-button>
+    <el-button type="info">
       Подобные автомобили
     </el-button>
-    <el-button>
+    <el-button type="info">
       Необходимые документы
     </el-button>
 
@@ -31,19 +19,17 @@
   align-content: center;
 }
 
-.el-button:first-child {
-  margin-left: 12px
+.rightMenu button, .rightMenu div {
+  margin-bottom: 1px;
+  margin-left: 10px;
 }
 
-.el-button:last-child {
-  margin-right: 50px
-}
 </style>
 
 <script setup lang="ts">
 import { useDealStore } from '@/stores/dealStore'
 import { ref } from 'vue'
+import PrintDocumentsCtrl from '@/controls/PrintDocumentsCtrl.vue'
 
 const dealStore = useDealStore()
-const documents = ref([])
 </script>

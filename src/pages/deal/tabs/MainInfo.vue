@@ -8,9 +8,6 @@
         ( VIN: {{ dealStore.deal.auto.vin }} )
         &nbsp;
         <EditPensilCtrl/>
-        &nbsp; &nbsp;
-        <div class="krug" @click="openDealHistory()"/>
-
 
       </h3>
       <RightMenuButtons/>
@@ -206,25 +203,9 @@
     </el-collapse>
 
 
-    <HistoryDealsModal ref="historyDealsModal"/>
-
   </div>
 </template>
-<style>
 
-
-.krug {
-  position: absolute;
-  background: #a12d24;
-  border-radius: 35px;
-  width: 35px;
-  height: 35px;
-  display: inline-block;
-  margin-top: -8px;
-  cursor: pointer;
-}
-
-</style>
 <script setup lang="ts">
 
 
@@ -236,7 +217,6 @@ import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
 import {useDealStore} from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
-import HistoryDealsModal from '@/pages/deal/tabs/HistoryDealsModal.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from '@/controls/DealTypeEditorCtrl.vue'
 import C_PTS from '@/pages/deal/tabs/collapses/C_PTS.vue'
@@ -249,12 +229,7 @@ const dealStore = useDealStore()
 const c_InspectionList = ref(null)
 const c_InspectionGibdd = ref(null)
 const c_comments = ref(null)
-const historyDealsModal = ref(null)
 
-
-function openDealHistory() {
-  historyDealsModal.value.open()
-}
 
 function getOwnerTitle(owner: any) {
   let title = ''

@@ -19,9 +19,9 @@ axios.interceptors.response.use(resp => resp
             navigator.onLine && router.push('login')
         }
 
-        if (err.code === "ERR_BAD_REQUEST") {
-            if(err.response.statusText ==="Unauthorized") return ElMessage.error('Вы не авторизовались')
-            return ElMessage({message: err.response.data.errorText, type: 'error',})
+        if (err.code === 'ERR_BAD_REQUEST') {
+          if (err.response.statusText === 'Unauthorized') return ElMessage.error('Вы не авторизовались')
+          if (err.response.data) return ElMessage({ message: err.response.data.errorText, type: 'error' })
         }
         if (err.request.status === 404) {
             ElMessage({message: 'Ошибка 404. Не найдено ', type: 'warning',})

@@ -70,9 +70,20 @@ export const useDealStore = defineStore('dealStore', {
     },
     async changeTradeInDirectionType(dealId: number, id: number) {
       return await axios.post(`/api/Deal/ChangeTradeInDirectionType?dealId=${dealId}&directionTypeId=${id}`)
-    }
+    },
 
-
+    // шаюлоны документов для скачивания / разные варианты
+    async getNecessaryDocs(dealId: number) {
+      // cскачивает бинарник, и название файла
+      return await axios.get(`/api/print/buy/${dealId}/printnecessarydocs`)
+    },
+    async getBuyPrint(dealId: number, form: string) {
+      return await axios.get(`/api/print/buy/get?form=${form}&id=${dealId}`)
+    },
+    async getDealPrint(dealId: number, path: string) {
+      // скачивает файлом
+      window.location.href = `/api/print/buy/${path}/${dealId}`;
+    },
   }
 })
 

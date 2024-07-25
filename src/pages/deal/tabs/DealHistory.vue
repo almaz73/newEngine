@@ -3,14 +3,45 @@
 
 
     <el-tabs type="border-card">
-      <el-tab-pane label="История сделок">История сделок</el-tab-pane>
+      <el-tab-pane label="История сделок">
+        <h3>История сделок</h3>
+        <el-table
+          :data="tableDataDeal"
+          empty-text="Нет данных"
+          highlight-current-row>
+
+          <el-table-column label="Дата">
+            <template #default="scope">
+              {{ formatDMY_hm(scope.row.createDate) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Город" prop="locationCity" />
+          <el-table-column label="Менеджер">
+            <template #default="scope">
+              <span style="white-space: nowrap"
+                    :title="scope.row.managerFullName">{{ scope.row.managerFullName }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="Пробег" prop="additionalAutoInfo.mileageAuto" />
+          <el-table-column label="Категория" prop="auto.categoryAuto">
+            <template #default="scope">
+              <CircleCateforyAvtoCtrl :categoryNumber="scope.row.auto.categoryAuto" />
+            </template>
+          </el-table-column>
+
+          <el-table-column label="Цена выкупа" prop="maxPriceBought" />
+          <el-table-column label="Цена продажи" prop="priceMarket" />
+
+        </el-table>
+
+      </el-tab-pane>
       <el-tab-pane label="История изменений данных">
-        <h2>История изменений Данных</h2>
+        <h3>История изменений Данных</h3>
 
 
         <el-radio-group v-model="radio">
-          <el-radio-button @click="getGrade()" label="Оценка" value="10"/>
-          <el-radio-button @click="getAuto()" label="Авто" value="20"/>
+          <el-radio-button @click="getGrade()" label="Оценка" value="10" />
+          <el-radio-button @click="getAuto()" label="Авто" value="20" />
         </el-radio-group>
 
         <el-table
@@ -44,20 +75,26 @@
     </el-tabs>
 
 
-
   </div>
 </template>
 
 <script setup lang="ts">
-import {useDealStore} from '@/stores/dealStore'
-import {formatDMY_hm} from '@/utils/globalFunctions'
-import {ref} from 'vue'
+import { useDealStore } from '@/stores/dealStore'
+import { useGlobalStore } from '@/stores/globalStore'
+import { formatDMY_hm } from '@/utils/globalFunctions'
+import { ref } from 'vue'
+import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 
 const dealStore = useDealStore()
+const globalStore = useGlobalStore()
 const radio = ref(10)
+const tableDataDeal = ref([])
 const tableData = ref([])
 
 function open() {
+  dealStore.getDealsByVin(dealStore.deal.dealId).then(res => {
+    tableDataDeal.value = res.data.items
+  })
   getGrade()
 }
 
@@ -69,7 +106,7 @@ function getAuto() {
   dealStore.getBuyAutoEditHistory(dealStore.deal.dealId).then(res => tableData.value = res.items)
 }
 
-defineExpose({open})
+defineExpose({ open })
 
 </script>
 
