@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="label l_200">Этап выкупа</div>
-    <el-dropdown style="margin: -6px 0 6px">
+    <el-dropdown>
       <el-button type="primary">
         {{ dealStore.deal.dealStatusTitle }}
       </el-button>

@@ -45,7 +45,7 @@ dealStore.getDeal(appealId).then(res => {
 function init() {
   useGlobalStore().setTitle('')
 
-  globalStore.setTitle('Оценка. ' + mod.value.typeTitle)
+  globalStore.setTitle('Оценка. ' + (mod.value?mod.value.typeTitle:''))
   // globalStore.steps = [{ name: 'Обращение', done: true },
   //   { name: 'Осмотр', done: true }, { name: 'Оценка', done: false }]
 

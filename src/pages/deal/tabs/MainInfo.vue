@@ -161,7 +161,7 @@
         </div>
         <div class="info-filed">
           <label class="label"><small>Контактный телефон</small></label>
-          ☎: {{ formattingPhone(dealStore.deal.lead.person.phone) }}
+          ☎: {{ dealStore.deal.lead && dealStore.deal.lead.person && formattingPhone(dealStore.deal.lead.person.phone) }}
         </div>
       </div>
 

@@ -498,6 +498,7 @@ function checkAndWarning() {
 
 function save() {
   checkAndWarning()
+  if (appeal.lead.leadType === 10) appeal.lead.legalEntity = null
   submitForm(form.value).then(res => { // проверка заполненности обязательных полей
     if (res) prepareAndSave()
     else console.error('ОШИБКА ЗАПОЛНЕНИЯ ФОРМЫ')
