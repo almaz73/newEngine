@@ -54,6 +54,7 @@ function makeChoice(status: Status) {
 }
 
 watchEffect(() => {
+  console.log('todo 3333 = ',3333) // todo срабатывает лишний раз
   dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
     availableStatuses.value = res.items
     res.items.forEach((el:any) => {

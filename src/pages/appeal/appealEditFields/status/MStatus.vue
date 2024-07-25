@@ -50,6 +50,7 @@ const statusToArchive = ref(null)
 const statusDecor = ref(null)
 
 watchEffect(() => {
+  console.log('todo111 = ',111)
   props.appeal.id && dealStore.getStatuses(props.appeal.id).then(res => {
     appealAvailableStatuses.value = res.items
     res.items.forEach((el:any) => {

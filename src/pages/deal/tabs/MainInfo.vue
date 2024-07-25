@@ -7,7 +7,10 @@
         г.в.
         ( VIN: {{ dealStore.deal.auto.vin }} )
         &nbsp;
-        <EditPensilCtrl/>
+        <RouterLink :to="`/auto/${dealStore.deal.auto.autoId}/edit/${dealStore.deal.dealId}`">
+          <EditPensilCtrl />
+        </RouterLink>
+
 
       </h3>
       <RightMenuButtons/>

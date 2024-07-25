@@ -1,5 +1,6 @@
 <template>
   <!--  :title="'Автомобиль: '+auto.carBrand+ ' ' + auto.carModel"-->
+<!--  больщше не используется-->
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 360: 390"

@@ -130,7 +130,6 @@
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
-<!--  <EditCarModal ref="carModal"/>-->
   <EditCarBayerModal ref="editCarBayerModal"/>
 </template>
 

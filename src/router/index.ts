@@ -88,7 +88,11 @@ const router = createRouter({
         }, {
             path: '/auto/deal/add/clientId/:clientId/parentId/:parentId',
             name: 'addDeal',
-            component: () => import('@/pages/appeal/appealEditFields/EditCarToDeal.vue').catch(val => fail(val))
+            component: () => import('@/pages/appeal/appealEditFields/CarEditor.vue').catch(val => fail(val))
+        }, {
+            path: '/auto/:autoId/edit/:dealId',
+            name: 'editPageDeal',
+            component: () => import('@/pages/deal/tabs/CarEditor.vue').catch(val => fail(val))
         }, {
             path: '/auto/:id/deal/:appealId',
             name: 'editDeal',
