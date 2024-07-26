@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {useDealStore} from '@/stores/dealStore'
-import {ref, watchEffect} from "vue";
+import { onMounted, ref, watchEffect } from 'vue'
 import {AppealStatusTable} from "@/utils/globalConstants";
 import StatusStart from "@/pages/appeal/appealEditFields/status/StatusStart.vue";
 import StatusArchive from "@/pages/appeal/appealEditFields/status/StatusArchive.vue";
@@ -49,9 +49,10 @@ const statusBuyout = ref(null)
 const statusToArchive = ref(null)
 const statusDecor = ref(null)
 
-watchEffect(() => {
-  console.log('todo111 = ',111)
-  props.appeal.id && dealStore.getStatuses(props.appeal.id).then(res => {
+onMounted(() => {
+  let appealId = +location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+
+  dealStore.getStatuses(appealId).then(res => {
     appealAvailableStatuses.value = res.items
     res.items.forEach((el:any) => {
       let item = AppealStatusTable.find(item => item.id === el.value)

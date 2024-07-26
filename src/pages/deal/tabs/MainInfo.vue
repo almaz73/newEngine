@@ -88,7 +88,9 @@
 
       <div class="info-filed">
         <label class="label l_200">Гос.номер</label>
+        <span style="padding: 0 12px; border: 3px double #ccc; border-radius: 4px">
         {{ dealStore.deal.auto.registrationMark }}
+          </span>
       </div>
 
       <div class="info-filed">

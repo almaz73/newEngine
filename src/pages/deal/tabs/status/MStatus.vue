@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { useDealStore } from '@/stores/dealStore'
 import { DealStatusTable } from '@/utils/globalConstants'
 import St_Inspection from '@/pages/deal/tabs/status/St_Inspection.vue'
@@ -53,18 +53,6 @@ function makeChoice(status: Status) {
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
 }
 
-watchEffect(() => {
-  console.log('todo 3333 = ',3333) // todo срабатывает лишний раз
-  dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
-    availableStatuses.value = res.items
-    res.items.forEach((el:any) => {
-      let item = DealStatusTable.find(item => item.id === el.value)
-      item && StatusTypes.value.push(item)
-    })
-    sortFunction()
-  })
-})
-
 // Список приходит разный, но будем выдавать в едином установленном порядке
 let myList = [20, 30, 261, 262, 75, 23, 70, 76, 40, 50, 45, 60, 77, 80, 90, 150, 160, 170, 175, 180, 185, 28, 40, 25, 101, 102, 103, 104, 105, 106, 107,
   108, 109, 110, 111, 340, 310, 350, 149, 100, 300, 320, 350, 330, 360]
@@ -78,4 +66,19 @@ function sortFunction() {
   })
   StatusTypes.value = newList
 }
+
+
+onMounted(()=> {
+  const dealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+  dealStore.getStatuses(dealId).then(res => {
+    availableStatuses.value = res.items
+    res.items.forEach((el:any) => {
+      let item = DealStatusTable.find(item => item.id === el.value)
+      item && StatusTypes.value.push(item)
+    })
+    sortFunction()
+  })
+})
+
+defineExpose({open})
 </script>

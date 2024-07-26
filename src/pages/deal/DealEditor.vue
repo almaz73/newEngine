@@ -25,7 +25,7 @@ import DealHistory from '@/pages/deal/tabs/DealHistory.vue'
 const globalStore = useGlobalStore()
 const activeName = ref('first')
 const dealStore = useDealStore()
-const appealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+const dealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
 const mod = ref(null)
 const dealHistory = ref(null)
 
@@ -36,7 +36,7 @@ function tabchange(val) {
   if (val.props.name === 'fourth') dealHistory.value.open()
 }
 
-dealStore.getDeal(appealId).then(res => {
+dealStore.getDeal(dealId).then(res => {
   mod.value = res
   dealStore.deal = res
   init()
