@@ -59,7 +59,10 @@ let cb = null
 let getCapcha = null
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
-const closeModal = () => isOpen.value = false
+const closeModal = () => {
+  gibdd.captcha_num = ''
+  isOpen.value = false
+}
 const { gibdd } = defineProps(['gibdd'])
 
 

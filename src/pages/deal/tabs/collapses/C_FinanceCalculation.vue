@@ -12,25 +12,15 @@
     </div>
 
 
-    <!--    <div class="info-filed" v-show="analystComment">-->
-    <!--      <label class="label l_200">Комментарий аналитика</label>-->
-    <!--      {{ analystComment }} ₽-->
-    <!--    </div>-->
-
     <div class="info-filed" v-show="dealStore.deal.priceDemanded!==null">
       <label class="label l_200">Комментарий аналитика</label>
       {{ dealStore.deal.priceDemanded }} ₽
     </div>
 
 
-    <div
-        class="a-report-data-item a-no-clearfix"
-        v-show="dealStore.deal.priceDemanded!==null"
-    >
-      <div class="a-report-data-label">Цена клиента</div>
-      <div class="a-report-data-text">
-        {{ dealStore.deal.clientSellPrice }} <span class="uk-icon-ruble"></span>
-      </div>
+    <div class="info-filed" v-show="dealStore.deal.priceDemanded!==null">
+      <label class="label l_200">Цена клиента</label>
+      {{ dealStore.deal.clientSellPrice }} ₽
     </div>
 
     <div class="info-filed" v-show="dealStore.deal.managerPrice!==null">
@@ -38,34 +28,6 @@
       {{ dealStore.deal.managerPrice }} ₽
     </div>
 
-    <!--    <div class="info-filed" v-show="buyerComment">-->
-    <!--      <label class="label l_200">Комментарий байера</label>-->
-    <!--      {{ buyerComment }}-->
-    <!--    </div>-->
-
-
-    <!--    user-permission="dealStore.dealGeneral.requestAnalystComment"-->
-    <!--    user-permission-args="dealStore.deal.dealStore.dealStatus"-->
-    <!--    <div class="info-filed" v-show="requestAnalystComment">-->
-    <!--      <label class="label l_200">Комментарий аналитика</label>-->
-    <!--      {{ requestAnalystComment }}-->
-    <!--    </div>-->
-
-
-    <!--    user-permission="dealStore.dealGeneral.requestBuyerManagerComment"-->
-    <!--    user-permission-args="dealStore.deal.dealStore.dealStatus"-->
-    <!--    <div class="info-filed" v-show="requestBuyerManagerComment">-->
-    <!--      <label class="label l_200">Комментарий руководителя</label>-->
-    <!--      {{ requestBuyerManagerComment }}-->
-    <!--    </div>-->
-
-
-    <!--    user-permission="dealStore.dealGeneral.declineBuyerManagerComment"-->
-    <!--    user-permission-args="dealStore.deal.dealStore.dealStatus"-->
-    <!--    <div class="info-filed" v-show="declineBuyerManagerComment">-->
-    <!--      <label class="label l_200">Комментарий руководителя</label>-->
-    <!--      {{ declineBuyerManagerComment }}-->
-    <!--    </div>-->
 
     <div class="info-filed" v-show="dealStore.deal.commissionFee!==null">
       <label class="label l_200">Комиссионное вознаграждение</label>

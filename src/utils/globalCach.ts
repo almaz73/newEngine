@@ -28,6 +28,8 @@ const cache = {
     getTradeinDirectionTypes: null,
     getSimularCars: null,
     getDealsByVin: null,
-    getSimilarDeals:null
+    getSimilarDeals: null,
+    getInspectionComplectation: null,
+    GetInspectionComplect: null
 }
 export default cache

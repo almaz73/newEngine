@@ -8,7 +8,7 @@
         ( VIN: {{ dealStore.deal.auto.vin }} )
         &nbsp;
         <RouterLink :to="`/auto/${dealStore.deal.auto.autoId}/edit/${dealStore.deal.dealId}`">
-          <EditPensilCtrl />
+          <EditPensilCtrl/>
         </RouterLink>
 
 
@@ -166,7 +166,9 @@
         </div>
         <div class="info-filed">
           <label class="label"><small>Контактный телефон</small></label>
-          ☎: {{ dealStore.deal.lead && dealStore.deal.lead.person && formattingPhone(dealStore.deal.lead.person.phone) }}
+          ☎: {{
+            dealStore.deal.lead && dealStore.deal.lead.person && formattingPhone(dealStore.deal.lead.person.phone)
+          }}
         </div>
       </div>
 
@@ -205,6 +207,15 @@
         <C_InspectionList ref="c_InspectionList"/>
       </el-collapse-item>
 
+      <el-collapse-item title="Комплектность" name="11" >
+        <C_complect ref="c_complect"/>
+      </el-collapse-item>
+
+      <el-collapse-item title="Комлпектация" name="12">
+        <C_complectation ref="c_complectation"/>
+      </el-collapse-item>
+
+
     </el-collapse>
 
 
@@ -229,11 +240,15 @@ import {formattingPhone} from '@/utils/globalFunctions'
 import RightMenuButtons from '@/pages/deal/RightMenuButtons.vue'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import C_comments from "@/pages/deal/tabs/collapses/C_comments.vue";
+import C_complect from "@/pages/deal/tabs/collapses/C_complect.vue";
+import C_complectation from "@/pages/deal/tabs/collapses/C_complectation.vue";
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
 const c_InspectionGibdd = ref(null)
 const c_comments = ref(null)
+const c_complect = ref(null)
+const c_complectation = ref(null)
 
 
 function getOwnerTitle(owner: any) {
@@ -261,6 +276,9 @@ function changeCollapse(node: string[]) {
   if (node.includes('8')) c_comments.value.open()
   if (node.includes('9')) c_InspectionGibdd.value.open() // Проверка ТС (данные с Гибдд)
   if (node.includes('10')) c_InspectionList.value.open() // Лист осмотра
+  if (node.includes('11')) c_complect.value.open()
+  if (node.includes('12')) c_complectation.value.open()
+
 }
 
 </script>

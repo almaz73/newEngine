@@ -30,9 +30,6 @@ const mod = ref(null)
 const dealHistory = ref(null)
 
 function tabchange(val) {
-
-  console.log('val', val)
-
   if (val.props.name === 'fourth') dealHistory.value.open()
 }
 

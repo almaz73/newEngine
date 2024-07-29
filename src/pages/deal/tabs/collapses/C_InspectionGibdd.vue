@@ -73,10 +73,16 @@ function open() {
 // отментим поля с неимеющимися данными по гибдд
 
 function getFieldsWithoutData(data: any, type: number) {
-  gibdd.value['type' + type] = !data.vin
+  if (data) gibdd.value['type' + type] = !data.vin
 }
 
-function putData(data: any, type: number) {
+function putData(res: any, type: number) {
+  let data = res.data
+  if (!data) {
+    if (res.code === 'ERR_BAD_RESPONSE') gibdd.value['type' + type] = true
+    return false
+  }
+
   if (!data.vin && !data.requestResult && data.message) return ElMessage.warning(data.message)
 
   let html10 = '', html20 = '', html30 = '', html40 = ''
@@ -132,6 +138,12 @@ function putData(data: any, type: number) {
 
 
 function getCapcha(upd: string) {
+
+  let count = 0;
+  [10, 20, 30, 40].forEach(type => gibdd.value['type' + type] && count++)
+  if (!count) return ElMessage({message: 'Ничего не выбрано для обновления', type: 'warning'})
+
+
   if (upd || !gibdd.value.captcha) {
     gibdd.value.captcha = ''
     gibdd.value.token = ''
@@ -150,7 +162,7 @@ function getCapcha(upd: string) {
 function getGibddMemory() {
   [10, 20, 30, 40].forEach(type => {
     dealStore.getGibddCache(type, dealStore.deal.auto.vin).then(res => {
-      putData(res.data, type)
+      putData(res, type)
       getFieldsWithoutData(res.data, type)
     })
   })
@@ -167,7 +179,7 @@ function getGibddDataWithVin() {
       }
 
       dealStore.getDataByParams(params).then(res => {
-        putData(res.data, type)
+        putData(res, type)
         getFieldsWithoutData(res.data, type)
       })
     }

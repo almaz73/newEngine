@@ -99,6 +99,16 @@ export const useDealStore = defineStore('dealStore', {
           const res = await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
           return (cache.getSimilarDeals = res.data)
       },
+      async GetInspectionComplect(inspectionId: number) {
+          if (cache.GetInspectionComplect) return cache.GetInspectionComplect
+          const res = await axios.get(`/api/inspectionitem/GetInspectionComplect/${inspectionId}`)
+          return (cache.GetInspectionComplect = res.data)
+      },
+      async getInspectionComplectation(dealId: number) {
+          if (cache.getInspectionComplectation) return cache.getInspectionComplectation
+          const res = await axios.get(`/api/inspectionitem/GetInspectionComplectation/${dealId}`)
+          return (cache.getInspectionComplectation = res.data)
+      },
 
   }
 })
