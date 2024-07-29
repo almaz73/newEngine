@@ -1,16 +1,11 @@
 <template>
   <div class="rightMenu">
     <PrintDocumentsCtrl />
-
-    <el-button type="info">
+    <el-button type="info" @click="simularCarsModal.open()">
       Подобные автомобили
     </el-button>
-    <el-button type="info">
-      Необходимые документы
-    </el-button>
-
-
   </div>
+  <SimularCarsModal ref="simularCarsModal"/>
 </template>
 
 <style scoped>
@@ -30,6 +25,8 @@
 import { useDealStore } from '@/stores/dealStore'
 import { ref } from 'vue'
 import PrintDocumentsCtrl from '@/controls/PrintDocumentsCtrl.vue'
+import SimularCarsModal from "@/components/SimularCarsModal.vue";
 
 const dealStore = useDealStore()
+const simularCarsModal = ref(null)
 </script>

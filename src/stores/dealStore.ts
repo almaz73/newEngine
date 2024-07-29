@@ -33,13 +33,11 @@ export const useDealStore = defineStore('dealStore', {
       return await axios.post(`/api/deal/${params.id}/changeClientPrice/${params.price}`, params).then(q => q)
     },
     async getBuyEditHistory(id: number) {
+      if (cache.getBuyEditHistory) return cache.getBuyEditHistory
       const res = await axios.get('/api/History/GetBuyEditHistory?buyId=' + id)
-      return res.data
+      return (cache.getBuyEditHistory = res.data)
     },
-    async getBuyAutoEditHistory(id: number) {
-      const res = await axios.get('/api/History/GetBuyAutoEditHistory?buyId=' + id)
-      return res.data
-    },
+
     async getInspection(id: number, noCach: boolean) {
       // @ts-ignore
       if (!noCach && cache['getInspection' + id]) return cache['getInspection' + id]
@@ -62,7 +60,9 @@ export const useDealStore = defineStore('dealStore', {
     },
 
     async getDealsByVin(id: number) {
-      return await axios.get('/api/deal/getDealsByVin/' + id)
+      if (cache.getDealsByVin) return cache.getDealsByVin
+      const res = await axios.get('/api/deal/getDealsByVin/' + id)
+      return (cache.getDealsByVin = res)
     },
 
     async setBuyCategory(dealId: number, id: number) {
@@ -84,6 +84,22 @@ export const useDealStore = defineStore('dealStore', {
       // скачивает файлом
       window.location.href = `/api/print/buy/${path}/${dealId}`;
     },
+      async getSimularCars(params: any) {
+          if (cache.getSimularCars) return cache.getSimularCars
+          const res = await axios.get(`/api/workflow/analystCarHelp?filter=${params}`)
+          return (cache.getSimularCars = res.data)
+      },
+      async getBuyAutoEditHistory(id: number) {
+          if (cache.getBuyAutoEditHistory) return cache.getBuyAutoEditHistory
+          const res = await axios.get('/api/History/GetBuyAutoEditHistory?buyId=' + id)
+          return (cache.getBuyAutoEditHistory = res.data)
+      },
+      async getSimularDeals(dealId: number) {
+          if (cache.getSimilarDeals) return cache.getSimilarDeals
+          const res = await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
+          return (cache.getSimilarDeals = res.data)
+      },
+
   }
 })
 

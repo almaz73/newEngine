@@ -340,6 +340,7 @@ a:hover {
     align-items: center;
     cursor: pointer;
     color: white;
-    text-shadow: 0 0 5px black
-
+    font-weight: bold;
+    font-size: 20px;
+    text-shadow: 0 0 3px black;
 }

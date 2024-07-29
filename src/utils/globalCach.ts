@@ -26,5 +26,8 @@ const cache = {
     пetTradeInDirectionTypes: null,
     getAllOrgWithDep: null,
     getTradeinDirectionTypes: null,
+    getSimularCars: null,
+    getDealsByVin: null,
+    getSimilarDeals:null
 }
 export default cache
