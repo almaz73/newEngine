@@ -149,6 +149,9 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async getByInn(text: string) {
             return await axios.get(`/api/lead/getLegalByInn?inn=${text}`).then(q => q)
+        },
+        async saveLegal(params: any) {
+            return await axios.post('/api/lead/add/legal', params).then(q => q)
         }
     }
 })

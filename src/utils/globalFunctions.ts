@@ -165,10 +165,16 @@ export const formattingPhone = function (val: string, fn: any) {
         if (txt.length >= 8) res += '-' + txt.substring(7, 9);
         if (txt.length >= 10) res += '-' + txt.substring(9, 11);
     } else {
-        res = '+' + txt.substring(0, 11);
+        res = txt.substring(0, 11)
     }
     fn && fn(res)
     return res
+}
+
+// телефон должен состоять только из цифр
+export const simplePhone = function(val: string) {
+    if (val.slice(0, 2) == '+7') val = val.replaceAll('+7', '8')
+    return val.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
 }
 
 export const emailValidate = function (val: string) {

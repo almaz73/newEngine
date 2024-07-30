@@ -236,7 +236,7 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {emailValidate, formattingPhone, checkEmptyFields } from "@/utils/globalFunctions";
+import { emailValidate, formattingPhone, checkEmptyFields, simplePhone } from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 
 const globalStore = useGlobalStore()
@@ -341,8 +341,7 @@ function save() {
 
     if (!noErr) return false
 
-    // телефон должен состоять только из цифр
-    client.value.person.phone = client.value.person.phone.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
+    client.value.person.phone = simplePhone(client.value.person.phone)
 
     adminStore.saveClient(client.value).then((res) => {
       if (res.code === "ERR_BAD_REQUEST") {

@@ -243,7 +243,7 @@ import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useAdminStore } from '@/stores/adminStore'
 import { useAppealStore } from '@/stores/appealStore'
-import { checkEmptyFields, formattingPhone, emailValidate } from '@/utils/globalFunctions'
+import { checkEmptyFields, formattingPhone, emailValidate, simplePhone } from '@/utils/globalFunctions'
 
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
@@ -297,17 +297,20 @@ const querySearch = (queryString: string, cb: any) => {
 }
 
 let cachINN = {}
+let timerInn = null
 
 function inpInn() {
-  if (client.value.inn.length > 9) {
-    client.value.inn = client.value.inn.slice(0, 10)
+  if (client.value.inn.length < 10) return false
+  client.value.inn = client.value.inn.slice(0, 10)
 
-    if (cachINN[client.value.inn]!==undefined) fill(cachINN[client.value.inn])
+  clearInterval(timerInn)
+  timerInn = setTimeout(() => {
+    if (cachINN[client.value.inn] !== undefined) fill(cachINN[client.value.inn])
     else globalStore.getByInn(client.value.inn).then(res => {
       fill(res.data)
       cachINN[client.value.inn] = res.data
     })
-  }
+  }, 200)
 }
 
 function fill(data) {
@@ -339,15 +342,26 @@ function fill(data) {
     client.value.treatmentSourceId = data.treatmentSourceId
     client.value.email = data.email
   } else {
-    client.value = clientStart
+    client.value = JSON.parse(JSON.stringify(clientStart))
   }
 }
 
 
 function save() {
   console.log('client = ', client.value)
+
+  if (client.value.email == '') client.value.email = null
+  if (client.value.phone == '') client.value.phone = null
+  if (client.value.kpp == '') client.value.kpp = null
+  if (client.value.ogrnip == '') client.value.ogrnip = null
+
+  client.value.phone = simplePhone(client.value.phone)
+  client.value.person.phone = simplePhone(client.value.person.phone)
+
   checkEmptyFields(form.value).then(res => {
-    console.log('res = ', res)
+    globalStore.saveLegal(client.value).then(res => {
+      console.log(' / / / / res = ', res)
+    })
 
   })
 }
