@@ -146,6 +146,9 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async getFias(text: string) {
             return await axios.get(`/api/address/get/list?search=${text}`).then(q => q)
+        },
+        async getByInn(text: string) {
+            return await axios.get(`/api/lead/getLegalByInn?inn=${text}`).then(q => q)
         }
     }
 })

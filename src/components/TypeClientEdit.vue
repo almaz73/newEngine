@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div style="text-align: center">
-      <h3>Юридическое лицо</h3>
-    </div>
-
     <el-tabs type="card" @tab-click="tabClick" v-model="activeName" style="max-width: 1000px; margin: auto">
       <el-tab-pane label="Общая информация" name="first">
         <el-form ref="form" :model="client" class="error-to-message">
@@ -54,7 +50,7 @@
 
               <div>
                 <label class="label-right l_150">ИНН</label>
-                <el-input v-model="client.inn" />
+                <el-input v-model="client.inn" @input="inpInn()" />
               </div>
 
               <div v-if="client.typeCompany!==5">
@@ -82,17 +78,30 @@
 
               <div>
                 <label class="label-right l_150">Почтовый адрес</label>
-                <el-input v-model="client.postAddress.fias.value" />
+                <el-autocomplete
+                  :title="client.postAddress.fias.value"
+                  style="width: 200px"
+                  v-model="client.postAddress.fias.value"
+                  :fetch-suggestions="querySearch"
+                  clearable
+                  placeholder="Введите адрес"
+                  @select="addressSelect2"
+                />
               </div>
 
               <div>
                 <label class="label-right l_150">Телефон</label>
-                <el-input v-model="client.phone" />
+                <el-input placeholder="Телефон" title="Телефон"
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>client.phone=val)"
+                          v-model="client.phone" />
               </div>
 
               <div>
                 <label class="label-right l_150">Email</label>
-                <el-input v-model="client.email" />
+                <el-input placeholder="Email"
+                          clearable
+                          @change="emailValidate(client.email)"
+                          title="Email" v-model="client.email" />
               </div>
 
               <div>
@@ -125,7 +134,9 @@
 
               <div>
                 <label class="label-right l_150">Телефон</label>
-                <el-input v-model="client.person.phone" />
+                <el-input placeholder="Телефон" title="Телефон"
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
+                          v-model="client.person.phone" />
               </div>
 
               <div>
@@ -232,20 +243,20 @@ import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useAdminStore } from '@/stores/adminStore'
 import { useAppealStore } from '@/stores/appealStore'
-import { checkEmptyFields } from '@/utils/globalFunctions'
+import { checkEmptyFields, formattingPhone, emailValidate } from '@/utils/globalFunctions'
 
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const adminStore = useAdminStore()
 const activeName = ref('first')
-
-const client = ref({
+const clientStart = {
   bills: [],
   person: {},
   postAddress: { fias: {} },
   registrationAddress: { fias: {} },
   treatmentSource: {}
-})
+}
+const client = ref(JSON.parse(JSON.stringify(clientStart)))
 const brands = ref([])
 const models = ref([])
 const colors = ref([])
@@ -274,8 +285,62 @@ function addressSelect(adr: { value: string, fias_id: number }) {
   }
 }
 
+function addressSelect2(adr: { value: string, fias_id: number }) {
+  client.value.postAddress.fias = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
+
 const querySearch = (queryString: string, cb: any) => {
   globalStore.getFias(queryString).then(res => cb(res.data.items))
+}
+
+let cachINN = {}
+
+function inpInn() {
+  if (client.value.inn.length > 9) {
+    client.value.inn = client.value.inn.slice(0, 10)
+
+    if (cachINN[client.value.inn]!==undefined) fill(cachINN[client.value.inn])
+    else globalStore.getByInn(client.value.inn).then(res => {
+      fill(res.data)
+      cachINN[client.value.inn] = res.data
+    })
+  }
+}
+
+function fill(data) {
+  if (data) {
+    client.value.inn = data.inn
+    client.value.kpp = data.kpp
+    client.value.psrn = data.psrn
+    client.value.name = data.name
+    client.value.typeCompany = data.typeCompany
+    client.value.leadId = data.leadId
+    if (data.registrationAddress.fias == null) client.value.registrationAddress.fias = {}
+    else {
+      client.value.registrationAddress.fias.value = data.registrationAddress.fias.value
+      client.value.registrationAddress.fias.fiasId = data.registrationAddress.fias.fiasId
+    }
+    if (data.postAddress.fias == null) client.value.postAddress.fias = {}
+    else {
+      client.value.postAddress.fias.value = data.postAddress.fias.value
+      client.value.postAddress.fias.fiasId = data.postAddress.fias.fiasId
+    }
+    client.value.person.lastName = data.person.lastName
+    client.value.person.firstName = data.person.firstName
+    client.value.person.middleName = data.person.middleName
+    client.value.person.phone = data.person.phone
+    client.value.positionType = data.positionType
+    client.value.nds = data.nds
+    client.value.phone = data.phone
+    client.value.typeLegal = data.typeLegal
+    client.value.treatmentSourceId = data.treatmentSourceId
+    client.value.email = data.email
+  } else {
+    client.value = clientStart
+  }
 }
 
 
@@ -287,5 +352,6 @@ function save() {
   })
 }
 
+globalStore.setTitle('Юридическое лицо')
 
 </script>
