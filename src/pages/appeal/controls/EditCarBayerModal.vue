@@ -1,3 +1,23 @@
+<!--Это модальное окно не используется, перешло в editCarToDeal-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <template>
   <!--  :title="'Автомобиль: '+auto.carBrand+ ' ' + auto.carModel"-->
   <AppModal v-if="isOpen"

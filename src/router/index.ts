@@ -98,6 +98,10 @@ const router = createRouter({
             name: 'editDeal',
             component: () => import('@/pages/deal/DealEditor.vue').catch(val => fail(val))
         }, {
+            path: '/client/legal/add',
+            name: 'clientType',
+            component: () => import('@/components/TypeClientEdit.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },

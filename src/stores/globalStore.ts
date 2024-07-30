@@ -129,5 +129,20 @@ export const useGlobalStore = defineStore('globalStore', {
         async sendComment(obj: any) {
             return await axios.post('/api/comment/', obj).then(q => q)
         },
+        async getTypeCompanies() {
+            if (cache.getTypeCompanies) return cache.getTypeCompanies // список статичный - кэшируем
+            const res = await axios.get(`/api/lead/get/types/company`).then(q => q)
+            return (cache.getTypeCompanies = res.data)
+        },
+        async getTypesLegal() {
+            if (cache.getTypesLegal) return cache.getTypesLegal // список статичный - кэшируем
+            const res = await axios.get(`/api/lead/get/types/legal`).then(q => q)
+            return (cache.getTypesLegal = res.data)
+        },
+        async getPositions() {
+            if (cache.getPositions) return cache.getPositions // список статичный - кэшируем
+            const res = await axios.get(`/api/lead/get/types/position`).then(q => q)
+            return (cache.getPositions = res.data)
+        },
     }
 })

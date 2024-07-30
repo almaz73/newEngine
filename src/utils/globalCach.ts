@@ -30,6 +30,9 @@ const cache = {
     getDealsByVin: null,
     getSimilarDeals: null,
     getInspectionComplectation: null,
-    GetInspectionComplect: null
+    GetInspectionComplect: null,
+    getTypeCompanies: null,
+    getTypesLegal: null,
+    getPositions: null
 }
 export default cache

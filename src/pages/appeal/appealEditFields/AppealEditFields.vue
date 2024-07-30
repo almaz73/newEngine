@@ -48,11 +48,24 @@
         <div class="collapse" style="">
           <div class="collapse-left">
 
-            <div><span class="label">Тип клиента: </span>
-              <span v-if="appeal.lead && appeal.lead.leadType===10">Физическое лицо</span>
-              <span v-if="appeal.lead && appeal.lead.leadType===20">Юридическое лицо</span>
-              &nbsp;
-              <EditPensilCtrl @click="openClient()"/>
+            <div>
+              <span class="label">Вид выкупа </span>
+              <div v-if="!isTypeClientEdit" style="display: inline-block">
+                <span
+                  v-if="appeal.lead"> {{ appeal.lead.leadType === 10 ? 'Физическое лицо' : 'Юридическое лицо' }}</span>
+                &nbsp;
+                <EditPensilCtrl @click="isTypeClientEdit=true" />
+              </div>
+              <el-select
+                v-if="isTypeClientEdit"
+                style="width: 180px"
+                placeholder="Выберите тип клиента"
+                v-model="appeal.lead.leadType"
+                @change="changeTypeClient()"
+                filterable>
+                <el-option v-for="item in [{id:10, title:'Физическое лицо'},{id:20, title:'Юридическое лицо'}]"
+                           :key="item.id" :label="item.title" :value="item.id" />
+              </el-select>
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
             <div v-if="appeal.leadName"><span class="label">ФИО:</span>
@@ -130,7 +143,6 @@
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
-  <EditCarBayerModal ref="editCarBayerModal"/>
 </template>
 
 <style>
@@ -165,9 +177,10 @@ import InfoAboutClientModal from "@/pages/appeal/controls/InfoAboutClientModal.v
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
-import EditCarBayerModal from "@/pages/appeal/controls/EditCarBayerModal.vue";
 import {Edit} from "@element-plus/icons-vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import { ElMessageBox } from 'element-plus'
+import router from '@/router'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -180,8 +193,21 @@ const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
-const editCarBayerModal = ref(null)
+const isTypeClientEdit = ref(false)
 
+function changeTypeClient() {
+  ElMessageBox.confirm('Вы действительно хотите изменить тип клиента?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+    .then(res => {
+      router.push('/client/legal/add')
+    }, () => {
+      appeal.value.lead.leadType = appeal.value.lead.leadType === 10 ? 20 : 10
+      isTypeClientEdit.value = false
+    })
+
+}
 function permit_locale() {
   return ['BuyerEmployee', 'Admin'].includes(globalStore.account.role)
 }
