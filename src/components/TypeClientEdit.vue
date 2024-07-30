@@ -69,12 +69,20 @@
 
               <div>
                 <label class="label-right l_150">Адрес регистрации</label>
-                <el-input v-model="client.registrationAddress.fias" />
+                <el-autocomplete
+                  :title="client.registrationAddress.fias.value"
+                  style="width: 200px"
+                  v-model="client.registrationAddress.fias.value"
+                  :fetch-suggestions="querySearch"
+                  clearable
+                  placeholder="Введите адрес"
+                  @select="addressSelect"
+                />
               </div>
 
               <div>
                 <label class="label-right l_150">Почтовый адрес</label>
-                <el-input v-model="client.postAddress.fias" />
+                <el-input v-model="client.postAddress.fias.value" />
               </div>
 
               <div>
@@ -139,7 +147,7 @@
               <br><br>
 
 
-              <div v-for="chet in [1,2]">
+              <div v-for="bill in banks">
                 <div>
                   <label class="label-right l_100">Банк</label>
 
@@ -232,7 +240,7 @@ const adminStore = useAdminStore()
 const activeName = ref('first')
 
 const client = ref({
-  ills: [],
+  bills: [],
   person: {},
   postAddress: { fias: {} },
   registrationAddress: { fias: {} },
@@ -241,12 +249,12 @@ const client = ref({
 const brands = ref([])
 const models = ref([])
 const colors = ref([])
-const autoTypes = ref(null)
 const form = ref(null)
 const treatmentSources = ref([])
 const typesCompanies = ref([])
 const typesLegal = ref([])
 const positions = ref([])
+const banks = [1]
 
 let row = null
 
@@ -254,6 +262,21 @@ globalStore.getTreatmentSources().then(res => treatmentSources.value = res.items
 globalStore.getTypeCompanies().then(res => typesCompanies.value = res.items)
 globalStore.getTypesLegal().then(res => typesLegal.value = res.items)
 globalStore.getPositions().then(res => positions.value = res.items)
+
+function tabClick() {
+  console.log('tabClick = ')
+}
+
+function addressSelect(adr: { value: string, fias_id: number }) {
+  client.value.registrationAddress.fias = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
+
+const querySearch = (queryString: string, cb: any) => {
+  globalStore.getFias(queryString).then(res => cb(res.data.items))
+}
 
 
 function save() {

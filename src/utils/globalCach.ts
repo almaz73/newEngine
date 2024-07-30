@@ -33,6 +33,7 @@ const cache = {
     GetInspectionComplect: null,
     getTypeCompanies: null,
     getTypesLegal: null,
-    getPositions: null
+    getPositions: null,
+    getFias: null
 }
 export default cache
