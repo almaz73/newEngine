@@ -149,7 +149,7 @@ export function tagsControl(globalRef: GlobalRef, vModel: VModel) {
 }
 
 export const formattingPhone = function (val: string, fn: any) {
-    if (!val) return false
+    if (!val) return ''
 
     let txt = val.replace(/\D/g, ''),
         res = "";
@@ -168,6 +168,8 @@ export const formattingPhone = function (val: string, fn: any) {
         res = txt.substring(0, 11)
     }
     fn && fn(res)
+
+
     return res
 }
 

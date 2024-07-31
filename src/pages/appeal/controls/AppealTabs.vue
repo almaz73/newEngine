@@ -1,7 +1,7 @@
 <template>
   <el-tabs v-model="activeName" @tab-change="tabChange" style="padding-right: 8px">
     <el-tab-pane :label="'Активность'" name="eventsTab">
-      <el-scrollbar maxHeight="300px">
+      <el-scrollbar>
         <el-button :icon="Plus" @click="openModalEvent()"
                    type="success" style="margin: 0 8px">
           Создать событие
@@ -58,7 +58,7 @@
       </el-scrollbar>
     </el-tab-pane>
     <el-tab-pane :label="'SMS '+(countSms?` - ${countSms} `:'')" name="smsTab">
-      <el-scrollbar maxHeight="220px">
+      <el-scrollbar>
         <el-button @click="openModalSms()" :icon="Plus" style="margin: 0 8px">Отправить СМС-сообщение клиенту
         </el-button>
         <el-button @click="printDocSms()"> ✍ Скачать "Согласие на обработку персональных данных и получения смс"
@@ -74,7 +74,7 @@
     </el-tab-pane>
 
     <el-tab-pane :label="'История '+(countHistory?` - ${countHistory}`:'')" name="historyTab">
-      <el-scrollbar maxHeight="220px">
+      <el-scrollbar>
         <el-timeline style="background: #ddd; margin: 8px 50px; padding: 12px 12px 0 12px">
           <el-timeline-item
 
@@ -90,7 +90,7 @@
     </el-tab-pane>
     <el-tab-pane :label="'Комментарии '+(countComments?` - ${countComments}`:'')" name="commentsTab">
 
-      <el-scrollbar maxHeight="220px">
+      <el-scrollbar>
         <div>
           <el-input type="textarea" rows="1" style="width: 600px; margin:0 8px"
                     placeholder="Добавьте комментарий"

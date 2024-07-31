@@ -34,6 +34,7 @@ const cache = {
     getTypeCompanies: null,
     getTypesLegal: null,
     getPositions: null,
-    getFias: null
+    getFias: null,
+    getSwapPhoneHistory: null,
 }
 export default cache

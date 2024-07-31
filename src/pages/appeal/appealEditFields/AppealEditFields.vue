@@ -20,22 +20,25 @@
 
   <small style="display: flex; flex-wrap: wrap; gap: 8px">
     <span class="nowrap" v-if="appeal.locationName">
-      <span class="label-red ">Место выкупа:</span> {{ appeal.locationName }} ({{ appeal.city }})
+      <span class="label-red ">Место выкупа:</span>
+      <span class="bigger">{{ appeal.locationName }} ({{ appeal.city }})</span>
     </span>
     <span class="nowrap" v-if="appeal.buyCategoryTitle">
-      <span class="label-red ">Вид выкупа:</span> {{ appeal.buyCategoryTitle }}
+      <span class="label-red ">Вид выкупа:</span>
+      <span class="bigger">{{ appeal.buyCategoryTitle }}</span>
     </span>
     <span class="nowrap" v-if="appeal.workflowLeadType">
-      <span class="label-red ">Тип обращения: </span>{{ workFlowType(appeal.workflowLeadType) }} &nbsp;
+      <span class="label-red ">Тип обращения: </span>
+      <span class="bigger">{{ workFlowType(appeal.workflowLeadType) }} &nbsp;</span>
     </span>
     <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
-          <span class="label-red">
-            Тип направления: {{ appeal.tradeInDirectionTypeTitle }}
-          </span>
-        </span>
+          <span class="label-red"> Тип направления:</span>
+          <span class="bigger">{{ appeal.tradeInDirectionTypeTitle }}</span>
+    </span>
     <span class="nowrap">
-          <span class="label-red ">Источник:</span> {{ appeal.treatmentSourceTitle }}
-        </span>
+          <span class="label-red ">Источник:</span>
+          <span class="bigger">{{ appeal.treatmentSourceTitle }}</span>
+    </span>
   </small>
 
   <br>
@@ -52,19 +55,21 @@
               <span class="label">Вид выкупа </span>
               <div v-if="!isTypeClientEdit" style="display: inline-block">
                 <span
-                  v-if="appeal.lead"> {{ appeal.lead.leadType === 10 ? 'Физическое лицо' : 'Юридическое лицо' }}</span>
+                    v-if="appeal.lead"> {{
+                    appeal.lead.leadType === 10 ? 'Физическое лицо' : 'Юридическое лицо'
+                  }}</span>
                 &nbsp;
-                <EditPensilCtrl @click="isTypeClientEdit=true" />
+                <EditPensilCtrl @click="isTypeClientEdit=true"/>
               </div>
               <el-select
-                v-if="isTypeClientEdit"
-                style="width: 180px"
-                placeholder="Выберите тип клиента"
-                v-model="appeal.lead.leadType"
-                @change="changeTypeClient()"
-                filterable>
+                  v-if="isTypeClientEdit"
+                  style="width: 180px"
+                  placeholder="Выберите тип клиента"
+                  v-model="appeal.lead.leadType"
+                  @change="changeTypeClient()"
+                  filterable>
                 <el-option v-for="item in [{id:10, title:'Физическое лицо'},{id:20, title:'Юридическое лицо'}]"
-                           :key="item.id" :label="item.title" :value="item.id" />
+                           :key="item.id" :label="item.title" :value="item.id"/>
               </el-select>
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
@@ -79,7 +84,16 @@
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
               {{ formattingPhone(appeal.leadPhone) }}
             </div>
-            <div v-if="appeal.swapPhone">Подменный номер телефона: {{ appeal.swapPhone }}</div>
+            <div v-if="appeal.swapPhone">
+              <span class="label l_200">Подменный номер телефона ☎:</span>
+              <a title=". . . загрузка истории изменений"
+                 @click="openSwapHist(true, true)"
+                 @mouseover="openSwapHist(true)"
+                 @mouseleave="openSwapHist()">
+                {{ formattingPhone(appeal.swapPhone) }}
+              </a>
+
+            </div>
             <div v-if="appeal.lead && appeal.lead.person && appeal.lead.person.phone2"><span class="label">
               Доп. телефон: </span> {{ appeal.lead && appeal.lead.person && appeal.lead.person.phone2 }}
             </div>
@@ -143,6 +157,7 @@
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
+  <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
 </template>
 
 <style>
@@ -179,8 +194,9 @@ import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 import {Edit} from "@element-plus/icons-vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-import { ElMessageBox } from 'element-plus'
+import {ElMessageBox} from 'element-plus'
 import router from '@/router'
+import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -194,20 +210,33 @@ const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
 const isTypeClientEdit = ref(false)
+const swapPhoneHistoryModal = ref(null)
+let timerSwap = null
+let openSwapmodal = function () {
+  swapPhoneHistoryModal.value.open(appeal.value.id)
+}
+
+function openSwapHist(val, fast) {
+  clearTimeout(timerSwap)
+  if (fast) openSwapmodal()
+  if (!val) return false;
+  timerSwap = setTimeout(openSwapmodal, 1500)
+}
 
 function changeTypeClient() {
   ElMessageBox.confirm('Вы действительно хотите изменить тип клиента?', 'Внимание', {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
-    .then(res => {
-      router.push('/client/legal/add')
-    }, () => {
-      appeal.value.lead.leadType = appeal.value.lead.leadType === 10 ? 20 : 10
-      isTypeClientEdit.value = false
-    })
+      .then(res => {
+        router.push('/client/legal/add')
+      }, () => {
+        appeal.value.lead.leadType = appeal.value.lead.leadType === 10 ? 20 : 10
+        isTypeClientEdit.value = false
+      })
 
 }
+
 function permit_locale() {
   return ['BuyerEmployee', 'Admin'].includes(globalStore.account.role)
 }
