@@ -96,13 +96,7 @@
   background: blue;
 }
 
-.border-val {
-  border: 1px solid #999;
-  padding: 0 8px;
-  display: inline-block;
-  background: #f5f5f5;
-  border-radius: 4px;
-}
+
 </style>
 
 <script setup lang="ts">

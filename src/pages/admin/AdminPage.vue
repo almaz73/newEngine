@@ -2,6 +2,17 @@
   <main>
     <div class="admin ">
       <el-button-group class="left-admin group-button custom gray-buttons">
+        <el-select
+            placeholder="Другие справочники"
+            @change="found"
+            style="width: 210px"
+            clearable
+            filterable>
+          <el-option v-for="(item, ind) in directories"
+                     :key="ind" :label="item"
+                     :value="item"/>
+        </el-select>
+
         <el-button v-for="el in lastUsedDirectories"
                    :key="el"
                    @click="found(el)"
@@ -9,16 +20,6 @@
                    :class="{active:el === currentDirectory}">
           {{ el }}
         </el-button>
-
-        <el-select
-            placeholder="Выбери справочник"
-            @change="found"
-            clearable
-            filterable>
-          <el-option v-for="(item, ind) in directories"
-                     :key="ind" :label="item"
-                     :value="item"/>
-        </el-select>
       </el-button-group>
 
 
@@ -87,7 +88,7 @@ const AdminDirectories = {
   'Подпись документов': SignDocumentDir,
   // '🚧Договора': ClientsDir,
   // '🚧Шаблоны документов': ClientsDir,
-  'V🚧Клиенты(Раздел юрлица доделать)': ClientsDir,
+  'Клиенты': ClientsDir,
   'Программы сертификации': CertificationDir,
   'Возможные неисправности': PossibleDamages,
   'Пороговое значение': ThresholdDir,

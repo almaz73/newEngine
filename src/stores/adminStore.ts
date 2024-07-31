@@ -20,6 +20,22 @@ export const useAdminStore = defineStore("adminStore", {
             if (quickSearch) url += '&quickSearch=' + quickSearch
             return await axios.get(url).then(res => res)
         },
+        async getLegals(filter: any) {
+            console.log('filter = ',filter)
+
+            const {quickSearch, offset, limit} = filter
+            let url = '/api/lead/get/legals';
+            url += '?offset=' + offset
+            if (limit) url += '&limit=' + limit
+            if (quickSearch) url += '&quickSearch=' + quickSearch
+            return await axios.get(url).then(res => res)
+        },
+
+        async getLegal(id: number) {
+            const res = await axios.get(`/api/lead/get/legal?id=${id}`).then(res => res)
+            return res
+        },
+        //api/lead/get/legal
 
         async addColor(row: any,entityType = '10') {
             const params = {entityType}
@@ -68,7 +84,7 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async saveClient(obj: any) {
-            return await axios.post(`/api/lead/add/individual`, obj).then(q => q)
+            return await axios.post(`/api/lead/add/individual`, obj).then(q => q, err=>err)
         },
         async getUserHistory(id: number) {
             const res = await axios.get(`/api/user/get/audit?id=${id}`).then(q => q)
@@ -448,6 +464,8 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/SignAuthority/getAvaliableSign?id=${id}`).then(q => q)
             return res.data
         },
+
+
 
     }
     

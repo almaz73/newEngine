@@ -73,12 +73,23 @@
               </el-select>
             </div>
             <div><span class="label">Статус клиента: </span> {{ appeal.clientStatus }}</div>
-            <div v-if="appeal.leadName"><span class="label">ФИО:</span>
-              {{ appeal.lead.person && appeal.lead.person.firstName }}
-              {{ appeal.lead.person && appeal.lead.person.middleName }}
-              {{ appeal.lead.person && appeal.lead.person.lastName }}
+
+            <div v-if="appeal.leadName && appeal.lead.person"><span class="label">ФИО:</span>
+              <!--физическое лицо-->
+              {{ appeal.lead.person.firstName }}
+              {{ appeal.lead.person.middleName }}
+              {{ appeal.lead.person.lastName }}
               &nbsp;
               <EditPensilCtrl @click="openClient()"/>
+            </div>
+
+            <div v-if="appeal.leadName && appeal.lead.legalEntity"><span class="label">ФИО:</span>
+              <!--Юридическое лицо-->
+              {{ appeal.lead.legalEntity.person.firstName }}
+              {{ appeal.lead.legalEntity.person.middleName }}
+              {{ appeal.lead.legalEntity.person.lastName }}
+              &nbsp;
+              <EditPensilCtrl @click="openLegal()"/>
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
@@ -249,6 +260,10 @@ function workFlowType(type) {
 
 function openClient() {
   сlientModal.value.open(appeal.value)
+}
+
+function openLegal() {
+  // нужно открыть на редактирование юридическое лицо
 }
 
 function open(row) {

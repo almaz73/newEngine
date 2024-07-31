@@ -35,7 +35,11 @@
           </small>
 
           <hr>
-          <el-input placeholder="Фамилия" title="Фамилия" v-model="client.person.lastName"/>
+          <el-form-item prop="person['lastName']"
+                        style="display: inline-block; width: 220px"
+                        :rules="{required: true, message: 'Фамилия', trigger: ['change']}">
+            <el-input placeholder="Фамилия" title="Фамилия" v-model="client.person.lastName"/>
+          </el-form-item>
 
 
           <el-form-item prop="person['firstName']"
@@ -46,11 +50,11 @@
           <el-input placeholder="Отчество" title="Отчество" v-model="client.person.middleName"/>
 
           <span><small style="padding: 0 24px">Пол: </small><el-select
-              placeholder="Пол"
+              placeholder="Выберите пол"
               v-model="client.person.gender"
               style="width:160px"
           >
-                  <el-option v-for="item in [{id:10, name:'мужской'}, {id:20, name:'женский'}]" :key="item.id"
+                  <el-option v-for="item in [{id:0, name:' '}, {id:10, name:'мужской'}, {id:20, name:'женский'}]" :key="item.id"
                              :label="item.name" :value="item.id"/>
               </el-select>
            </span>
@@ -58,15 +62,17 @@
           <el-input placeholder="Email"
                     @change="emailValidate(client.person.email)"
                     title="Email" v-model="client.person.email"/>
+          &nbsp;&nbsp;
           <el-input placeholder="Телефон" title="Телефон"
                     :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
                     v-model="client.person.phone"/>
+          &nbsp;&nbsp;
           <el-input placeholder="Доп.телефон" title="Доп.телефон"
                     :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone2=val)"
                     v-model="client.person.phone2"/>
 
 
-          <span><small style="padding: 0 24px">День/р.:</small>
+          <span><small style="padding: 0 24px">Д/р.:</small>
              <el-date-picker
                  style="width: 150px; overflow: hidden"
                  placeholder="День рождения" title="День рождения"
@@ -236,7 +242,7 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import { emailValidate, formattingPhone, checkEmptyFields, simplePhone } from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate, formattingPhone, simplePhone} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 
 const globalStore = useGlobalStore()
@@ -266,7 +272,7 @@ const subtitle = computed(() => {
   if (client.value.person.firstName) fio += client.value.person.firstName + ' '
   if (client.value.person.middleName) fio += client.value.person.middleName + ' '
   if (client.value.person.lastName) fio += client.value.person.lastName + ' '
-  return fio || 'Новый  пользователь'
+  return fio || 'Новый клиент'
 })
 
 
@@ -294,7 +300,7 @@ function open(row, cbModal) {
   cb = cbModal
   isOpen.value = true
   isBankIsAdded.value = false
-  title.value = 'Создание нового пользователя'
+  title.value = 'Создание нового клиента'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
 
@@ -326,33 +332,21 @@ function showHistory() {
 }
 
 
-function checking() {
-  if (!client.value.person.lastName) {
-    return ElMessage({message: 'Поле "Фамилия" обязателен для заполнения', type: 'warning'})
-  }
-  if (!client.value.person.firstName) {
-    return ElMessage({message: 'Поле "Имя" обязателен для заполнения', type: 'warning'})
-  }
-}
-
-
 function save() {
   checkEmptyFields(form.value).then(noErr => {
 
     if (!noErr) return false
 
     client.value.person.phone = simplePhone(client.value.person.phone)
+    if (client.value.person.phone2) client.value.person.phone2 = simplePhone(client.value.person.phone2)
 
-    adminStore.saveClient(client.value).then((res) => {
-      if (res.code === "ERR_BAD_REQUEST") {
-        ElMessage({ message: res.response.data.errorText, type: 'error', duration: 7000 })
-        return false
+    adminStore.saveClient(client.value).then(res => {
+      if (res.status === 200) {
+        ElMessage({message: 'Данные клиента успешно сохранены', type: 'success'})
+        isOpen.value = false
+        client.value = clientInit
+        cb && cb()
       }
-
-      ElMessage({ message: 'Успешно', type: 'success' })
-      isOpen.value = false
-      client.value = clientInit
-      cb()
     })
   })
 }

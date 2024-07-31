@@ -4,7 +4,7 @@
       <el-input v-model="search"
                 :prefix-icon="Search"
                 placeholder="Поиск"
-                @clear="search=''"
+                @clear="search='';getData()"
                 clearable
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 

@@ -76,7 +76,9 @@ function open(client) {
 function listChange(list) {
   let txt = ''
   list.forEach(item => {
-    txt += ' <b>' + item.description + ':</b> ' + item.oldValue + ' ➔  ' + item.newValue + '<br>'
+    txt += ' <b>' + item.description + ':</b> ' +
+        '<span class="border-val">'+item.oldValue+ '</span> ➔  <span class="border-val">' +
+        item.newValue + '</span><br>'
   })
   return txt
 
