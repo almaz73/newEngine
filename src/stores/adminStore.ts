@@ -464,6 +464,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/SignAuthority/getAvaliableSign?id=${id}`).then(q => q)
             return res.data
         },
+        async getLegalHistory(id: number) {
+            const res = await axios.get(`/api/legal/gethistory?id=${id}`).then(q => q)
+            return res.data
+        }
 
 
 

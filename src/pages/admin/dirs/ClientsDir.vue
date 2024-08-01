@@ -89,7 +89,7 @@
 
 
   </div>
-  <ClientsDirModal ref="UserModal"/>
+  <ClientsDirModal ref="сlientsDirModal"/>
 </template>
 
 <script setup lang="ts">
@@ -104,7 +104,7 @@ import ClientsLegals from "@/pages/admin/dirs/ClientsLegals.vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
-const UserModal = ref(null)
+const сlientsDirModal = ref(null)
 const tableData = ref([])
 const total = ref(0)
 const rowsPerPage = ref(10)
@@ -131,36 +131,34 @@ function changePage(val: number) {
 
 function getData() {
 
+  filter.quickSearch = search.value
+  globalStore.isWaiting = true
+  adminStore.getClients(filter).then(res => {
+    globalStore.isWaiting = false
+    res.data.individuals.map(el => {
+      if (el.person.homeAddress && el.person.homeAddress.fias &&
+          (el.person.homeAddress.text || el.person.homeAddress.fias.value)
+      ) el.isHomeAddress = true
 
-
-  // filter.quickSearch = search.value
-  // globalStore.isWaiting = true
-  // adminStore.getClients(filter).then(res => {
-  //   globalStore.isWaiting = false
-  //   res.data.individuals.map(el => {
-  //     if (el.person.homeAddress && el.person.homeAddress.fias &&
-  //         (el.person.homeAddress.text || el.person.homeAddress.fias.value)
-  //     ) el.isHomeAddress = true
-  //
-  //     if (el.person.registrationAddress &&
-  //         (el.person.registrationAddress.text ||
-  //             (el.person.registrationAddress.fias && el.person.registrationAddress.fias.value))
-  //     ) el.isRegistrationAddress = true
-  //   })
-  //   tableData.value = res.data.individuals
-  //   total.value = res.data.totalCount
-  // })
+      if (el.person.registrationAddress &&
+          (el.person.registrationAddress.text ||
+              (el.person.registrationAddress.fias && el.person.registrationAddress.fias.value))
+      ) el.isRegistrationAddress = true
+    })
+    tableData.value = res.data.individuals
+    total.value = res.data.totalCount
+  })
 }
 
 
 function openModalUserDir(row: any | null) {
-  UserModal.value.open(row, getData)
+  сlientsDirModal.value.open(row, getData)
 }
 
 
 globalStore.setTitle('Клиенты')
 globalStore.steps = []
-// getData()
+getData()
 
 onMounted(()=>clientsLegals.value.open())
 

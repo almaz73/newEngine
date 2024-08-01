@@ -229,7 +229,7 @@
       </div>
     </el-scrollbar>
   </AppModal>
-  <ClientsDirModal_History ref="modalHistory"/>
+  <ClientsDirModal_History ref="сlientsDirModal_History"/>
 </template>
 
 <script setup>
@@ -253,7 +253,7 @@ const clientInit = {
 const legal = ref(JSON.parse(JSON.stringify(clientInit)))
 const closeModal = () => isOpen.value = false
 const title = ref('')
-const modalHistory = ref(null)
+const сlientsDirModal_History = ref(null)
 const adminStore = useAdminStore()
 const treatmentsGroup = ref([])
 const departments = ref([])
@@ -338,7 +338,8 @@ function open(row, cbModal) {
 }
 
 function showHistory() {
-  modalHistory.value.open(legal.value)
+  сlientsDirModal_History.value.open('юр.лица', legal.value.id, 'Организация : ' +
+    legal.value.typeOfCompanyTitle + ' ' + legal.value.name, 'getLegalHistory')
 }
 
 function inpInn() {
