@@ -5,9 +5,8 @@
             :top="40"
             :title="title"
             :subtitle="subtitle"
-            draggable
-            resizable>
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
+            draggable>
+    <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'630px'">
 
       <div class="modal-fields">
         <el-form ref="form" :model="legal" class="error-to-message">
@@ -37,12 +36,10 @@
           <hr>
 
 
-          <small class="label-right l_150">Наименование организации</small>
+          <small class="label-right l_150">Наименование</small>
           <el-input v-model="legal.name"/>
 
-          <small class="label-right l_150">ИНН</small>
-          <el-input v-model="legal.inn" @input="inpInn()"/>
-          <br>
+
 
           <small class="label-right l_150">Тип юр.лица</small>
           <el-select
@@ -51,6 +48,15 @@
               filterable>
             <el-option v-for="item in typesLegal" :key="item.value" :label="item.title" :value="item.value"/>
           </el-select>
+          <br>
+
+
+          <small class="label-right l_150">
+            <span title="по ИНН можно найти организацию из базы" style="color:white; cursor: pointer">⇶</span>
+            ИНН </small>
+          <el-input v-model="legal.inn" @input="inpInn()"/>
+
+
 
           <small class="label-right l_150">Тип организации</small>
           <el-select
@@ -113,9 +119,9 @@
           <br>
           <div style="display: flex">
             <div style="width: 100%">
-              <small>Ответственное лицо </small> <br>
+              <small>&nbsp; &nbsp; Ответственное лицо </small> <br>
               <div class="nowrap">
-                <small class="label l_200">Фамилия</small>
+                <small class="label l_100">Фамилия</small>
                 <el-form-item prop="person['lastName']"
                               style="display: inline-block; width: 220px;margin-bottom: 0 !important "
                               :rules="{required: true, message: 'Фамилия', trigger: ['change']}">
@@ -124,7 +130,7 @@
               </div>
 
               <div class="nowrap">
-                <small class="label l_200">Имя</small>
+                <small class="label l_100">Имя</small>
                 <el-form-item prop="person['firstName']"
                               style="display: inline-block; width: 220px; margin-bottom: 0 !important"
                               :rules="{required: true, message: 'Имя', trigger: ['change']}">
@@ -133,21 +139,21 @@
               </div>
 
               <div class="nowrap">
-                <small class="label l_200">Отчество</small>
+                <small class="label l_100">Отчество</small>
                 <el-input placeholder="Отчество" title="Отчество" v-model="legal.person.middleName"/>
               </div>
 
               <div class="nowrap">
-                <small class="label l_200">Телефон</small>
+                <small class="label l_100">Телефон</small>
                 <el-input placeholder="Телефон" title="Телефон"
                           :formatter="(value) =>value && formattingPhone(value, (val)=>legal.person.phone=val)"
                           v-model="legal.person.phone"/>
               </div>
 
               <div class="nowrap">
-                <small class="label l_200">Должность</small>
+                <small class="label l_100">Должность</small>
                 <el-select
-                    style="width: 200px; margin: 0 12px;"
+                    style="width: 200px; margin-right: 12px;"
                     v-model="legal"
                     filterable
                     clearable>
@@ -204,10 +210,10 @@
                         </div>
 
                         <div class="line">
-                          <label style="min-width: 150px">Расчетный счет</label>
-                          <el-input maxlength="20"
-                                    v-model="bill.personalAccount"/>
-                          <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)">✖</span>
+                          <label style="min-width: 150px">Расчетный счет </label>
+                          &nbsp; <el-input maxlength="20"
+                                    v-model="bill.personalAccount"/> &nbsp; &nbsp;
+                          <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)"> ✖</span>
                         </div>
                         <hr>
                       </div>
@@ -232,14 +238,15 @@
   <ClientsDirModal_History ref="сlientsDirModal_History"/>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
-import {checkEmptyFields, emailValidate, formattingPhone} from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate, formattingPhone, simplePhone} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
+import {ElMessage} from "element-plus";
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
@@ -267,16 +274,32 @@ const clientDocuments = ref([])
 const documentTypes = ref([])
 const activeName = ref('first')
 let cb;
+let cachINN = {}
+let timerInn = null
 const subtitle = computed(() => {
-  let fio = ''
-  if (legal.value.person.firstName) fio += legal.value.person.firstName + ' '
-  if (legal.value.person.middleName) fio += legal.value.person.middleName + ' '
-  if (legal.value.person.lastName) fio += legal.value.person.lastName + ' '
-  return fio || 'Новое юр.лицо'
+  return 'Организация : ' + legal.value.typeOfCompanyTitle + ' ' + legal.value.name
 })
 const typesCompanies = ref([])
 const typesLegal = ref([])
 
+
+const querySearch = (queryString: string, cb: any) => {
+  globalStore.getFias(queryString).then(res => cb(res.data.items))
+}
+
+function addressSelect(adr: { value: string, fias_id: number }) {
+  legal.value.registrationAddress.fias = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
+
+function addressSelect2(adr: { value: string, fias_id: number }) {
+  legal.value.postAddress.fias = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
 
 function bankChanged(id) {
   adminStore.getBankFilials(id).then(res => filials.value = res.items)
@@ -305,9 +328,6 @@ function open(row, cbModal) {
   title.value = 'Создание нового юр.лица'
   if (!row) legal.value = clientInit
   else adminStore.getLegal(row.leadId).then(res => {
-
-    console.log('res = ', res)
-
     legal.value = res.data.item
     title.value = 'Редактирование юридического лица'
   })
@@ -349,11 +369,43 @@ function inpInn() {
   clearInterval(timerInn)
   timerInn = setTimeout(() => {
     if (cachINN[legal.value.inn] !== undefined) fill(cachINN[legal.value.inn])
-    else globalStore.getByInn(legal.value.inn).then(res => {
+    else globalStore.getLegalByInn(legal.value.inn).then(res => {
       fill(res.data)
       cachINN[legal.value.inn] = res.data
     })
   }, 200)
+}
+
+function fill(data) {
+  if (data) {
+    legal.value.inn = data.inn
+    legal.value.kpp = data.kpp
+    legal.value.psrn = data.psrn
+    legal.value.name = data.name
+    legal.value.typeCompany = data.typeCompany
+    legal.value.leadId = data.leadId
+
+    if (legal.value.registrationAddress.fias == null) legal.value.registrationAddress.fias = {}
+    legal.value.registrationAddress.fias.value = data.registrationAddress.fias.value
+    legal.value.registrationAddress.fias.fiasId = data.registrationAddress.fias.fiasId
+
+    if (legal.value.postAddress.fias == null) legal.value.postAddress.fias = {}
+    legal.value.postAddress.fias.value = data.postAddress.fias.value
+    legal.value.postAddress.fias.fiasId = data.postAddress.fias.fiasId
+
+    legal.value.person.lastName = data.person.lastName
+    legal.value.person.firstName = data.person.firstName
+    legal.value.person.middleName = data.person.middleName
+    legal.value.person.phone = data.person.phone
+    legal.value.positionType = data.positionType
+    legal.value.nds = data.nds
+    legal.value.phone = data.phone
+    legal.value.typeLegal = data.typeLegal
+    legal.value.treatmentSourceId = data.treatmentSourceId
+    legal.value.email = data.email
+  } else {
+    legal.value = JSON.parse(JSON.stringify(clientInit))
+  }
 }
 
 
@@ -362,17 +414,21 @@ function save() {
 
     if (!noErr) return false
 
-    // legal.value.person.phone = simplePhone(legal.value.person.phone)
-    // if (legal.value.person.phone2) legal.value.person.phone2 = simplePhone(legal.value.person.phone2)
-    //
-    // adminStore.saveClient(legal.value).then(res => {
-    //   if (res.status === 200) {
-    //     ElMessage({message: 'Данные клиента успешно сохранены', type: 'success'})
-    //     isOpen.value = false
-    //     legal.value = clientInit
-    //     cb && cb()
-    //   }
-    // })
+    if (legal.value.email == '') legal.value.email = null
+    if (legal.value.phone == '') legal.value.phone = null
+    if (legal.value.kpp == '') legal.value.kpp = null
+    if (legal.value.ogrnip == '') legal.value.ogrnip = null
+    legal.value.phone = simplePhone(legal.value.phone)
+    legal.value.person.phone = simplePhone(legal.value.person.phone)
+
+    globalStore.saveLegal(legal.value).then(res => {
+      if (res.status === 200) {
+        ElMessage({ message: 'Данные юр.лица успешно сохранены', type: 'success' })
+        isOpen.value = false
+        legal.value = clientInit
+        cb && cb()
+      }
+    })
   })
 }
 
