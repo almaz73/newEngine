@@ -150,7 +150,7 @@ function deleteFilials(row){
 
 function getData() {
     globalStore.isWaiting = true
-    adminStore.getBanks().then(res => {
+    adminStore.getBanks('upd').then(res => {
         globalStore.isWaiting = false
         tableData.value = res.items
         banksLength.value = res.count

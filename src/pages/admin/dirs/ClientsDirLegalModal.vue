@@ -13,10 +13,10 @@
           <small class="line">
             <label>Источник</label>
 
-            <el-form-item prop="typeLegal"
+            <el-form-item prop="treatmentSourceId"
                           style="display: inline-block; width: 420px"
                           :rules="{required: true, message: 'Источник', trigger: ['change']}">
-              <el-select v-model="legal.typeLegal" placeholder="Выберите источник">
+              <el-select v-model="legal.treatmentSourceId" placeholder="Выберите источник">
                 <el-option-group
                     v-for="group in treatmentsGroup"
                     :key="group.id"
@@ -37,7 +37,11 @@
 
 
           <small class="label-right l_150">Наименование</small>
-          <el-input v-model="legal.name"/>
+          <el-form-item prop="name"
+                        style="display: inline-block; width: 420px"
+                        :rules="{required: true, message: 'Наименования', trigger: ['change']}">
+            <el-input v-model="legal.name"/>
+          </el-form-item>
 
 
 
@@ -118,7 +122,7 @@
           <hr>
           <br>
           <div style="display: flex">
-            <div style="width: 100%">
+            <div style="width: 90%">
               <small>&nbsp; &nbsp; Ответственное лицо </small> <br>
               <div class="nowrap">
                 <small class="label l_100">Фамилия</small>
@@ -173,7 +177,7 @@
               </div>
             </div>
 
-            <el-tabs style="width: 100%" type="border-card" v-model="activeName">
+            <el-tabs style="width: 110%" type="border-card" v-model="activeName">
               <el-tab-pane label="Банковский счет" :maxHeight="250" name="first">
                 <el-scrollbar :maxHeight="250" style="width: 100%">
                   <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
@@ -181,39 +185,39 @@
                   </div>
 
                   <div v-if="legal.bills && legal.bills.length">
-                    <div v-for="bill in legal.bills" :key="bill.id"
-                         :style="{'fontWeight': !bill.personalAccount?'600':''}">
+                    <div v-for="(bill, index) in legal.bills" :key="bill.id">
                       <div v-if="!bill.deleted">
                         <div class="line">
-                          <label style="min-width: 150px">Банк</label>
+                          <small class="label" style="min-width: 150px">Банк</small>
                           <el-select
-                              style="width: 200px; margin: 0 12px;"
-                              placeholder=""
+                              style="width: 300px; margin: 0 12px;"
+                              placeholder="Выберите банк"
                               v-model="bill.bankId"
                               filterable
-                              @change="bankChanged(bill.bankId)"
+                              @change="changeBank(bill.bankId, index)"
                               clearable>
                             <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
                           </el-select>
                         </div>
 
                         <div class="line">
-                          <label style="min-width: 150px">Филиал</label>
+                          <small class="label"  style="min-width: 150px">Филиал</small>
                           <el-select
-                              placeholder=""
-                              style="width: 200px; margin: 0 12px;"
+                              placeholder="Выберите филиал"
+                              style="width: 300px; margin: 0 12px;"
                               v-model="bill.bankItemId"
                               filterable
                               clearable>
-                            <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
+                            <el-option v-for="item in banksFilials[bill.bankId]" :key="item.id" :label="item.name" :value="item.id"/>
                           </el-select>
                         </div>
 
                         <div class="line">
-                          <label style="min-width: 150px">Расчетный счет </label>
-                          &nbsp; <el-input maxlength="20"
-                                    v-model="bill.personalAccount"/> &nbsp; &nbsp;
-                          <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)"> ✖</span>
+                          <small class="label"  style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
+                          <el-input maxlength="20" v-model="bill.operatingAccount"/>
+                          <el-button  @click="deleteBank(bill.id)">
+                            Удалить
+                          </el-button>
                         </div>
                         <hr>
                       </div>
@@ -266,8 +270,6 @@ const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const filials = ref([])
-const isDirty = ref(false)
 const isBankIsAdded = ref(false)
 const isDocemtntIsAdded = ref(false)
 const clientDocuments = ref([])
@@ -277,10 +279,11 @@ let cb;
 let cachINN = {}
 let timerInn = null
 const subtitle = computed(() => {
-  return 'Организация : ' + legal.value.typeOfCompanyTitle + ' ' + legal.value.name
+  return 'Организация : ' + (legal.value.typeOfCompanyTitle||'') + ' ' + (legal.value.name||'')
 })
 const typesCompanies = ref([])
 const typesLegal = ref([])
+const banksFilials = ref({})
 
 
 const querySearch = (queryString: string, cb: any) => {
@@ -301,8 +304,12 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
   }
 }
 
-function bankChanged(id) {
-  adminStore.getBankFilials(id).then(res => filials.value = res.items)
+function changeBank(id, index) {
+  if (index !== undefined) {
+    legal.value.bills[index].bankItemId = null
+  }
+
+  adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
 }
 
 function addDocument() {
@@ -312,13 +319,11 @@ function addDocument() {
 
 function addBank() {
   isBankIsAdded.value = true
-  legal.value.bills.unshift({personalAccount: '', bankItemId: null, bankId: null})
+  legal.value.bills.unshift({bankItemId: null, bankId: null})
 }
 
-function deleteBank(bill) {
-  legal.value.bills.map(el => {
-    if (el.personalAccount === bill.personalAccount) el.deleted = true
-  })
+function deleteBank(id: number) {
+  legal.value.bills = legal.value.bills.filter(el => el.id !== id)
 }
 
 function open(row, cbModal) {
@@ -330,6 +335,8 @@ function open(row, cbModal) {
   else adminStore.getLegal(row.leadId).then(res => {
     legal.value = res.data.item
     title.value = 'Редактирование юридического лица'
+
+    if (legal.value.bills) legal.value.bills.forEach(bank => changeBank(bank.bankId))
   })
 
 
@@ -345,7 +352,7 @@ function open(row, cbModal) {
 
 
   adminStore.getDepartments().then(res => departments.value = res.items)
-  adminStore.getBanks().then(res => banks.value = res.result)
+  adminStore.getBanks().then(res => banks.value = res.items)
   row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
       .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)

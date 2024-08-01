@@ -156,8 +156,8 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/damageitem/${deleteId}`).then(q => q)
             return res.data
         },
-        async getBanks() {
-            if (cache.getBanks) return cache.getBanks
+        async getBanks(needUpd: true | null) {
+            if (!needUpd && cache.getBanks) return cache.getBanks
             const res = await axios.get('/api/bank/').then(q => q)
             return (cache.getBanks = res.data)
         },
