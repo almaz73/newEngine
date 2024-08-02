@@ -35,14 +35,14 @@
           </small>
 
           <hr>
-          <el-form-item prop="person['lastName']"
+          <el-form-item prop="person.lastName"
                         style="display: inline-block; width: 220px"
                         :rules="{required: true, message: 'Фамилия', trigger: ['change']}">
             <el-input placeholder="Фамилия" title="Фамилия" v-model="client.person.lastName"/>
           </el-form-item>
 
 
-          <el-form-item prop="person['firstName']"
+          <el-form-item prop="person.firstName"
                         style="display: inline-block; width: 220px"
                         :rules="{required: true, message: 'Имя', trigger: ['change']}">
             <el-input placeholder="Имя" title="Имя" v-model="client.person.firstName"/>
@@ -63,9 +63,19 @@
                     @change="emailValidate(client.person.email)"
                     title="Email" v-model="client.person.email"/>
           &nbsp;&nbsp;
-          <el-input placeholder="Телефон" title="Телефон"
-                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
-                    v-model="client.person.phone"/>
+<!--          <el-input placeholder="Телефон" title="Телефон"-->
+<!--                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"-->
+<!--                    v-model="client.person.phone"/>-->
+
+          <el-form-item prop="person.phone"
+                        style="display: inline-block; width: 200px; margin: 0 !important;"
+                        :rules="{required: true, message: 'Телефон', trigger: ['change']}">
+            <el-input placeholder="Телефон" title="Телефон"
+                      :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
+                      v-model="client.person.phone" />
+          </el-form-item>
+
+
           &nbsp;&nbsp;
           <el-input placeholder="Доп.телефон" title="Доп.телефон"
                     :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone2=val)"
@@ -75,6 +85,7 @@
           <span><small style="padding: 0 24px">Д/р.:</small>
              <el-date-picker
                  style="width: 150px; overflow: hidden"
+                 clearable
                  placeholder="День рождения" title="День рождения"
                  v-model="client.person.dateOfBirth"/>
            </span>
@@ -97,7 +108,10 @@
 
               <small class="nowrap">
                 <small class="label l_100">ИНН (физ. лица)</small>
-                <el-input placeholder="ИНН" v-model="client.person.inn"/>
+                <el-input placeholder="ИНН"
+                          maxlength="20"
+                          minlength="20"
+                          v-model="client.person.inn"/>
               </small>
 
 
@@ -268,9 +282,21 @@ import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
+// const clientInit = {
+//   person: {firstName: '', middleName: '', lastName: ''},
+// }
+
 const clientInit = {
-  person: {firstName: '', middleName: '', lastName: ''},
+  bills: [],
+  person: {
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    registrationAddress: { fias: {} },
+    homeAddress: { fias: {} }
+  }
 }
+
 const client = ref(clientInit)
 const closeModal = () => isOpen.value = false
 const title = ref('')
@@ -348,7 +374,19 @@ function open(row, cbModal) {
   title.value = 'Создание нового клиента'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
+    console.log('res = ',res)
+
+    console.log('client.person.firstName = ',res.item.person.firstName)
+
+    // client.value = Object.assign(res.item, clientInit)
+
+
+
     client.value = res.item
+
+    client.value.person.homeAddress.fias = client.value.person.homeAddress.fias || {}
+    client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
+
     title.value = 'Редактирование клиента'
     if (client.value.bills) client.value.bills.forEach(bank => changeBank(bank.bankId))
   })
