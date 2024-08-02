@@ -2,7 +2,7 @@
   <div>
 
     <el-tabs v-model="activeName" @tab-change.once="tabChange">
-      <el-tab-pane label="Физ.лица">
+      <el-tab-pane label="Физ.лица" name="first">
         <div class="admin-filter-field">
           <el-input v-model="search"
                     :prefix-icon="Search"
@@ -82,7 +82,7 @@
           <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
         </template>
       </el-tab-pane>
-      <el-tab-pane label="Юр.лица"  name="first">
+      <el-tab-pane label="Юр.лица">
         <ClientsLegals ref="clientsLegals"/>
       </el-tab-pane>
     </el-tabs>
@@ -159,7 +159,5 @@ function openModalUserDir(row: any | null) {
 globalStore.setTitle('Клиенты')
 globalStore.steps = []
 getData()
-
-onMounted(()=>clientsLegals.value.open())
 
 </script>

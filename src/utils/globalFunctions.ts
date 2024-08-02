@@ -332,3 +332,7 @@ export function getPeriods(ev) {
     let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
     return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
 }
+
+export const getFiasByName = (queryString: string, cb: any) => {
+    useGlobalStore().getFias(queryString).then(res => cb(res.data.items || []))
+}

@@ -6,12 +6,12 @@
             :title="title"
             :subtitle="subtitle"
             draggable>
-    <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'630px'">
+    <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'640px'">
 
       <div class="modal-fields">
         <el-form ref="form" :model="legal" class="error-to-message">
           <small class="line">
-            <label>Источник</label>
+            <span class="label l_150">Источник</span>
 
             <el-form-item prop="treatmentSourceId"
                           style="display: inline-block; width: 420px"
@@ -38,19 +38,17 @@
 
           <small class="label-right l_150">Наименование</small>
           <el-form-item prop="name"
-                        style="display: inline-block; width: 420px"
+                        style="display: inline-block; width: 200px; margin: 0 !important;"
                         :rules="{required: true, message: 'Наименования', trigger: ['change']}">
-            <el-input v-model="legal.name"/>
+            <el-input v-model="legal.name" />
           </el-form-item>
 
-
-
-          <small class="label-right l_150">Тип юр.лица</small>
+          <small class="label-right l_150">Тип организации</small>
           <el-select
-              style="width: 220px"
-              v-model="legal.typeLegal"
-              filterable>
-            <el-option v-for="item in typesLegal" :key="item.value" :label="item.title" :value="item.value"/>
+            style="width: 220px"
+            v-model="legal.typeCompany"
+            filterable>
+            <el-option v-for="item in typesCompanies" :key="item.value" :label="item.title" :value="item.value"/>
           </el-select>
           <br>
 
@@ -58,16 +56,18 @@
           <small class="label-right l_150">
             <span title="по ИНН можно найти организацию из базы" style="color:white; cursor: pointer">⇶</span>
             ИНН </small>
-          <el-input v-model="legal.inn" @input="inpInn()"/>
+          <el-form-item prop="inn"
+                        style="display: inline-block; width: 200px; margin: 0 !important;"
+                        :rules="{required: true, message: 'ИНН', trigger: ['change']}">
+            <el-input v-model="legal.inn" @input="inpInn()"/>
+          </el-form-item>
 
-
-
-          <small class="label-right l_150">Тип организации</small>
+          <small class="label-right l_150">Тип юр.лица</small>
           <el-select
-              style="width: 220px"
-              v-model="legal.typeCompany"
-              filterable>
-            <el-option v-for="item in typesCompanies" :key="item.value" :label="item.title" :value="item.value"/>
+            style="width: 220px"
+            v-model="legal.typeLegal"
+            filterable>
+            <el-option v-for="item in typesLegal" :key="item.value" :label="item.title" :value="item.value"/>
           </el-select>
           <br>
 
@@ -84,7 +84,7 @@
               :title="legal.registrationAddress.fias.value"
               style="width: 200px"
               v-model="legal.registrationAddress.fias.value"
-              :fetch-suggestions="querySearch"
+              :fetch-suggestions="getFiasByName"
               clearable
               placeholder="Введите адрес"
               @select="addressSelect"
@@ -94,7 +94,7 @@
               :title="legal.postAddress.fias.value"
               style="width: 200px"
               v-model="legal.postAddress.fias.value"
-              :fetch-suggestions="querySearch"
+              :fetch-suggestions="getFiasByName"
               clearable
               placeholder="Введите адрес"
               @select="addressSelect2"
@@ -102,9 +102,13 @@
 
           <br>
           <small class="label-right l_150">Телефон</small>
-          <el-input placeholder="Телефон" title="Телефон"
-                    :formatter="(value) =>value && formattingPhone(value, (val)=>legal.phone=val)"
-                    v-model="legal.phone"/>
+          <el-form-item prop="phone"
+                        style="display: inline-block; width: 200px; margin: 0 !important;"
+                        :rules="{required: true, message: 'Телефон', trigger: ['change']}">
+            <el-input placeholder="Телефон" title="Телефон"
+                      :formatter="(value) =>value && formattingPhone(value, (val)=>legal.phone=val)"
+                      v-model="legal.phone" />
+          </el-form-item>
 
           <small class="label-right l_150">Email</small>
           <el-input placeholder="Email"
@@ -121,8 +125,8 @@
 
           <hr>
           <br>
-          <div style="display: flex">
-            <div style="width: 90%">
+          <div style="display: flex; flex-wrap: wrap">
+            <div style="width: 380px">
               <small>&nbsp; &nbsp; Ответственное лицо </small> <br>
               <div class="nowrap">
                 <small class="label l_100">Фамилия</small>
@@ -149,9 +153,13 @@
 
               <div class="nowrap">
                 <small class="label l_100">Телефон</small>
-                <el-input placeholder="Телефон" title="Телефон"
-                          :formatter="(value) =>value && formattingPhone(value, (val)=>legal.person.phone=val)"
-                          v-model="legal.person.phone"/>
+                <el-form-item prop="person.phone"
+                              style="display: inline-block; width: 200px; margin: 0 !important;"
+                              :rules="{required: true, message: 'Телефон', trigger: ['change']}">
+                  <el-input placeholder="Телефон" title="Телефон"
+                            :formatter="(value) =>value && formattingPhone(value, (val)=>legal.person.phone=val)"
+                            v-model="legal.person.phone"/>
+                </el-form-item>
               </div>
 
               <div class="nowrap">
@@ -177,17 +185,18 @@
               </div>
             </div>
 
-            <el-tabs style="width: 110%" type="border-card" v-model="activeName">
+            <el-tabs :style="{width:globalStore.isMobileView?'330px': '520px'}"
+                     type="border-card" v-model="activeName">
               <el-tab-pane label="Банковский счет" :maxHeight="250" name="first">
-                <el-scrollbar :maxHeight="250" style="width: 100%">
-                  <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
+                <el-scrollbar :maxHeight="250">
+                  <div class="line" style="margin-bottom:10px;flex-direction: column;">
                     <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
                   </div>
 
                   <div v-if="legal.bills && legal.bills.length">
                     <div v-for="(bill, index) in legal.bills" :key="bill.id">
                       <div v-if="!bill.deleted">
-                        <div class="line">
+                        <div>
                           <small class="label" style="min-width: 150px">Банк</small>
                           <el-select
                               style="width: 300px; margin: 0 12px;"
@@ -200,7 +209,7 @@
                           </el-select>
                         </div>
 
-                        <div class="line">
+                        <div>
                           <small class="label"  style="min-width: 150px">Филиал</small>
                           <el-select
                               placeholder="Выберите филиал"
@@ -212,10 +221,10 @@
                           </el-select>
                         </div>
 
-                        <div class="line">
+                        <div>
                           <small class="label"  style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
                           <el-input maxlength="20" v-model="bill.operatingAccount"/>
-                          <el-button  @click="deleteBank(bill.id)">
+                          <el-button  @click="deleteBank(bill)">
                             Удалить
                           </el-button>
                         </div>
@@ -248,7 +257,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
-import {checkEmptyFields, emailValidate, formattingPhone, simplePhone} from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate, formattingPhone, simplePhone, getFiasByName} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 import {ElMessage} from "element-plus";
 
@@ -270,7 +279,6 @@ const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const isBankIsAdded = ref(false)
 const isDocemtntIsAdded = ref(false)
 const clientDocuments = ref([])
 const documentTypes = ref([])
@@ -284,11 +292,6 @@ const subtitle = computed(() => {
 const typesCompanies = ref([])
 const typesLegal = ref([])
 const banksFilials = ref({})
-
-
-const querySearch = (queryString: string, cb: any) => {
-  globalStore.getFias(queryString).then(res => cb(res.data.items))
-}
 
 function addressSelect(adr: { value: string, fias_id: number }) {
   legal.value.registrationAddress.fias = {
@@ -318,18 +321,17 @@ function addDocument() {
 }
 
 function addBank() {
-  isBankIsAdded.value = true
   legal.value.bills.unshift({bankItemId: null, bankId: null})
 }
 
-function deleteBank(id: number) {
-  legal.value.bills = legal.value.bills.filter(el => el.id !== id)
+function deleteBank(bank: any) {
+  legal.value.bills = legal.value.bills.filter(el => !(el.bankId === bank.bankId && el.bankItemId === bank.bankItemId))
+  if (legal.value.bills.length === 0) addBank()
 }
 
 function open(row, cbModal) {
   cb = cbModal
   isOpen.value = true
-  isBankIsAdded.value = false
   title.value = 'Создание нового юр.лица'
   if (!row) legal.value = clientInit
   else adminStore.getLegal(row.leadId).then(res => {
@@ -427,6 +429,7 @@ function save() {
     if (legal.value.ogrnip == '') legal.value.ogrnip = null
     legal.value.phone = simplePhone(legal.value.phone)
     legal.value.person.phone = simplePhone(legal.value.person.phone)
+    legal.value.bills = legal.value.bills.filter(bank => bank.operatingAccount)
 
     globalStore.saveLegal(legal.value).then(res => {
       if (res.status === 200) {

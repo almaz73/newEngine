@@ -35,7 +35,6 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/lead/get/legal?id=${id}`).then(res => res)
             return res
         },
-        //api/lead/get/legal
 
         async addColor(row: any,entityType = '10') {
             const params = {entityType}

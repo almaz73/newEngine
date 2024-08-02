@@ -69,7 +69,7 @@
                   :title="client.registrationAddress.fias.value"
                   style="width: 200px"
                   v-model="client.registrationAddress.fias.value"
-                  :fetch-suggestions="querySearch"
+                  :fetch-suggestions="getFiasByName"
                   clearable
                   placeholder="Введите адрес"
                   @select="addressSelect"
@@ -82,7 +82,7 @@
                   :title="client.postAddress.fias.value"
                   style="width: 200px"
                   v-model="client.postAddress.fias.value"
-                  :fetch-suggestions="querySearch"
+                  :fetch-suggestions="getFiasByName"
                   clearable
                   placeholder="Введите адрес"
                   @select="addressSelect2"
@@ -243,7 +243,7 @@ import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useAdminStore } from '@/stores/adminStore'
 import { useAppealStore } from '@/stores/appealStore'
-import { checkEmptyFields, formattingPhone, emailValidate, simplePhone } from '@/utils/globalFunctions'
+import { checkEmptyFields, formattingPhone, emailValidate, simplePhone, getFiasByName} from '@/utils/globalFunctions'
 
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
@@ -290,10 +290,6 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
     value: adr.value,
     fiasId: adr.fias_id
   }
-}
-
-const querySearch = (queryString: string, cb: any) => {
-  globalStore.getFias(queryString).then(res => cb(res.data.items))
 }
 
 let cachINN = {}

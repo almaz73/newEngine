@@ -73,7 +73,7 @@
 
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-        <div><small>Клиент:</small> {{ row.person.lastName }} {{ row.person.firstName }} {{ row.person.middleName }}
+          <div><small>Юр.лицо</small> {{ row.name }}
 
           <el-button>
             <EditPensilCtrl @click="openModalUserDir(row)"/>
