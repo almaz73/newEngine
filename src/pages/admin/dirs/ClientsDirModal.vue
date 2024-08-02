@@ -12,22 +12,22 @@
       <div class="modal-fields">
         <el-form ref="form" :model="client" class="error-to-message">
           <small class="line">
-            <label>Источник</label>
+            <span class="label l_150">Источник</span>
 
             <el-form-item prop="treatmentSourceId"
                           style="display: inline-block; width: 420px"
                           :rules="{required: true, message: 'Источник', trigger: ['change']}">
               <el-select v-model="client.treatmentSourceId" placeholder="Выберите источник">
                 <el-option-group
-                    v-for="group in treatmentsGroup"
-                    :key="group.id"
-                    :label="group.name"
+                  v-for="group in treatmentsGroup"
+                  :key="group.id"
+                  :label="group.name"
                 >
                   <el-option
-                      v-for="item in group.groups"
-                      :key="item.id"
-                      :value="item.id"
-                      :label="item.name"
+                    v-for="item in group.groups"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"
                   />
                 </el-option-group>
               </el-select>
@@ -79,50 +79,67 @@
                  v-model="client.person.dateOfBirth"/>
            </span>
 
+
           <hr>
           <br>
-          <div style="display: flex">
-            <div>
-              <small class="line">
-                <label>Место рождения</label>
-                <el-input v-model="client.person.placeOfBirth"/>
-              </small>
+          <div style="display: flex; flex-wrap: wrap">
+            <div style="width: 380px">
 
-              <small class="line">
-                <label> Ссылка на соц.сети</label>
+              <div class="nowrap">
+                <small class="label l_100">Место рождения</small>
+                <el-input v-model="client.person.placeOfBirth"/>
+              </div>
+
+              <small class="nowrap">
+                <small class="label l_100">Ссылка на соц.сети</small>
                 <el-input v-model="client.person.socialNetworksAddress"/>
               </small>
 
-              <small class="line">
-                <label>ИНН (физ. лица)</label>
+              <small class="nowrap">
+                <small class="label l_100">ИНН (физ. лица)</small>
                 <el-input placeholder="ИНН" v-model="client.person.inn"/>
               </small>
 
-              <small>
-                <label>Согласие на обработку персональных данных</label> &nbsp;
-                <el-checkbox v-model="client.person.personalDataAgree"/>
-              </small><br>
 
-              <small>
-                <label>Согласие на получение смc</label> &nbsp;
-                <el-checkbox v-model="client.person.smsReceivingAgree"/>
-              </small>
+              <el-checkbox v-model="client.person.personalDataAgree"
+                           label="Согласие на обработку персональных данных" />
+
+              <el-checkbox v-model="client.person.smsReceivingAgree" label="Согласие на получение смc" />
+
 
               <div class="line" v-if="client.person.registrationAddress">
-                <label>Адрес регистрации</label>
-                <el-input placeholder="Адрес регистрации" v-model="client.person.registrationAddress.text"/>
+                <small class="label l_100">Адрес регистрации</small>
+                <el-autocomplete
+                  :title="client.person.registrationAddress.fias.value"
+                  style="width: 200px"
+                  v-model="client.person.registrationAddress.fias.value"
+                  :fetch-suggestions="getFiasByName"
+                  clearable
+                  placeholder="Введите адрес"
+                  @select="addressSelect"
+                />
               </div>
 
-              <div class="line" v-if="client.person.homeAddress">
-                <label>Фактический адрес</label>
-                <el-input placeholder="Фактический адрес" v-model="client.person.homeAddress.text"/>
-              </div>
+              <small v-if="client.person.homeAddress">
+                <small class="label l_100">Фактический адрес</small>
+                <el-autocomplete
+                  :title="client.person.homeAddress.fias.value"
+                  style="width: 200px"
+                  v-model="client.person.homeAddress.fias.value"
+                  :fetch-suggestions="getFiasByName"
+                  clearable
+                  placeholder="Введите адрес"
+                  @select="addressSelect2"
+                />
+              </small>
+
             </div>
 
-            <el-tabs style="width: 100%" type="border-card" v-model="activeName">
+            <el-tabs :style="{width:globalStore.isMobileView?'330px': '520px'}"
+                     type="border-card" v-model="activeName">
               <el-tab-pane label="Документы" name="first">
                 <el-scrollbar :maxHeight="250" style="width: 100%">
-                  <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isDocemtntIsAdded">
+                  <div class="line" style="margin-bottom:10px;flex-direction: column;">
                     <el-button type="info" @click="addDocument()" :icon="Plus">Добавить документ</el-button>
                   </div>
 
@@ -130,39 +147,43 @@
                     <div v-for="doc in clientDocuments" :key="doc.id"
                          :style="{'fontWeight': !doc.number?'600':''}">
                       <div v-if="!doc.deleted">
-                        <div class="line">
-                          <label style="min-width: 150px">Тип документа</label>
+                        <div>
+                          <small class="label l_150">Тип документа</small>
                           <el-select
-                              style="width: 200px; margin: 0 12px;"
-                              placeholder=""
-                              v-model="doc.type"
-                              filterable
-                              clearable>
+                            style="width: 200px;"
+                            placeholder=""
+                            v-model="doc.type"
+                            filterable
+                            clearable>
                             <el-option v-for="item in documentTypes" :key="item.value" :label="item.title"
                                        :value="item.value"/>
                           </el-select>
-                          <span style="cursor: pointer" title="Удалить" @click="deleteDocument(doc)">✖</span>
+
                         </div>
 
-                        <div class="line">
-                          <label style="min-width: 150px">Серия</label>
+                        <div>
+                          <small class="label l_150">Серия</small>
                           <el-input maxlength="20"
                                     v-model="doc.serial"/>
                         </div>
 
-                        <div class="line">
-                          <label style="min-width: 150px">Номер</label>
+                        <div>
+                          <small class="label l_150">Номер</small>
                           <el-input maxlength="20"
                                     v-model="doc.number"/>
 
                         </div>
 
-                        <div class="line">
-                          <label style="min-width: 150px">Дата выдачи</label>
+                        <div>
+                          <small class="label l_150">Дата выдачи</small>
                           <el-date-picker
-                              placeholder="" title="День рождения"
-                              v-model="doc.issueDate"/>
+                            placeholder="" title="День рождения"
+                            v-model="doc.issueDate"/>
+                          <el-button @click="deleteDocument(doc)" style="margin-left: 30px;">Удалить</el-button>
                         </div>
+
+
+
                         <hr>
                       </div>
                     </div>
@@ -172,45 +193,45 @@
 
               </el-tab-pane>
               <el-tab-pane label="Банковский счет" :maxHeight="250">
-                <el-scrollbar :maxHeight="250" style="width: 100%">
-                  <div class="line" style="margin-bottom:10px;flex-direction: column;" v-if="!isBankIsAdded">
+                <el-scrollbar :maxHeight="250">
+                  <div class="line" style="margin-bottom:10px;flex-direction: column;">
                     <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
                   </div>
 
                   <div v-if="client.bills && client.bills.length">
-                    <div v-for="bill in client.bills" :key="bill.id"
-                         :style="{'fontWeight': !bill.personalAccount?'600':''}">
+                    <div v-for="(bill, index) in client.bills" :key="bill.id">
                       <div v-if="!bill.deleted">
-                        <div class="line">
-                          <label style="min-width: 150px">Банк</label>
+                        <div>
+                          <small class="label" style="min-width: 150px">Банк</small>
                           <el-select
-                              style="width: 200px; margin: 0 12px;"
-                              placeholder=""
-                              v-model="bill.bankId"
-                              filterable
-                              @change="bankChanged(bill.bankId)"
-                              clearable>
+                            style="width: 300px; margin: 0 12px;"
+                            placeholder="Выберите банк"
+                            v-model="bill.bankId"
+                            filterable
+                            @change="changeBank(bill.bankId, index)"
+                            clearable>
                             <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
                           </el-select>
                         </div>
 
-                        <div class="line">
-                          <label style="min-width: 150px">Филиал</label>
+                        <div>
+                          <small class="label"  style="min-width: 150px">Филиал</small>
                           <el-select
-                              placeholder=""
-                              style="width: 200px; margin: 0 12px;"
-                              v-model="bill.bankItemId"
-                              filterable
-                              clearable>
-                            <el-option v-for="item in filials" :key="item.id" :label="item.name" :value="item.id"/>
+                            placeholder="Выберите филиал"
+                            style="width: 300px; margin: 0 12px;"
+                            v-model="bill.bankItemId"
+                            filterable
+                            clearable>
+                            <el-option v-for="item in banksFilials[bill.bankId]" :key="item.id" :label="item.name" :value="item.id"/>
                           </el-select>
                         </div>
 
-                        <div class="line">
-                          <label style="min-width: 150px">Расчетный счет</label>
-                          <el-input maxlength="20"
-                                    v-model="bill.personalAccount"/>
-                          <span style="cursor: pointer" title="Удалить" @click="deleteBank(bill)">✖</span>
+                        <div>
+                          <small class="label"  style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
+                          <el-input maxlength="20" v-model="bill.personalAccount"/>
+                          <el-button  @click="deleteBank(bill)">
+                            Удалить
+                          </el-button>
                         </div>
                         <hr>
                       </div>
@@ -220,9 +241,9 @@
                 </el-scrollbar>
               </el-tab-pane>
             </el-tabs>
-
-
           </div>
+
+          <hr>
         </el-form>
         <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()">Сохранить</el-button>
@@ -235,14 +256,14 @@
   <ClientsDirModal_History ref="сlientsDirModal_History"/>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import AppModal from "@/components/AppModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {checkEmptyFields, emailValidate, formattingPhone, simplePhone} from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate, formattingPhone, simplePhone, getFiasByName} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 
 const globalStore = useGlobalStore()
@@ -259,10 +280,8 @@ const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const filials = ref([])
-const isDirty = ref(false)
+const banksFilials = ref({})
 const isBankIsAdded = ref(false)
-const isDocemtntIsAdded = ref(false)
 const clientDocuments = ref([])
 const documentTypes = ref([])
 const activeName = ref('first')
@@ -275,25 +294,51 @@ const subtitle = computed(() => {
   return fio || 'Новый клиент'
 })
 
+function addressSelect(adr: { value: string, fias_id: number }) {
+  client.value.person.registrationAddress.fiasAddress = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
 
-function bankChanged(id) {
-  adminStore.getBankFilials(id).then(res => filials.value = res.items)
+function addressSelect2(adr: { value: string, fias_id: number }) {
+  client.value.person.homeAddress.fiasAddress = {
+    value: adr.value,
+    fiasId: adr.fias_id
+  }
+}
+
+function changeBank(id, index) {
+  if (index !== undefined) {
+    client.value.bills[index].bankItemId = null
+  }
+
+  adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
 }
 
 function addDocument() {
-  isDocemtntIsAdded.value = true
   clientDocuments.value.unshift({number: '', serial: '', type: 40, issueDate: new Date()})
 }
 
 function addBank() {
   isBankIsAdded.value = true
-  client.value.bills.unshift({personalAccount: '', bankItemId: null, bankId: null})
+  client.value.bills.unshift({bankItemId: null, bankId: null})
 }
 
-function deleteBank(bill) {
-  client.value.bills.map(el => {
-    if (el.personalAccount === bill.personalAccount) el.deleted = true
-  })
+// function deleteBank(bill) {
+//   client.value.bills.map(el => {
+//     if (el.personalAccount === bill.personalAccount) el.deleted = true
+//   })
+// }
+
+function deleteBank(bank: any) {
+  client.value.bills = client.value.bills.filter(el => !(el.bankId === bank.bankId && el.bankItemId === bank.bankItemId))
+  if (client.value.bills.length === 0) addBank()
+}
+
+function deleteDocument(doc) {
+  console.log('doc = ',doc)
+
 }
 
 function open(row, cbModal) {
@@ -303,9 +348,9 @@ function open(row, cbModal) {
   title.value = 'Создание нового клиента'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
-
     client.value = res.item
     title.value = 'Редактирование клиента'
+    if (client.value.bills) client.value.bills.forEach(bank => changeBank(bank.bankId))
   })
 
 
@@ -321,7 +366,7 @@ function open(row, cbModal) {
 
 
   adminStore.getDepartments().then(res => departments.value = res.items)
-  adminStore.getBanks().then(res => banks.value = res.result)
+  adminStore.getBanks().then(res => banks.value = res.items)
   row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
       .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)

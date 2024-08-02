@@ -123,7 +123,6 @@
 
 
 
-          <hr>
           <br>
           <div style="display: flex; flex-wrap: wrap">
             <div style="width: 380px">
@@ -315,10 +314,6 @@ function changeBank(id, index) {
   adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
 }
 
-function addDocument() {
-  isDocemtntIsAdded.value = true
-  clientDocuments.value.unshift({number: '', serial: '', type: 40, issueDate: new Date()})
-}
 
 function addBank() {
   legal.value.bills.unshift({bankItemId: null, bankId: null})
