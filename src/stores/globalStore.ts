@@ -155,6 +155,9 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async saveLegal(params: any) {
             return await axios.post('/api/lead/add/legal', params).then(q => q)
+        },
+        async saveClientDocument(params: any) {
+            return await axios.post('/api/client-documents/add', params).then(q => q)
         }
     }
 })

@@ -32,8 +32,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
 
         async getLegal(id: number) {
-            const res = await axios.get(`/api/lead/get/legal?id=${id}`).then(res => res)
-            return res
+            return await axios.get(`/api/lead/get/legal?id=${id}`).then(res => res)
         },
 
         async addColor(row: any,entityType = '10') {
@@ -87,10 +86,6 @@ export const useAdminStore = defineStore("adminStore", {
         },
         async getUserHistory(id: number) {
             const res = await axios.get(`/api/user/get/audit?id=${id}`).then(q => q)
-            return res.data
-        },
-        async getClientHistory(id: number) {
-            const res = await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
             return res.data
         },
         async getDocumentTypes() {
@@ -463,12 +458,18 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/SignAuthority/getAvaliableSign?id=${id}`).then(q => q)
             return res.data
         },
+        async getClientHistory(id: number) {
+            return await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
+        },
         async getLegalHistory(id: number) {
-            const res = await axios.get(`/api/legal/gethistory?id=${id}`).then(q => q)
-            return res.data
-        }
-
-
+            return await axios.get(`/api/legal/gethistory?id=${id}`).then(q => q)
+        },
+        async getClientDocHistory(id: number) {
+            return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)
+        },
+        async getBanksHistory(id: number) {
+            return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)
+        },
 
     }
     

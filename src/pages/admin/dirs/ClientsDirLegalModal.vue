@@ -278,8 +278,6 @@ const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const isDocemtntIsAdded = ref(false)
-const clientDocuments = ref([])
 const documentTypes = ref([])
 const activeName = ref('first')
 let cb;
@@ -350,15 +348,10 @@ function open(row, cbModal) {
 
   adminStore.getDepartments().then(res => departments.value = res.items)
   adminStore.getBanks().then(res => banks.value = res.items)
-  row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
-      .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 
-
-  // globalStore.getTreatmentSources().then(res => treatmentSources.value = res.items)
   globalStore.getTypeCompanies().then(res => typesCompanies.value = res.items)
   globalStore.getTypesLegal().then(res => typesLegal.value = res.items)
-  // globalStore.getPositions().then(res => positions.value = res.items)
 }
 
 function showHistory() {

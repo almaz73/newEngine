@@ -239,7 +239,6 @@
 </template>
 
 <script setup lang="ts">
-import AppModal from '@/components/AppModal.vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useAdminStore } from '@/stores/adminStore'
 import { computed, ref } from 'vue'
@@ -258,7 +257,6 @@ const clientInit = {
   treatmentSource: {}
 }
 const legal = ref(JSON.parse(JSON.stringify(clientInit)))
-const closeModal = () => isOpen.value = false
 const title = ref('')
 const сlientsDirModal_History = ref(null)
 const adminStore = useAdminStore()
@@ -266,16 +264,12 @@ const treatmentsGroup = ref([])
 const departments = ref([])
 const form = ref(null)
 const banks = ref([])
-const isDocemtntIsAdded = ref(false)
-const clientDocuments = ref([])
 const documentTypes = ref([])
 const activeName = ref('first')
 let cb
 let cachINN = {}
 let timerInn = null
-const subtitle = computed(() => {
-  return 'Организация : ' + (legal.value.typeOfCompanyTitle || '') + ' ' + (legal.value.name || '')
-})
+
 const typesCompanies = ref([])
 const typesLegal = ref([])
 const banksFilials = ref({})
@@ -338,20 +332,11 @@ function open(row, cbModal) {
 
   adminStore.getDepartments().then(res => departments.value = res.items)
   adminStore.getBanks().then(res => banks.value = res.items)
-  row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
-    .then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 
 
-  // globalStore.getTreatmentSources().then(res => treatmentSources.value = res.items)
   globalStore.getTypeCompanies().then(res => typesCompanies.value = res.items)
   globalStore.getTypesLegal().then(res => typesLegal.value = res.items)
-  // globalStore.getPositions().then(res => positions.value = res.items)
-}
-
-function showHistory() {
-  сlientsDirModal_History.value.open('юр.лица', legal.value.id, 'Организация : ' +
-    legal.value.typeOfCompanyTitle + ' ' + legal.value.name, 'getLegalHistory')
 }
 
 function inpInn() {
@@ -426,6 +411,6 @@ function save() {
 }
 
 defineExpose({ open })
-globalStore.setTitle('Новое юридическое лицо')
+globalStore.setTitle('Юридическое лицо')
 
 </script>

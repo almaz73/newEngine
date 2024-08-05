@@ -67,7 +67,7 @@ function open(type, id, name, method) {
   title.value = 'История изменений ' + type
   subtitle.value = name
 
-  adminStore[method](id).then(res => tableData.value = res)
+  adminStore[method](id).then(res => tableData.value = res.data)
 }
 
 function listChange(list) {

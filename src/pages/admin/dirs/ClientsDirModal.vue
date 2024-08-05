@@ -150,54 +150,34 @@
             </div>
 
             <el-tabs :style="{width:globalStore.isMobileView?'330px': '520px'}"
+                     @tabChange="tabChosen()"
                      type="border-card" v-model="activeName">
               <el-tab-pane label="Документы" name="first">
                 <el-scrollbar :maxHeight="250" style="width: 100%">
                   <div class="line" style="margin-bottom:10px;flex-direction: column;">
-                    <el-button type="info" @click="addDocument()" :icon="Plus">Добавить документ</el-button>
+                    <el-button type="info" @click="openClientDocs()">Работа с документами</el-button>
                   </div>
 
                   <div v-if="clientDocuments && clientDocuments.length">
                     <div v-for="doc in clientDocuments" :key="doc.id"
-                         :style="{'fontWeight': !doc.number?'600':''}">
+                         :style="{'fontWeight': !doc.number?'600':''}" style="pointer-events: none">
                       <div v-if="!doc.deleted">
                         <div>
-                          <small class="label l_150">Тип документа</small>
-                          <el-select
-                            style="width: 200px;"
-                            placeholder=""
-                            v-model="doc.type"
-                            filterable
-                            clearable>
-                            <el-option v-for="item in documentTypes" :key="item.value" :label="item.title"
-                                       :value="item.value"/>
-                          </el-select>
-
+                          <small class="label l_150">Тип документа </small><small>&nbsp;
+                          {{ documentTypes.find(el => el.value === doc.type).title }}</small>
                         </div>
 
                         <div>
-                          <small class="label l_150">Серия</small>
-                          <el-input maxlength="20"
-                                    v-model="doc.serial"/>
+                          <small class="label l_150">Серия </small><small>&nbsp; {{ doc.serial }}</small>
                         </div>
 
                         <div>
-                          <small class="label l_150">Номер</small>
-                          <el-input maxlength="20"
-                                    v-model="doc.number"/>
-
+                          <small class="label l_150">Номер </small><small>&nbsp; {{ doc.number }}</small>
                         </div>
 
                         <div>
-                          <small class="label l_150">Дата выдачи</small>
-                          <el-date-picker
-                            placeholder="" title="День рождения"
-                            v-model="doc.issueDate"/>
-                          <el-button @click="deleteDocument(doc)" style="margin-left: 30px;">Удалить</el-button>
+                          <small class="label l_150">Дата выдачи </small><small>&nbsp; {{ doc.issueDate }}</small>
                         </div>
-
-
-
                         <hr>
                       </div>
                     </div>
@@ -208,8 +188,9 @@
               </el-tab-pane>
               <el-tab-pane label="Банковский счет" :maxHeight="250">
                 <el-scrollbar :maxHeight="250">
-                  <div class="line" style="margin-bottom:10px;flex-direction: column;">
+                  <div style="text-align: center; margin-bottom: 8px;">
                     <el-button type="info" @click="addBank()" :icon="Plus">Добавить расчетный счет</el-button>
+                    <el-button type="info" @click="showBanksHistory()" title="История изменений">⟲</el-button>
                   </div>
 
                   <div v-if="client.bills && client.bills.length">
@@ -243,7 +224,7 @@
                         <div>
                           <small class="label"  style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
                           <el-input maxlength="20" v-model="bill.personalAccount"/>
-                          <el-button  @click="deleteBank(bill)">
+                          &nbsp; <el-button  @click="deleteBank(bill)">
                             Удалить
                           </el-button>
                         </div>
@@ -268,6 +249,7 @@
     </el-scrollbar>
   </AppModal>
   <ClientsDirModal_History ref="сlientsDirModal_History"/>
+  <ClientsDirDocumentsModal ref="clientsDirDocumentsModal"/>
 </template>
 
 <script setup lang="ts">
@@ -279,13 +261,10 @@ import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {checkEmptyFields, emailValidate, formattingPhone, simplePhone, getFiasByName} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
+import ClientsDirDocumentsModal from "@/pages/admin/dirs/ClientsDirDocumentsModal.vue";
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
-// const clientInit = {
-//   person: {firstName: '', middleName: '', lastName: ''},
-// }
-
 const clientInit = {
   bills: [],
   person: {
@@ -301,6 +280,7 @@ const client = ref(clientInit)
 const closeModal = () => isOpen.value = false
 const title = ref('')
 const сlientsDirModal_History = ref(null)
+const clientsDirDocumentsModal = ref(null)
 const adminStore = useAdminStore()
 const treatmentsGroup = ref([])
 const departments = ref([])
@@ -335,37 +315,21 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
 }
 
 function changeBank(id, index) {
-  if (index !== undefined) {
-    client.value.bills[index].bankItemId = null
-  }
-
-  adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
+  if (index !== undefined) client.value.bills[index].bankItemId = null
+  id && adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
 }
 
-function addDocument() {
-  clientDocuments.value.unshift({number: '', serial: '', type: 40, issueDate: new Date()})
-}
 
 function addBank() {
   isBankIsAdded.value = true
   client.value.bills.unshift({bankItemId: null, bankId: null})
 }
 
-// function deleteBank(bill) {
-//   client.value.bills.map(el => {
-//     if (el.personalAccount === bill.personalAccount) el.deleted = true
-//   })
-// }
-
 function deleteBank(bank: any) {
   client.value.bills = client.value.bills.filter(el => !(el.bankId === bank.bankId && el.bankItemId === bank.bankItemId))
   if (client.value.bills.length === 0) addBank()
 }
 
-function deleteDocument(doc) {
-  console.log('doc = ',doc)
-
-}
 
 function open(row, cbModal) {
   cb = cbModal
@@ -374,16 +338,7 @@ function open(row, cbModal) {
   title.value = 'Создание нового клиента'
   if (!row) client.value = clientInit
   else adminStore.getClientForModal(row.leadId).then(res => {
-    console.log('res = ',res)
-
-    console.log('client.person.firstName = ',res.item.person.firstName)
-
-    // client.value = Object.assign(res.item, clientInit)
-
-
-
     client.value = res.item
-
     client.value.person.homeAddress.fias = client.value.person.homeAddress.fias || {}
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
 
@@ -404,15 +359,29 @@ function open(row, cbModal) {
 
 
   adminStore.getDepartments().then(res => departments.value = res.items)
-  adminStore.getBanks().then(res => banks.value = res.items)
-  row && adminStore.getClientDocunets(row.person ? row.person.id : row.lead.person.personId)
-      .then(res => clientDocuments.value = res.items)
+}
+
+function getDocs(id) {
+  adminStore.getClientDocunets(id).then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
+}
+
+function openClientDocs() {
+  clientsDirDocumentsModal.value.open(client.value, clientDocuments.value, getDocs)
+}
+
+function tabChosen() {
+  adminStore.getBanks().then(res => banks.value = res.items)
 }
 
 function showHistory() {
   let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
   сlientsDirModal_History.value.open('клиента', client.value.leadId, name, 'getClientHistory')
+}
+
+function showBanksHistory() {
+  let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
+  сlientsDirModal_History.value.open('клиента по счетам', client.value.leadId, name, 'getBanksHistory')
 }
 
 
