@@ -73,7 +73,7 @@ function open() {
 // отментим поля с неимеющимися данными по гибдд
 
 function getFieldsWithoutData(data: any, type: number) {
-  if (data) gibdd.value['type' + type] = !data.vin
+  gibdd.value['type' + type] = !data || !data.vin
 }
 
 function putData(res: any, type: number) {

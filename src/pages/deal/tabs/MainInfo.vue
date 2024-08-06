@@ -152,7 +152,7 @@
     <div style="clear: both"></div>
 
 
-    <el-collapse class="big-collapse no-color-collapse" @change="changeCollapse">
+    <el-collapse class="big-collapse no-color-collapse" @change="changeCollapse" accordion>
       <el-collapse-item title="Дополниельная информация" name="1" v-if=" dealStore.deal.auto.additionalInformation">
         {{ dealStore.deal.auto.additionalInformation }}
       </el-collapse-item>
