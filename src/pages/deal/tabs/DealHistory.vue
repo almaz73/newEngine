@@ -104,6 +104,7 @@ import {useDealStore} from '@/stores/dealStore'
 import {formatDMY_hm} from '@/utils/globalFunctions'
 import {ref} from 'vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
+import { ElMessage } from 'element-plus'
 
 const dealStore = useDealStore()
 const radio = ref(10)
@@ -111,6 +112,7 @@ const tableDataDeal = ref([])
 const tableData = ref([])
 const activeName = ref('tab_1')
 const isShowBeige = ref(null)
+let analogLength = 0;
 
 function tableRowClassName(val) {
   if (isShowBeige.value == 1 && val.row.isAnother) return 'beige-fon'
@@ -122,11 +124,13 @@ function tabClick(val: any) {
 }
 
 function getSimularDeals() {
-
   if (isShowBeige.value) isShowBeige.value = isShowBeige.value === 1 ? 2 : 1
+  if (isShowBeige.value && !analogLength) ElMessage.warning('Нет данных по аналогичным автомобилям')
+
   !isShowBeige.value && dealStore.getSimularDeals(dealStore.deal.dealId).then(res => {
-    res.items.forEach(el => {
-      isShowBeige.value = 1
+    isShowBeige.value = 1
+    analogLength = res.data.items.length
+    res.data.items.forEach(el => {
       tableDataDeal.value.push({
         createDate: el.createDate,
         locationCity: el.city,

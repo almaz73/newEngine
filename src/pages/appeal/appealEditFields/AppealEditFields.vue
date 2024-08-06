@@ -169,6 +169,7 @@
   <InfoAboutClientModal ref="infoAboutClient"/>
   <ClientsDirModal ref="сlientModal"/>
   <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
+  <ClientsDirLegalModal ref="clientsDirLegalModal"/>
 </template>
 
 <style>
@@ -206,8 +207,8 @@ import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
 import {Edit} from "@element-plus/icons-vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import {ElMessageBox} from 'element-plus'
-import router from '@/router'
 import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
+import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -220,6 +221,7 @@ const prevTask = ref('')
 const events = ref([])
 const infoAboutClient = ref(null)
 const сlientModal = ref(null)
+const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 let timerSwap = null
@@ -240,7 +242,8 @@ function changeTypeClient() {
     cancelButtonText: 'Нет'
   })
       .then(res => {
-        router.push('/client/legal/add')
+        // router.push('/client/legal/add') в отдельной странице добавить клиента
+        clientsDirLegalModal.value.open()
       }, () => {
         appeal.value.lead.leadType = appeal.value.lead.leadType === 10 ? 20 : 10
         isTypeClientEdit.value = false

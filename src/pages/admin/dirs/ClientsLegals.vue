@@ -96,7 +96,7 @@
     </template>
 
   </div>
-  <ClientsDirLegalModal ref="UserModal"/>
+  <ClientsDirLegalModal ref="clientsDirLegalModal"/>
 </template>
 
 <script setup lang="ts">
@@ -110,7 +110,7 @@ import {Plus, Search} from "@element-plus/icons-vue";
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
-const UserModal = ref(null)
+const clientsDirLegalModal = ref(null)
 const tableData = ref([])
 const total = ref(0)
 const rowsPerPage = ref(10)
@@ -170,7 +170,7 @@ function getData() {
 
 
 function openModalUserDir(row: any | null) {
-  UserModal.value.open(row, getData)
+  clientsDirLegalModal.value.open(row, getData)
 }
 
 

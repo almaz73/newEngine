@@ -95,9 +95,7 @@ export const useDealStore = defineStore('dealStore', {
           return (cache.getBuyAutoEditHistory = res.data)
       },
       async getSimularDeals(dealId: number) {
-          if (cache.getSimilarDeals) return cache.getSimilarDeals
-          const res = await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
-          return (cache.getSimilarDeals = res.data)
+        return await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
       },
       async GetInspectionComplect(inspectionId: number) {
           if (cache.GetInspectionComplect) return cache.GetInspectionComplect
