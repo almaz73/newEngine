@@ -126,9 +126,9 @@
                 appeal.lead.person.registrationAddress.fiasAddress && appeal.lead.person.registrationAddress.fiasAddress.value
               }}
             </div>
-            <br> <a @click="infoAboutClient.open(appeal)" style="float: right">Более подробно о клиенте ➣ ➣ ➣</a>
           </div>
         </div>
+        <br>
       </el-collapse-item>
       <el-collapse-item :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
                         name="2">
@@ -166,8 +166,7 @@
   <el-divider/>
 
   <AppealTabs ref="appealTabs" :carPhoto="carPhoto"/>
-  <InfoAboutClientModal ref="infoAboutClient"/>
-  <ClientsDirModal ref="сlientModal"/>
+  <ClientsDirModal ref="clientsDirModal"/>
   <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
   <ClientsDirLegalModal ref="clientsDirLegalModal"/>
 </template>
@@ -200,7 +199,6 @@ import {useAppealStore} from "@/stores/appealStore";
 import {statuses, Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/pages/appeal/controls/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
-import InfoAboutClientModal from "@/pages/appeal/controls/InfoAboutClientModal.vue";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
@@ -219,8 +217,7 @@ const appealTabs = ref(null)
 const lastTaskAndResult = ref('')
 const prevTask = ref('')
 const events = ref([])
-const infoAboutClient = ref(null)
-const сlientModal = ref(null)
+const clientsDirModal = ref(null)
 const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
@@ -262,7 +259,7 @@ function workFlowType(type) {
 
 
 function openClient() {
-  сlientModal.value.open(appeal.value)
+  appeal.value && clientsDirModal.value.open(appeal.value.leadId)
 }
 
 function openLegal() {

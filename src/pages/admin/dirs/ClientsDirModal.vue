@@ -331,13 +331,13 @@ function deleteBank(bank: any) {
 }
 
 
-function open(row, cbModal) {
+function open(leadId, cbModal) {
   cb = cbModal
   isOpen.value = true
   isBankIsAdded.value = false
   title.value = 'Создание нового клиента'
-  if (!row) client.value = clientInit
-  else adminStore.getClientForModal(row.leadId).then(res => {
+  if (!leadId) client.value = clientInit
+  else adminStore.getClientForModal(leadId).then(res => {
     client.value = res.item
     client.value.person.homeAddress.fias = client.value.person.homeAddress.fias || {}
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}

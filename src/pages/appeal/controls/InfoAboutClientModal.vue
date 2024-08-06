@@ -1,3 +1,24 @@
+/**
+*  УСТАРЕЛО... ПАНЕЛЬКО С ДАННЫМИ КЛИЕНТА ВСЕ ПОКАЗЫВАЕТ
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <template>
   <AppModal v-if="isOpen && appeal"
             @closeModal="closeModal()"

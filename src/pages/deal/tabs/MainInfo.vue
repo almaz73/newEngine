@@ -162,7 +162,7 @@
         <div class="info-filed">
           <label class="label"><small>ФИО</small></label>
           {{ dealStore.deal.leadFullName }}
-          <EditPensilCtrl/>
+          <EditPensilCtrl @click="editClient()"/>
         </div>
         <div class="info-filed">
           <label class="label"><small>Контактный телефон</small></label>
@@ -220,6 +220,7 @@
 
 
   </div>
+  <ClientsDirModal ref="clientsDirModal"/>
 </template>
 
 <script setup lang="ts">
@@ -242,6 +243,7 @@ import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import C_comments from "@/pages/deal/tabs/collapses/C_comments.vue";
 import C_complect from "@/pages/deal/tabs/collapses/C_complect.vue";
 import C_complectation from "@/pages/deal/tabs/collapses/C_complectation.vue";
+import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
@@ -249,6 +251,7 @@ const c_InspectionGibdd = ref(null)
 const c_comments = ref(null)
 const c_complect = ref(null)
 const c_complectation = ref(null)
+const clientsDirModal = ref(null)
 
 
 function getOwnerTitle(owner: any) {
@@ -279,6 +282,10 @@ function changeCollapse(node: string[]) {
   if (node.includes('11')) c_complect.value.open()
   if (node.includes('12')) c_complectation.value.open()
 
+}
+
+function editClient() {
+  clientsDirModal.value.open(dealStore.deal.leadId)
 }
 
 </script>

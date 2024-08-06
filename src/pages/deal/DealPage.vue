@@ -27,6 +27,7 @@
       class="big-table"
       v-if="!globalStore.isMobileView"
       :data="dealList"
+      :row-class-name="tableRowClassName"
       ref="singleTableRef"
       empty-text="Нет данных"
       @row-dblclick="openPage"
@@ -59,6 +60,13 @@
           <span class="red-text"> {{ scope.row.statusTitle }} </span><br />
           {{ scope.row.dealTypeTitle }}<br />
           {{ formatDate(scope.row.created) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column >
+        <template #default="scope">
+          <b> {{ scope.row.treatmentSourceTitle }} </b><br />
+          {{ scope.row.clientTitle }}
         </template>
       </el-table-column>
 
@@ -118,6 +126,12 @@
   </main>
 </template>
 
+<style>
+.pink-fon {
+  background: #FFDADA !important;
+}
+</style>
+
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
@@ -135,7 +149,7 @@ const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const searchText = ref('')
 const total = ref(0)
-const rowsPerPage = ref(5)
+const rowsPerPage = ref(15)
 const currentPage = ref(1)
 const dealList = ref([])
 const filterButtons = reactive([
@@ -166,6 +180,12 @@ const singleTableRef = ref()
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
   dealFilter.value.open()
+}
+
+function tableRowClassName(item) {
+  if (!item.row) return null
+  if ([30, 50].includes(item.row.dealStatus)) return 'pink-fon'
+  if (item.row.appealType === 8) return 'pink-fon'
 }
 
 function buttonFilterSelect(val) {

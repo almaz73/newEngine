@@ -152,7 +152,7 @@ function getData() {
 
 
 function openModalUserDir(row: any | null) {
-  сlientsDirModal.value.open(row, getData)
+  сlientsDirModal.value.open(row.leadId, getData)
 }
 
 
