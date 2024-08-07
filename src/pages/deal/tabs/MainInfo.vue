@@ -8,18 +8,18 @@
         ( VIN: {{ dealStore.deal.auto.vin }} )
         &nbsp;
         <RouterLink :to="`/auto/${dealStore.deal.auto.autoId}/edit/${dealStore.deal.dealId}`">
-          <EditPensilCtrl/>
+          <EditPensilCtrl />
         </RouterLink>
 
 
       </h3>
-      <RightMenuButtons/>
+      <RightMenuButtons />
     </div>
     &nbsp; &nbsp;
 
 
     <div class="deal_two_col">
-      <MStatus/>
+      <MStatus />
 
 
       <div class="info-filed">
@@ -34,7 +34,7 @@
 
       <div class="info-filed">
 
-        <DealTypeEditorCtrl :deal="dealStore.deal"/>
+        <DealTypeEditorCtrl :deal="dealStore.deal" />
       </div>
 
 
@@ -126,7 +126,7 @@
 
       <div class="info-filed" style="display: flex; margin: 10px 0; align-items: center">
         <label class="label l_200">Категория автомобиля</label>
-        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto"/>
+        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto" />
       </div>
 
 
@@ -147,7 +147,7 @@
     </div>
 
     <div class="deal_two_col">
-      <MainInfoEvents/>
+      <MainInfoEvents />
     </div>
     <div style="clear: both"></div>
 
@@ -162,7 +162,7 @@
         <div class="info-filed">
           <label class="label"><small>ФИО</small></label>
           {{ dealStore.deal.leadFullName }}
-          <EditPensilCtrl @click="editClient()"/>
+          <EditPensilCtrl @click="editClient()" />
         </div>
         <div class="info-filed">
           <label class="label"><small>Контактный телефон</small></label>
@@ -173,10 +173,10 @@
       </div>
 
       <el-collapse-item title="Финансовый расчет" name="3">
-        <C_FinanceCalculation/>
+        <C_FinanceCalculation />
       </el-collapse-item>
 
-      <el-collapse-item title="Порядок расчета" name="4"/>
+      <el-collapse-item title="Порядок расчета" name="4" />
 
       <el-collapse-item title="Собственник" name="5">
         <div class="info-filed">
@@ -186,33 +186,32 @@
       </el-collapse-item>
 
       <el-collapse-item title="ПТС" name="6">
-        <C_PTS :deal="dealStore.deal"/>
+        <C_PTS :deal="dealStore.deal" />
       </el-collapse-item>
 
       <el-collapse-item title="Фото, Видео, Файлы" name="7">
-
-
+        <C_PhotoVideoFiles ref="c_PhotoVideoFiles" />
       </el-collapse-item>
 
       <el-collapse-item title="Комментарии" name="8">
-        <C_comments ref="c_comments"/>
+        <C_comments ref="c_comments" />
       </el-collapse-item>
 
       <el-collapse-item title="Проверка ТС" name="9">
-        <C_InspectionGibdd ref="c_InspectionGibdd"/>
+        <C_InspectionGibdd ref="c_InspectionGibdd" />
 
       </el-collapse-item>
 
       <el-collapse-item title="Лист осмотра" name="10">
-        <C_InspectionList ref="c_InspectionList"/>
+        <C_InspectionList ref="c_InspectionList" />
       </el-collapse-item>
 
-      <el-collapse-item title="Комплектность" name="11" >
-        <C_complect ref="c_complect"/>
+      <el-collapse-item title="Комплектность" name="11">
+        <C_complect ref="c_complect" />
       </el-collapse-item>
 
       <el-collapse-item title="Комлпектация" name="12">
-        <C_complectation ref="c_complectation"/>
+        <C_complectation ref="c_complectation" />
       </el-collapse-item>
 
 
@@ -220,30 +219,31 @@
 
 
   </div>
-  <ClientsDirModal ref="clientsDirModal"/>
+  <ClientsDirModal ref="clientsDirModal" />
 </template>
 
 <script setup lang="ts">
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import {bodyTypes, driveTypies, EngineType, GearboxType} from '@/utils/globalConstants'
-import {ref} from 'vue'
+import { bodyTypes, driveTypies, EngineType, GearboxType } from '@/utils/globalConstants'
+import { ref } from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
-import {useDealStore} from '@/stores/dealStore'
+import { useDealStore } from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from '@/controls/DealTypeEditorCtrl.vue'
 import C_PTS from '@/pages/deal/tabs/collapses/C_PTS.vue'
-import {formattingPhone} from '@/utils/globalFunctions'
+import { formattingPhone } from '@/utils/globalFunctions'
 import RightMenuButtons from '@/pages/deal/RightMenuButtons.vue'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-import C_comments from "@/pages/deal/tabs/collapses/C_comments.vue";
-import C_complect from "@/pages/deal/tabs/collapses/C_complect.vue";
-import C_complectation from "@/pages/deal/tabs/collapses/C_complectation.vue";
+import C_comments from '@/pages/deal/tabs/collapses/C_comments.vue'
+import C_complect from '@/pages/deal/tabs/collapses/C_complect.vue'
+import C_complectation from '@/pages/deal/tabs/collapses/C_complectation.vue'
 import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
+import C_PhotoVideoFiles from '@/pages/deal/tabs/collapses/C_PhotoVideoFiles.vue'
 
 const dealStore = useDealStore()
 const c_InspectionList = ref(null)
@@ -251,6 +251,7 @@ const c_InspectionGibdd = ref(null)
 const c_comments = ref(null)
 const c_complect = ref(null)
 const c_complectation = ref(null)
+const c_PhotoVideoFiles = ref(null)
 const clientsDirModal = ref(null)
 
 
@@ -276,6 +277,7 @@ function getOwnerTitle(owner: any) {
 }
 
 function changeCollapse(node: string[]) {
+  if (node.includes('7')) c_PhotoVideoFiles.value.open()
   if (node.includes('8')) c_comments.value.open()
   if (node.includes('9')) c_InspectionGibdd.value.open() // Проверка ТС (данные с Гибдд)
   if (node.includes('10')) c_InspectionList.value.open() // Лист осмотра

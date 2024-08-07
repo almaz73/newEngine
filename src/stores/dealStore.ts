@@ -8,7 +8,7 @@ export const useDealStore = defineStore('dealStore', {
   }),
   actions: {
     async getDeals(params: any) {
-      const {filter, limit, mainFilter, offset, search} = params
+      const { filter, limit, mainFilter, offset, search } = params
       let url = '/api/workflow/GetBuyWorkflows'
       if (filter) url += '?filter=' + filter
       if (offset) url += '&offset=' + offset
@@ -82,31 +82,30 @@ export const useDealStore = defineStore('dealStore', {
     },
     async getDealPrint(dealId: number, path: string) {
       // скачивает файлом
-      window.location.href = `/api/print/buy/${path}/${dealId}`;
+      window.location.href = `/api/print/buy/${path}/${dealId}`
     },
-      async getSimularCars(params: any) {
-          if (cache.getSimularCars) return cache.getSimularCars
-          const res = await axios.get(`/api/workflow/analystCarHelp?filter=${params}`)
-          return (cache.getSimularCars = res.data)
-      },
-      async getBuyAutoEditHistory(id: number) {
-          if (cache.getBuyAutoEditHistory) return cache.getBuyAutoEditHistory
-          const res = await axios.get('/api/History/GetBuyAutoEditHistory?buyId=' + id)
-          return (cache.getBuyAutoEditHistory = res.data)
-      },
-      async getSimularDeals(dealId: number) {
-        return await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
-      },
-      async GetInspectionComplect(inspectionId: number) {
-          if (cache.GetInspectionComplect) return cache.GetInspectionComplect
-          const res = await axios.get(`/api/inspectionitem/GetInspectionComplect/${inspectionId}`)
-          return (cache.GetInspectionComplect = res.data)
-      },
-      async getInspectionComplectation(dealId: number) {
-          if (cache.getInspectionComplectation) return cache.getInspectionComplectation
-          const res = await axios.get(`/api/inspectionitem/GetInspectionComplectation/${dealId}`)
-          return (cache.getInspectionComplectation = res.data)
-      },
+    async getSimularCars(params: any) {
+      const res = await axios.get(`/api/workflow/analystCarHelp?filter=${params}`)
+      return res.data
+    },
+    async getBuyAutoEditHistory(id: number) {
+      const res = await axios.get('/api/History/GetBuyAutoEditHistory?buyId=' + id)
+      return res.data
+    },
+    async getSimularDeals(dealId: number) {
+      return await axios.get(`/api/deal/getSimilarDeals/${dealId}`)
+    },
+    async GetInspectionComplect(inspectionId: number) {
+      const res = await axios.get(`/api/inspectionitem/GetInspectionComplect/${inspectionId}`)
+      return res.data
+    },
+    async getInspectionComplectation(dealId: number) {
+      const res = await axios.get(`/api/inspectionitem/GetInspectionComplectation/${dealId}`)
+      return res.data
+    },
+    async getPhoto(dealId: number) {
+      return axios.get(`/api/autophoto/getbydeal/${dealId}?showArchive=false`)
+    },
 
   }
 })
