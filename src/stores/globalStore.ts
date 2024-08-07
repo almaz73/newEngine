@@ -158,6 +158,33 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async saveClientDocument(params: any) {
             return await axios.post('/api/client-documents/add', params).then(q => q)
-        }
+        },
+
+        // сохранение файла
+        async uploadFile(params: { fileName: string; roles: number[]; access: string; file: any }) {
+            let fd: FormData = new FormData();
+            fd.append('file', params.file);
+            return await axios.post(`/api/file/upload-auto-photo?fileName=${params.fileName}&roles=&access=public`, fd).then(q => q)
+        },
+        async deleteFile(id: number) {
+            return await axios.delete('/api/autophoto/'+id).then(q => q)
+        },
+
+        // прикрепление сохраненного файла
+        async attachFile(params) {
+            //{autoId: 124593,
+            // comment: null,
+            // dealId: 392407,
+            // fullPhotoId: 3484409,
+            // id: 830919,
+            // number: 20,
+            // thumbMediumId: 3484410,
+            // thumbSmallId: 3484411}
+            return await axios.post(`/api/autophoto`, params).then(q => q)
+        },
+
+
+
+
     }
 })

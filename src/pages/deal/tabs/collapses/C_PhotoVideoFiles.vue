@@ -1,45 +1,54 @@
 <template>
-  <div v-for="comment in comments" :key="comment.id">
-    {{ formatDMY_hm(comment.createDate) }}
-    <span class="red-text">{{ comment.userName }}</span>
-    {{ comment.text }}
+  <div class="many-photo" :class="{empty:false}" v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">
+    {{ PhotoNumberBuyer[nessasaryPhoto] }}
+
+    <div class="photo-place" style="margin: 12px; min-height: 150px">
+      <UploadPhotoAuto @setNewPhoto="grtData"
+                       :photo="photoOrder[nessasaryPhoto]"
+                       :ind="nessasaryPhoto"
+
+      />
+    </div>
   </div>
-  <el-input
-      type="textarea"
-      style="width: 300px"
-      :rows="3"
-      v-model="text"/>
-  &nbsp;
-  <el-button type="primary" @click="saveComment()">Добавить</el-button>
 </template>
 
 <script setup lang="ts">
 import {ref} from "vue";
 import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from "@/stores/globalStore";
-import {formatDMY_hm} from "@/utils/globalFunctions";
+import {PhotoNumberBuyer} from "@/utils/globalConstants";
+import UploadPhotoAuto from "@/components/UploadPhotoAuto.vue";
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
-const comments = ref([])
-const text = ref('')
+const photos = ref([])
+const photoOrder = ref({10:'https://dev.autonet.pro/api/file/3484090'})
+const mandatoryPhotoList = [10, 20, 22, 24, 290, 19, 11, 23, 308, 306, 307]
+
+
+function grtData() {
+  console.log('grtData = ', )
+  open()
+}
 
 function open() {
   dealStore.getPhoto(dealStore.deal.dealId).then(res => {
-    console.log('res.items = ',res.data.items)
-    comments.value = res.items
+    let arr = res.data.items
+    photos.value = res.items
+    mandatoryPhotoList.forEach(el => {
+      let p = arr.find(item => item.number === el)
+      if (p) {
+        photoOrder.value[el] ={
+          smallPhoto: p.thumbSmallUrl,
+          bigPhoto: p.fullPhotoUrl,
+          id:p.id
+        }
+      }
+
+    })
   })
 }
 
-// function saveComment() {
-//   if (!text.value) return false
-//   let params = {
-//     text: text.value,
-//     EntityId: dealStore.deal.dealId,
-//     entityType: 60
-//   }
-//   globalStore.sendComment(params).then(() => open())
-// }
 
 defineExpose({open})
 </script>

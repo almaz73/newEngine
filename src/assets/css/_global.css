@@ -196,7 +196,8 @@ a:hover {
 .label-red {
     color: var(--main-color);
 }
-.bigger{
+
+.bigger {
     font-size: larger;
 }
 
@@ -353,4 +354,34 @@ a:hover {
     display: inline-block;
     background: #f5f5f5;
     border-radius: 4px;
+}
+
+.many-photo {
+    display: inline-block;
+    margin: 2px 0 12px 12px;
+    width: 150px;
+    background: white;
+    font-size: smaller;
+    text-align: center;
+    padding-top: 12px;
+}
+
+.many-photo.empty {
+    background-color: #a2a3a3;
+    border: 2px solid white;
+    box-shadow: 0 0 1px black;
+    height: 26px;
+    cursor: pointer;
+    color: white;
+    vertical-align: middle;
+    width: 220px;
+}
+
+.many-photo .buttons img {
+    padding: 3px 7px;
+    cursor: pointer;
+}
+
+.many-photo .buttons img:hover {
+    background: #eee;
 }

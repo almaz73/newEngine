@@ -8,13 +8,13 @@
   >
     <span class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
       <span class="photo-upload__btns" :style="{pointerEvents:isClickparent?'none':'auto'}">
-        <span @mouseover="uploadFocus" @mouseout="uploadBlur">
+        <span @mouseover="uploadFocus" @mouseout="uploadBlur" title="Загрузить новый фото">
           <el-icon><Download/></el-icon>
         </span>
-        <span @click="handlePictureCardPreview()">
+        <span @click="handlePictureCardPreview()" title="Посмотреть">
           <el-icon><zoom-in/></el-icon>
         </span>
-        <span @click="handleRemove()">
+        <span @click="handleRemove()" title="Удалить">
           <el-icon><Delete/></el-icon>
         </span>
       </span>
