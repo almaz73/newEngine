@@ -169,21 +169,13 @@ export const useGlobalStore = defineStore('globalStore', {
         async deleteFile(id: number) {
             return await axios.delete('/api/autophoto/'+id).then(q => q)
         },
-
         // прикрепление сохраненного файла
-        async attachFile(params) {
-            //{autoId: 124593,
-            // comment: null,
-            // dealId: 392407,
-            // fullPhotoId: 3484409,
-            // id: 830919,
-            // number: 20,
-            // thumbMediumId: 3484410,
-            // thumbSmallId: 3484411}
+        async attachFile(params: any) {
             return await axios.post(`/api/autophoto`, params).then(q => q)
         },
-
-
+        async rotatoPhoto(id: number, type: number) {
+            return await axios.post(`/api/autophoto/photorotate/${id}/${type}`).then(q => q)
+        }
 
 
     }

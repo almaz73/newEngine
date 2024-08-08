@@ -3,9 +3,9 @@
     {{ PhotoNumberBuyer[nessasaryPhoto] }}
 
     <div class="photo-place" style="margin: 12px; min-height: 150px">
-      <UploadPhotoAuto @setNewPhoto="grtData"
+      <UploadPhotoAuto @setNewPhoto="getData"
                        :photo="photoOrder[nessasaryPhoto]"
-                       :ind="nessasaryPhoto"
+                       :number="nessasaryPhoto"
 
       />
     </div>
@@ -22,17 +22,17 @@ import UploadPhotoAuto from "@/components/UploadPhotoAuto.vue";
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const photos = ref([])
-const photoOrder = ref({10:'https://dev.autonet.pro/api/file/3484090'})
+const photoOrder = ref({})
 const mandatoryPhotoList = [10, 20, 22, 24, 290, 19, 11, 23, 308, 306, 307]
 
 
-function grtData() {
-  console.log('grtData = ', )
-  open()
+function open() {
+  getData()
 }
 
-function open() {
-  dealStore.getPhoto(dealStore.deal.dealId).then(res => {
+function getData(upd) {
+  if (upd) photoOrder.value = {}
+  dealStore.getPhoto(dealStore.deal.dealId, upd).then(res => {
     let arr = res.data.items
     photos.value = res.items
     mandatoryPhotoList.forEach(el => {
@@ -41,10 +41,9 @@ function open() {
         photoOrder.value[el] ={
           smallPhoto: p.thumbSmallUrl,
           bigPhoto: p.fullPhotoUrl,
-          id:p.id
+          id: p.id
         }
       }
-
     })
   })
 }

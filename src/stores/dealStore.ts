@@ -103,9 +103,13 @@ export const useDealStore = defineStore('dealStore', {
       const res = await axios.get(`/api/inspectionitem/GetInspectionComplectation/${dealId}`)
       return res.data
     },
-    async getPhoto(dealId: number) {
-      return axios.get(`/api/autophoto/getbydeal/${dealId}?showArchive=false`)
-    },
+    async getPhoto(dealId: number, noCach: true) {
+      // @ts-ignore
+      if (!noCach && cache['getPhoto' + dealId]) return cache['getPhoto' + dealId]
+      const res = await axios.get(`/api/autophoto/getbydeal/${dealId}?showArchive=false`)
+      // @ts-ignore
+      return (cache['getPhoto' + dealId] = res)
+    }
 
   }
 })
