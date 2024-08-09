@@ -29,9 +29,16 @@
     <img @click="rotatePhoto(10)" alt="" src="@/assets/icons/rotateLeft.png">
   </div>
 
-  <el-dialog v-model="dialogVisible" top="10px" draggable :width="globalStore.isMobileView?'100%':'50%'">
-    {{PhotoNumberBuyer[props.number]}}
-    <img v-if="props.photo" :src="props.photo.bigPhoto+isDirty" alt="Preview Image" style="height: 800px" />
+  <el-dialog v-model="dialogVisible" top="15px" draggable :width="globalStore.isMobileView?'100%':'50%'">
+    {{ PhotoNumberBuyer[nextNumber] }}
+    <img v-if="props.photo && props.number===nextNumber"
+         :src="props.listBigPictures[nextNumber]+isDirty" alt=""
+         style="height: 750px" />
+    <img v-if="props.photo && props.number!==nextNumber"
+         :src="props.listBigPictures[nextNumber]" alt=""
+         style="height: 750px" />
+    <el-button @click="nextPhoto(-1)" @keydown.left="nextPhoto(1)"> <</el-button>
+    <el-button @click="nextPhoto(1)" @keydown.right="nextPhoto(1)"> ></el-button>
   </el-dialog>
 </template>
 
@@ -39,21 +46,29 @@
 <script setup>
 
 import { ElMessage } from 'element-plus'
-import {PhotoNumberBuyer} from "@/utils/globalConstants";
+import { PhotoNumberBuyer } from '@/utils/globalConstants'
 import { Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
 
 const dealStore = useDealStore()
-const props = defineProps(['photo', 'number'])
+const props = defineProps(['photo', 'number', 'listBigPictures'])
 const emits = defineEmits(['setNewPhoto'])
 const globalStore = useGlobalStore()
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const upload = ref(null)
 const isDirty = ref('')
+const nextNumber = ref(props.number)
 
+
+function nextPhoto(val) {
+  let numbers = Object.keys(props.listBigPictures)
+
+  nextNumber.value = +numbers[numbers.lastIndexOf('' + nextNumber.value) + val]
+  if (!nextNumber.value) nextNumber.value = +numbers[0]
+}
 
 function newFile() {
   document.querySelectorAll(`.avatar-uploader[data-name="${props.number}"]`)[0].querySelector('input').click()
