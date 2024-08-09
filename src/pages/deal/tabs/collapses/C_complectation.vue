@@ -9,13 +9,17 @@
 <script setup lang="ts">
 import {useDealStore} from '@/stores/dealStore'
 import {ref} from "vue";
+import { ElMessage } from 'element-plus'
 
 const dealStore = useDealStore()
 const tableData = ref([])
 
 
 function open() {
-  dealStore.getInspectionComplectation(dealStore.deal.inspectionId).then(res => tableData.value = res.items)
+  dealStore.getInspectionComplectation(dealStore.deal.inspectionId).then(res => {
+    if(!res.items || !res.items.length) ElMessage.warning('Нет данных')
+    tableData.value = res.items
+  })
 }
 
 defineExpose({open})
