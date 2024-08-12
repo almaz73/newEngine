@@ -385,3 +385,15 @@ a:hover {
 .many-photo .buttons img:hover {
     background: #eee;
 }
+
+.inspect-blocks {
+    border: 1px solid #ddd;
+    margin-top: 4px;
+    padding: 0 12px;
+    font-size: larger;
+    cursor: pointer;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

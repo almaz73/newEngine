@@ -2,15 +2,15 @@
 
   <div>
     <div
-        style="border-radius: 5px; background: #d34338; color: white; display: inline-block; padding: 4px 8px; margin-right: 8px">
+      style="border-radius: 5px; background: #d34338; color: white; display: inline-block; padding: 4px 8px; margin-right: 8px">
       <span>{{ formatDMY_hm(inspection.createDate) }}</span>
-      <br/>
+      <br />
       {{ inspection.createdUserLastName }} {{ inspection.createdUserFistName }}
     </div>
 
     <div style="border-radius: 5px; background: #3cac71; color: white; display: inline-block; padding: 4px 8px">
       <span>{{ formatDMY_hm(inspection.lastUpdateDate) }}</span>
-      <br/>
+      <br />
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
 
@@ -21,22 +21,37 @@
       <span style="margin-left:60px ;background: #3cac71;  padding: 3px 10px; margin-right: 8px"></span>
       <span>Изменен</span>
     </div>
+
+    <dic v-for="item in inspectionItemCategories"
+         class="inspect-blocks">
+      <p>{{ item.name }}
+
+      </p>
+      <el-button>
+        <EditPensilCtrl />
+      </el-button>
+    </dic>
+
   </div>
 </template>
 
 <script setup lang="ts">
-import {useDealStore} from '@/stores/dealStore'
-import {ref} from 'vue'
-import {formatDMY_hm} from "@/utils/globalFunctions";
+import { useDealStore } from '@/stores/dealStore'
+import { ref } from 'vue'
+import { formatDMY_hm } from '@/utils/globalFunctions'
+import { inspectionItemCategories } from '@/utils/globalConstants'
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const dealStore = useDealStore()
 const inspection = ref([])
 
+console.log('inspectionItemCategories = ', inspectionItemCategories)
+
 
 function open() {
-  dealStore.getInspection(dealStore.deal.inspectionId).then(function (data) {
-    inspection.value = data;
-  });
+  dealStore.getInspection(dealStore.deal.inspectionId).then(function(data) {
+    inspection.value = data
+  })
 
 
   dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
@@ -50,6 +65,6 @@ function open() {
   })
 }
 
-defineExpose({open})
+defineExpose({ open })
 
 </script>
