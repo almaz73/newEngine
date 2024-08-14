@@ -1,15 +1,14 @@
 <template>
 
   <div>
-    <div
-      style="border-radius: 5px; background: #d34338; color: white; display: inline-block; padding: 4px 8px; margin-right: 8px">
-      <span>{{ formatDMY_hm(inspection.createDate) }}</span>
+    <div class="insp_time">
+      <span v-if="inspection.createDate">{{ formatDMY_hm(inspection.createDate) }}</span>
       <br />
       {{ inspection.createdUserLastName }} {{ inspection.createdUserFistName }}
     </div>
 
-    <div style="border-radius: 5px; background: #3cac71; color: white; display: inline-block; padding: 4px 8px">
-      <span>{{ formatDMY_hm(inspection.lastUpdateDate) }}</span>
+    <div class="insp_time" style="background: #3cac71">
+      <span v-if="inspection.lastUpdateDate">{{ formatDMY_hm(inspection.lastUpdateDate) }}</span>
       <br />
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
@@ -22,18 +21,30 @@
       <span>Изменен</span>
     </div>
 
-    <dic v-for="item in inspectionItemCategories"
+    <div v-for="item in inspectionItemCategories" :key="item.id"
          class="inspect-blocks">
-      <p>{{ item.name }}
+      <p>{{ item.name }}</p>
 
-      </p>
+
+
       <el-button>
         <EditPensilCtrl />
       </el-button>
-    </dic>
+    </div>
 
   </div>
 </template>
+
+<style>
+.insp_time {
+  border-radius: 5px;
+  background: #d34338;
+  color: white;
+  display: inline-block;
+  padding: 4px 8px;
+  margin-right: 8px
+}
+</style>
 
 <script setup lang="ts">
 import { useDealStore } from '@/stores/dealStore'
@@ -43,13 +54,14 @@ import { inspectionItemCategories } from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const dealStore = useDealStore()
-const inspection = ref([])
-
-console.log('inspectionItemCategories = ', inspectionItemCategories)
-
+const inspection = ref({createDate:null, createdUserLastName:'', createdUserFistName:'',
+  lastUpdateDate:null,lastUpdateUserLastName:'', lastUpdateUserFistName:'' })
 
 function open() {
-  dealStore.getInspection(dealStore.deal.inspectionId).then(function(data) {
+
+  dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
+    console.log('data = ',data)
+
     inspection.value = data
   })
 
