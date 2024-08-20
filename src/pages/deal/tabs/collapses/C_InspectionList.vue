@@ -24,24 +24,13 @@
     <div v-for="item in inspectionItemCategories" :key="item.id"
          class="inspect-blocks">
       <p>{{ item.name }}</p>
-
-
-
       <el-button>
         <EditPensilCtrl />
       </el-button>
     </div>
 
     <div  class="inspect-blocks" style="display: block">
-      <div style="display: flex; justify-content:space-between; align-items: center">
-        <p>Запланированные работы</p>
-        <PlannedWork/>
-        <el-button>
-          <EditPensilCtrl/>
-        </el-button>
-      </div>
-
-      <PlannedWorkCase/>
+        <PlannedWork ref="plannedWork"/>
     </div>
 
   </div>
@@ -68,15 +57,15 @@ import PlannedWork from "@/pages/deal/tabs/collapses/inspectionList/PlannedWork.
 import PlannedWorkCase from "@/pages/deal/tabs/collapses/inspectionList/PlannedWorkCase.vue";
 
 const dealStore = useDealStore()
-const inspection = ref({createDate:null, createdUserLastName:'', createdUserFistName:'',
-  lastUpdateDate:null,lastUpdateUserLastName:'', lastUpdateUserFistName:'' })
+const inspection = ref({})
+const plannedWork = ref(null)
 
 function open() {
-
   dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
     console.log('data = ',data)
 
     inspection.value = data
+    plannedWork.value.open()
   })
 
 
