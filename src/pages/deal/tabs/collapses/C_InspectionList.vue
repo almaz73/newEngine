@@ -32,6 +32,18 @@
       </el-button>
     </div>
 
+    <div  class="inspect-blocks" style="display: block">
+      <div style="display: flex; justify-content:space-between; align-items: center">
+        <p>Запланированные работы</p>
+        <PlannedWork/>
+        <el-button>
+          <EditPensilCtrl/>
+        </el-button>
+      </div>
+
+      <PlannedWorkCase/>
+    </div>
+
   </div>
 </template>
 
@@ -52,6 +64,8 @@ import { ref } from 'vue'
 import { formatDMY_hm } from '@/utils/globalFunctions'
 import { inspectionItemCategories } from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import PlannedWork from "@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue";
+import PlannedWorkCase from "@/pages/deal/tabs/collapses/inspectionList/PlannedWorkCase.vue";
 
 const dealStore = useDealStore()
 const inspection = ref({createDate:null, createdUserLastName:'', createdUserFistName:'',
@@ -66,15 +80,14 @@ function open() {
   })
 
 
-  dealStore.deal.dealId && dealStore.getStatuses(dealStore.deal.dealId).then(res => {
-    console.log('res', res)
-    // availableStatuses.value = res.items
-    // res.items.forEach((el:any) => {
-    //   let item = DealStatusTable.find(item => item.id === el)
-    //   item && StatusTypes.value.push(item)
-    // })
-    // sortFunction()
-  })
+  // dealStore.getStatuses(dealStore.deal.dealId).then(res => {
+  //   console.log('r   e   s', res)
+  // })
+
+
+  // dealStore.getInspectionitem(dealStore.deal.inspectionId).then(res => {
+  //   console.log('res', res)
+  // })
 }
 
 defineExpose({ open })

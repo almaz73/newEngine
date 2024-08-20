@@ -62,6 +62,7 @@ export const useDealStore = defineStore('dealStore', {
         async getDealsByVin(id: number) {
             if (cache.getDealsByVin) return cache.getDealsByVin
             const res = await axios.get('/api/deal/getDealsByVin/' + id)
+            // @ts-ignore
             return (cache.getDealsByVin = res)
         },
 
@@ -109,6 +110,18 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api/autophoto/getbydeal/${dealId}?showArchive=false`)
             // @ts-ignore
             return (cache['getPhoto' + dealId] = res)
+        },
+
+
+        //:::: Лист осмотра :::://
+        async getInspectionitem(inspectionId: number) {
+            return await axios.get(`/api/inspectionitem/getcountchanged/${inspectionId}`)
+        },
+        async getDamages() {
+            return await axios.get(`/api/damageitem/`)
+        },
+        async getPlannedWork(dealId: number) {
+            return await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
         }
 
     }
