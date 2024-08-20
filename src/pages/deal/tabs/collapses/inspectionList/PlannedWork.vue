@@ -27,10 +27,6 @@ const showWorks = ref(false)
 const showHistory = ref(false)
 const plannedWorkCase = ref(null)
 
-function whatShow(type) {
-
-}
-
 function setPlainWork(data) {
   let totalSum = 0
   data.map(item => {

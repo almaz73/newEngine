@@ -57,9 +57,7 @@ function open(data: any) {
 function getHistory() {
   if (tableDataHistory.value.length) return false
   dealStore.getDWorkСhanged(dealStore.deal.inspectionId).then(res => {
-    console.log('res', res)
     if (res.data) tableDataHistory.value = res.data.items
-    console.log('tableDataHistory = ', tableDataHistory.value)
   })
 }
 
