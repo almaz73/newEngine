@@ -29,7 +29,7 @@
       style=" min-width: 75px"
   >
     <el-menu
-        :default-active="activeIndex"
+        :default-active="''+globalStore.leftMenuindex"
         class="el-menu-vertical"
         :collapse="globalStore.isNarrowPanel"
         @select="select"
@@ -269,28 +269,37 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {ref} from "vue";
 import EventBus from "@/utils/eventBus";
 import {permit} from "@/utils/permit.js"
+import router from '@/router'
 
 
 const globalStore = useGlobalStore()
 const activeIndex = ref('')
 const select = (val: string) => {
   globalStore.isShowPanel = false
-  sessionStorage.setItem('menuIndex', '' + val)
+  globalStore.leftMenuindex = val
 }
 
 EventBus.addEventListener('changeMenu', changeMenu)
 
 function changeMenu(a: any) {
-  sessionStorage.setItem('menuIndex', a.data)
   activeIndex.value = a.data
 }
 
 
-// нужно вычислить по адресу, что открыто было последним и высветить меню
-const storage = sessionStorage.getItem('menuIndex')
-const menuButtons = {'/v2/desktop': '1', '/v2/appeal': '2', '/v2/deal': '3', '/v2/sell': '4'}
+// нужно автоматически вычислить по браузерному адресу подходящее меню
+router.beforeEach(rout => {
+  let storage = 0
+  const indexes = { '/v2/desktop': 1, '/v2/appeal': 2, '/v2/deal': 3, '/v2/auto': 3, '/v2/sell': 4 }
 
-activeIndex.value = menuButtons[location.pathname]
-if (!activeIndex.value) activeIndex.value = storage
+  setTimeout(() => {
+    let path = rout && rout.href.match(/(\/[^\/]*\/[^\/]*\/)/)
+    if (!path) path = [rout.href]
+    let p2 = path && path[0].slice(0, -1)
+    let ind = Object.keys(indexes).find(el => el.indexOf(p2) > -1)
+    if (ind) storage = indexes[ind]
+    globalStore.leftMenuindex = storage
+  })
+})
+
 
 </script>

@@ -7,6 +7,7 @@ export const useGlobalStore = defineStore('globalStore', {
         /** @type {{boolean}} */
         title: '#### NEW ENGINE',
         version: '0.9.19',
+        leftMenuindex: null, // выбранное меню
         isAuthorized: false,
         isMobileView: false, // мобильный режим
         isShowPanel: false, // при узких экранах, гамбургер открывает левую панель
