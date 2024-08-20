@@ -29,16 +29,16 @@
     <img @click="rotatePhoto(10)" alt="" src="@/assets/icons/rotateLeft.png">
   </div>
 
-  <el-dialog v-model="dialogVisible" top="15px" draggable :width="globalStore.isMobileView?'100%':'50%'">
+  <el-dialog v-model="dialogVisible" top="0" draggable :width="globalStore.isMobileView?'100%':'73%'">
     {{ PhotoNumberBuyer[nextNumber] }}
     <img v-if="props.photo && props.number===nextNumber"
          :src="props.listBigPictures[nextNumber]+isDirty" alt=""
-         style="height: 750px" />
+         style="max-height: 800px" />
     <img v-if="props.photo && props.number!==nextNumber"
          :src="props.listBigPictures[nextNumber]" alt=""
-         style="height: 750px" />
-    <el-button @click="nextPhoto(-1)" @keydown.left="nextPhoto(1)"> <</el-button>
-    <el-button @click="nextPhoto(1)" @keydown.right="nextPhoto(1)"> ></el-button>
+         style="max-height: 800px" />
+    <el-button @click="nextPhoto(-1)"> < </el-button>
+    <el-button @click="nextPhoto(1)"> > </el-button>
   </el-dialog>
 </template>
 
@@ -48,7 +48,7 @@
 import { ElMessage } from 'element-plus'
 import { PhotoNumberBuyer } from '@/utils/globalConstants'
 import { Plus, ZoomIn } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
 
@@ -79,6 +79,18 @@ const handlePictureCardPreview = () => {
   dialogImageUrl.value = props.photo.bigPhoto
   dialogVisible.value = true
 }
+
+function keyHear(key) {
+  if (key.key === 'ArrowLeft') nextPhoto(-1)
+  if (key.key === 'ArrowRight')nextPhoto(1)
+}
+
+watch(dialogVisible, (val) => {
+  if (val) document.addEventListener('keydown', keyHear)
+  if (!val) document.removeEventListener('keydown', keyHear)
+})
+
+
 
 
 const deleteFile = () => {
