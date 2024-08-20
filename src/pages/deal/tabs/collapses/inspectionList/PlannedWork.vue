@@ -2,14 +2,14 @@
   <div style="display: flex; justify-content:space-between; align-items: center">
     <p>Запланированные работы</p>
     <div></div>
-    <el-button @click="isWhowSum=!isWhowSum">Итого {{ plannedWorkTotalSum }} руб.</el-button>
-    <el-button>История изменений ( {{ 9 }} )</el-button>
+    <el-button @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
+    <el-button @click="showHistory=!showHistory">История изменений ( {{ plannedWorkLength }} )</el-button>
     <el-button>
       <EditPensilCtrl />
     </el-button>
   </div>
 
-  <PlannedWorkCase ref="plannedWorkCase" v-show="isWhowSum" />
+  <PlannedWorkCase ref="plannedWorkCase" :showWorks="showWorks" :showHistory="showHistory"/>
 </template>
 <script setup lang="ts">
 
@@ -21,10 +21,15 @@ import PlannedWorkCase from '@/pages/deal/tabs/collapses/inspectionList/PlannedW
 
 const dealStore = useDealStore()
 const plannedWorkTotalSum = ref(0)
+const plannedWorkLength = ref(0)
 const damageItems = ref([])
-const isWhowSum = ref(false)
+const showWorks = ref(false)
+const showHistory = ref(false)
 const plannedWorkCase = ref(null)
 
+function whatShow(type) {
+
+}
 
 function setPlainWork(data) {
   let totalSum = 0
@@ -38,6 +43,7 @@ function setPlainWork(data) {
   })
   plannedWorkTotalSum.value = totalSum
   plannedWorkCase.value.open(data)
+  plannedWorkLength.value = data.length
 }
 
 
@@ -62,6 +68,8 @@ function open() {
     dealStore.getPlannedWork(dealStore.deal.dealId).then(res => setPlainWork(res.data.items))
   })
 }
+
+
 
 defineExpose({ open })
 

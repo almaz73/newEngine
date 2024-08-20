@@ -122,6 +122,9 @@ export const useDealStore = defineStore('dealStore', {
         },
         async getPlannedWork(dealId: number) {
             return await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
+        },
+        async getDWorkСhanged(inspectionId: number) {
+            return await axios.get(`/api/plannedwork/getchanged/${inspectionId}`)
         }
 
     }
