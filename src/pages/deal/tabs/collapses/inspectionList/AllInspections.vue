@@ -1,9 +1,9 @@
 <template>
-  <div class="insp-form">
-    ={{ categoryId }}=
+  <div class="insp-form" :style="{minWidth: categoryId==110?'100%':''}">
     <IExternalInspection v-if="categoryId==30"/>
     <IInternalInspection v-if="categoryId==40"/>
     <IComplectation v-if="categoryId==50"/>
+    <IPlannedWork v-if="categoryId==100"/>
     <IServiceWorks v-if="categoryId==110"/>
 
     <div style="display: flex; justify-content: space-between">
@@ -28,15 +28,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import {useDealStore} from "@/stores/dealStore";
 import IServiceWorks from "@/pages/deal/tabs/collapses/inspectionList/IServiceWorks.vue";
 import {useRoute} from 'vue-router'
 import IInternalInspection from "@/pages/deal/tabs/collapses/inspectionList/IInternalInspection.vue";
 import IExternalInspection from "@/pages/deal/tabs/collapses/inspectionList/IExternalInspection.vue";
 import IComplectation from "@/pages/deal/tabs/collapses/inspectionList/IComplectation.vue";
 import router from "@/router";
+import IPlannedWork from "@/pages/deal/tabs/collapses/inspectionList/IPlannedWork.vue";
 
-const dealStore = useDealStore()
 const route = useRoute()
 let autoId, categoryId, dealId, inspectionId
 
