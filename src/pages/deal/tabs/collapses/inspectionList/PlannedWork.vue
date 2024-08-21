@@ -1,10 +1,10 @@
 <template>
-  <div style="display: flex; justify-content:space-between; align-items: center">
+  <div class="insp-list-inner">
     <p>Запланированные работы</p>
     <div></div>
     <el-button @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
     <el-button @click="showHistory=!showHistory">История изменений ( {{ plannedWorkLength }} )</el-button>
-    <el-button>
+    <el-button @click="emits('goInspection', 100)">
       <EditPensilCtrl />
     </el-button>
   </div>
@@ -26,6 +26,8 @@ const damageItems = ref([])
 const showWorks = ref(false)
 const showHistory = ref(false)
 const plannedWorkCase = ref(null)
+
+const emits = defineEmits(['goInspection'])
 
 function setPlainWork(data) {
   let totalSum = 0

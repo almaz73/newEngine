@@ -3,13 +3,13 @@
   <div>
     <div class="insp_time">
       <span v-if="inspection.createDate">{{ formatDMY_hm(inspection.createDate) }}</span>
-      <br />
+      <br/>
       {{ inspection.createdUserLastName }} {{ inspection.createdUserFistName }}
     </div>
 
     <div class="insp_time" style="background: #3cac71">
       <span v-if="inspection.lastUpdateDate">{{ formatDMY_hm(inspection.lastUpdateDate) }}</span>
-      <br />
+      <br/>
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
 
@@ -24,13 +24,20 @@
     <div v-for="item in inspectionItemCategories" :key="item.id"
          class="inspect-blocks">
       <p>{{ item.name }}</p>
-      <el-button>
-        <EditPensilCtrl />
+      <el-button @click="goInspection(item.id)">
+        <EditPensilCtrl/>
       </el-button>
     </div>
 
-    <div  class="inspect-blocks" style="display: block">
-        <PlannedWork ref="plannedWork"/>
+    <div class="inspect-blocks" style="display: block">
+      <PlannedWork ref="plannedWork" @goInspection="goInspection"/>
+    </div>
+
+    <div class="inspect-blocks">
+      <p>✱ Сервисные работы</p>
+      <el-button @click="goInspection(110)">
+        <EditPensilCtrl/>
+      </el-button>
     </div>
 
   </div>
@@ -48,21 +55,28 @@
 </style>
 
 <script setup lang="ts">
-import { useDealStore } from '@/stores/dealStore'
-import { ref } from 'vue'
-import { formatDMY_hm } from '@/utils/globalFunctions'
-import { inspectionItemCategories } from '@/utils/globalConstants'
+import {useDealStore} from '@/stores/dealStore'
+import {ref} from 'vue'
+import {formatDMY_hm} from '@/utils/globalFunctions'
+import {inspectionItemCategories} from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import PlannedWork from "@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue";
-import PlannedWorkCase from "@/pages/deal/tabs/collapses/inspectionList/PlannedWorkCase.vue";
+import router from "@/router";
 
 const dealStore = useDealStore()
-const inspection = ref({})
+const inspection = ref({
+  createDate: null,
+  createdUserLastName: '',
+  createdUserFistName: '',
+  lastUpdateDate: null,
+  lastUpdateUserLastName: '',
+  lastUpdateUserFistName: ''
+})
 const plannedWork = ref(null)
 
 function open() {
-  dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
-    console.log('data = ',data)
+  dealStore.getInspection(dealStore.deal.inspectionId, false).then(function (data) {
+    console.log('data = ', data)
 
     inspection.value = data
     plannedWork.value.open()
@@ -79,6 +93,13 @@ function open() {
   // })
 }
 
-defineExpose({ open })
+function goInspection(id: number) {
+  let autoId = dealStore.deal.auto.autoId
+  let dealId = dealStore.deal.dealId
+  let inspectionId = dealStore.deal.inspectionId
+  router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${id}`)
+}
+
+defineExpose({open})
 
 </script>

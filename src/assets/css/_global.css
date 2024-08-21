@@ -398,3 +398,18 @@ a:hover {
     align-items: center;
     max-width: 730px;
 }
+
+.insp-list-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.insp-form {
+    width: 570px;
+    margin: 8px auto;
+    box-shadow: 0 0 2px 2px #ddd;
+    box-sizing: border-box;
+    padding: 20px 30px;
+    background: #f5f5f5;
+}
