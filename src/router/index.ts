@@ -106,16 +106,23 @@ const router = createRouter({
             name: 'editInspection',
             component: () => import('@/pages/deal/tabs/collapses/inspectionList/AllInspections.vue').catch(val => fail(val))
         }, {
+            path: '/auto/:autoId/deal/:dealId/inspections/:inspectionId/plainwork',
+            name: 'editPlannedWork',
+            component: () => import('@/pages/deal/tabs/collapses/inspectionList/IPlannedWork.vue').catch(val => fail(val))
+        }, {
+            path: '/deal/:dealId/servicework',
+            name: 'editServiceWorks',
+            component: () => import('@/pages/deal/tabs/collapses/inspectionList/IServiceWorks.vue').catch(val => fail(val))
+        }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')
         },
 
-        //auto/124583/deal/392372
     ]
 })
 
 router.beforeEach(res=>{
-    // console.log('???res=',res)
+    // console.log('???Меняется мгу3 router4=',res)
 })
 
 function fail(val: any) {

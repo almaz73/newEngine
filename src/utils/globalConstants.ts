@@ -366,6 +366,14 @@ export const WorkType = [
     {id: 50, name: 'СТОК'}
 ]
 
+export const WorkTypeEnum = {
+    10: 'ПСО',
+    20: 'СТО замена',
+    30: 'СТО ремонт',
+    40: 'СТО шиномонтаж',
+    50: 'СТОК'
+}
+
 export const clientStatusEnums = [
     {id: 0, name: 'Не указано'},
     {id: 10, name: 'Первичный'},

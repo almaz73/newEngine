@@ -93,11 +93,15 @@ function open() {
   // })
 }
 
-function goInspection(id: number) {
+function goInspection(categoryId: number) {
   let autoId = dealStore.deal.auto.autoId
   let dealId = dealStore.deal.dealId
   let inspectionId = dealStore.deal.inspectionId
-  router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${id}`)
+
+  if(categoryId==100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
+  if(categoryId==110) return router.push(`/deal/${autoId}/servicework`)
+
+  router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${categoryId}`)
 }
 
 defineExpose({open})

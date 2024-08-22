@@ -129,6 +129,9 @@ export const useDealStore = defineStore('dealStore', {
         async getservicework(dealId: number) {
             return await axios.get(`/api/servicework/getservicework/${dealId}`)
         },
+        async saveServiceworks(params: number) {
+            return await axios.post(`/api/servicework/`, params)
+        },
         async getDamageitem() {
             if (cache['getDamageitem']) return cache['getDamageitem']
             const res= await axios.get(`/api/damageitem/`)
