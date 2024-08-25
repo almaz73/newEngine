@@ -1,7 +1,7 @@
 <template>
   <div class="insp-list-inner">
     <p>Запланированные работы</p>
-    <div></div>
+    <span style=" flex-grow: 1"></span>
     <el-button @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
     <el-button @click="showHistory=!showHistory">История изменений ( {{ plannedWorkLength }} )</el-button>
     <el-button @click="emits('goInspection', 100)">
@@ -9,7 +9,7 @@
     </el-button>
   </div>
 
-  <PlannedWorkCase ref="plannedWorkCase" :showWorks="showWorks" :showHistory="showHistory"/>
+  <PlannedWorkInfo ref="plannedWorkInfo" :showWorks="showWorks" :showHistory="showHistory"/>
 </template>
 <script setup lang="ts">
 
@@ -17,7 +17,7 @@
 import { ref } from 'vue'
 import { useDealStore } from '@/stores/dealStore'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-import PlannedWorkCase from '@/pages/deal/tabs/collapses/inspectionList/PlannedWorkCase.vue'
+import PlannedWorkInfo from '@/pages/deal/tabs/collapses/inspectionList/PlannedWorkInfo.vue'
 
 const dealStore = useDealStore()
 const plannedWorkTotalSum = ref(0)
@@ -25,7 +25,7 @@ const plannedWorkLength = ref(0)
 const damageItems = ref([])
 const showWorks = ref(false)
 const showHistory = ref(false)
-const plannedWorkCase = ref(null)
+const plannedWorkInfo = ref(null)
 
 const emits = defineEmits(['goInspection'])
 
@@ -40,7 +40,7 @@ function setPlainWork(data) {
     totalSum += item.price
   })
   plannedWorkTotalSum.value = totalSum
-  plannedWorkCase.value.open(data)
+  plannedWorkInfo.value.open(data)
   plannedWorkLength.value = data.length
 }
 

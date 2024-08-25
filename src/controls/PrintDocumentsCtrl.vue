@@ -64,8 +64,6 @@ function analystCarHelpClick(item) {
 }
 
 function opegPDF(data) {
-  console.log('data = ', data)
-
   const source = `data:application/pdf;base64,${data.documentBody}`
   const link = document.createElement('a')
   link.href = source

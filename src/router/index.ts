@@ -108,7 +108,7 @@ const router = createRouter({
         }, {
             path: '/auto/:autoId/deal/:dealId/inspections/:inspectionId/plainwork',
             name: 'editPlannedWork',
-            component: () => import('@/pages/deal/tabs/collapses/inspectionList/IPlannedWork.vue').catch(val => fail(val))
+            component: () => import('@/pages/deal/tabs/collapses/inspectionList/PlannedWorkAlone.vue').catch(val => fail(val))
         }, {
             path: '/deal/:dealId/servicework',
             name: 'editServiceWorks',

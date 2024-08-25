@@ -141,6 +141,11 @@ export const useDealStore = defineStore('dealStore', {
             if (cache['getWorks']) return cache['getWorks']
             const res= await axios.get(`/api/work/`)
             return (cache['getWorks'] = res)
+        },
+        async getByInspection(inspectionId: number) {
+            if (cache['getWorks']) return cache['getWorks']
+            const res = await axios.get(`/api/inspectionitem/getbyinspection/${inspectionId}`)
+            return (cache['getWorks'] = res)
         }
 
     }
