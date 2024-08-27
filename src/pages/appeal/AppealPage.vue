@@ -37,7 +37,7 @@
       <el-table-column label="Обращение" width="150">
         <template #default="scope">
           <div :style="colorBox(scope.row.statusTitle)"
-               style="display: inline-block; padding: 0 12px; border-radius: 3px"
+               style="display: inline-block; padding: 0 12px; border-radius: 3px; margin-top: 2px"
           > {{ scope.row.statusTitle }}
           </div>
           <div class="red-text">{{ scope.row.id }}</div>
@@ -78,9 +78,46 @@
 
       <el-table-column width="120">
         <template #default="scope">
+
+
+          <div v-if="scope.row.workflowLeadType == 1" style="display: block">
+            <div style="padding-top: 4px; padding-left: 8px; display: flex">
+              <el-button
+                style="width: 38px;height: 22px"
+                :style="(scope.row.selectedCar)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
+              >
+                <img src="@/assets/icons/q_car.png" />
+              </el-button>
+              <el-button
+                class="uk-button"
+                style="width: 38px;height: 22px"
+                :style="(scope.row.tradeInAppealId)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
+              >
+                <img src="@/assets/icons/q_back.png" />
+              </el-button>
+            </div>
+            <div style="padding: 8px; display: flex">
+              <el-button
+                class="uk-button"
+                style="width: 38px;height: 22px; background: #E6E6E6"
+              >
+                <img src="@/assets/icons/q_cub.png" />
+              </el-button>
+              <el-button
+                class="uk-button"
+                style="width: 38px;height: 22px"
+                :style="(scope.row.credit)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
+              >
+                <img src="@/assets/icons/q_rub.png" />
+
+              </el-button>
+            </div>
+          </div>
+
           <img :src="scope.row.smallPhoto[0]" alt=""
-               v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
-               class="img-in-table"/>
+               v-if="(scope.row.workflowLeadType == 2 || scope.row.workflowLeadType == 11) &&
+               scope.row.smallPhoto && scope.row.smallPhoto[0]"
+               class="img-in-table" />
         </template>
       </el-table-column>
 
@@ -164,7 +201,7 @@ const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const total = ref(0)
 const searchText = ref('')
-const rowsPerPage = ref(5)
+const rowsPerPage = ref(20)
 const currentPage = ref(1)
 const filterButtons = reactive([
   {type: 'appealsCount', count: 0, name: 'Обращения:', code: 10, active: true},
