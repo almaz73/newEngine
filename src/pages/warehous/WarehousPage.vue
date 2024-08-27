@@ -35,13 +35,16 @@
       />
     </div>
 
-    <FilterTagsCtrl @getData="getData"/>
+    <div style="position: relative">
+      <FilterTagsCtrl @getData="getData" />
+      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" title="Обновить таблицу">{{timeAgo}}</el-button>
+    </div>
 
     <!-- для компа таблица -->
     <el-table
         class="big-table"
         v-if="!globalStore.isMobileView"
-        :data="warehousStore.list"
+        :data="tableData"
         ref="singleTableRef"
         empty-text="Нет данных"
         highlight-current-row
@@ -100,7 +103,7 @@
 
     <!-- для мобилки таблица -->
     <div class="vertical-table" v-if="globalStore.isMobileView" style="width: 100vw">
-      <div v-for="(row, ind) in warehousStore.list" :key="ind">
+      <div v-for="(row, ind) in tableData" :key="ind">
         <div class="head">
           <span v-if="row.auto" class="deal-car-color" :style="carColor(row.auto.bodyColorCode)"></span>
           <span v-if="row.auto"> {{
@@ -117,9 +120,9 @@
         </div>
         <div><small>Статус:</small> {{ row.statusTitle }}</div>
       </div>
-      <div v-if="!warehousStore.list.length" style="text-align: center">Нет данных</div>
+      <div v-if="!tableData.length" style="text-align: center">Нет данных</div>
     </div>
-    <template v-if="warehousStore.list && warehousStore.list.length>2">
+    <template v-if="tableData && tableData.length>2">
       <el-pagination
           v-model:page-size="rowsPerPage"
           :page-sizes="[5, 10, 20, 50]"
@@ -158,14 +161,14 @@
 </style>
 
 <script setup>
-import {carColor, gotoTop} from "@/utils/globalFunctions";
+import {carColor, gotoTop, timeAgoF} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import WarehousFilter from "@/pages/warehous/WarehousFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useWarehousStore} from "@/stores/warehousStore";
-import {computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 import ApexDonutChartForSell from "@/components/ApexDonutChartForSell.vue";
 
@@ -196,6 +199,9 @@ const filter = {
 }
 let filterOld; // кучковый способ запросов
 const isGridOpen = ref(false); // открытие диаграмма
+const timeAgo = ref('')
+let timeAgoTimer = null
+const tableData = ref([])
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
@@ -254,17 +260,28 @@ function openChart() {
   isGridOpen.value=!isGridOpen.value;
 }
 
-function getData() {
+function getData(noUpd) {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
-  warehousStore.getWarehouses(filterOld).then(res => {
+  warehousStore.getWarehouses(filterOld, !noUpd).then(res => {
+    tableData.value = res.items;
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.total
   })
+  getTimeList()
 }
 
+function getTimeList() {
+  let listTime =  localStorage.getItem('warehousListTime')
+  timeAgo.value = listTime? timeAgoF(new Date(+listTime)):''
+  timeAgoTimer = setTimeout(getTimeList, 60000)
+}
+
+onUnmounted(()=>{
+  clearTimeout(timeAgoTimer)
+})
 onMounted(() => {
   globalStore.setTitle('Склад')
   let warehousFilters = localStorage.getItem('warehousFilters') || ''
@@ -274,7 +291,7 @@ onMounted(() => {
     warehousFilters.forEach(el => searchFilter.value[el.param] = el.code)
   }
 
-  getData()
+  getData('noUpd')
 })
 
 

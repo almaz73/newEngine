@@ -20,7 +20,10 @@
       />
     </div>
 
-    <FilterTagsCtrl @getData="getData" />
+    <div style="position: relative">
+      <FilterTagsCtrl @getData="getData" />
+      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" title="Обновить таблицу">{{timeAgo}}</el-button>
+    </div>
 
     <!-- для компа таблица -->
     <el-table
@@ -133,11 +136,11 @@
 </style>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { useDealStore } from '@/stores/dealStore'
 import { useGlobalStore } from '@/stores/globalStore'
-import { carColor, formatDate, gotoTop, validateVin } from '@/utils/globalFunctions'
+import { carColor, formatDate, gotoTop, validateVin, timeAgoF } from '@/utils/globalFunctions'
 import DealFilter from '@/pages/deal/DealFilter.vue'
 import FilterButtonsCtrl from '@/components/filterCtrl/FilterButtonsCtrl.vue'
 import FilterTagsCtrl from '@/components/filterCtrl/FilterTagsCtrl.vue'
@@ -176,6 +179,8 @@ const pageDescription = computed(() => {
   return start + ' - ' + end
 })
 const singleTableRef = ref()
+const timeAgo = ref('')
+let timeAgoTimer = null
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
@@ -242,17 +247,28 @@ function validateFilter() {
   else localStorage.removeItem('dealFilters')
 }
 
-function getData() {
+function getData(noUpd) {
   if (validateFilter()) return false
   globalStore.isWaiting = true
-  dealStore.getDeals(filter).then(res => {
+  dealStore.getDeals(filter, !noUpd).then(res => {
     dealList.value = res.deals
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
   })
+  getTimeList()
 }
+
+function getTimeList() {
+  let listTime =  localStorage.getItem('dealListTime')
+  timeAgo.value = listTime? timeAgoF(new Date(+listTime)):''
+  timeAgoTimer = setTimeout(getTimeList, 60000)
+}
+
+onUnmounted(()=>{
+  clearTimeout(timeAgoTimer)
+})
 
 onMounted(() => {
   globalStore.setTitle('Оценки')
@@ -264,7 +280,7 @@ onMounted(() => {
     dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
   }
 
-  getData()
+  getData('noUpd')
 })
 
 </script>

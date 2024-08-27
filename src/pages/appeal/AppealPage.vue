@@ -22,7 +22,10 @@
       />
     </div>
 
-    <FilterTagsCtrl @getData="getData"/>
+    <div style="position: relative">
+      <FilterTagsCtrl @getData="getData" />
+      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" title="Обновить таблицу">{{timeAgo}}</el-button>
+    </div>
 
     <!-- для компа таблица -->
     <el-table
@@ -37,7 +40,7 @@
       <el-table-column label="Обращение" width="150">
         <template #default="scope">
           <div :style="colorBox(scope.row.statusTitle)"
-               style="display: inline-block; padding: 0 12px; border-radius: 3px; margin-top: 2px"
+               style="display:inline-block;padding:4px 12px;border-radius: 3px;margin-top: 2px;line-height:1"
           > {{ scope.row.statusTitle }}
           </div>
           <div class="red-text">{{ scope.row.id }}</div>
@@ -78,10 +81,8 @@
 
       <el-table-column width="120">
         <template #default="scope">
-
-
           <div v-if="scope.row.workflowLeadType == 1" style="display: block">
-            <div style="padding-top: 4px; padding-left: 8px; display: flex">
+            <div style="padding-top: 4px; padding-left: 6px; display: flex">
               <el-button
                 style="width: 38px;height: 22px"
                 :style="(scope.row.selectedCar)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
@@ -96,7 +97,7 @@
                 <img src="@/assets/icons/q_back.png" />
               </el-button>
             </div>
-            <div style="padding: 8px; display: flex">
+            <div style="padding: 3px 6px; display: flex">
               <el-button
                 class="uk-button"
                 style="width: 38px;height: 22px; background: #E6E6E6"
@@ -180,14 +181,14 @@
   </main>
 </template>
 <script setup>
-import {formatDate, formatDMY_hm, gotoTop} from "@/utils/globalFunctions";
+import {formatDate, formatDMY_hm, gotoTop, timeAgoF} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import AppealFilter from "@/pages/appeal/AppealFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useAppealStore} from "@/stores/appealStore";
-import {computed, onMounted, reactive, ref} from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 import {buyTypes, EventType} from '@/utils/globalConstants';
 import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
@@ -222,6 +223,8 @@ const filter = {
 let filterOld; // кучковый способ запросов
 const appealModal = ref(null)
 const addAppealModal = ref(null)
+const timeAgo = ref('')
+let timeAgoTimer = null
 
 function addAppeal() {
   addAppealModal.value.open(getData)
@@ -309,10 +312,10 @@ function validateFilter() {
   return false
 }
 
-function getData() {
+function getData(noUpd) {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
-  appealStore.getAppeals(filterOld).then((res) => {
+  appealStore.getAppeals(filterOld, !noUpd).then((res) => {
     globalStore.isWaiting = false
     filterButtons.map(el => el.count = res[el.type] | 0)
     total.value = res.totalCount
@@ -321,6 +324,7 @@ function getData() {
 
   globalStore.setTitle('Обращения')
   globalStore.steps = []
+  getTimeList()
 }
 
 function openModal(row) {
@@ -333,6 +337,16 @@ function openPage(row) {
   router.push({name: 'appealEdit', params: {id: row.id}})
 }
 
+function getTimeList() {
+  let listTime =  localStorage.getItem('appealListTime')
+  timeAgo.value = listTime? timeAgoF(new Date(+listTime)):''
+  timeAgoTimer = setTimeout(getTimeList, 60000)
+}
+
+onUnmounted(()=>{
+  clearTimeout(timeAgoTimer)
+})
+
 onMounted(() => {
   let appealFilters = localStorage.getItem('appealFilters') || ''
   if (appealFilters) {
@@ -341,7 +355,7 @@ onMounted(() => {
     appealFilters.forEach(el => searchFilter.value[el.param] = el.code)
   }
 
-  getData()
+  getData('noUpd')
 })
 
 

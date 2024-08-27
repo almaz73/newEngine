@@ -7,7 +7,7 @@ export const useDealStore = defineStore('dealStore', {
         deal: {dealId: null, inspectionId: 0} // используем модель, чтобы иметь доступ в модулях
     }),
     actions: {
-        async getDeals(params: any) {
+        async getDeals(params: any, noCach: boolean ) {
             const {filter, limit, mainFilter, offset, search} = params
             let url = '/api/workflow/GetBuyWorkflows'
             if (filter) url += '?filter=' + filter
@@ -15,8 +15,11 @@ export const useDealStore = defineStore('dealStore', {
             if (search) url += '&search=' + search
             if (mainFilter) url += '&mainFilter=' + mainFilter
             if (limit) url += '&limit=' + limit
+
+            if (!noCach && cache['getDeals' + url]) return cache['getDeals' + url]
+            localStorage.setItem('dealListTime', Date.now())
             const res = await axios.get(url).then(res => res)
-            return res.data
+            return (cache['getDeals' + url] = res.data)
         },
         async getDeal(id: string) {
             const res = await axios.get('/api/deal/' + id)

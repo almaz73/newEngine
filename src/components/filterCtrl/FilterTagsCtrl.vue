@@ -16,7 +16,7 @@
         v-if="isDirty"
         @click="getData()">Искать и запомнить</span>
   </div>
-  <div style="clear: both"></div>
+
 </template>
 
 <script setup>

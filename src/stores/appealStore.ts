@@ -2,15 +2,23 @@ import {defineStore} from "pinia";
 import axios from "axios";
 import cache from "@/utils/globalCach";
 
-const path = '/api/appeals/list/'
 export const useAppealStore = defineStore("appealStore", {
     state: () => ({
         currentRow: null
     }),
     actions: {
-        async getAppeals(params: any) {
-            const res = await getAppeals(params)
-            return res.data
+        async getAppeals(params: any, noCach: boolean) {
+            // кучковый способ запросов
+            const newUrl = Object.entries(params).reduce((sum, el) => {
+                if (el[0] != 'filter' && el[1]) return sum + '&' + el[0] + '=' + el[1]
+                else return sum
+            }, '/api/appeals/list/?filter={}')
+
+            if (!noCach && cache['getAppeals' + newUrl]) return cache['getAppeals' + newUrl]
+            localStorage.setItem('appealListTime', Date.now())
+
+            const res = await axios.get(newUrl).then(res => res)
+            return (cache['getAppeals' + newUrl] = res.data)
         },
         async getAppeal(id: number) {
             const res = await axios.get('/api/workflow/' + id)
@@ -107,13 +115,4 @@ export const useAppealStore = defineStore("appealStore", {
         },
     }
 })
-
-function getAppeals(params: any) {
-    // кучковый способ запросов
-    const newUrl = Object.entries(params).reduce((sum, el) => {
-        if (el[0] != 'filter' && el[1]) return sum + '&' + el[0] + '=' + el[1]
-        else return sum
-    }, path + '?filter={}')
-    return axios.get(newUrl).then(res => res)
-}
 
