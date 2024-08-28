@@ -205,7 +205,7 @@ onMounted(() => {
     realizationFilters = JSON.parse(realizationFilters)
     globalRef.tags = realizationFilters
     realizationFilters.forEach(el => searchFilter.value[el.param] = el.code)
-  }
+  } else globalRef.tags = []
 
   getData()
 })

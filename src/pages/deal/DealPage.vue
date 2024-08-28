@@ -278,7 +278,7 @@ onMounted(() => {
     dealFilters = JSON.parse(dealFilters)
     globalRef.tags = dealFilters
     dealFilters.forEach(el => searchFilter.value[el.param] = el.code)
-  }
+  } else globalRef.tags = []
 
   getData('noUpd')
 })

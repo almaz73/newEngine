@@ -23,12 +23,15 @@
 import {globalRef, removeElement} from './FilterGlobalRef'
 import {ref, watch} from "vue";
 
-watch(globalRef, () => isDirty.value = true)
+watch(globalRef, (a) => {
+  isDirty.value = a.isChanged
+})
 
 function getData() {
   setTimeout(() => {
     emits('getData')
     isDirty.value = false
+    globalRef.isChanged = false
   }, 100)
 
 }

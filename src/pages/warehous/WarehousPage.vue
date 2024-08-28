@@ -289,7 +289,7 @@ onMounted(() => {
     warehousFilters = JSON.parse(warehousFilters)
     globalRef.tags = warehousFilters
     warehousFilters.forEach(el => searchFilter.value[el.param] = el.code)
-  }
+  } else globalRef.tags = []
 
   getData('noUpd')
 })

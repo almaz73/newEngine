@@ -93,6 +93,7 @@ function changed() {
   // создаем теги
   tags.value = []
   globalRef.tags = getTags(tags,vModel, lists)
+  globalRef.isChanged = true
 }
 
 function open() {

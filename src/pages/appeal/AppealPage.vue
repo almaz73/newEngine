@@ -353,7 +353,7 @@ onMounted(() => {
     appealFilters = JSON.parse(appealFilters)
     globalRef.tags = appealFilters
     appealFilters.forEach(el => searchFilter.value[el.param] = el.code)
-  }
+  } else globalRef.tags = []
 
   getData('noUpd')
 })

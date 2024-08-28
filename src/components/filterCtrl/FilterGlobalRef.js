@@ -4,10 +4,12 @@
 import {reactive} from "vue";
 
 export const globalRef = reactive({
-    tags: []
+    tags: [],
+    isChanged: false
 })
 
 export function removeElement(tag) {
     if (tag) globalRef.tags = globalRef.tags.filter(el => el.param !== tag.param)
     else globalRef.tags = []
+    globalRef.isChanged = true
 }
