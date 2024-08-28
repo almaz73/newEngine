@@ -8,18 +8,18 @@
         ( VIN: {{ dealStore.deal.auto.vin }} )
         &nbsp;
         <RouterLink :to="`/auto/${dealStore.deal.auto.autoId}/edit/${dealStore.deal.dealId}`">
-          <EditPensilCtrl />
+          <EditPensilCtrl/>
         </RouterLink>
 
 
       </h3>
-      <RightMenuButtons />
+      <RightMenuButtons/>
     </div>
     &nbsp; &nbsp;
 
 
     <div class="deal_two_col">
-      <MStatus />
+      <MStatus/>
 
 
       <div class="info-filed">
@@ -34,7 +34,7 @@
 
       <div class="info-filed">
 
-        <DealTypeEditorCtrl :deal="dealStore.deal" />
+        <DealTypeEditorCtrl :deal="dealStore.deal"/>
       </div>
 
 
@@ -126,18 +126,18 @@
 
       <div class="info-filed" style="display: flex; margin: 10px 0; align-items: center">
         <label class="label l_200">Категория автомобиля</label>
-        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto" />
+        <CircleCateforyAvtoCtrl :categoryNumber="dealStore.deal.auto.categoryAuto"/>
       </div>
 
 
       <div class="info-filed" v-if="dealStore.deal.auto.bodyType">
         <label class="label l_200">Тип кузова</label>
-        {{ bodyTypes.find(el => el.id === dealStore.deal.auto.engineType).name }}
+        {{ bodyTypesEnum[dealStore.deal.auto.engineType] }}
       </div>
 
       <div class="info-filed" v-if="dealStore.deal.auto.engineType">
         <label class="label l_200">Тип двигателя</label>
-        {{ EngineType.find(el => el.id === dealStore.deal.auto.engineType).name }}
+        {{ EngineTypeEnum[dealStore.deal.auto.engineType] }}
       </div>
 
       <div class="info-filed" v-if="dealStore.deal.auto.steeringWheelType">
@@ -147,7 +147,7 @@
     </div>
 
     <div class="deal_two_col">
-      <MainInfoEvents />
+      <MainInfoEvents/>
     </div>
     <div style="clear: both"></div>
 
@@ -162,7 +162,7 @@
         <div class="info-filed">
           <label class="label"><small>ФИО</small></label>
           {{ dealStore.deal.leadFullName }}
-          <EditPensilCtrl @click="editClient()" />
+          <EditPensilCtrl @click="editClient()"/>
         </div>
         <div class="info-filed">
           <label class="label"><small>Контактный телефон</small></label>
@@ -173,10 +173,10 @@
       </div>
 
       <el-collapse-item title="Финансовый расчет" name="3">
-        <C_FinanceCalculation />
+        <C_FinanceCalculation/>
       </el-collapse-item>
 
-      <el-collapse-item title="Порядок расчета" name="4" />
+      <el-collapse-item title="Порядок расчета" name="4"/>
 
       <el-collapse-item title="Собственник" name="5">
         <div class="info-filed">
@@ -186,32 +186,32 @@
       </el-collapse-item>
 
       <el-collapse-item title="ПТС" name="6">
-        <C_PTS :deal="dealStore.deal" />
+        <C_PTS :deal="dealStore.deal"/>
       </el-collapse-item>
 
       <el-collapse-item title="Фото, Видео, Файлы" name="7">
-        <C_PhotoVideoFiles ref="c_PhotoVideoFiles" />
+        <C_PhotoVideoFiles ref="c_PhotoVideoFiles"/>
       </el-collapse-item>
 
       <el-collapse-item title="Комментарии" name="8">
-        <C_comments ref="c_comments" />
+        <C_comments ref="c_comments"/>
       </el-collapse-item>
 
       <el-collapse-item title="Проверка ТС" name="9">
-        <C_InspectionGibdd ref="c_InspectionGibdd" />
+        <C_InspectionGibdd ref="c_InspectionGibdd"/>
 
       </el-collapse-item>
 
       <el-collapse-item title="Лист осмотра" name="10">
-        <C_InspectionList ref="c_InspectionList" />
+        <C_InspectionList ref="c_InspectionList"/>
       </el-collapse-item>
 
       <el-collapse-item title="Комплектность" name="11">
-        <C_complect ref="c_complect" />
+        <C_complect ref="c_complect"/>
       </el-collapse-item>
 
       <el-collapse-item title="Комлпектация" name="12">
-        <C_complectation ref="c_complectation" />
+        <C_complectation ref="c_complectation"/>
       </el-collapse-item>
 
 
@@ -219,24 +219,24 @@
 
 
   </div>
-  <ClientsDirModal ref="clientsDirModal" />
+  <ClientsDirModal ref="clientsDirModal"/>
 </template>
 
 <script setup lang="ts">
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import { bodyTypes, driveTypies, EngineType, GearboxType } from '@/utils/globalConstants'
-import { ref } from 'vue'
+import {bodyTypesEnum, driveTypies, EngineTypeEnum, GearboxType} from '@/utils/globalConstants'
+import {ref} from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'
-import { useDealStore } from '@/stores/dealStore'
+import {useDealStore} from '@/stores/dealStore'
 import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue'
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from '@/controls/DealTypeEditorCtrl.vue'
 import C_PTS from '@/pages/deal/tabs/collapses/C_PTS.vue'
-import { formattingPhone } from '@/utils/globalFunctions'
+import {formattingPhone} from '@/utils/globalFunctions'
 import RightMenuButtons from '@/pages/deal/RightMenuButtons.vue'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import C_comments from '@/pages/deal/tabs/collapses/C_comments.vue'

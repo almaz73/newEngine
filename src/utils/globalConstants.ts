@@ -24,6 +24,20 @@ export const buyTypes = [ //DealType
     {id: 60, name: 'A/м через салон'},
     {id: 70, name: 'Хранение'},
 ]
+export const bodyTypesEnum = {
+    1: 'Хэтчбэк',
+    2: 'Седан',
+    3: 'Универсал',
+    4: 'Минивен',
+    5: 'Кабриолет',
+    6: 'Кроссовер',
+    7: 'Пикап',
+    8: 'Лифтбэк',
+    9: 'Автобус',
+    10: 'Купе',
+    11: 'Внедорожник'
+}
+
 export const bodyTypes = [
     {id: 1, name: 'Хэтчбэк'},
     {id: 2, name: 'Седан'},
@@ -338,6 +352,13 @@ export const EngineType = [
     {id: 30, name: 'Бензин/газ'},
     {id: 40, name: 'Гибрид'}
 ]
+
+export const EngineTypeEnum = {
+    10: 'Бензин',
+    20: 'Дизель',
+    30: 'Бензин/газ',
+    40: 'Гибрид'
+}
 
 export const inspectionItemCategories = [
     {id: 30, name: 'Внеш. Осмотр кузова'},

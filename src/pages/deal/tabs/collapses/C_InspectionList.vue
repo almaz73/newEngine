@@ -52,7 +52,7 @@
 
 
     <div class="inspect-blocks" style="display: block">
-      <PlannedWork ref="plannedWork" @goInspection="goInspection" />
+      <PlannedWork ref="plannedWork" @goInspection="goInspection"  />
     </div>
 
     <div class="inspect-blocks">
@@ -80,7 +80,7 @@
 import { useDealStore } from '@/stores/dealStore'
 import { ref } from 'vue'
 import { formatDMY_hm } from '@/utils/globalFunctions'
-import { inspectionItemCategories, inspectionItemCategoryWithIndex } from '@/utils/globalConstants'
+import { inspectionItemCategories } from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import PlannedWork from '@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue'
 import router from '@/router'
@@ -113,9 +113,15 @@ function showCategory(categoryId: number) {
 }
 
 function open() {
-  dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
-    inspection.value = data
-    plannedWork.value.open()
+  dealStore.getInspectionitem(dealStore.deal.inspectionId).then(res => {
+    oldInspectionItems.value = res.items
+
+    dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
+      inspection.value = data
+      plannedWork.value.open()
+    })
+
+    getByInspection()
   })
 
 
@@ -124,10 +130,7 @@ function open() {
   // })
 
 
-  dealStore.getInspectionitem(dealStore.deal.inspectionId).then(res => {
-    oldInspectionItems.value = res.data.items
-    getByInspection()
-  })
+
 
 
 }
@@ -160,7 +163,6 @@ function getByInspection() {
       })
       // если категория существует, то кладём в нее item.
       if (existingGroup !== undefined) {
-        console.log('ЕЕЕЕЕ сли категория существует, то кладём в нее item = ')
         if (item.inspectionUiType == 10) {
           if (item.isStock) existingGroup.groupItems.push(item)
         } else {
@@ -175,14 +177,11 @@ function getByInspection() {
       // console.log('existingGroup.amount = ',existingGroup.amount)
     })
 
-    console.log(':::: :::: ::::: groupedItems = ', groupedItems.value)
     // console.log('groupedItems.value = ',JSON.stringify(groupedItems.value))
   })
 }
 
 function goInspection(categoryId: number) {
-
-  console.log('- - -   = ')
 
   if (categoryId == 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
   if (categoryId == 110) return router.push(`/deal/${autoId}/servicework`)

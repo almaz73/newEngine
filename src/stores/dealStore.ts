@@ -118,7 +118,14 @@ export const useDealStore = defineStore('dealStore', {
 
         //:::: Лист осмотра :::://
         async getInspectionitem(inspectionId: number) {
-            return await axios.get(`/api/inspectionitem/getcountchanged/${inspectionId}`)
+            if (cache['getInspectionitem']) return cache['getInspectionitem']
+            const res = await axios.get(`/api/inspectionitem/getcountchanged/${inspectionId}`)
+            return (cache['getInspectionitem'] = res.data)
+        },
+        async getPlanedWork(inspectionId: number) {
+            if (cache['getPlanedWork']) return cache['getPlanedWork']
+            const res = await axios.get(`/api/plannedwork/getcountchanged/${inspectionId}`)
+            return (cache['getPlanedWork'] = res)
         },
         async getDamages() {
             return await axios.get(`/api/damageitem/`)

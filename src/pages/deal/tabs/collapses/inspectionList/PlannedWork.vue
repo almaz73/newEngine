@@ -2,8 +2,8 @@
   <div class="insp-list-inner">
     <p>Запланированные работы</p>
     <span style=" flex-grow: 1"></span>
-    <el-button @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
-    <el-button @click="showHistory=!showHistory">История изменений ( {{ plannedWorkLength }} )</el-button>
+    <el-button v-if="plannedWorkLength" @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
+    <el-button v-if="oldPlainWorks.length" @click="showHistory=!showHistory">История изменений ( {{ plannedWorkLength }} )</el-button>
     <el-button @click="emits('goInspection', 100)">
       <EditPensilCtrl />
     </el-button>
@@ -26,15 +26,17 @@ const damageItems = ref([])
 const showWorks = ref(false)
 const showHistory = ref(false)
 const plannedWorkInfo = ref(null)
+const oldPlainWorks = ref([])
 
 const emits = defineEmits(['goInspection'])
 
 function setPlainWork(data) {
+  console.log('setPlainWork = ')
   let totalSum = 0
   data.map(item => {
-    if (item.workName == undefined || item.workName == null) item.workName = 'Работа не выбрана'
-    if (item.price == undefined || item.price == null) item.price = 0
-    if (item.damageType != null && item.damageType != undefined) {
+    if (item.workName === undefined || item.workName === null) item.workName = 'Работа не выбрана'
+    if (item.price === undefined || item.price === null) item.price = 0
+    if (item.damageType != null && item.damageType !== undefined) {
       item.damageText = getDamageText(item.damageType)
     }
     totalSum += item.price
@@ -59,6 +61,10 @@ function getDamageText(damageType: string) {
 }
 
 function open() {
+  dealStore.getPlanedWork(dealStore.deal.inspectionId).then(res => {
+    oldPlainWorks.value = res.data.items
+  })
+
   dealStore.getDamages().then(res => {
     damageItems.value = res.data.items
 
