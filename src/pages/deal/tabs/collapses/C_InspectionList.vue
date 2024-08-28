@@ -3,13 +3,13 @@
   <div>
     <div class="insp_time">
       <span v-if="inspection.createDate">{{ formatDMY_hm(inspection.createDate) }}</span>
-      <br />
+      <br/>
       {{ inspection.createdUserLastName }} {{ inspection.createdUserFistName }}
     </div>
 
     <div class="insp_time" style="background: #3cac71">
       <span v-if="inspection.lastUpdateDate">{{ formatDMY_hm(inspection.lastUpdateDate) }}</span>
-      <br />
+      <br/>
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
 
@@ -23,23 +23,28 @@
 
 
     <div v-for="item in groupedItems" :key="item.categoryId" class="inspect-blocks" style="flex-wrap: wrap">
-      <div class="insp-list-inner" >
+      <div class="insp-list-inner">
         <p>{{ item.categoryName }}</p>
         <span style=" flex-grow: 1"></span>
 
 
+        <el-button v-if="item.countChanged" @click="getChangedItems(item.categoryId)">
+          История изменений ({{ oldInspectionItems.length }})
+        </el-button> &nbsp;&nbsp;
+
         <div v-if="item.groupItems && item.groupItems.length">
-          <el-button
-
-            @click="showCategory(item.categoryId)">Информация</el-button>
-
-          <el-button :icon="Select" v-if="item.isAllNormOk" type="success" />
-          <el-button type="danger" style="width: 45px" v-if="!item.isAllNormOk">&nbsp; {{item.amount}} &nbsp; </el-button>
+          <el-button @click="showCategory(item.categoryId)">Информация</el-button>
+          <el-button :icon="Select" type="success"
+                     v-if="item.groupItems.length > 0 && ![10, 20, 80].includes(item.categoryId) && item.isAllNormOk "/>
+          <el-button type="danger" style="width: 45px" v-if="!item.isAllNormOk">&nbsp; {{ item.amount }} &nbsp;
+          </el-button>
         </div> &nbsp; &nbsp;
 
+
         <el-button @click="goInspection(item.categoryId)">
-          <EditPensilCtrl />
+          <EditPensilCtrl/>
         </el-button>
+
 
       </div>
 
@@ -47,18 +52,45 @@
       <AllInspectionInfo ref="allInspectionInfo"
                          :showInspectArr="showInspectArr"
                          :categoryId="item.categoryId"
-                         :groupItems="item.groupItems" />
+                         :groupItems="item.groupItems"/>
+
+      <el-table
+          v-if="tableDatasShow[item.categoryId]"
+          :data="tableDatas[item.categoryId]"
+          highlight-current-row
+      >
+        <el-table-column prop="name" label="ФИО">
+          <template #default="scope">
+            {{ scope.row.lastName }} {{ scope.row.firstName }} {{ scope.row.middleName }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="Дата" width="100">
+          <template #default="scope">
+            {{ formatDMY_hm(scope.row.createdDate) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="Элемент"/>
+        <el-table-column prop="comment" label="">
+          <template #default="scope">
+            <el-checkbox v-if="scope.row.inspectionUiType === 10" v-model="scope.row.isStock"/>
+            <el-checkbox v-if="[20, 30].includes(scope.row.inspectionUiType)" v-model="scope.row.isNorm"/>
+            <el-checkbox v-if="[20].includes(scope.row.inspectionUiType)" v-model="scope.row.isRepaired"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="comment" label="Комментарий"/>
+
+      </el-table>
     </div>
 
 
     <div class="inspect-blocks" style="display: block">
-      <PlannedWork ref="plannedWork" @goInspection="goInspection"  />
+      <PlannedWork ref="plannedWork" @goInspection="goInspection"/>
     </div>
 
     <div class="inspect-blocks">
       <p>✱ Сервисные работы</p>
       <el-button @click="goInspection(110)">
-        <EditPensilCtrl />
+        <EditPensilCtrl/>
       </el-button>
     </div>
 
@@ -77,16 +109,18 @@
 </style>
 
 <script setup lang="ts">
-import { useDealStore } from '@/stores/dealStore'
-import { ref } from 'vue'
-import { formatDMY_hm } from '@/utils/globalFunctions'
-import { inspectionItemCategories } from '@/utils/globalConstants'
+import {useDealStore} from '@/stores/dealStore'
+import {ref} from 'vue'
+import {formatDMY_hm} from '@/utils/globalFunctions'
+import {inspectionItemCategories} from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import PlannedWork from '@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue'
 import router from '@/router'
 import AllInspectionInfo from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionInfo.vue'
-import { Select } from '@element-plus/icons-vue'
+import {Select} from '@element-plus/icons-vue'
+import {useGlobalStore} from "@/stores/globalStore";
 
+const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const inspection = ref({
   createDate: null,
@@ -99,7 +133,8 @@ const inspection = ref({
 const plannedWork = ref(null)
 const oldInspectionItems = ref([])
 const groupedItems = ref([])
-const errorCount = ref([])
+const tableDatas = ref({})
+const tableDatasShow = ref({})
 
 let autoId = dealStore.deal.auto.autoId
 let dealId = dealStore.deal.dealId
@@ -116,7 +151,10 @@ function open() {
   dealStore.getInspectionitem(dealStore.deal.inspectionId).then(res => {
     oldInspectionItems.value = res.items
 
-    dealStore.getInspection(dealStore.deal.inspectionId, false).then(function(data) {
+    console.log('res.items = ', res.items)
+
+
+    dealStore.getInspection(dealStore.deal.inspectionId, false).then(function (data) {
       inspection.value = data
       plannedWork.value.open()
     })
@@ -130,19 +168,16 @@ function open() {
   // })
 
 
-
-
-
 }
 
 function getByInspection() {
   console.log('getByInspection:::::::::::::: ')
 
-  dealStore.getByInspection(dealStore.deal.inspectionId).then(function(data) {
+  dealStore.getByInspection(dealStore.deal.inspectionId).then(function (data) {
     let infoButtons = []
     // подготавливаем группы
     inspectionItemCategories.forEach(n => {
-      infoButtons[n.id] = { category: n.id, show: false, mouse_enter: false }
+      infoButtons[n.id] = {category: n.id, show: false, mouse_enter: false}
       groupedItems.value.push({
         categoryName: n.name,
         categoryId: n.id,
@@ -173,11 +208,9 @@ function getByInspection() {
         existingGroup.isAllNormOk = false
         existingGroup.amount += 1
       }
-      
-      // console.log('existingGroup.amount = ',existingGroup.amount)
+
     })
 
-    // console.log('groupedItems.value = ',JSON.stringify(groupedItems.value))
   })
 }
 
@@ -189,6 +222,15 @@ function goInspection(categoryId: number) {
   router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${categoryId}`)
 }
 
-defineExpose({ open })
+function getChangedItems(category: number) {
+  tableDatasShow.value[category] = !tableDatasShow.value[category]
+  globalStore.isWaiting = true
+  dealStore.getChangedItems(dealStore.deal.inspectionId, category).then(res => {
+    tableDatas.value[category] = res.items
+    globalStore.isWaiting = false
+  })
+}
+
+defineExpose({open})
 
 </script>

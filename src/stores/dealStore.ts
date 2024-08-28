@@ -133,7 +133,7 @@ export const useDealStore = defineStore('dealStore', {
         async getPlannedWork(dealId: number) {
             return await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
         },
-        async getDWorkСhanged(inspectionId: number) {
+        async getDWorkChanged(inspectionId: number) {
             return await axios.get(`/api/plannedwork/getchanged/${inspectionId}`)
         },
         async getservicework(dealId: number) {
@@ -156,7 +156,13 @@ export const useDealStore = defineStore('dealStore', {
             if (cache['getWorks']) return cache['getWorks']
             const res = await axios.get(`/api/inspectionitem/getbyinspection/${inspectionId}`)
             return (cache['getWorks'] = res)
-        }
+        },
+        async getChangedItems(inspectionId: number, category: number) {
+            if (cache['getChangedItems' + inspectionId + category]) return cache['getChangedItems' + inspectionId + category]
+            const res = await axios.get(`/api/inspectionitem/getchanged/${inspectionId}/${category}`)
+            return (cache['getChangedItems' + inspectionId + category] = res.data)
+        },
+
 
     }
 })
