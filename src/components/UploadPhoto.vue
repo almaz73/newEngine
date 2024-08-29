@@ -6,19 +6,26 @@
       :auto-upload="true"
       :http-request="uploadFiles"
   >
-    <span class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
-      <span class="photo-upload__btns" :style="{pointerEvents:isClickparent?'none':'auto'}">
-        <span @mouseover="uploadFocus" @mouseout="uploadBlur" title="Загрузить новый фото">
-          <el-icon><Download/></el-icon>
-        </span>
-        <span @click="handlePictureCardPreview()" title="Посмотреть">
-          <el-icon><zoom-in/></el-icon>
-        </span>
-        <span @click="handleRemove()" title="Удалить">
-          <el-icon><Delete/></el-icon>
-        </span>
-      </span>
-   </span>
+    <div class="photo-upload" @click.stop="()=>{}" v-if="photoUrl">
+      <div class="photo-upload__btns" :style="{pointerEvents:isClickparent?'none':'auto'}">
+        <div v-if="props.noEdit"
+             @click="handlePictureCardPreview()"
+             style="background: #00000000; width: 200px; height: 200px">
+        </div>
+
+        <div v-if="!props.noEdit" style="display: flex; gap: 12px; padding: 4px">
+          <span @mouseover="uploadFocus" @mouseout="uploadBlur" title="Загрузить новый фото">
+            <el-icon><Download /></el-icon>
+          </span>
+          <span @click="handlePictureCardPreview()" title="Посмотреть">
+            <el-icon><zoom-in /></el-icon>
+          </span>
+          <span @click="handleRemove()" title="Удалить">
+            <el-icon><Delete /></el-icon>
+          </span>
+        </div>
+      </div>
+   </div>
 
     <img alt="" v-if="photoUrl" :src="photoUrl" class="avatar"/>
     <el-icon v-else class="avatar-uploader-icon">
@@ -26,19 +33,27 @@
     </el-icon>
   </el-upload>
 
-  <el-dialog v-model="dialogVisible">
-    <img :src="dialogImageUrl" alt="Preview Image"/>
-  </el-dialog>
+  <Teleport to="body">
+    <el-dialog v-model="dialogVisible" top="50px">
+      <a :href="photoUrl" target="_blank"
+         style="position: absolute; right: 40px; top: 14px; color: #bbb"> Открыть в отдельной вкладке</a>
+      <img :src="dialogImageUrl" alt="Preview Image" style="width: 100%; height: 100%" />
+    </el-dialog>
+  </Teleport>
 </template>
 
 
 <script setup>
 
+/**
+ * Два вида использования, либо просмотр + редактирование, либо только просмотр noEdit=true
+ */
+
 import {ElMessage} from "element-plus";
 import {Delete, Download, Plus, ZoomIn} from "@element-plus/icons-vue";
 import {ref, watchEffect} from "vue";
 
-const props = defineProps(['url'])
+const props = defineProps(['url', 'noEdit'])
 const emits = defineEmits(['setNewPhoto'])
 const photoUrl = ref(null)
 

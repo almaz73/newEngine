@@ -13,7 +13,6 @@
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
 
-    <!--    <span ng-if="dealStore.deal.malfunctions" style="font-size: large"><a data-uk-modal="{target:'#damages', center:true}">Возможные неисправнсти</a></span>-->
 
     <div style="margin-top: 12px">
       <span style="background: #d34338;  padding: 3px 10px; margin-right: 8px"></span> <span>Создан</span>
@@ -28,12 +27,14 @@
         <span style=" flex-grow: 1"></span>
 
 
-        <el-button v-if="item.countChanged" @click="getChangedItems(item.categoryId)">
-          История изменений ({{ oldInspectionItems.length }})
-        </el-button> &nbsp;&nbsp;
 
         <div v-if="item.groupItems && item.groupItems.length">
           <el-button @click="showCategory(item.categoryId)">Информация</el-button>
+
+          <el-button v-if="item.countChanged" @click="getChangedItems(item.categoryId)">
+            История изменений ({{ item.countChanged }})
+          </el-button> &nbsp;&nbsp;
+
           <el-button :icon="Select" type="success"
                      v-if="item.groupItems.length > 0 && ![10, 20, 80].includes(item.categoryId) && item.isAllNormOk "/>
           <el-button type="danger" style="width: 45px" v-if="!item.isAllNormOk">&nbsp; {{ item.amount }} &nbsp;
@@ -69,15 +70,56 @@
             {{ formatDMY_hm(scope.row.createdDate) }}
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="Элемент"/>
-        <el-table-column prop="comment" label="">
+        <el-table-column prop="name" label="Элемент" width="160px"/>
+        <el-table-column prop="comment" label="" width="40px">
           <template #default="scope">
-            <el-checkbox v-if="scope.row.inspectionUiType === 10" v-model="scope.row.isStock"/>
-            <el-checkbox v-if="[20, 30].includes(scope.row.inspectionUiType)" v-model="scope.row.isNorm"/>
-            <el-checkbox v-if="[20].includes(scope.row.inspectionUiType)" v-model="scope.row.isRepaired"/>
+<!--            <el-checkbox v-if="scope.row.inspectionUiType === 10" v-model="scope.row.isStock"/>-->
+            <div v-if="scope.row.inspectionUiType === 10">
+              <el-icon v-if="scope.row.isStock" style="color: darkgreen"><Select/></el-icon>
+              <el-icon  v-if="!scope.row.isStock" style="color: darkred"><CloseBold/></el-icon>
+            </div>
+
+            <div v-if="[20, 30].includes(scope.row.inspectionUiType)">
+              <el-icon  v-if="scope.row.isNorm" style="color: darkgreen"><Select/></el-icon>
+              <el-icon  v-if="!scope.row.isNorm"  style="color: darkred"><CloseBold/></el-icon>
+              <el-icon  v-if="scope.row.isRepaired" title="Отремонтирован" style="color: darkred"><Setting/></el-icon>
+            </div>
+
+
           </template>
         </el-table-column>
-        <el-table-column prop="comment" label="Комментарий"/>
+        <el-table-column prop="comment" label="Комментарий" width="150">
+          <template #default="scope">
+
+            <div v-if="scope.row.inspectionUiType === 10">
+              <span v-if="scope.row.isStock">Присутствует</span>
+              <span v-else>Отсутствует</span>
+            </div>
+
+            <div v-if="scope.row.inspectionUiType === 20 || scope.row.inspectionUiType === 30">
+              <div v-if="scope.row.isNorm === false">
+                <p>Повреждения: {{ scope.row.damageText }}</p>
+                <UploadPhoto v-if="scope.row.photos[0]" :url="scope.row.photos[0].photoPath" :noEdit="true" />
+                <UploadPhoto v-if="scope.row.photos[1]" :url="scope.row.photos[1].photoPath" :noEdit="true" />
+              </div>
+
+              <p v-if="scope.row.isNorm">Норма</p>
+              <p v-if="scope.row.isRepaired">Ранний ремонт</p>
+              <p v-if="!scope.row.isRepaired">Ранее не ремонтировалось</p>
+            </div>
+
+            <div v-if="scope.row.inspectionUiType === 40">
+              <el-icon v-if="scope.row.isRequired" style="color: darkgreen"><Select/></el-icon>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="Вложенные файлы" width="110">
+          <template #default="scope">
+            <div v-for="file in scope.row.documents">
+              <a @click="openFile(file)">{{file.title}}</a>
+            </div>
+          </template>
+        </el-table-column>
 
       </el-table>
     </div>
@@ -117,8 +159,9 @@ import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import PlannedWork from '@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue'
 import router from '@/router'
 import AllInspectionInfo from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionInfo.vue'
-import {Select} from '@element-plus/icons-vue'
+import {Select, CloseBold, Setting} from '@element-plus/icons-vue'
 import {useGlobalStore} from "@/stores/globalStore";
+import UploadPhoto from '@/components/UploadPhoto.vue'
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -171,8 +214,6 @@ function open() {
 }
 
 function getByInspection() {
-  console.log('getByInspection:::::::::::::: ')
-
   dealStore.getByInspection(dealStore.deal.inspectionId).then(function (data) {
     let infoButtons = []
     // подготавливаем группы
@@ -229,6 +270,11 @@ function getChangedItems(category: number) {
     tableDatas.value[category] = res.items
     globalStore.isWaiting = false
   })
+}
+
+function openFile (file) {
+  let fileUrl = `/api/file/${file.documentId}`
+  window.open(fileUrl)
 }
 
 defineExpose({open})

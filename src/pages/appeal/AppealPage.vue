@@ -58,7 +58,16 @@
 
       <el-table-column label="Менеджер">
         <template #default="scope">
-          <div class="nowrap"><i> {{ scope.row.createUserName }}</i></div>
+          <div v-if="![110, 111, 112, 113].includes(scope.row.responsibleRole)">
+            <b>{{scope.row.managerName}}</b>
+          </div>
+          <div
+            v-if="[110, 111, 112, 113].includes(scope.row.responsibleRole)"
+            style="background-color: #df8680; color: #faf6f6; width: 73%; text-align: center"
+          >
+            <b>{{scope.row.managerName}}</b>
+          </div>
+
           <div class="nowrap"> {{ scope.row.locationName }}</div>
           <div class="red-text">{{ scope.row.city }}</div>
         </template>
@@ -81,20 +90,20 @@
 
       <el-table-column width="120">
         <template #default="scope">
-          <div v-if="scope.row.workflowLeadType == 1" style="display: block">
+          <div v-if="scope.row.workflowLeadType===1" style="display: block">
             <div style="padding-top: 4px; padding-left: 6px; display: flex">
               <el-button
                 style="width: 38px;height: 22px"
                 :style="(scope.row.selectedCar)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
               >
-                <img src="@/assets/icons/q_car.png" />
+                <img src="@/assets/icons/q_car.png" alt=""/>
               </el-button>
               <el-button
                 class="uk-button"
                 style="width: 38px;height: 22px"
                 :style="(scope.row.tradeInAppealId)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
               >
-                <img src="@/assets/icons/q_back.png" />
+                <img src="@/assets/icons/q_back.png" alt=""/>
               </el-button>
             </div>
             <div style="padding: 3px 6px; display: flex">
@@ -102,21 +111,21 @@
                 class="uk-button"
                 style="width: 38px;height: 22px; background: #E6E6E6"
               >
-                <img src="@/assets/icons/q_cub.png" />
+                <img src="@/assets/icons/q_cub.png" alt=""/>
               </el-button>
               <el-button
                 class="uk-button"
                 style="width: 38px;height: 22px"
                 :style="(scope.row.credit)?{'background-color':'#BEF781'}:{'background-color':'#E6E6E6'}"
               >
-                <img src="@/assets/icons/q_rub.png" />
+                <img src="@/assets/icons/q_rub.png" alt=""/>
 
               </el-button>
             </div>
           </div>
 
           <img :src="scope.row.smallPhoto[0]" alt=""
-               v-if="(scope.row.workflowLeadType == 2 || scope.row.workflowLeadType == 11) &&
+               v-if="(scope.row.workflowLeadType === 2 || scope.row.workflowLeadType === 11) &&
                scope.row.smallPhoto && scope.row.smallPhoto[0]"
                class="img-in-table" />
         </template>
