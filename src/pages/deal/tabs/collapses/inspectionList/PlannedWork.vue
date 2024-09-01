@@ -1,5 +1,5 @@
 <template>
-  <div class="insp-list-inner">
+  <div class="insp-list-inner" style="display: flex; flex-wrap: wrap">
     <p>Запланированные работы</p>
     <span style=" flex-grow: 1"></span>
     <el-button v-if="plannedWorkLength" @click="showWorks=!showWorks">Итого {{ plannedWorkTotalSum }} руб.</el-button>
@@ -31,7 +31,6 @@ const oldPlainWorks = ref([])
 const emits = defineEmits(['goInspection'])
 
 function setPlainWork(data) {
-  console.log('setPlainWork = ')
   let totalSum = 0
   data.map(item => {
     if (item.workName === undefined || item.workName === null) item.workName = 'Работа не выбрана'

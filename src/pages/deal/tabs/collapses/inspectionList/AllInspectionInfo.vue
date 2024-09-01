@@ -17,9 +17,8 @@
       <el-icon v-if="props.categoryId==30 && !group.isNorm" style="color: pink">
         <CloseBold />
       </el-icon>
-
-      <el-icon v-if="[80].includes(props.categoryId)>-1 && group.isRequired" style="color: orange"><Select /></el-icon>
-      <el-icon v-if="[20, 90].includes(props.categoryId)>-1 && group.isStock" style="color: green"><Select /></el-icon>
+      <el-icon v-if="[80].includes(props.categoryId) && group.isRequired" style="color: orange"><Select /></el-icon>
+      <el-icon v-if="[20, 90].includes(props.categoryId) && group.isStock" style="color: green"><Select /></el-icon>
 
 
       <small v-if="group.damageText" style="width: 90%; padding: 0 10px; color: #888">Повреждения: &nbsp; &nbsp; &nbsp;  {{group.damageText}}</small>
@@ -39,12 +38,6 @@ import { Select, CloseBold, Tools, EditPen } from '@element-plus/icons-vue'
 import {formatDMY_hm} from "@/utils/globalFunctions";
 
 const props = defineProps(['showInspectArr', 'categoryId', 'groupItems'])
-
-// console.log('??? !!! props = ', props)
-
-// watchEffect(() => {
-//   if (props.showHistory) getHistory()
-// })
 
 
 const dealStore = useDealStore()

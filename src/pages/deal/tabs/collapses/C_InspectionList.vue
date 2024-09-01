@@ -33,11 +33,13 @@
 
           <el-button v-if="item.countChanged" @click="getChangedItems(item.categoryId)">
             История изменений ({{ item.countChanged }})
-          </el-button> &nbsp;&nbsp;
+          </el-button> &nbsp; &nbsp;
 
           <el-button :icon="Select" type="success"
                      v-if="item.groupItems.length > 0 && ![10, 20, 80].includes(item.categoryId) && item.isAllNormOk "/>
-          <el-button type="danger" style="width: 45px" v-if="!item.isAllNormOk">&nbsp; {{ item.amount }} &nbsp;
+          <el-button type="danger" style="width: 45px"
+                     @click="showDemages(item.categoryId)"
+                     v-if="!item.isAllNormOk">&nbsp; {{ item.amount }} &nbsp;
           </el-button>
         </div> &nbsp; &nbsp;
 
@@ -50,10 +52,15 @@
       </div>
 
 
-      <AllInspectionInfo ref="allInspectionInfo"
-                         :showInspectArr="showInspectArr"
-                         :categoryId="item.categoryId"
-                         :groupItems="item.groupItems"/>
+      <AllInspectionInfo
+        :showInspectArr="showInspectArr"
+        :categoryId="item.categoryId"
+        :groupItems="item.groupItems" />
+
+      <AllInspectionDamages
+        :showDamagesArr="showDamagesArr"
+        :categoryId="item.categoryId"
+        :groupItems="item.groupItems" />
 
       <el-table
           v-if="tableDatasShow[item.categoryId]"
@@ -162,6 +169,7 @@ import AllInspectionInfo from '@/pages/deal/tabs/collapses/inspectionList/AllIns
 import {Select, CloseBold, Setting} from '@element-plus/icons-vue'
 import {useGlobalStore} from "@/stores/globalStore";
 import UploadPhoto from '@/components/UploadPhoto.vue'
+import AllInspectionDamages from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionDamages.vue'
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -183,19 +191,11 @@ let autoId = dealStore.deal.auto.autoId
 let dealId = dealStore.deal.dealId
 let inspectionId = dealStore.deal.inspectionId
 const showInspectArr = ref([])
-
-function showCategory(categoryId: number) {
-  let place = showInspectArr.value.indexOf(categoryId)
-  if (place > -1) showInspectArr.value.splice(place, 1)
-  else showInspectArr.value.push(categoryId)
-}
+const showDamagesArr = ref([])
 
 function open() {
   dealStore.getInspectionitem(dealStore.deal.inspectionId).then(res => {
     oldInspectionItems.value = res.items
-
-    console.log('res.items = ', res.items)
-
 
     dealStore.getInspection(dealStore.deal.inspectionId, false).then(function (data) {
       inspection.value = data
@@ -226,7 +226,7 @@ function getByInspection() {
         amount: 0,
         groupItems: [],
         countChanged: oldInspectionItems.value.filter(item => {
-          return item.category == n.id
+          return item.category === n.id
         }).length
       })
 
@@ -235,17 +235,17 @@ function getByInspection() {
     data.data.items.forEach(item => {
       //ищем есть ли у нас категория из текущего item
       var existingGroup = groupedItems.value.find(itemToFind => {
-        return item.inspectionItemCategory == itemToFind.categoryId
+        return item.inspectionItemCategory === itemToFind.categoryId
       })
       // если категория существует, то кладём в нее item.
       if (existingGroup !== undefined) {
-        if (item.inspectionUiType == 10) {
+        if (item.inspectionUiType === 10) {
           if (item.isStock) existingGroup.groupItems.push(item)
         } else {
           existingGroup.groupItems.push(item)
         }
       }
-      if ((item.inspectionUiType == 30 || item.inspectionUiType == 20) && item.isNorm == false) {
+      if ((item.inspectionUiType === 30 || item.inspectionUiType === 20) && item.isNorm === false) {
         existingGroup.isAllNormOk = false
         existingGroup.amount += 1
       }
@@ -257,10 +257,22 @@ function getByInspection() {
 
 function goInspection(categoryId: number) {
 
-  if (categoryId == 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
-  if (categoryId == 110) return router.push(`/deal/${autoId}/servicework`)
+  if (categoryId === 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
+  if (categoryId === 110) return router.push(`/deal/${autoId}/servicework`)
 
   router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${categoryId}`)
+}
+
+function showCategory(categoryId: number) {
+  let place = showInspectArr.value.indexOf(categoryId)
+  if (place > -1) showInspectArr.value.splice(place, 1)
+  else showInspectArr.value.push(categoryId)
+}
+
+function showDemages(categoryId: number){
+  let place = showDamagesArr.value.indexOf(categoryId)
+  if (place > -1) showDamagesArr.value.splice(place, 1)
+  else showDamagesArr.value.push(categoryId)
 }
 
 function getChangedItems(category: number) {
