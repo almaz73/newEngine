@@ -170,8 +170,10 @@ export const useDealStore = defineStore('dealStore', {
             const res = axios.get(`/api/Auto/GetExploitationHistoryTypes`)
             return (cache['getExploitationHistoryTypes'] = res)
         },
-
-
+        async getbyinspectionbycategory(autoId: number, categoryId: number) {
+            return await axios.get(`/api/inspectionitem/getbyinspectionbycategory/${autoId}/${categoryId}`)
+        },
+        // https://dev.autonet.pro/api/inspectionitem/getbyinspectionbycategory/125349/40
     }
 })
 
