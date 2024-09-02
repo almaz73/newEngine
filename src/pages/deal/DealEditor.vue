@@ -5,7 +5,7 @@
         <MainInfo/>
       </el-tab-pane>
       <el-tab-pane label="Листы осмотра" name="second">
-
+        <C_InspectionList ref="c_InspectionList"/>
       </el-tab-pane>
       <el-tab-pane label="Заказ наряды" name="third">
       </el-tab-pane>
@@ -21,8 +21,11 @@ import {ref} from 'vue'
 import MainInfo from '@/pages/deal/tabs/MainInfo.vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import DealHistory from '@/pages/deal/tabs/DealHistory.vue'
+import C_InspectionList from "@/pages/deal/tabs/collapses/C_InspectionList.vue";
+
 
 const globalStore = useGlobalStore()
+const c_InspectionList = ref(null)
 const activeName = ref('first')
 const dealStore = useDealStore()
 const dealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
@@ -31,6 +34,7 @@ const dealHistory = ref(null)
 
 function tabchange(val) {
   if (val.props.name === 'fourth') dealHistory.value.open()
+  if (val.props.name === 'second') c_InspectionList.value.open()
 }
 
 dealStore.getDeal(dealId).then(res => {

@@ -187,7 +187,7 @@ const groupedItems = ref([])
 const tableDatas = ref({})
 const tableDatasShow = ref({})
 
-let autoId = dealStore.deal.auto.autoId
+let autoId = dealStore.deal.auto ? dealStore.deal.auto.autoId : null
 let dealId = dealStore.deal.dealId
 let inspectionId = dealStore.deal.inspectionId
 const showInspectArr = ref([])
