@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div v-if="inspection">
     <div class="insp_time">
       <span v-if="inspection.createDate">{{ formatDMY_hm(inspection.createDate) }}</span>
       <br/>
@@ -53,14 +53,14 @@
 
 
       <AllInspectionInfo
-        :showInspectArr="showInspectArr"
-        :categoryId="item.categoryId"
-        :groupItems="item.groupItems" />
+          :showInspectArr="showInspectArr"
+          :categoryId="item.categoryId"
+          :groupItems="item.groupItems"/>
 
       <AllInspectionDamages
-        :showDamagesArr="showDamagesArr"
-        :categoryId="item.categoryId"
-        :groupItems="item.groupItems" />
+          :showDamagesArr="showDamagesArr"
+          :categoryId="item.categoryId"
+          :groupItems="item.groupItems"/>
 
       <el-table
           v-if="tableDatasShow[item.categoryId]"
@@ -80,16 +80,22 @@
         <el-table-column prop="name" label="Элемент" width="160px"/>
         <el-table-column prop="comment" label="" width="40px">
           <template #default="scope">
-<!--            <el-checkbox v-if="scope.row.inspectionUiType === 10" v-model="scope.row.isStock"/>-->
+            <!--            <el-checkbox v-if="scope.row.inspectionUiType === 10" v-model="scope.row.isStock"/>-->
             <div v-if="scope.row.inspectionUiType === 10">
               <el-icon v-if="scope.row.isStock" style="color: darkgreen"><Select/></el-icon>
-              <el-icon  v-if="!scope.row.isStock" style="color: darkred"><CloseBold/></el-icon>
+              <el-icon v-if="!scope.row.isStock" style="color: darkred">
+                <CloseBold/>
+              </el-icon>
             </div>
 
             <div v-if="[20, 30].includes(scope.row.inspectionUiType)">
-              <el-icon  v-if="scope.row.isNorm" style="color: darkgreen"><Select/></el-icon>
-              <el-icon  v-if="!scope.row.isNorm"  style="color: darkred"><CloseBold/></el-icon>
-              <el-icon  v-if="scope.row.isRepaired" title="Отремонтирован" style="color: darkred"><Setting/></el-icon>
+              <el-icon v-if="scope.row.isNorm" style="color: darkgreen"><Select/></el-icon>
+              <el-icon v-if="!scope.row.isNorm" style="color: darkred">
+                <CloseBold/>
+              </el-icon>
+              <el-icon v-if="scope.row.isRepaired" title="Отремонтирован" style="color: darkred">
+                <Setting/>
+              </el-icon>
             </div>
 
 
@@ -106,8 +112,8 @@
             <div v-if="scope.row.inspectionUiType === 20 || scope.row.inspectionUiType === 30">
               <div v-if="scope.row.isNorm === false">
                 <p>Повреждения: {{ scope.row.damageText }}</p>
-                <UploadPhoto v-if="scope.row.photos[0]" :url="scope.row.photos[0].photoPath" :noEdit="true" />
-                <UploadPhoto v-if="scope.row.photos[1]" :url="scope.row.photos[1].photoPath" :noEdit="true" />
+                <UploadPhoto v-if="scope.row.photos[0]" :url="scope.row.photos[0].photoPath" :noEdit="true"/>
+                <UploadPhoto v-if="scope.row.photos[1]" :url="scope.row.photos[1].photoPath" :noEdit="true"/>
               </div>
 
               <p v-if="scope.row.isNorm">Норма</p>
@@ -123,7 +129,7 @@
         <el-table-column label="Вложенные файлы" width="110">
           <template #default="scope">
             <div v-for="file in scope.row.documents">
-              <a @click="openFile(file)">{{file.title}}</a>
+              <a @click="openFile(file)">{{ file.title }}</a>
             </div>
           </template>
         </el-table-column>
@@ -159,18 +165,20 @@
 
 <script setup lang="ts">
 import {useDealStore} from '@/stores/dealStore'
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import {formatDMY_hm} from '@/utils/globalFunctions'
 import {inspectionItemCategories} from '@/utils/globalConstants'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import PlannedWork from '@/pages/deal/tabs/collapses/inspectionList/PlannedWork.vue'
 import router from '@/router'
 import AllInspectionInfo from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionInfo.vue'
-import {Select, CloseBold, Setting} from '@element-plus/icons-vue'
+import {CloseBold, Select, Setting} from '@element-plus/icons-vue'
 import {useGlobalStore} from "@/stores/globalStore";
 import UploadPhoto from '@/components/UploadPhoto.vue'
 import AllInspectionDamages from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionDamages.vue'
+import {useRoute} from 'vue-router'
 
+const route = useRoute()
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const inspection = ref({
@@ -269,7 +277,7 @@ function showCategory(categoryId: number) {
   else showInspectArr.value.push(categoryId)
 }
 
-function showDemages(categoryId: number){
+function showDemages(categoryId: number) {
   let place = showDamagesArr.value.indexOf(categoryId)
   if (place > -1) showDamagesArr.value.splice(place, 1)
   else showDamagesArr.value.push(categoryId)
@@ -284,11 +292,28 @@ function getChangedItems(category: number) {
   })
 }
 
-function openFile (file) {
+function openFile(file: any) {
   let fileUrl = `/api/file/${file.documentId}`
   window.open(fileUrl)
 }
 
 defineExpose({open})
+
+onMounted(() => {
+  // Если зашли на лист осмотра по ссылке, и неизвестно id pзагружаем дополнительно
+  if (document.location.pathname.includes('inspection')) {
+    globalStore.setTitle('Лист осмотра')
+    if (!dealStore.deal.inspectionId) {
+      dealStore.getDeal(dealId).then(res => {
+        dealStore.deal = res
+        globalStore.steps = dealStore.deal.workflowsChain
+        open()
+      })
+    } else {
+      globalStore.steps = dealStore.deal.workflowsChain
+      open()
+    }
+  }
+})
 
 </script>

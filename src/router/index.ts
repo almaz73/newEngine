@@ -102,6 +102,10 @@ const router = createRouter({
             name: 'clientType',
             component: () => import('@/components/TypeClientEdit.vue').catch(val => fail(val))
         }, {
+            path: '/auto/:autoId/deal/:dealId/inspection',
+            name: 'inspectionList',
+            component: () => import('@/pages/deal/tabs/collapses/C_InspectionList.vue').catch(val => fail(val))
+        }, {
             path: '/auto/:autoId/deal/:dealId/inspection/:inspectionId/edit-category/:categoryId',
             name: 'editInspection',
             component: () => import('@/pages/deal/tabs/collapses/inspectionList/AllInspections.vue').catch(val => fail(val))

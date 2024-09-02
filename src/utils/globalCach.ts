@@ -34,6 +34,11 @@ const cache = {
     getFias: null,
     getSwapPhoneHistory: null,
     getBuyEditHistory: null,
-    getInspectionitem: null
+    getInspectionitem: null,
+    getDamages: null,
+    getDamageitem: null,
+    getExploitationHistoryTypes: null,
+    getDeal: null
+
 }
 export default cache

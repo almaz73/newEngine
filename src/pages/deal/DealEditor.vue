@@ -22,6 +22,7 @@ import MainInfo from '@/pages/deal/tabs/MainInfo.vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import DealHistory from '@/pages/deal/tabs/DealHistory.vue'
 import C_InspectionList from "@/pages/deal/tabs/collapses/C_InspectionList.vue";
+import router from "@/router";
 
 
 const globalStore = useGlobalStore()
@@ -34,10 +35,13 @@ const dealHistory = ref(null)
 
 function tabchange(val) {
   if (val.props.name === 'fourth') dealHistory.value.open()
-  if (val.props.name === 'second') c_InspectionList.value.open()
+  if (val.props.name === 'second') {
+    let autoId = dealStore.deal.auto.autoId
+    router.push(`/auto/${autoId}/deal/${dealId}/inspection`)
+  }
 }
 
-dealStore.getDeal(dealId).then(res => {
+dealStore.getDeal(dealId, true).then(res => {
   mod.value = res
   dealStore.deal = res
   init()
@@ -46,7 +50,7 @@ dealStore.getDeal(dealId).then(res => {
 function init() {
   useGlobalStore().setTitle('')
 
-  globalStore.setTitle('Оценка. ' + (mod.value?mod.value.typeTitle:''))
+  globalStore.setTitle('Оценка. ' + (mod.value ? mod.value.typeTitle : ''))
   // globalStore.steps = [{ name: 'Обращение', done: true },
   //   { name: 'Осмотр', done: true }, { name: 'Оценка', done: false }]
 

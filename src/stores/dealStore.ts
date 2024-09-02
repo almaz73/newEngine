@@ -21,9 +21,10 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(url).then(res => res)
             return (cache['getDeals' + url] = res.data)
         },
-        async getDeal(id: string) {
+        async getDeal(id: string, noCach: boolean) {
+            if (!noCach && cache.getDeal) return cache.getDeal
             const res = await axios.get('/api/deal/' + id)
-            return res.data
+            return (cache.getDeal = res.data)
         },
         async getStatuses(id: number) {
             const res = await axios.get(`/api/deal/${id}/getStatuses`)
@@ -128,7 +129,9 @@ export const useDealStore = defineStore('dealStore', {
             return (cache['getPlanedWork'] = res)
         },
         async getDamages() {
-            return await axios.get(`/api/damageitem/`)
+            if (cache['getDamages']) return cache['getDamages']
+            const res = axios.get(`/api/damageitem/`)
+            return (cache['getDamages'] = res)
         },
         async getPlannedWork(dealId: number) {
             return await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
@@ -161,6 +164,11 @@ export const useDealStore = defineStore('dealStore', {
             if (cache['getChangedItems' + inspectionId + category]) return cache['getChangedItems' + inspectionId + category]
             const res = await axios.get(`/api/inspectionitem/getchanged/${inspectionId}/${category}`)
             return (cache['getChangedItems' + inspectionId + category] = res.data)
+        },
+        async getExploitationHistoryTypes() {
+            if (cache['getExploitationHistoryTypes']) return cache['getExploitationHistoryTypes']
+            const res = axios.get(`/api/Auto/GetExploitationHistoryTypes`)
+            return (cache['getExploitationHistoryTypes'] = res)
         },
 
 

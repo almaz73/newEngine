@@ -14,8 +14,8 @@ const dealStore = useDealStore()
 const editCarToDeal = ref(null)
 
 onMounted(() => {
-  let appealId = +location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-  dealStore.getDeal(appealId).then(res => {
+  let dealId = +location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+  dealStore.getDeal(dealId, true).then(res => {
     editCarToDeal.value.open(res, 'Редактируем')
   })
 })

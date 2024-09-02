@@ -1,7 +1,7 @@
 <template>
   <div class="insp-form" :style="{minWidth: categoryId==110?'100%':''}">
     <ExternalInspection v-if="categoryId==30" />
-    <IInternalInspection v-if="categoryId==40" />
+    <IInternalInspection_Edit v-if="categoryId==40" />
     <IComplectation v-if="categoryId==50" />
 
     <div style="display: flex; justify-content: space-between">
@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import IInternalInspection from '@/pages/deal/tabs/collapses/inspectionList/IInternalInspection.vue'
+import IInternalInspection_Edit from '@/pages/deal/tabs/collapses/inspectionList/IInternalInspection_Edit.vue'
 import ExternalInspection from '@/pages/deal/tabs/collapses/inspectionList/ExternalInspection.vue'
 import IComplectation from '@/pages/deal/tabs/collapses/inspectionList/IComplectation.vue'
 import router from '@/router'
