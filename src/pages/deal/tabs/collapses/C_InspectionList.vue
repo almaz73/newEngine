@@ -45,7 +45,7 @@
 
 
         <el-button @click="goInspection(item.categoryId)">
-          <EditPensilCtrl/>
+        {{item.categoryId}}  <EditPensilCtrl/>
         </el-button>
 
 
@@ -195,8 +195,13 @@ const groupedItems = ref([])
 const tableDatas = ref({})
 const tableDatasShow = ref({})
 
-let autoId = dealStore.deal.auto ? dealStore.deal.auto.autoId : null
-let dealId = dealStore.deal.dealId
+console.log('route.params = ',route.params)
+console.log('dealStore.deal = ',dealStore.deal)
+
+let {autoId, dealId} = route.params
+
+
+
 let inspectionId = dealStore.deal.inspectionId
 const showInspectArr = ref([])
 const showDamagesArr = ref([])
@@ -206,6 +211,7 @@ function open() {
     oldInspectionItems.value = res.items
 
     dealStore.getInspection(dealStore.deal.inspectionId, false).then(function (data) {
+      console.log('data = ',data)
       inspection.value = data
       plannedWork.value.open()
     })
@@ -265,6 +271,8 @@ function getByInspection() {
 
 function goInspection(categoryId: number) {
 
+  console.log('>>>>>>categoryId = ',categoryId)
+
   if (categoryId === 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
   if (categoryId === 110) return router.push(`/deal/${autoId}/servicework`)
 
@@ -304,6 +312,9 @@ onMounted(() => {
   if (document.location.pathname.includes('inspection')) {
     globalStore.setTitle('Лист осмотра')
     if (!dealStore.deal.inspectionId) {
+      
+      console.log('dealId = ',dealId)
+      
       dealStore.getDeal(dealId).then(res => {
         dealStore.deal = res
         globalStore.steps = dealStore.deal.workflowsChain

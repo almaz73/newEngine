@@ -51,7 +51,6 @@ import router from "@/router";
 const route = useRoute()
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
-const listData = ref([])
 const auto = ref({})
 const dangerField = ref({})
 const chapok = ref(false)
@@ -61,7 +60,8 @@ const autoId = ref(null)
 const inspectionId = ref(null)
 const isHideNorm = ref(false)
 const defects = ref({  red: 0,  yellow: 0,  total: 0});
-
+const props = defineProps(['listData'])
+const listData = ref([])
 
 
 function locationF() {
@@ -173,15 +173,24 @@ onMounted(() => {
     // console.log('getExploitationHistoryTypes res = ', res)
   })
 
-  dealStore.getbyinspectionbycategory(inspectionId.value, 40).then(res => {
-    listData.value = res.data.items
-    auto.value = res.data.inspection.auto
+  // dealStore.getbyinspectionbycategory(inspectionId.value, 40).then(res => {
+  //   console.log('res.data = ',res.data)
+  //
+  //   listData.value = res.data.items
+  //   auto.value = res.data.inspection.auto
+  //
+  //   dangerField.value
+  //   listData.value.forEach(el => dangerField.value[el.id] = !el.isNorm)
+  //
+  //   console.log('listData.value = ',listData.value)
+  //
+  // })
 
-    dangerField.value
-    listData.value.forEach(el => dangerField.value[el.id] = !el.isNorm)
 
-    console.log('listData.value = ',listData.value)
+  setTimeout(()=>{
+  listData.value = props.listData
 
+  console.log('props >>> listData = ',listData)
   })
 })
 
