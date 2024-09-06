@@ -45,7 +45,7 @@
 
 
         <el-button @click="goInspection(item.categoryId)">
-        {{item.categoryId}}  <EditPensilCtrl/>
+        <EditPensilCtrl/>
         </el-button>
 
 
@@ -199,10 +199,6 @@ console.log('route.params = ',route.params)
 console.log('dealStore.deal = ',dealStore.deal)
 
 let {autoId, dealId} = route.params
-
-
-
-let inspectionId = dealStore.deal.inspectionId
 const showInspectArr = ref([])
 const showDamagesArr = ref([])
 
@@ -271,7 +267,7 @@ function getByInspection() {
 
 function goInspection(categoryId: number) {
 
-  console.log('>>>>>>categoryId = ',categoryId)
+  let inspectionId = dealStore.deal.inspectionId
 
   if (categoryId === 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
   if (categoryId === 110) return router.push(`/deal/${autoId}/servicework`)

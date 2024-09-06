@@ -10,7 +10,7 @@
              @mouseleave="toMouseLeave(item)"
         >
           <el-button
-            :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
+              :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
             <span>  {{ item.isNorm ? 'Норма' : 'Не норма!' }}</span>
 
           </el-button>
@@ -56,8 +56,8 @@ function changeItem(item) {
 }
 
 function open(_listData) {
-  console.log('30 ')
-  globalStore.setTitle('Внешний осмотр')
+  console.log('40 открыли ВНУТРЕННИЙ  осмотр  ')
+  globalStore.setTitle('Внутренний осмотр')
 
   listData.value = _listData
   listData.value.forEach(el => dangerField.value[el.id] = !el.isNorm) // раскрываем поля с ошибками

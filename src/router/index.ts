@@ -127,7 +127,7 @@ const router = createRouter({
 
 router.beforeEach(res=>{
     console.log('%c ...прослушивание изменения адресной строки=', 'color: orange; font-size:smaller')
-    console.log(res)
+    console.log(':::', res)
     // todo (для списка оценок)
     // иногда переход по ссылке на работает, здесь можно как-то обработать,
     // и при повторном нажатии не сработавшего перехода, обновить броузер

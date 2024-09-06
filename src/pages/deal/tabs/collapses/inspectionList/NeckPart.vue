@@ -2,10 +2,10 @@
   <div class="neck">
     <div>
       <b style="color: #bbb; text-transform: uppercase;">
-        {{props.title}}
+        {{ props.title }}
       </b>
 
-      <a @click="emits('locationF')">
+      <a @click="emits('goNext')">
         Пропустить раздел
       </a>
     </div>
@@ -32,7 +32,7 @@
 </template>
 
 <style>
-.neck{
+.neck {
   display: flex;
   margin: 40px 0 60px;
 }
@@ -47,5 +47,5 @@
 <script setup lang="ts">
 const props = defineProps(['title', 'categoryId'])
 console.log('props = ', props)
-const emits = defineEmits(['hider', 'locationF'])
+const emits = defineEmits(['hider', 'goNext'])
 </script>
