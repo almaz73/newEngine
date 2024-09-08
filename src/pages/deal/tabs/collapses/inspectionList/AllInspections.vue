@@ -69,7 +69,6 @@ function hider() {
 
 
 function getData(nextCategory: number) {
-  console.log(' g e t D a t a  ')
   listData.value = []
   dealStore.getbyinspectionbycategory(route.params.inspectionId, nextCategory).then(res => {
     listData.value = res.data.items
@@ -126,13 +125,11 @@ function goNext () {
 
 }
 
-router.beforeEach(res=>{
-  // качаем данные, если пришли со ссыолки
-  getData(res.params.categoryId)
+router.beforeEach(res => {  // качаем данные, если пришли со ссыолки
+  getData(+res.params.categoryId)
 })
 
-onMounted(() => {
-  // качаем данные, если обновили броузер
-  getData(route.params.categoryId)
+onMounted(() => {  // качаем данные, если обновили броузер
+  getData(+route.params.categoryId)
 })
 </script>

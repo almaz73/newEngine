@@ -18,8 +18,29 @@
 
         <div style="clear: both"></div>
 
-        <div v-if="dangerField[item.id]">
-          777777<br>777<br>77
+        <div v-if="dangerField[item.id]" style="display: flex">
+
+          <div style="display: flex; gap: 12px; float: left;  min-width: 282px">
+            <UploadPhoto v-if="item.photos[0]" @setNewPhoto="setNewPhoto" :url="item.photos[0].previewPhotoPath" />
+            <UploadPhoto v-if="item.photos[1]" @setNewPhoto="setNewPhoto" :url="item.photos[1].previewPhotoPath" />
+          </div>
+
+          <div>
+            <el-select
+
+              placeholder="можно несколько"
+              style="width: 238px; padding: 4px 0"
+              v-model="item.damageTypeArr"
+              multiple
+              filterable>
+              <el-option v-for="item in item.damageItems"
+                         :key="item.id"
+                         :label="item.damageName"
+                         :value="item.id" />
+            </el-select>
+
+            <div style="clear: both"></div>
+          </div>
         </div>
         <el-divider/>
       </div>
@@ -28,9 +49,9 @@
 </template>
 
 <script setup lang="ts">
-
 import {useGlobalStore} from "@/stores/globalStore";
 import { ref} from "vue";
+import UploadPhoto from '@/components/UploadPhoto.vue'
 
 const globalStore = useGlobalStore()
 const auto = ref({})
@@ -39,8 +60,11 @@ const chapok = ref(false)
 const dealId = ref(null)
 const autoId = ref(null)
 const inspectionId = ref(null)
-const defects = ref({  red: 0,  yellow: 0,  total: 0});
 const listData = ref([])
+
+function setNewPhoto(val) {
+  console.log('setNewPhoto = ',val)
+}
 
 
 function toMouseLeave(item) {
@@ -60,7 +84,11 @@ function open(_listData) {
   globalStore.setTitle('Внешний осмотр')
 
   listData.value = _listData
-  listData.value.forEach(el => dangerField.value[el.id] = !el.isNorm) // раскрываем поля с ошибками
+  listData.value.map(el => {
+    dangerField.value[el.id] = !el.isNorm // раскрываем поля с ошибками
+    if( el.damageType)el.damageTypeArr = el.damageType.split(',').map(Number); // список повреждений
+    return el
+  })
 }
 
 defineExpose({open})

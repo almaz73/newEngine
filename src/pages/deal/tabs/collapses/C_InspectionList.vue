@@ -195,9 +195,6 @@ const groupedItems = ref([])
 const tableDatas = ref({})
 const tableDatasShow = ref({})
 
-console.log('route.params = ',route.params)
-console.log('dealStore.deal = ',dealStore.deal)
-
 let {autoId, dealId} = route.params
 const showInspectArr = ref([])
 const showDamagesArr = ref([])
