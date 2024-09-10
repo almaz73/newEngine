@@ -2,7 +2,12 @@
   <div>
     <div v-for="item in listData">
       <div v-if="!(globalStore.showOnlyErrors && item.isNorm)">
-        <div style="max-width: 350px ;float: left">{{ item.name }}</div>
+        <div style="max-width: 350px ;float: left">
+          <el-icon style="color: green" v-if="item.isNorm"><CircleCheckFilled/></el-icon>
+          <el-icon style="color: #f56c6c" v-if="!item.isNorm"><RemoveFilled/></el-icon>
+
+          {{ item.name }}
+        </div>
 
         <div style="float: right; cursor: pointer"
              @click="changeItem(item)"
@@ -11,7 +16,7 @@
         >
           <el-button
             :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
-            <span>  {{ item.isNorm ? 'Норма' : 'Не норма!' }}</span>
+            <span>  {{ item.isNorm ? 'Норма' : 'Не норма !' }}</span>
 
           </el-button>
         </div>
@@ -52,6 +57,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import { ref} from "vue";
 import UploadPhoto from '@/components/UploadPhoto.vue'
+import {CircleCheckFilled, RemoveFilled} from '@element-plus/icons-vue'
 
 const globalStore = useGlobalStore()
 const auto = ref({})
@@ -81,7 +87,7 @@ function changeItem(item) {
 
 function open(_listData) {
   console.log('30 ')
-  globalStore.setTitle('Внешний осмотр')
+
 
   listData.value = _listData
   listData.value.map(el => {

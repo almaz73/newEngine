@@ -1,5 +1,5 @@
 <template>
-  <div class="insp-form" :style="{minWidth: categoryId==110?'100%':''}">
+  <div class="insp-form" :style="{minWidth: categoryId==='110'?'100%':''}">
 
     <div style="font-size: 25px">Осмотр а/м</div>
     <p style="font-size: larger">
@@ -8,15 +8,17 @@
       {{ auto.year }} г.в.
       VIN: {{ auto.vin }}
     </p>
-    <NeckPart :title="'ВНУТРЕННИЙ ОСМОТР'"
+    <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
-              @goNext="goNext" @hider="hider"/>
+              @goNext="goNext" @hider="hider" />
     <!-- Внеш. Осмотр кузова -->
-    <ExternalInspection ref="ins_30" v-show="categoryId==30"/>
-    <!-- Внутренний осмотр -->
-    <InternalInspection_Edit ref="ins_40" v-show="categoryId==40"/>
-    <!-- Комплектация -->
-    <IComplectation ref="ins_20" v-show="categoryId==20"/>
+<!--    <ExternalInspection ref="ins_30" v-show="categoryId==='30'" />-->
+<!--    &lt;!&ndash; Внутренний осмотр &ndash;&gt;-->
+<!--    <InternalInspection_Edit ref="ins_40" v-show="categoryId==='40'" />-->
+<!--    &lt;!&ndash; Комплектация &ndash;&gt;-->
+<!--    <IComplectation ref="ins_20" v-show="categoryId==='20'" />-->
+
+    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId"/>
 
     <div style="display: flex; justify-content: space-between">
       <el-button
@@ -38,13 +40,14 @@
 </template>
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
+import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
 import InternalInspection_Edit from '@/pages/deal/tabs/collapses/inspectionList/InternalInspection_Edit.vue'
 import ExternalInspection from '@/pages/deal/tabs/collapses/inspectionList/ExternalInspection.vue'
 import IComplectation from '@/pages/deal/tabs/collapses/inspectionList/IComplectation.vue'
 import router from '@/router'
-import {onMounted, ref} from "vue";
-import {useGlobalStore} from "@/stores/globalStore";
-import {useDealStore} from "@/stores/dealStore";
+import { onMounted, ref } from 'vue'
+import { useGlobalStore } from '@/stores/globalStore'
+import { useDealStore } from '@/stores/dealStore'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -55,12 +58,11 @@ const inspectionId = ref<string | string[]>('')
 const categoryId = ref<string | string[]>('')
 const listData = ref([])
 const auto = ref({})
+const ins_tmp = ref(null)
 const ins_30 = ref(null)
 const ins_40 = ref(null)
 const ins_20 = ref(null)
-
-
-
+const Titles={30:'Внешний осмотр кузова', 40:'Внутренний осмотр'}
 
 
 function hider() {
@@ -70,52 +72,56 @@ function hider() {
 
 function getData(nextCategory: number) {
   listData.value = []
-  dealStore.getbyinspectionbycategory(route.params.inspectionId, nextCategory).then(res => {
+  dealStore.getbyinspectionbycategory(+route.params.inspectionId, nextCategory).then(res => {
     listData.value = res.data.items
     auto.value = res.data.inspection.auto
-    eval('ins_' + nextCategory).value.open(listData.value)
-    categoryId.value = route.params.categoryId;
+    // eval('ins_' + nextCategory).value.open(listData.value)
+
+    ins_tmp.value.open(listData.value)
+
+    categoryId.value = route.params.categoryId
     document.documentElement.scrollTop = 0
+    globalStore.setTitle(Titles[nextCategory])
   })
 }
 
 function save() {
-  console.log('==ПЕРЕД СОХРАНЕНИЕМ== listData= ',listData.value)
+  console.log('==ПЕРЕД СОХРАНЕНИЕМ== listData= ', listData.value)
   listData.value = []
-  goNext ()
+  goNext()
 }
 
-function goNext () {
-  
-  categoryId.value = route.params.categoryId;
+function goNext() {
 
-  var nextCategory = 10;
-  if (dealId.value != undefined) {
+  categoryId.value = route.params.categoryId
+
+  let nextCategory = 10
+  if (dealId.value !== undefined) {
     switch (+categoryId.value) {
       case 30:
-        nextCategory = 40;
-        break;
+        nextCategory = 40
+        break
       case 40:
-        nextCategory = 20;
-        break;
+        nextCategory = 20
+        break
       case 20:
-        nextCategory = 50;
-        break;
+        nextCategory = 50
+        break
       case 50:
-        nextCategory = 60;
-        break;
+        nextCategory = 60
+        break
       case 60:
-        nextCategory = 70;
-        break;
+        nextCategory = 70
+        break
       case 70:
-        nextCategory = 10;
-        break;
+        nextCategory = 10
+        break
       case 10:
-        nextCategory = 80;
-        break;
+        nextCategory = 80
+        break
       case 80:
-        nextCategory = 90;
-        break;
+        nextCategory = 90
+        break
     }
 
     router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${

@@ -11,7 +11,7 @@
         >
           <el-button
             :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
-            <span>  {{ item.isNorm ? 'Норма' : 'Не норма!' }}</span>
+            <span>  {{ item.isNorm ? 'Норма' : 'Не норма !' }}</span>
 
           </el-button>
         </div>
