@@ -173,7 +173,10 @@ export const useDealStore = defineStore('dealStore', {
         async getbyinspectionbycategory(autoId: number, categoryId: number) {
             return await axios.get(`/api/inspectionitem/getbyinspectionbycategory/${autoId}/${categoryId}`)
         },
-        // https://dev.autonet.pro/api/inspectionitem/getbyinspectionbycategory/125349/40
+        async saveInspection(params: { params: any }) {
+            return await axios.post('/api/inspectionitem/', params).then(q => q)
+        }
+
     }
 })
 

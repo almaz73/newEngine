@@ -177,6 +177,9 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async rotatoPhoto(id: number, type: number) {
             return await axios.post(`/api/autophoto/photorotate/${id}/${type}`).then(q => q)
+        },
+        async rotatoPhotoInspection(idSmall: number,idBig: number, type: number) {
+            return await axios.post(`/api/inspectionitem/photosrotate/${idSmall},${idBig}/${type}`).then(q => q)
         }
 
 

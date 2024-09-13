@@ -11,18 +11,13 @@
     <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
               @goNext="goNext" @hider="hider" />
-    <!-- Внеш. Осмотр кузова -->
-<!--    <ExternalInspection ref="ins_30" v-show="categoryId==='30'" />-->
-<!--    &lt;!&ndash; Внутренний осмотр &ndash;&gt;-->
-<!--    <InternalInspection_Edit ref="ins_40" v-show="categoryId==='40'" />-->
-<!--    &lt;!&ndash; Комплектация &ndash;&gt;-->
-<!--    <IComplectation ref="ins_20" v-show="categoryId==='20'" />-->
 
-    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId"/>
+    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
 
     <div style="display: flex; justify-content: space-between">
       <el-button
         type="danger"
+        @click="clear()"
         v-if="categoryId<90">
         Очистить лист осмотра
       </el-button>
@@ -41,14 +36,12 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
-import InternalInspection_Edit from '@/pages/deal/tabs/collapses/inspectionList/InternalInspection_Edit.vue'
-import ExternalInspection from '@/pages/deal/tabs/collapses/inspectionList/ExternalInspection.vue'
-import IComplectation from '@/pages/deal/tabs/collapses/inspectionList/IComplectation.vue'
 import router from '@/router'
 import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
+
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const route = useRoute()
@@ -59,10 +52,7 @@ const categoryId = ref<string | string[]>('')
 const listData = ref([])
 const auto = ref({})
 const ins_tmp = ref(null)
-const ins_30 = ref(null)
-const ins_40 = ref(null)
-const ins_20 = ref(null)
-const Titles={30:'Внешний осмотр кузова', 40:'Внутренний осмотр'}
+const Titles = { 30: 'Внешний осмотр кузова', 40: 'Внутренний осмотр' }
 
 
 function hider() {
@@ -85,10 +75,46 @@ function getData(nextCategory: number) {
   })
 }
 
+
+function clear() {
+  if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal)
+    dealStore.deal.additionalAutoInfo.isMileageOriginal = true
+
+  listData.value.forEach(item => {
+    switch (item.inspectionItemCategory) {
+      case 10:
+      case 20:
+        item.isStock = false
+        break
+      case 30:
+        item.isRepaired = false
+      case 40:
+      case 50:
+      case 60:
+      case 70:
+        item.isNorm = true
+        break
+      case 80:
+        item.isRequired = false
+        break
+      case 90:
+        item.isStock = true
+        break
+    }
+    item.photos = []
+    item.damageType = null
+    delete item.damageTypeArray
+  })
+
+  ins_tmp.value.open(listData.value)
+}
+
 function save() {
-  console.log('==ПЕРЕД СОХРАНЕНИЕМ== listData= ', listData.value)
-  listData.value = []
-  goNext()
+  listData.value.map(el => {
+    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({ id: item }))
+    return el
+  })
+  dealStore.saveInspection(listData.value).then(() => goNext())
 }
 
 function goNext() {

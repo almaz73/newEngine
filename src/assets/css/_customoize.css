@@ -169,7 +169,7 @@ li.el-menu-item {
 .avatar-uploader .photo-upload__btns {
     pointer-events: auto;
     position: absolute;
-    background: #ffffff99;
+    background: #ffffff44;
     display: flex;
     gap: 12px;
     padding: 5px 5px 0;
@@ -214,6 +214,17 @@ li.el-menu-item {
     text-align: center;
 }
 
+.avatar-uploader_3bt{
+    display: flex;
+    position: absolute;
+    background: #fffa;
+    bottom: 7px;
+    left: 26px;
+    width: 60%;
+    justify-content: space-around;
+    cursor: pointer;
+    z-index: 10;
+}
 /**/
 
 
