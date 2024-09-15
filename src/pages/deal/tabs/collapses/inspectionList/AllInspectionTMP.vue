@@ -13,11 +13,11 @@
             </el-icon>
           </span>
           <span v-else>
-            <el-icon style="color: #777" v-if="!dangerField[item.id].isNorm">
+            <el-icon style="color: green" v-if="!dangerField[item.id].isStock">
               <CircleCheck/>
             </el-icon>
-            <el-icon style="color: #eee" v-if="dangerField[item.id].isNorm">
-              <RemoveFilled/>
+            <el-icon style="color: #f99" v-if="dangerField[item.id].isStock">
+              <CircleClose/>
             </el-icon>
           </span>
 
@@ -66,7 +66,25 @@
         </div>
 
 
-        <div v-if="!['20', '30'].includes(categoryId) "
+
+
+        <div  v-if="['70'].includes(categoryId)"
+              style="float: right; cursor: pointer"
+              @click="changeItem(item, 'isPlainWork')"
+              @mouseover="item.isPlainWork=!item.isPlainWork"
+              @mouseleave="toMouseLeave(item, 'isPlainWork')"
+        >
+          <el-button
+            :style="{background :item.isPlainWork?'#f56c6c':'#c6e0cc', color:item.isPlainWork?'white':''}"
+            style="width: 150px; pointer-events:none">
+            <span>  {{ item.isStock ? 'Норма' : 'Не норма !' }}</span>
+          </el-button>
+        </div>
+
+
+
+
+        <div v-if="!['20', '30', '70'].includes(categoryId) "
              style="float: right; cursor: pointer"
              @click="changeItem(item, 'isNorm')"
              @mouseover="item.isNorm=!item.isNorm"
@@ -82,7 +100,8 @@
 
         <div v-if="!['20'].includes(categoryId) && dangerField[item.id].isNorm" style="display: flex">
 
-          <div style="display: flex; gap: 12px; float: left;  min-width: 282px; margin-top: 4px">
+          <div v-if="item.photos"
+            style="display: flex; gap: 12px; float: left;  min-width: 282px; margin-top: 4px">
             <UploadPhotoInspection
               v-if="item.photos[0]"
               @setNewPhoto="setNewPhoto"
@@ -130,7 +149,7 @@
 import {useGlobalStore} from '@/stores/globalStore'
 import { ref } from 'vue'
 import UploadPhotoInspection from '@/components/UploadPhotoInspection.vue'
-import {CircleCheck, CircleCheckFilled, RemoveFilled} from '@element-plus/icons-vue'
+import {CircleCheck, CircleCheckFilled, RemoveFilled, CircleClose} from '@element-plus/icons-vue'
 
 const globalStore = useGlobalStore()
 const dangerField = ref({})
@@ -161,6 +180,7 @@ function toMouseLeave(item: any, type: string) {
     if (type === 'isNorm') item.isNorm = !item.isNorm
     if (type === 'isRepaired') item.isRepaired = !item.isRepaired
     if (type === 'isStock') item.isStock = !item.isStock
+    if (type === 'isPlainWork') item.isPlainWork = !item.isPlainWork
   }
   chapok.value = false
 }
@@ -169,10 +189,12 @@ function changeItem(item: any, type: string) {
   if (chapok.value && type === 'isNorm') item.isNorm = !item.isNorm
   if (chapok.value && type === 'isRepaired') item.isRepaired = !item.isRepaired
   if (chapok.value && type === 'isStock') item.isStock = !item.isStock
+  if (chapok.value && type === 'isPlainWork') item.isPlainWork = !item.isPlainWork
 
   if (type === 'isNorm') dangerField.value[item.id].isNorm = !item.isNorm
   if (type === 'isRepaired') dangerField.value[item.id].isRepaired = item.isRepaired
   if (type === 'isStock') dangerField.value[item.id].isStock = !item.isStock
+  if (type === 'isPlainWork') dangerField.value[item.id].isPlainWork = !item.isPlainWork
 
   chapok.value = true
 }
