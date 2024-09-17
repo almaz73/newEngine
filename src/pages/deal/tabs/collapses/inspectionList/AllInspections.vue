@@ -10,6 +10,7 @@
     </p>
     <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
+              :err_count="err_count"
               @goNext="goNext" @hider="hider" />
 
     <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
@@ -41,6 +42,7 @@ import { onMounted, ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
+import { Declension } from '@/utils/globalFunctions'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -63,6 +65,8 @@ const Titles = {
   80: 'Прочие работы',
   90: 'Юридическая проверка'
 }
+const defects = ref({})
+const err_count = ref(0)
 
 
 function hider() {
@@ -82,6 +86,8 @@ function getData(nextCategory: number) {
     categoryId.value = route.params.categoryId
     document.documentElement.scrollTop = 0
     globalStore.setTitle(Titles[nextCategory])
+
+    countDefects()
   })
 }
 
@@ -126,6 +132,88 @@ function save() {
   })
   dealStore.saveInspection(listData.value).then(() => goNext())
 }
+
+
+
+function countDefects() {
+  defects.value.red = 0
+  defects.value.yellow = 0;
+  let formErrors = {
+    notchosen: [],
+    other: [],
+  };
+
+  if (dealStore.deal.additionalAutoInfo)
+    if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal)
+      defects.value.yellow++;
+
+  listData.value.forEach(item=>{
+    item.errors = {};
+    switch (+item.inspectionUiType) {
+      case 10:
+        if (!item.isStock) defects.value.red++;
+        break;
+      case 20:
+        if (item.isRepaired) defects.value.yellow++;
+      case 30:
+        if (!item.isNorm) {
+          defects.value.red++;
+          if (!item.damageTypeArray) {
+            formErrors.notchosen.push({anchor: item.nav, name: item.name});
+            item.errors.notchosen = true;
+          }
+        }
+        break;
+      case 40:
+        if (item.isRequired) defects.value.red++;
+        break;
+    }
+  });
+
+  let text={}
+
+  switch (+categoryId.value) {
+    case 10:
+    case 20:
+      defects.value.total = listData.value.length - defects.value.red;
+      text.items =
+        'элемент' + Declension(defects.value.total, ['', 'а', 'ов']);
+      text.defectsRedText = Declension(
+        defects.value.total,
+        text.defectsRed,
+      );
+      break;
+    case 30:
+    case 40:
+      text.defectsYellowText = Declension(
+        defects.value.yellow,
+        text.defectsYellow,
+      );
+
+    default:
+      defects.value.total = defects.value.red + defects.value.yellow;
+      text.items =
+        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий']);
+      text.defectsRedText = Declension(
+        defects.value.red,
+        text.defectsRed,
+      );
+      break;
+  }
+
+  if (formErrors.notchosen)
+    text.sectionsText = Declension(
+      formErrors.notchosen.length,
+      text.sections,
+    );
+
+  console.warn('text = ',text)
+  console.warn('defects.value = ',defects.value)
+  console.warn('formErrors = ',formErrors)
+
+  err_count.value = defects.value.red + defects.value.yellow
+
+};
 
 function goNext() {
 
