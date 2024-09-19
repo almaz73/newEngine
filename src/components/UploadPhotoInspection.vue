@@ -23,7 +23,7 @@
 
     </el-upload>
     <div v-if="photoEL && photoEL.id" class="avatar-uploader_3bt">
-<!--      <img @click="rotatePhoto(10)" alt="" src="@/assets/icons/rotateRight.png">-->
+      <img @click="rotatePhoto(10)" alt="" src="@/assets/icons/rotateRight.png">
       <img @click="deleteFile()" alt="" src="@/assets/icons/icon-delete-dark.png">
       <img @click="rotatePhoto(20)" alt="" src="@/assets/icons/rotateLeft.png">
     </div>

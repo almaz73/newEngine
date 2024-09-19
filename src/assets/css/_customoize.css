@@ -219,8 +219,8 @@ li.el-menu-item {
     position: absolute;
     background: #fffa;
     bottom: 7px;
-    left: 38px;
-    width: 40%;
+    left: 30px;
+    width: 50%;
     justify-content: space-around;
     cursor: pointer;
     z-index: 10;

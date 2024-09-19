@@ -130,9 +130,7 @@ function save() {
     if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({ id: item }))
     return el
   })
-  console.log('listData.value = ',listData.value)
-  //todo
-  // dealStore.saveInspection(listData.value).then(() => goNext())
+  dealStore.saveInspection(listData.value).then(() => goNext())
 }
 
 

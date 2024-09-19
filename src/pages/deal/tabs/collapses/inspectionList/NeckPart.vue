@@ -12,7 +12,7 @@
 
     <div style="flex: 1"></div>
 
-    <el-button type="danger" style="width: 35px; margin-right: 8px">
+    <el-button type="danger" style="width: 35px; margin-right: 8px"  @click="emits('hider')">
       {{err_count}}
     </el-button>
 
