@@ -13,7 +13,7 @@
     <div style="flex: 1"></div>
 
     <el-button type="danger" style="width: 35px; margin-right: 8px"  @click="emits('hider')">
-      {{err_count}}
+      {{err_counter}}
     </el-button>
 
     <div>
@@ -45,7 +45,7 @@
 
 
 <script setup lang="ts">
-const props = defineProps(['title', 'categoryId', 'err_count'])
+const props = defineProps(['title', 'categoryId', 'err_counter'])
 console.log('props = ', props)
 const emits = defineEmits(['hider', 'goNext'])
 </script>

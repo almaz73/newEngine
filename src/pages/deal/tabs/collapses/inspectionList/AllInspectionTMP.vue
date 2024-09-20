@@ -1,14 +1,13 @@
 <template>
   <div>
     <div v-for="item in listData">
-      <div v-if="!(globalStore.showOnlyErrors && item.isNorm)">
+      <div v-if="!item.isHidden">
         <div style="float: left" :style="{'max-width':categoryId!=='30'?'350px':'273px'}">
           <span v-if="!['20'].includes(categoryId)">
             <el-icon style="color: green" v-if="item.isNorm && !item.isRepaired ">
               <CircleCheckFilled />
             </el-icon>
-            <el-icon v-else
-                     :style="{color: dangerField[item.id].isNorm?'#f56c6c':'orange'}">
+            <el-icon v-else :style="{color: dangerField[item.id].isNorm?'#f56c6c':'orange'}">
               <RemoveFilled />
             </el-icon>
           </span>

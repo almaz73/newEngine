@@ -10,7 +10,7 @@
     </p>
     <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
-              :err_count="err_count"
+              :err_counter="err_counter"
               @goNext="goNext" @hider="hider" />
 
     <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
@@ -66,11 +66,18 @@ const Titles = {
   90: 'Юридическая проверка'
 }
 const defects = ref({})
-const err_count = ref(0)
-
+const err_counter = ref(0) // количество ошибок + предупреждений
+let showOnlyErrors = false
 
 function hider() {
-  globalStore.showOnlyErrors = !globalStore.showOnlyErrors
+  // скрывать показывать только ошибки + предупреждения
+  showOnlyErrors = !showOnlyErrors
+
+  if (showOnlyErrors) {
+    listData.value.map(el => {
+      if (!defects.value.redYellowIds.includes(el.id)) el.isHidden = true
+    })
+  } else listData.value.map(el => el.isHidden = false)
 }
 
 
@@ -134,86 +141,76 @@ function save() {
 }
 
 
-
 function countDefects() {
   defects.value.red = 0
-  defects.value.yellow = 0;
-  let formErrors = {
-    notchosen: [],
-    other: [],
-  };
+  defects.value.yellow = 0
+  defects.value.redYellowIds = []
+  let formErrors = { notchosen: [], other: [] }
 
   if (dealStore.deal.additionalAutoInfo)
-    if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal)
-      defects.value.yellow++;
+    if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal) {
+      console.log('>todo>>>>>>dealStore.deal = ', dealStore.deal)
+      countErrIds(21561702, 'yellow')
+    }
 
-  listData.value.forEach(item=>{
-    item.errors = {};
+  listData.value.forEach(item => {
+    item.errors = {}
     switch (+item.inspectionUiType) {
       case 10:
-        if (!item.isStock) defects.value.red++;
-        break;
+        if (!item.isStock) countErrIds(item.id, 'red')
+        break
       case 20:
-        if (item.isRepaired) defects.value.yellow++;
+        if (item.isRepaired) countErrIds(item.id, 'yellow')
       case 30:
         if (!item.isNorm) {
-          defects.value.red++;
+          countErrIds(item.id, 'red')
           if (!item.damageTypeArray) {
-            formErrors.notchosen.push({anchor: item.nav, name: item.name});
-            item.errors.notchosen = true;
+            formErrors.notchosen.push({ anchor: item.nav, name: item.name })
+            item.errors.notchosen = true
           }
         }
-        break;
+        break
       case 40:
-        if (item.isRequired) defects.value.red++;
-        break;
+        if (item.isRequired) countErrIds(item.id, 'red')
+        break
     }
-  });
+  })
 
-  let text={}
+  function countErrIds(id, color) {
+    if (color === 'red') defects.value.red++
+    else defects.value.yellow++
+    defects.value.redYellowIds.push(id)
+  }
+
+  let text = {}
 
   switch (+categoryId.value) {
     case 10:
     case 20:
-      defects.value.total = listData.value.length - defects.value.red;
-      text.items =
-        'элемент' + Declension(defects.value.total, ['', 'а', 'ов']);
-      text.defectsRedText = Declension(
-        defects.value.total,
-        text.defectsRed,
-      );
-      break;
+      defects.value.total = listData.value.length - defects.value.red
+      text.items = 'элемент' + Declension(defects.value.total, ['', 'а', 'ов'])
+      text.defectsRedText = Declension(defects.value.total, text.defectsRed)
+      break
     case 30:
     case 40:
-      text.defectsYellowText = Declension(
-        defects.value.yellow,
-        text.defectsYellow,
-      );
-
+      text.defectsYellowText = Declension(defects.value.yellow, text.defectsYellow)
     default:
-      defects.value.total = defects.value.red + defects.value.yellow;
+      defects.value.total = defects.value.red + defects.value.yellow
       text.items =
-        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий']);
-      text.defectsRedText = Declension(
-        defects.value.red,
-        text.defectsRed,
-      );
-      break;
+        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
+      text.defectsRedText = Declension(defects.value.red, text.defectsRed)
+      break
   }
 
-  if (formErrors.notchosen)
-    text.sectionsText = Declension(
-      formErrors.notchosen.length,
-      text.sections,
-    );
+  if (formErrors.notchosen) text.sectionsText = Declension(formErrors.notchosen.length, text.sections)
 
-  console.warn('text = ',text)
-  console.warn('defects.value = ',defects.value)
-  console.warn('formErrors = ',formErrors)
+  console.warn('text = ', text)
+  console.warn('defects.value = ', defects.value)
+  console.warn('formErrors = ', formErrors)
 
-  err_count.value = defects.value.red + defects.value.yellow
+  err_counter.value = defects.value.red + defects.value.yellow
 
-};
+}
 
 function goNext() {
 

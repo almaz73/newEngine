@@ -26,8 +26,7 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         steps: [
           // приходит с сервера внутри workflowsChain
-        ],
-        showOnlyErrors: false, // чтобы показывать поля только с ошибками во время осмотра
+        ]
     }),
     actions: {
         setTitle(title: string) {
