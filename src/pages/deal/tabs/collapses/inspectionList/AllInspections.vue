@@ -1,6 +1,7 @@
 <template>
-  <div class="insp-form" :style="{minWidth: categoryId==='110'?'100%':''}">
-
+  <div class="insp-form"
+       :style="{minWidth: categoryId==='110'?'100%':'', 'max-width':globalStore.isMobileView?'380px':'100%'}"
+       >
     <div style="font-size: 25px">Осмотр а/м</div>
     <p style="font-size: larger">
       {{ auto.brandTitle }}
@@ -11,11 +12,12 @@
     <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
               :err_counter="err_counter"
+              :hiderText="hiderText"
               @goNext="goNext" @hider="hider" />
 
     <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
 
-    <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-around; gap: 4px; flex-wrap: wrap">
       <el-button
         type="danger"
         @click="clear()"
@@ -23,7 +25,6 @@
         Очистить лист осмотра
       </el-button>
 
-      <span v-else>&nbsp;</span>
 
       <el-button
         type="success"
@@ -68,6 +69,7 @@ const Titles = {
 const defects = ref({})
 const err_counter = ref(0) // количество ошибок + предупреждений
 let showOnlyErrors = false
+const hiderText = ref('скрыть исправные')
 
 function hider() {
   // скрывать показывать только ошибки + предупреждения
@@ -78,6 +80,8 @@ function hider() {
       if (!defects.value.redYellowIds.includes(el.id)) el.isHidden = true
     })
   } else listData.value.map(el => el.isHidden = false)
+
+  hiderText.value = showOnlyErrors ? 'показать все' : 'cкрыть исправные'
 }
 
 

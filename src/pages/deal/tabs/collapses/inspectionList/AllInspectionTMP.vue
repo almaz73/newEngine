@@ -23,6 +23,8 @@
           {{ item.name }}
         </div>
 
+        <div v-if="globalStore.isMobileView" style="clear: both; padding: 4px"></div>
+
 
         <div v-if="['30'].includes(categoryId)"
              style="float: right; cursor: pointer"
@@ -129,7 +131,8 @@
 
         <div style="clear: both"></div>
 
-        <div v-if="!['20'].includes(categoryId) && dangerField[item.id].isNorm" style="display: flex">
+        <div v-if="!['20'].includes(categoryId) && dangerField[item.id].isNorm"
+             style="display: flex; flex-wrap: wrap">
 
           <div v-if="item.photos"
                style="display: flex; gap: 12px; float: left;  min-width: 282px; margin-top: 4px">

@@ -29,9 +29,9 @@
     </div>
 
     <Teleport to="body">
-      <el-dialog v-model="dialogVisible" top="50px">
+      <el-dialog v-model="dialogVisible" top="50px" :style="{width: globalStore.isMobileView?'100%':'50%'}">
         <a :href="photoEL.photoPath" target="_blank"
-           v-if="photoEL.id"
+           v-if="photoEL.id && !globalStore.isMobileView"
            style="position: absolute; right: 40px; top: 14px; color: #bbb"> Открыть в отдельной вкладке</a>
         <img :src="dialogImageUrl+isDirty" alt="Preview Image" style="width: 100%; height: 100%" />
       </el-dialog>

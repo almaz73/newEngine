@@ -23,7 +23,7 @@
 
 
       <a @click="emits('hider')">
-        скрыть исправные
+       {{hiderText}}
       </a>
     </div>
 
@@ -45,7 +45,7 @@
 
 
 <script setup lang="ts">
-const props = defineProps(['title', 'categoryId', 'err_counter'])
+const props = defineProps(['title', 'categoryId', 'err_counter', 'hiderText'])
 console.log('props = ', props)
 const emits = defineEmits(['hider', 'goNext'])
 </script>
