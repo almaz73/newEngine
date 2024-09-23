@@ -1,7 +1,7 @@
 <template>
   <div class="insp-form"
        :style="{minWidth: categoryId==='110'?'100%':'', 'max-width':globalStore.isMobileView?'380px':'100%'}"
-       >
+  >
     <div style="font-size: 25px">Осмотр а/м</div>
     <p style="font-size: larger">
       {{ auto.brandTitle }}
@@ -12,38 +12,45 @@
     <NeckPart :title="Titles[categoryId]"
               :categoryId="categoryId"
               :err_counter="err_counter"
+              :neckColor="neckColor"
               :hiderText="hiderText"
-              @goNext="goNext" @hider="hider" />
+              @goNext="goNext" @hider="hider"/>
 
-    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
+    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId"/>
 
     <div style="display: flex; justify-content: space-around; gap: 4px; flex-wrap: wrap">
       <el-button
-        type="danger"
-        @click="clear()"
-        v-if="categoryId<90">
+          type="danger"
+          @click="clear()"
+          v-if="categoryId<90">
         Очистить лист осмотра
       </el-button>
 
 
       <el-button
-        type="success"
-        @click="save()"
-        v-if="categoryId<100">
+          type="success"
+          @click="save()"
+          v-if="categoryId<100">
         Подтвердить и продолжить
       </el-button>
+    </div>
+    <div v-if="categoryId==='20'">
+      <el-divider/>
+      <div style="text-align: center">
+        Комплектация включает: {{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import {useRoute} from 'vue-router'
 import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
 import router from '@/router'
-import { onMounted, ref } from 'vue'
-import { useGlobalStore } from '@/stores/globalStore'
-import { useDealStore } from '@/stores/dealStore'
+import {onMounted, ref} from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
+import {useDealStore} from '@/stores/dealStore'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
-import { Declension } from '@/utils/globalFunctions'
+import {Declension} from '@/utils/globalFunctions'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -70,6 +77,7 @@ const defects = ref({})
 const err_counter = ref(0) // количество ошибок + предупреждений
 let showOnlyErrors = false
 const hiderText = ref('скрыть исправные')
+const neckColor = ref('red')
 
 function hider() {
   // скрывать показывать только ошибки + предупреждения
@@ -82,6 +90,11 @@ function hider() {
   } else listData.value.map(el => el.isHidden = false)
 
   hiderText.value = showOnlyErrors ? 'показать все' : 'cкрыть исправные'
+
+  if (categoryId.value === '20') {
+    hiderText.value = showOnlyErrors ? 'показать все' : 'показать комплектацию'
+  }
+
 }
 
 
@@ -138,7 +151,7 @@ function clear() {
 
 function save() {
   listData.value.map(el => {
-    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({ id: item }))
+    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({id: item}))
     return el
   })
   dealStore.saveInspection(listData.value).then(() => goNext())
@@ -149,7 +162,7 @@ function countDefects() {
   defects.value.red = 0
   defects.value.yellow = 0
   defects.value.redYellowIds = []
-  let formErrors = { notchosen: [], other: [] }
+  let formErrors = {notchosen: [], other: []}
 
   if (dealStore.deal.additionalAutoInfo)
     if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal) {
@@ -161,7 +174,7 @@ function countDefects() {
     item.errors = {}
     switch (+item.inspectionUiType) {
       case 10:
-        if (!item.isStock) countErrIds(item.id, 'red')
+        if (item.isStock) countErrIds(item.id, 'red')
         break
       case 20:
         if (item.isRepaired) countErrIds(item.id, 'yellow')
@@ -169,7 +182,7 @@ function countDefects() {
         if (!item.isNorm) {
           countErrIds(item.id, 'red')
           if (!item.damageTypeArray) {
-            formErrors.notchosen.push({ anchor: item.nav, name: item.name })
+            formErrors.notchosen.push({anchor: item.nav, name: item.name})
             item.errors.notchosen = true
           }
         }
@@ -201,7 +214,7 @@ function countDefects() {
     default:
       defects.value.total = defects.value.red + defects.value.yellow
       text.items =
-        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
+          'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
       text.defectsRedText = Declension(defects.value.red, text.defectsRed)
       break
   }
@@ -214,6 +227,10 @@ function countDefects() {
 
   err_counter.value = defects.value.red + defects.value.yellow
 
+  if (categoryId.value === '20') {
+    hiderText.value = 'показать комплектацию'
+    neckColor.value = 'green'
+  } else neckColor.value = 'red'
 }
 
 function goNext() {
@@ -250,7 +267,7 @@ function goNext() {
     }
 
     router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${
-      route.params.inspectionId}/edit-category/${nextCategory}`)
+        route.params.inspectionId}/edit-category/${nextCategory}`)
 
   }
 

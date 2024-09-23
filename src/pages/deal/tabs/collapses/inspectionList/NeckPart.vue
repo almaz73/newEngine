@@ -11,8 +11,8 @@
     </div>
 
     <div style="flex: 1"></div>
-
-    <el-button type="danger" style="width: 35px; margin-right: 8px"  @click="emits('hider')">
+    <el-button :type="neckColor==='green'?'success':'danger'"
+               style="width: 35px; margin-right: 8px"  @click="emits('hider')">
       {{err_counter}}
     </el-button>
 
@@ -45,7 +45,7 @@
 
 
 <script setup lang="ts">
-const props = defineProps(['title', 'categoryId', 'err_counter', 'hiderText'])
+const props = defineProps(['title', 'categoryId', 'err_counter', 'hiderText', 'neckColor'])
 console.log('props = ', props)
 const emits = defineEmits(['hider', 'goNext'])
 </script>
