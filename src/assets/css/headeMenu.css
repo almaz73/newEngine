@@ -113,11 +113,12 @@
 }
 
 @media (width < 500px) {
-    .head_menu{
+    .head_menu {
         gap: 0;
     }
+
     .head-text {
-        width: 600px;
+        width: 250px;
         overflow: hidden;
         margin: 0;
     }
