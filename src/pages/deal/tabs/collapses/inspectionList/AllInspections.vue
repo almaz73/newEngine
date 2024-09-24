@@ -16,26 +16,27 @@
               :hiderText="hiderText"
               @goNext="goNext" @hider="hider"/>
 
-    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId"/>
+    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
+    <Inspection40 :categoryId="categoryId" v-if="categoryId==='40'" />
 
     <div style="display: flex; justify-content: space-around; gap: 4px; flex-wrap: wrap">
       <el-button
-          type="danger"
-          @click="clear()"
-          v-if="categoryId<90">
+        type="danger"
+        @click="clear()"
+        v-if="categoryId<90">
         Очистить лист осмотра
       </el-button>
 
 
       <el-button
-          type="success"
-          @click="save()"
-          v-if="categoryId<100">
+        type="success"
+        @click="save()"
+        v-if="categoryId<100">
         Подтвердить и продолжить
       </el-button>
     </div>
     <div v-if="categoryId==='20'">
-      <el-divider/>
+      <el-divider />
       <div style="text-align: center">
         Комплектация включает: {{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}
       </div>
@@ -43,14 +44,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import {useRoute} from 'vue-router'
-import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
+import { useRoute } from 'vue-router'
 import router from '@/router'
-import {onMounted, ref} from 'vue'
-import {useGlobalStore} from '@/stores/globalStore'
-import {useDealStore} from '@/stores/dealStore'
+import { onMounted, ref } from 'vue'
+import { useGlobalStore } from '@/stores/globalStore'
+import { useDealStore } from '@/stores/dealStore'
+import { Declension } from '@/utils/globalFunctions'
+import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
-import {Declension} from '@/utils/globalFunctions'
+import Inspection40 from '@/pages/deal/tabs/collapses/inspectionList/Inspection40.vue'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -103,7 +105,6 @@ function getData(nextCategory: number) {
   dealStore.getbyinspectionbycategory(+route.params.inspectionId, nextCategory).then(res => {
     listData.value = res.data.items
     auto.value = res.data.inspection.auto
-    // eval('ins_' + nextCategory).value.open(listData.value)
 
     ins_tmp.value.open(listData.value)
 
@@ -151,10 +152,21 @@ function clear() {
 
 function save() {
   listData.value.map(el => {
-    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({id: item}))
+    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({ id: item }))
     return el
   })
   dealStore.saveInspection(listData.value).then(() => goNext())
+
+  if (categoryId.value === '40') {
+    dealStore.saveInspection40({
+      additionalAutoInfo: {
+        isMileageOriginal: dealStore.deal.additionalAutoInfo.isMileageOriginal,
+        mileageAuto: dealStore.deal.additionalAutoInfo.mileageAuto
+      },
+      auto: { categoryAuto: dealStore.deal.auto.categoryAuto },
+      dealId: dealStore.deal.id
+    })
+  }
 }
 
 
@@ -162,7 +174,7 @@ function countDefects() {
   defects.value.red = 0
   defects.value.yellow = 0
   defects.value.redYellowIds = []
-  let formErrors = {notchosen: [], other: []}
+  let formErrors = { notchosen: [], other: [] }
 
   if (dealStore.deal.additionalAutoInfo)
     if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal) {
@@ -182,7 +194,7 @@ function countDefects() {
         if (!item.isNorm) {
           countErrIds(item.id, 'red')
           if (!item.damageTypeArray) {
-            formErrors.notchosen.push({anchor: item.nav, name: item.name})
+            formErrors.notchosen.push({ anchor: item.nav, name: item.name })
             item.errors.notchosen = true
           }
         }
@@ -214,7 +226,7 @@ function countDefects() {
     default:
       defects.value.total = defects.value.red + defects.value.yellow
       text.items =
-          'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
+        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
       text.defectsRedText = Declension(defects.value.red, text.defectsRed)
       break
   }
@@ -267,7 +279,7 @@ function goNext() {
     }
 
     router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${
-        route.params.inspectionId}/edit-category/${nextCategory}`)
+      route.params.inspectionId}/edit-category/${nextCategory}`)
 
   }
 
@@ -279,5 +291,6 @@ router.beforeEach(res => {  // качаем данные, если пришли 
 
 onMounted(() => {  // качаем данные, если обновили броузер
   getData(+route.params.categoryId)
+  if (!dealStore.deal.id) dealStore.getDeal(route.params.dealId).then(res => dealStore.deal = res)
 })
 </script>

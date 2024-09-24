@@ -1,7 +1,7 @@
 <template>
   <div class="category-auto"
        :style="{background:['#518468', '#c6e0cc', 'orange', '#848484', '#d84e4e'][number-1]}">
-    {{ number && categoryAutos.find((el => el.id === number)).name }}
+    <span style="pointer-events: none"> {{ number && categoryAutos.find((el => el.id === number)).name }}</span>
   </div>
 </template>
 

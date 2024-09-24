@@ -175,6 +175,9 @@ export const useDealStore = defineStore('dealStore', {
         },
         async saveInspection(params: { params: any }) {
             return await axios.post('/api/inspectionitem/', params).then(q => q)
+        },
+        async saveInspection40(params: { params: any }) {
+            return await axios.post('/api/inspectionitem/buy', params).then(q => q)
         }
 
     }
