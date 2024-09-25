@@ -35,11 +35,23 @@
         Подтвердить и продолжить
       </el-button>
     </div>
-    <div v-if="categoryId==='20'">
-      <el-divider />
-      <div style="text-align: center">
-        Комплектация включает: {{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}
-      </div>
+
+    <el-divider />
+    <div style="text-align: center" v-if="categoryId==='30'">
+      Внеш. Осмотр кузова выявил:<br>
+      <small>{{ defects.red }}  дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        {{ defects.yellow }}  меняные детали</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='40'">
+      Внутренний осмотр выявил:<br>
+      <small>{{ defects.red }}  дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        {{ defects.yellow }}  замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='20'">
+      Комплектация включает:<br>
+      <small>{{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
     </div>
   </div>
 </template>

@@ -46,7 +46,7 @@
         >
           <el-button
             :style="{'background' :item.isRepaired?'orange':'#c6e0cc'}"
-            style="width: 150px; pointer-events:none; width: 112px">
+            style="width: 150px; pointer-events:none; width: 112px; color: white">
             <span>  {{ !item.isRepaired ? 'Оригинал' : 'Не оригинал !' }}</span>
           </el-button>
         </div>
