@@ -46,6 +46,5 @@
 
 <script setup lang="ts">
 const props = defineProps(['title', 'categoryId', 'err_counter', 'hiderText', 'neckColor'])
-console.log('props = ', props)
 const emits = defineEmits(['hider', 'goNext'])
 </script>

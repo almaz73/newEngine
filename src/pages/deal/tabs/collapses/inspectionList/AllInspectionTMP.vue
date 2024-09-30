@@ -163,6 +163,7 @@
               style="width: 238px; padding: 4px 0"
               v-model="item.damageTypeArr"
               multiple
+              @change="emits('listChanged')"
               filterable>
               <el-option v-for="item in item.damageItems"
                          :key="item.id"
@@ -192,6 +193,7 @@ const chapok = ref(false) // помощник при нажатиии кнопо
 const listData = ref([])
 
 const { categoryId } = defineProps(['categoryId'])
+const emits = defineEmits(['listChanged'])
 const LKPfields = ref({}) // раскрытие ЛКП
 const lkpModel = ref({}) // содержимое ЛКП
 
@@ -253,6 +255,7 @@ function changeItem(item: any, type: string) {
   if (type === 'isPlainWork') dangerField.value[item.id].isPlainWork = !item.isPlainWork
 
   chapok.value = true
+  emits('listChanged')
 }
 
 function open(_listData: any) {

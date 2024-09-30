@@ -16,52 +16,67 @@
               :hiderText="hiderText"
               @goNext="goNext" @hider="hider"/>
 
-    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" />
-    <Inspection40 :categoryId="categoryId" v-if="categoryId==='40'" />
+    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" @listChanged="listChanged"/>
+    <Inspection40 :categoryId="categoryId" v-if="categoryId==='40'"/>
+
+    <h3 style="color:#d34338; text-align: center" v-if="stateClearButton===1">
+      Заполнено не полностью!
+      <h5>Нужно указать хотя бы одно повреждение, в пустом чекбоксе</h5>
+    </h3>
+
 
     <div style="display: flex; justify-content: space-around; gap: 4px; flex-wrap: wrap">
       <el-button
-        type="danger"
-        @click="clear()"
-        v-if="categoryId<90">
+          type="danger"
+          @click="clear()"
+          v-if="categoryId<90 && stateClearButton">
         Очистить лист осмотра
       </el-button>
 
 
       <el-button
-        type="success"
-        @click="save()"
-        v-if="categoryId<100">
+          type="success"
+          :disabled="stateClearButton===1"
+          @click="save()"
+          v-if="categoryId<100">
         Подтвердить и продолжить
       </el-button>
     </div>
 
-    <el-divider />
+    <el-divider/>
     <div style="text-align: center" v-if="categoryId==='30'">
       Внеш. Осмотр кузова выявил:<br>
-      <small>{{ defects.red }}  дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        {{ defects.yellow }}  меняные детали</small>
+      <small>{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        {{ defects.yellow }} меняные детали</small>
     </div>
 
     <div style="text-align: center" v-if="categoryId==='40'">
       Внутренний осмотр выявил:<br>
-      <small>{{ defects.red }}  дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        {{ defects.yellow }}  замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}</small>
+      <small>{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        <span v-if="defects.yellow">
+          {{ defects.yellow }}  замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}
+        </span>
+      </small>
     </div>
 
     <div style="text-align: center" v-if="categoryId==='20'">
       Комплектация включает:<br>
       <small>{{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
     </div>
+
+    <div style="text-align: center" v-if="categoryId==='50'">
+      {{ err_counter ? 'Под копотом обнаружено:' : 'Под копотом замечаний нет?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} дефект{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import {useRoute} from 'vue-router'
 import router from '@/router'
-import { onMounted, ref } from 'vue'
-import { useGlobalStore } from '@/stores/globalStore'
-import { useDealStore } from '@/stores/dealStore'
-import { Declension } from '@/utils/globalFunctions'
+import {onMounted, ref} from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
+import {useDealStore} from '@/stores/dealStore'
+import {Declension} from '@/utils/globalFunctions'
 import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
 import Inspection40 from '@/pages/deal/tabs/collapses/inspectionList/Inspection40.vue'
@@ -70,8 +85,6 @@ const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const route = useRoute()
 const dealId = ref<string | string[]>('')
-const autoId = ref<string | string[]>('')
-const inspectionId = ref<string | string[]>('')
 const categoryId = ref<string | string[]>('')
 const listData = ref([])
 const auto = ref({})
@@ -92,6 +105,7 @@ const err_counter = ref(0) // количество ошибок + предупр
 let showOnlyErrors = false
 const hiderText = ref('скрыть исправные')
 const neckColor = ref('red')
+const stateClearButton = ref(2); // 0 - скрываем, 1 - предупреждаем, 2-показываем
 
 function hider() {
   // скрывать показывать только ошибки + предупреждения
@@ -106,9 +120,20 @@ function hider() {
   hiderText.value = showOnlyErrors ? 'показать все' : 'cкрыть исправные'
 
   if (categoryId.value === '20') {
+    if (showOnlyErrors) listData.value.map(el => el.isHidden = !el.isStock)
+    else listData.value.map(el => el.isHidden = false)
     hiderText.value = showOnlyErrors ? 'показать все' : 'показать комплектацию'
   }
 
+}
+
+function listChanged(val) {
+  // поймать не заполненные поля
+  let elem = listData.value.find(el => {
+    if (!el.isNorm && el.damageItems && el.damageItems.length && (!el.damageTypeArr || !el.damageTypeArr.length)) return el
+    else false
+  })
+  stateClearButton.value = elem ? 1 : 2
 }
 
 
@@ -126,6 +151,7 @@ function getData(nextCategory: number) {
 
     countDefects()
   })
+  stateClearButton.value = 2
 }
 
 
@@ -159,12 +185,14 @@ function clear() {
     delete item.damageTypeArray
   })
 
+  err_counter.value = 0
+  stateClearButton.value = 0
   ins_tmp.value.open(listData.value)
 }
 
 function save() {
   listData.value.map(el => {
-    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({ id: item }))
+    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({id: item}))
     return el
   })
   dealStore.saveInspection(listData.value).then(() => goNext())
@@ -175,7 +203,7 @@ function save() {
         isMileageOriginal: dealStore.deal.additionalAutoInfo.isMileageOriginal,
         mileageAuto: dealStore.deal.additionalAutoInfo.mileageAuto
       },
-      auto: { categoryAuto: dealStore.deal.auto.categoryAuto },
+      auto: {categoryAuto: dealStore.deal.auto.categoryAuto},
       dealId: dealStore.deal.id
     })
   }
@@ -186,19 +214,15 @@ function countDefects() {
   defects.value.red = 0
   defects.value.yellow = 0
   defects.value.redYellowIds = []
-  let formErrors = { notchosen: [], other: [] }
+  let formErrors = {notchosen: [], other: []}
 
-  if (dealStore.deal.additionalAutoInfo)
-    if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal) {
-      console.log('>todo>>>>>>dealStore.deal = ', dealStore.deal)
-      countErrIds(21561702, 'yellow')
-    }
+  if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal) countErrIds(-1, 'yellow')
 
   listData.value.forEach(item => {
     item.errors = {}
     switch (+item.inspectionUiType) {
       case 10:
-        if (item.isStock) countErrIds(item.id, 'red')
+        if (!item.isStock) countErrIds(item.id, 'red')
         break
       case 20:
         if (item.isRepaired) countErrIds(item.id, 'yellow')
@@ -206,7 +230,7 @@ function countDefects() {
         if (!item.isNorm) {
           countErrIds(item.id, 'red')
           if (!item.damageTypeArray) {
-            formErrors.notchosen.push({ anchor: item.nav, name: item.name })
+            formErrors.notchosen.push({anchor: item.nav, name: item.name})
             item.errors.notchosen = true
           }
         }
@@ -238,18 +262,19 @@ function countDefects() {
     default:
       defects.value.total = defects.value.red + defects.value.yellow
       text.items =
-        'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
+          'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
       text.defectsRedText = Declension(defects.value.red, text.defectsRed)
       break
   }
 
   if (formErrors.notchosen) text.sectionsText = Declension(formErrors.notchosen.length, text.sections)
 
-  console.warn('text = ', text)
+  // console.warn('text = ', text)
   console.warn('defects.value = ', defects.value)
-  console.warn('formErrors = ', formErrors)
+  // console.warn('formErrors = ', formErrors)
 
   err_counter.value = defects.value.red + defects.value.yellow
+  if (categoryId.value === '20') err_counter.value = defects.value.total
 
   if (categoryId.value === '20') {
     hiderText.value = 'показать комплектацию'
@@ -291,7 +316,7 @@ function goNext() {
     }
 
     router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${
-      route.params.inspectionId}/edit-category/${nextCategory}`)
+        route.params.inspectionId}/edit-category/${nextCategory}`)
 
   }
 
