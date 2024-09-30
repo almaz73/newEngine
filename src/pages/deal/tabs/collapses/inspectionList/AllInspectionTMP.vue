@@ -3,7 +3,7 @@
     <div v-for="item in listData">
       <div v-if="!item.isHidden">
         <div style="float: left" :style="{'max-width':categoryId!=='30'?'350px':'273px'}">
-          <span v-if="!['20'].includes(categoryId)">
+          <span v-if="!['10','20', '80'].includes(categoryId)">
             <el-icon style="color: green" v-if="item.isNorm && !item.isRepaired ">
               <CircleCheckFilled />
             </el-icon>
@@ -11,12 +11,22 @@
               <RemoveFilled />
             </el-icon>
           </span>
+
+          <span v-else-if="categoryId==='80'">
+            <el-icon style="color: green" v-if="dangerField[item.id].isRequired">
+              <CircleCheck/>
+            </el-icon>
+            <el-icon style="color: #f99" v-if="!dangerField[item.id].isRequired">
+              <CircleClose/>
+            </el-icon>
+          </span>
+
           <span v-else>
             <el-icon style="color: green" v-if="!dangerField[item.id].isStock">
-              <CircleCheck />
+             <CircleCheck />
             </el-icon>
             <el-icon style="color: #f99" v-if="dangerField[item.id].isStock">
-              <CircleClose />
+             <CircleClose />
             </el-icon>
           </span>
 
@@ -34,7 +44,7 @@
         >
           &nbsp; &nbsp;<el-button
           :type="!item.isNorm?'danger':'success'"
-          style="width: 150px; pointer-events:none; width: 111px">
+          style="pointer-events:none; width: 111px">
           <span>  {{ item.isNorm ? 'Норма' : 'Не норма !' }}</span>
         </el-button>
         </div>
@@ -46,13 +56,13 @@
         >
           <el-button
             :style="{'background' :item.isRepaired?'orange':'#c6e0cc'}"
-            style="width: 150px; pointer-events:none; width: 112px; color: white">
+            style="pointer-events:none; width: 112px; color: white">
             <span>  {{ !item.isRepaired ? 'Оригинал' : 'Не оригинал !' }}</span>
           </el-button>
         </div>
 
 
-        <div v-if="['20'].includes(categoryId)"
+        <div v-if="['10','20'].includes(categoryId)"
              style="float: right; cursor: pointer"
              @click="changeItem(item, 'isStock')"
              @mouseover="item.isStock=!item.isStock"
@@ -78,8 +88,20 @@
           </el-button>
         </div>
 
+        <div v-if="['80'].includes(categoryId)"
+             style="float: right; cursor: pointer"
+             @click="changeItem(item, 'isRequired')"
+             @mouseover="item.isRequired=!item.isRequired"
+             @mouseleave="toMouseLeave(item, 'isRequired')"
+        >
+          <el-button
+              :style="{background :item.isRequired?'#f56c6c':'#c6e0cc', color:item.isRequired?'white':''}"
+              style="width: 150px; pointer-events:none">
+            <span>  {{ item.isRequired ? 'Не требуется' : 'Необходимо !' }}</span>
+          </el-button>
+        </div>
 
-        <div v-if="!['20', '30', '70'].includes(categoryId) "
+        <div v-if="!['10', '20', '30', '70', '80'].includes(categoryId) "
              style="float: right; cursor: pointer"
              @click="changeItem(item, 'isNorm')"
              @mouseover="item.isNorm=!item.isNorm"
@@ -131,7 +153,7 @@
 
         <div style="clear: both"></div>
 
-        <div v-if="!['20'].includes(categoryId) && dangerField[item.id].isNorm"
+        <div v-if="!['10','20','80'].includes(categoryId) && dangerField[item.id].isNorm"
              style="display: flex; flex-wrap: wrap">
 
           <div v-if="item.photos"
@@ -173,6 +195,9 @@
 
             <div style="clear: both"></div>
           </div>
+        </div>
+        <div v-if="['10'].includes(categoryId)">Комментарий <br>
+          <el-input v-model="item.comment"  type="textarea" :rows="2" placeholder="добавить"></el-input>
         </div>
         <el-divider />
       </div>
@@ -237,6 +262,7 @@ function toMouseLeave(item: any, type: string) {
   if (!chapok.value) {
     if (type === 'isNorm') item.isNorm = !item.isNorm
     if (type === 'isRepaired') item.isRepaired = !item.isRepaired
+    if (type === 'isRequired') item.isRequired = !item.isRequired
     if (type === 'isStock') item.isStock = !item.isStock
     if (type === 'isPlainWork') item.isPlainWork = !item.isPlainWork
   }
@@ -246,11 +272,13 @@ function toMouseLeave(item: any, type: string) {
 function changeItem(item: any, type: string) {
   if (chapok.value && type === 'isNorm') item.isNorm = !item.isNorm
   if (chapok.value && type === 'isRepaired') item.isRepaired = !item.isRepaired
+  if (chapok.value && type === 'isRequired') item.isRequired = !item.isRequired
   if (chapok.value && type === 'isStock') item.isStock = !item.isStock
   if (chapok.value && type === 'isPlainWork') item.isPlainWork = !item.isPlainWork
 
   if (type === 'isNorm') dangerField.value[item.id].isNorm = !item.isNorm
   if (type === 'isRepaired') dangerField.value[item.id].isRepaired = item.isRepaired
+  if (type === 'isRequired') dangerField.value[item.id].isRequired = item.isRequired
   if (type === 'isStock') dangerField.value[item.id].isStock = !item.isStock
   if (type === 'isPlainWork') dangerField.value[item.id].isPlainWork = !item.isPlainWork
 
@@ -266,6 +294,7 @@ function open(_listData: any) {
     dangerField.value[el.id].isNorm = !el.isNorm // раскрываем поля с ошибками
     dangerField.value[el.id].isRepaired = !el.isRepaired // раскрываем поля с ошибками
     dangerField.value[el.id].isStock = !el.isStock // раскрываем поля с ошибками
+    dangerField.value[el.id].isRequired = !el.isRequired // раскрываем поля с ошибками
     if (el.damageType) el.damageTypeArr = el.damageType.split(',').map(Number) // список повреждений
     return el
   })

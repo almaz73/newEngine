@@ -45,28 +45,48 @@
 
     <el-divider/>
     <div style="text-align: center" v-if="categoryId==='30'">
-      Внеш. Осмотр кузова выявил:<br>
-      <small>{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        {{ defects.yellow }} меняные детали</small>
+      <br>
+      {{ err_counter ? ' Внеш. Осмотр кузова выявил:' : 'Внеш. Осмотр кузова замечаний не выявил?' }}<br>
+      <small v-if="defects.red">{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        <span v-if="defects.yellow">{{ defects.yellow }} меняные детали</span>
+      </small>
     </div>
 
-    <div style="text-align: center" v-if="categoryId==='40'">
+    <div style="text-align: center" v-if="categoryId==='40' && (defects.red || defects.yellow)">
       Внутренний осмотр выявил:<br>
-      <small>{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        <span v-if="defects.yellow">
-          {{ defects.yellow }}  замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}
-        </span>
+      <small v-if="defects.red">{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
+        <span v-if="defects.yellow">{{ defects.yellow }}замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}</span>
       </small>
     </div>
 
     <div style="text-align: center" v-if="categoryId==='20'">
-      Комплектация включает:<br>
-      <small>{{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+      {{ err_counter ? 'Комплектация включает:' : 'Комплектация голая?' }}<br>
+      <small v-if=" err_counter">{{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
     </div>
 
     <div style="text-align: center" v-if="categoryId==='50'">
       {{ err_counter ? 'Под копотом обнаружено:' : 'Под копотом замечаний нет?' }}<br>
       <small v-if="err_counter">{{ err_counter }} дефект{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='60'">
+      {{ err_counter ? 'Тест драйв выявил:' : 'Тест-драйв без замечаний?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} дефект{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='70'">
+      {{ err_counter ? 'Подъёмник выявил:' : 'Подъёмник замечаний не выявил?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} дефект{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='10'">
+      {{ err_counter ? 'Комплектность включает:' : 'Комплектность отсутствует?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} элемент{{ Declension(err_counter, ['', 'а', 'ов']) }}</small>
+    </div>
+
+    <div style="text-align: center" v-if="categoryId==='80'">
+      {{ err_counter ? 'Прочие работы требуют:' : 'Прочие работы не требуются?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} дороботк{{ Declension(err_counter, ['а', 'и', 'ов']) }}</small>
     </div>
   </div>
 </template>
@@ -119,7 +139,7 @@ function hider() {
 
   hiderText.value = showOnlyErrors ? 'показать все' : 'cкрыть исправные'
 
-  if (categoryId.value === '20') {
+  if (['10', '20'].includes(categoryId.value)) {
     if (showOnlyErrors) listData.value.map(el => el.isHidden = !el.isStock)
     else listData.value.map(el => el.isHidden = false)
     hiderText.value = showOnlyErrors ? 'показать все' : 'показать комплектацию'
@@ -151,6 +171,7 @@ function getData(nextCategory: number) {
 
     countDefects()
   })
+  showOnlyErrors = false
   stateClearButton.value = 2
 }
 
@@ -187,6 +208,7 @@ function clear() {
 
   err_counter.value = 0
   stateClearButton.value = 0
+  defects.value = {red: 0, yellow: 0, redYellowIds: []}
   ins_tmp.value.open(listData.value)
 }
 
@@ -274,10 +296,11 @@ function countDefects() {
   // console.warn('formErrors = ', formErrors)
 
   err_counter.value = defects.value.red + defects.value.yellow
-  if (categoryId.value === '20') err_counter.value = defects.value.total
+  if (['10', '20'].includes(categoryId.value)) err_counter.value = defects.value.total
 
-  if (categoryId.value === '20') {
+  if (['10', '20'].includes(categoryId.value)) {
     hiderText.value = 'показать комплектацию'
+    if (categoryId.value === '10') hiderText.value = 'показать комплектность'
     neckColor.value = 'green'
   } else neckColor.value = 'red'
 }
