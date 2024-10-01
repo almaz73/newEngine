@@ -196,9 +196,9 @@
             <div style="clear: both"></div>
           </div>
         </div>
-        <div v-if="['10'].includes(categoryId)">Комментарий <br>
+        <small v-if="['10'].includes(categoryId)" style="color:#999"> Комментарий: <br>
           <el-input v-model="item.comment"  type="textarea" :rows="2" placeholder="добавить"></el-input>
-        </div>
+        </small>
         <el-divider />
       </div>
     </div>

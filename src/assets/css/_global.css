@@ -420,3 +420,59 @@ a:hover {
     padding: 20px 30px;
     background: #f5f5f5;
 }
+
+.quadro {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.quadro.quadro {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.quadro.quadro.active {
+    box-shadow: 0 0 10px;
+    color: white;
+}
+
+.quadro.quadro:hover {
+    box-shadow: 0 0 3px;
+}
+
+.quadro.yellow {
+    border: 3px solid yellow;
+    text-shadow: none;
+}
+
+.quadro.yellow.active {
+    background: yellow;
+    text-shadow: 0 0 3px black;
+}
+
+.quadro.red {
+    border: 3px solid #d84e4e;
+}
+
+.quadro.red.active {
+    background: #d84e4e;
+}
+
+.quadro.green {
+    border: 3px solid green;
+}
+
+.quadro.green.active {
+    background: green;
+    color: white;
+}

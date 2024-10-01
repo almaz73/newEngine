@@ -178,8 +178,13 @@ export const useDealStore = defineStore('dealStore', {
         },
         async saveInspection40(params: { params: any }) {
             return await axios.post('/api/inspectionitem/buy', params).then(q => q)
-        }
-
+        },
+        async getbycategories(categoryId: number) {
+            return await axios.get(`/api/InspectionItemType/getbycategories?categories=${categoryId}`)
+        },
+        async savePostExploitationHistoryType(params: { params: any }) {
+            return await axios.post('/api/Auto/PostExploitationHistoryType', params).then(q => q)
+        },
     }
 })
 

@@ -16,8 +16,9 @@
               :hiderText="hiderText"
               @goNext="goNext" @hider="hider"/>
 
-    <AllInspectionTMP ref="ins_tmp" :categoryId="categoryId" @listChanged="listChanged"/>
+    <AllInspectionTMP ref="ins_tmp" v-show="categoryId!=='90'" :categoryId="categoryId" @listChanged="listChanged"/>
     <Inspection40 :categoryId="categoryId" v-if="categoryId==='40'"/>
+    <Inspection90 ref="ins_90" :categoryId="categoryId" v-show="categoryId==='90'"/>
 
     <h3 style="color:#d34338; text-align: center" v-if="stateClearButton===1">
       Заполнено не полностью!
@@ -29,7 +30,7 @@
       <el-button
           type="danger"
           @click="clear()"
-          v-if="categoryId<90 && stateClearButton">
+          v-if="stateClearButton">
         Очистить лист осмотра
       </el-button>
 
@@ -88,6 +89,11 @@
       {{ err_counter ? 'Прочие работы требуют:' : 'Прочие работы не требуются?' }}<br>
       <small v-if="err_counter">{{ err_counter }} дороботк{{ Declension(err_counter, ['а', 'и', 'ов']) }}</small>
     </div>
+
+    <div style="text-align: center" v-if="categoryId==='90'">
+      {{ err_counter ? 'Юридическая проверка выявила:' : 'Юридическая проверка нарушений не выявила?' }}<br>
+      <small v-if="err_counter">{{ err_counter }} нарушени{{ Declension(err_counter, ['а', 'я', 'ий']) }}</small>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -100,6 +106,7 @@ import {Declension} from '@/utils/globalFunctions'
 import AllInspectionTMP from '@/pages/deal/tabs/collapses/inspectionList/AllInspectionTMP.vue'
 import NeckPart from '@/pages/deal/tabs/collapses/inspectionList/NeckPart.vue'
 import Inspection40 from '@/pages/deal/tabs/collapses/inspectionList/Inspection40.vue'
+import Inspection90 from "@/pages/deal/tabs/collapses/inspectionList/Inspection90.vue"
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -109,6 +116,7 @@ const categoryId = ref<string | string[]>('')
 const listData = ref([])
 const auto = ref({})
 const ins_tmp = ref(null)
+const ins_90 = ref(null)
 const Titles = {
   30: 'Внешний осмотр кузова',
   40: 'Внутренний осмотр',
@@ -162,12 +170,12 @@ function getData(nextCategory: number) {
   dealStore.getbyinspectionbycategory(+route.params.inspectionId, nextCategory).then(res => {
     listData.value = res.data.items
     auto.value = res.data.inspection.auto
-
-    ins_tmp.value.open(listData.value)
-
     categoryId.value = route.params.categoryId
     document.documentElement.scrollTop = 0
     globalStore.setTitle(Titles[nextCategory])
+
+    if (categoryId.value !== '90') ins_tmp.value.open(listData.value)
+    else ins_90.value.open(listData.value, res.data.inspection)
 
     countDefects()
   })
@@ -229,6 +237,14 @@ function save() {
       dealId: dealStore.deal.id
     })
   }
+
+  // сохраняем квадратики отдельно, если были изменения
+  if (categoryId.value === '90') {
+    let exploitationHistoryType = ins_90.value.getExploitationHistoryType()
+    exploitationHistoryType!==undefined && dealStore.savePostExploitationHistoryType({
+      autoId: route.params.autoId,type: exploitationHistoryType
+    })
+  }
 }
 
 
@@ -275,17 +291,17 @@ function countDefects() {
     case 10:
     case 20:
       defects.value.total = listData.value.length - defects.value.red
-      text.items = 'элемент' + Declension(defects.value.total, ['', 'а', 'ов'])
-      text.defectsRedText = Declension(defects.value.total, text.defectsRed)
+      // text.items = 'элемент' + Declension(defects.value.total, ['', 'а', 'ов'])
+      // text.defectsRedText = Declension(defects.value.total, text.defectsRed)
       break
-    case 30:
-    case 40:
-      text.defectsYellowText = Declension(defects.value.yellow, text.defectsYellow)
+      // case 30:
+      // case 40:
+      //   text.defectsYellowText = Declension(defects.value.yellow, text.defectsYellow)
     default:
       defects.value.total = defects.value.red + defects.value.yellow
-      text.items =
-          'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
-      text.defectsRedText = Declension(defects.value.red, text.defectsRed)
+      // text.items =
+      //     'замечан' + Declension(defects.value.total, ['ие', 'ия', 'ий'])
+      // text.defectsRedText = Declension(defects.value.red, text.defectsRed)
       break
   }
 
