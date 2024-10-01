@@ -476,3 +476,7 @@ a:hover {
     background: green;
     color: white;
 }
+
+.file-frame img{
+    margin: 0 12px;
+}
