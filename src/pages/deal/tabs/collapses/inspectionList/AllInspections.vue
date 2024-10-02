@@ -21,8 +21,9 @@
     <Inspection90 ref="ins_90" :categoryId="categoryId" v-show="categoryId==='90'"/>
 
     <h3 style="color:#d34338; text-align: center" v-if="stateClearButton===1">
-      Заполнено не полностью!
-      <h5>Нужно указать хотя бы одно повреждение, в пустом чекбоксе</h5>
+      Заполнено не полностью!<br><br>
+      <small>Нужно указать хотя бы одно повреждение, в пустом чекбоксе</small>
+      <br><br>
     </h3>
 
 
@@ -49,14 +50,14 @@
       <br>
       {{ err_counter ? ' Внеш. Осмотр кузова выявил:' : 'Внеш. Осмотр кузова замечаний не выявил?' }}<br>
       <small v-if="defects.red">{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        <span v-if="defects.yellow">{{ defects.yellow }} меняные детали</span>
+        <span v-if="defects.yellow">{{ defects.yellow }} менянные детали</span>
       </small>
     </div>
 
     <div style="text-align: center" v-if="categoryId==='40' && (defects.red || defects.yellow)">
       Внутренний осмотр выявил:<br>
       <small v-if="defects.red">{{ defects.red }} дефект{{ Declension(defects.red, ['', 'а', 'ов']) }}<br>
-        <span v-if="defects.yellow">{{ defects.yellow }}замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}</span>
+        <span v-if="defects.yellow">{{ defects.yellow }} замечани{{ Declension(defects.yellow, ['е', 'я', 'й']) }}</span>
       </small>
     </div>
 
@@ -155,7 +156,7 @@ function hider() {
 
 }
 
-function listChanged(val) {
+function listChanged() {
   // поймать не заполненные поля
   let elem = listData.value.find(el => {
     if (!el.isNorm && el.damageItems && el.damageItems.length && (!el.damageTypeArr || !el.damageTypeArr.length)) return el
@@ -352,6 +353,9 @@ function goNext() {
       case 80:
         nextCategory = 90
         break
+      case 90:
+        return router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${
+            route.params.inspectionId}/plainwork`)
     }
 
     router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${

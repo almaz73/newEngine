@@ -3,12 +3,21 @@
     <div v-for="item in listData">
       <div v-if="!item.isHidden">
         <div style="float: left" :style="{'max-width':categoryId!=='30'?'350px':'273px'}">
-          <span v-if="!['10','20', '80'].includes(categoryId)">
+          <span v-if="!['10','20','80','70'].includes(categoryId)">
             <el-icon style="color: green" v-if="item.isNorm && !item.isRepaired ">
               <CircleCheckFilled />
             </el-icon>
             <el-icon v-else :style="{color: dangerField[item.id].isNorm?'#f56c6c':'orange'}">
               <RemoveFilled />
+            </el-icon>
+          </span>
+
+          <span v-else-if="categoryId==='70' && item.name!=='Диагностика'">
+            <el-icon style="color: green" v-if="item.isNorm && !item.isRepaired ">
+              <CircleCheckFilled/>
+            </el-icon>
+            <el-icon v-else :style="{color: dangerField[item.id].isNorm?'#f56c6c':'orange'}">
+              <RemoveFilled/>
             </el-icon>
           </span>
 
@@ -45,7 +54,7 @@
           &nbsp; &nbsp;<el-button
           :type="!item.isNorm?'danger':'success'"
           style="pointer-events:none; width: 111px">
-          <span>  {{ item.isNorm ? 'Норма' : 'Не норма !' }}</span>
+          <span>  {{ item.isNorm ? 'Целый' : 'Поврежден !' }}</span>
         </el-button>
         </div>
         <div v-if="['30'].includes(categoryId)"
@@ -55,7 +64,7 @@
              @mouseleave="toMouseLeave(item, 'isRepaired')"
         >
           <el-button
-            :style="{'background' :item.isRepaired?'orange':'#c6e0cc'}"
+            :style="{'background' :item.isRepaired?'orange':'#3cac71'}"
             style="pointer-events:none; width: 112px; color: white">
             <span>  {{ !item.isRepaired ? 'Оригинал' : 'Не оригинал !' }}</span>
           </el-button>
@@ -82,9 +91,16 @@
              @mouseleave="toMouseLeave(item, 'isPlainWork')"
         >
           <el-button
-            :style="{background :item.isPlainWork?'#f56c6c':'#c6e0cc', color:item.isPlainWork?'white':''}"
-            style="width: 150px; pointer-events:none">
-            <span>  {{ item.isStock ? 'Норма' : 'Не норма !' }}</span>
+              v-if="item.name!=='Диагностика'"
+              :style="{background :item.isPlainWork?'#f56c6c':'#3cac71'}"
+              style="width: 150px; pointer-events:none; color:white">
+            <span>  {{ item.isPlainWork ? 'Не норма !' : 'Норма' }}</span>
+          </el-button>
+          <el-button
+              v-if="item.name==='Диагностика'"
+              :style="{background :item.isStock?'#3cac71':'#f56c6c'}"
+              style="width: 150px; pointer-events:none; color:white">
+            <span>  {{ item.isStock ? 'Присутствует' : 'Отсутствует !' }}</span>
           </el-button>
         </div>
 
@@ -95,8 +111,8 @@
              @mouseleave="toMouseLeave(item, 'isRequired')"
         >
           <el-button
-              :style="{background :item.isRequired?'#f56c6c':'#c6e0cc', color:item.isRequired?'white':''}"
-              style="width: 150px; pointer-events:none">
+              :style="{background :item.isRequired?'#f56c6c':'#3cac71'}"
+              style="width: 150px; pointer-events:none; color: white">
             <span>  {{ item.isRequired ? 'Не требуется' : 'Необходимо !' }}</span>
           </el-button>
         </div>
@@ -109,7 +125,7 @@
         >
           <el-button
             :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
-            <span>  {{ item.isNorm ? 'Норма' : 'Не норма !' }}</span>
+            <span>  {{ item.isNorm ? 'Норма' : (['60'].includes(categoryId)?'С нарушениями !':'Не норма !')  }}</span>
           </el-button>
         </div>
 

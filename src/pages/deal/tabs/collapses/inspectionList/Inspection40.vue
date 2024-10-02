@@ -14,7 +14,7 @@
       <el-button
         :type="!item.isMileageOriginal?'warning':'success'"
         style="width: 150px; pointer-events:none">
-        <span>  {{ item.isMileageOriginal ? 'Родной' : 'Изменен' }}</span>
+        <span>  {{ item.isMileageOriginal ? 'Родной' : 'Изменен !' }}</span>
       </el-button>
     </div>
 
@@ -41,7 +41,7 @@
       </div>
 
     </div>
-
+    <br>
     <el-divider />
 
 
