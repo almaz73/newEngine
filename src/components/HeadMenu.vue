@@ -13,7 +13,7 @@
 
     <div class="head-text">
       <h1 style="white-space: nowrap">{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
-      <StepsCtrl v-if="globalStore.steps.length"/>
+      <StepsCtrl v-if="globalStore.steps && globalStore.steps.length"/>
     </div>
 
     <div class="pusher"/>

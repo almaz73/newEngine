@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 12px 30px">
-    <p>Сервисные работы</p>
+    <h1>Сервисные работы</h1>
 
     <el-table
       class="big-table"
@@ -50,13 +50,13 @@
 
       <el-table-column label="Комментарий">
         <template #default="scope">
-          <el-input type="textarea" v-model="scope.row.comment" />
+          <el-input type="textarea" v-model="scope.row.comment"/>
         </template>
       </el-table-column>
 
       <el-table-column label="" width="80">
         <template #default="scope">
-          <el-button @click="deleteRow(scope.row.ind)" :icon="Delete" />
+          <el-button title="Удалить" @click="deleteRow(scope.row.ind)" :icon="Delete" />
         </template>
       </el-table-column>
     </el-table>
@@ -65,6 +65,8 @@
     <el-button size="large" type="danger" @click="add()">Добавить</el-button>
     <el-button size="large" type="success" @click="save()">Сохранить</el-button>
     <el-button size="large" type="info" @click="$router.back()">Отменить</el-button>
+
+    <span style="float: right; margin-right: 130px;" v-if="summ"> ИТОГО: {{summ}} руб.</span>
   </div>
 </template>
 
@@ -72,7 +74,7 @@
 
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
-import { onMounted, ref } from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { useRoute } from 'vue-router'
 import { WorkTypeEnum } from '@/utils/globalConstants'
@@ -85,8 +87,12 @@ const tableData = ref([])
 const damages = ref([])
 const works = ref([])
 const route = useRoute()
-
 const { autoId, dealId } = route.params
+const summ = computed(() => {
+  let k = 0
+  tableData.value.forEach(el => k += +el.price)
+  return k
+})
 let ind = 0
 
 function changeWork(row) {
@@ -96,17 +102,8 @@ function changeWork(row) {
 }
 
 function add() {
-  console.log(' add')
-  tableData.value.push({
-    comment: null,
-    damages: null,
-    damagesText: null,
-    id: 0,
-    price: 0,
-    repairElementId: 0,
-    type: 0,
-    workflowId: 0
-  })
+  tableData.value.push({comment: null, damages: null, damagesText: null, id: 0, price: 0, repairElementId: 0, type: 0, workflowId: 0, ind})
+  ind++;
 }
 
 function deleteRow(ind: number) {
@@ -119,7 +116,7 @@ function prepareSave() {
   tableData.value.map(el => {
     el.damagesText = ''
     el.damages = []
-    if (el.damagesArr.length) {
+    if (el.damagesArr && el.damagesArr.length) {
       el.damagesText = (el.damagesArr.join(';') + ';')
       el.damagesArr.forEach(number => {
         let damageItem = damages.value.find(item => item.id == number)
@@ -133,11 +130,11 @@ function prepareSave() {
 
 function save() {
   let isEmpty = prepareSave()
-  if (isEmpty) return ElMessage.warning('Пполе "Работа" обязательна для заполнения')
+  if (isEmpty) return ElMessage.warning('Поле в колонке "Работа" обязателен для заполнения')
 
 
   dealStore.saveServiceworks(tableData.value).then(res => {
-    if (res.status === 200) ElMessage.success('Успешно')
+    if (res.status === 200) ElMessage.success('Список сервисных работ успешно сохранен')
   })
 }
 
@@ -148,8 +145,8 @@ onMounted(() => {
   dealStore.getDamageitem().then(res => damages.value = res.data.items)
   dealStore.getWorks().then(res => works.value = res.data.items)
   dealStore.getservicework(dealId).then(res => {
-    tableData.value = res.data.items
-    tableData.value.map(el => el.damagesArr = el.damages && el.damages.map(item => item.id))
+    tableData.value = res.data ? res.data.items : []
+    tableData.value.map(el => el.damagesArr = el.damages ? el.damages.map(item => item.id) : [])
     tableData.value.map(el => el.workId = el.id || null)
     tableData.value.map(el => el.workflowId = dealId)
     tableData.value.map(el => el.ind = ind++)
@@ -157,6 +154,7 @@ onMounted(() => {
 
 
   document.documentElement.scrollTop = 0
+  globalStore.steps = dealStore.deal.workflowsChain
 })
 
 </script>
