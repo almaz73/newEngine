@@ -267,7 +267,7 @@ function goInspection(categoryId: number) {
   let inspectionId = dealStore.deal.inspectionId
 
   if (categoryId === 100) return router.push(`/auto/${autoId}/deal/${dealId}/inspections/${inspectionId}/plainwork`)
-  if (categoryId === 110) return router.push(`/deal/${autoId}/servicework`)
+  if (categoryId === 110) return router.push(`/deal/${dealId}/servicework`)
 
   router.push(`/auto/${autoId}/deal/${dealId}/inspection/${inspectionId}/edit-category/${categoryId}`)
 }

@@ -177,7 +177,7 @@ function uploadFiles(obj) {
 
 // узнаем есть ли галочка автотеки
 function getCheck(inspection) {
-  dealStore.getbycategories(90).then(res => {
+  dealStore.getbycategories([90]).then(res => {
     let element = res.data.items.find(el => el.name === 'Автотека')
 
     if (element) inspectionAvtotec.value = element.workId === 65

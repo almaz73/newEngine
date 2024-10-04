@@ -122,9 +122,7 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getInspection(id: number | null) {
-            let url = '/api/inspectionitemtype'
-            if (id) url += '/' + id
-            const res = await axios.get(url).then(q => q)
+            const res = await axios.get('/api/inspectionitemtype/'+id).then(q => q)
             return res.data
         },
         async saveInspection(obj: any) {

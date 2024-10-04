@@ -354,7 +354,7 @@ function goNext() {
         nextCategory = 90
         break
       case 90:
-        return router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspection/${
+        return router.push(`/auto/${route.params.autoId}/deal/${route.params.dealId}/inspections/${
             route.params.inspectionId}/plainwork`)
     }
 

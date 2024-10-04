@@ -179,11 +179,24 @@ export const useDealStore = defineStore('dealStore', {
         async saveInspection40(params: { params: any }) {
             return await axios.post('/api/inspectionitem/buy', params).then(q => q)
         },
-        async getbycategories(categoryId: number) {
-            return await axios.get(`/api/InspectionItemType/getbycategories?categories=${categoryId}`)
+        async getbycategories(arr: Array) {
+            let link=''
+            arr.forEach((el:number)=>link+='categories='+el+'&')
+            return await axios.get(`/api/InspectionItemType/getbycategories?`+link)
         },
         async savePostExploitationHistoryType(params: { params: any }) {
             return await axios.post('/api/Auto/PostExploitationHistoryType', params).then(q => q)
+        },
+        async savePlannedWork(params: { params: any }) {
+            return await axios.post('/api/plannedwork/', params).then(q => q)
+        },
+        async deletePlannedWork (id: number) {
+            return await axios.get(`/api/plannedwork/delete/${id}`)
+        },
+        async getbycto() {
+            if (cache['getbycto']) return cache['getbycto']
+            const res = await axios.get(`/api/work/getbycto`)
+            return (cache['getbycto'] = res)
         },
     }
 })

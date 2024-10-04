@@ -38,7 +38,8 @@ const cache = {
     getDamages: null,
     getDamageitem: null,
     getExploitationHistoryTypes: null,
-    getDeal: null
+    getDeal: null,
+    getbycto: null
 
 }
 export default cache
