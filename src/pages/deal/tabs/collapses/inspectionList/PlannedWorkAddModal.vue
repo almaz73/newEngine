@@ -44,10 +44,10 @@
             <label class="label-right l_100">Цена</label>
             <el-input
               style="width: 190px"
+              @input="()=>{model.price=parseInt(model.price)}"
               type="number"
               v-model="model.price"
-              clearable
-              placeholder="Модель">
+              clearable>
            </el-input>
           </el-form-item>
 

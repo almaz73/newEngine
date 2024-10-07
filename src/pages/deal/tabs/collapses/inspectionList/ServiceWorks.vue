@@ -44,7 +44,11 @@
 
       <el-table-column label="Стоимость">
         <template #default="scope">
-          <el-input v-model="scope.row.price" />
+          <el-input v-model="scope.row.price" @input="()=>{scope.row.price=parseInt(scope.row.price)}">
+            <template #suffix>
+              <span>руб.</span>
+            </template>
+          </el-input>
         </template>
       </el-table-column>
 
@@ -102,7 +106,7 @@ function changeWork(row) {
 }
 
 function add() {
-  tableData.value.push({comment: null, damages: null, damagesText: null, id: 0, price: 0, repairElementId: 0, type: 0, workflowId: 0, ind})
+  tableData.value.push({comment: null, damages: null, damagesText: null, id: 0, price: 0, repairElementId: 0, type: 0, workflowId: dealId, ind})
   ind++;
 }
 

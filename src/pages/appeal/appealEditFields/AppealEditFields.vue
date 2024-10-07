@@ -146,7 +146,7 @@
             </RouterLink>
 
              <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
-                         v-if="permit_locale() && appeal.auto && appeal.auto.vin">
+                         v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
               <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
             </RouterLink>
           <br></span>

@@ -15,14 +15,14 @@
     "format": "st"
   },
   "dependencies": {
-    "apexcharts": "^3.52.0",
-    "axios": "^1.7.5",
-    "element-plus": "^2.8.1",
+    "apexcharts": "^3.54.0",
+    "axios": "^1.7.7",
+    "element-plus": "^2.8.4",
     "leaflet": "1.9.4",
-    "pinia": "^2.2.2",
-    "vue": "^3.4.38",
-    "vue-router": "^4.4.3",
-    "vue3-apexcharts": "^1.5.3"
+    "pinia": "^2.2.4",
+    "vue": "^3.5.11",
+    "vue-router": "^4.4.5",
+    "vue3-apexcharts": "^1.7.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.4",
@@ -43,8 +43,8 @@
     "prettier": "^3.3.3",
     "start-server-and-test": "^2.0.5",
     "typescript": "~5.5.4",
-    "vite": "^5.4.2",
-    "vitest": "^2.0.5",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2",
     "vue-tsc": "^2.0.29"
   }
 }

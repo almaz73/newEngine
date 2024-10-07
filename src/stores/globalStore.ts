@@ -6,7 +6,7 @@ export const useGlobalStore = defineStore('globalStore', {
     state: () => ({
         /** @type {{boolean}} */
         title: '#### NEW ENGINE',
-        version: '0.9.19',
+        version: '0.10.0',
         leftMenuindex: null, // выбранное меню
         isAuthorized: false,
         isMobileView: false, // мобильный режим

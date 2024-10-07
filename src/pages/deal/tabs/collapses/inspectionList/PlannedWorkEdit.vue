@@ -43,7 +43,13 @@
 
       <el-table-column label="Стоимость">
         <template #default="scope">
-          <el-input v-model="scope.row.price" />
+          <el-input v-model="scope.row.price"
+                    type="number"
+                    @input="()=>{scope.row.price=parseInt( +scope.row.price)}">
+            <template #suffix>
+              <span>руб.</span>
+            </template>
+          </el-input>
         </template>
       </el-table-column>
 

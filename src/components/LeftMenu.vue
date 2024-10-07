@@ -35,14 +35,7 @@
         @select="select"
         popper-effect="light"
     >
-      <RouterLink to="/myView" >
-        <el-menu-item index="0">
-          <el-icon>
-           ИДЕИ
-          </el-icon>
-          <template #title>Рабочий стол</template>
-        </el-menu-item>
-      </RouterLink>
+
       <RouterLink to="/hostess" v-if="permit('menu', 'desktop') && globalStore.account.role==='Hostess'" >
         <el-menu-item index="1">
           <el-icon>
@@ -237,6 +230,15 @@
             <img alt="Анкеты" src="@/assets/icons/icon-questionnaires_.png" height="34" width="34"/>
           </el-icon>
           <template #title>Анкеты</template>
+        </el-menu-item>
+      </RouterLink>
+
+      <RouterLink to="/myView" >
+        <el-menu-item index="0">
+          <el-icon>
+            ИДЕИ
+          </el-icon>
+          <template #title>Рабочий стол</template>
         </el-menu-item>
       </RouterLink>
     </el-menu>

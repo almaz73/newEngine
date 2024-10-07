@@ -92,7 +92,7 @@
 
       <el-scrollbar>
         <div>
-          <el-input type="textarea" rows="1" style="width: 600px; margin:0 8px"
+          <el-input type="textarea" style="width: 600px; margin:0 8px"
                     placeholder="Добавьте комментарий"
                     v-model="commentTxt"/>
           <el-button @click="sendComment()" :icon="Plus" v-if="commentTxt">Добавить комментарий</el-button>
