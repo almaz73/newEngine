@@ -49,6 +49,11 @@
   </AppModal>
 </template>
 
+<style>
+.el-popper .el-input__inner {
+  width: 73px !important;
+}
+</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
