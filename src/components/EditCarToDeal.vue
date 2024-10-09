@@ -387,7 +387,7 @@ let row = null
 
 function changeEngine() {
   let en = newDeal.value.auto.isNativeEngine === 'true'
-  if (en) newDeal.value.auto.isRegisteredEngine = true
+  if (en) newDeal.value.auto.isRegisteredEngine = 'true'
   else newDeal.value.auto.isRegisteredEngine = null
 }
 
