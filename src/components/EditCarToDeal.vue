@@ -499,6 +499,11 @@ function open(_row, isNotNew) {
   adminStore.getAutoTypes().then(res => autoTypes.value = res.items)
   globalStore.getBrands().then(res => brands.value = res).then(() => setBrand())
   globalStore.getColors().then(res => colors.value = res.items)
+
+  newDeal.value.auto.isNativeEngine = ''+newDeal.value.auto.isNativeEngine
+  newDeal.value.auto.isRegisteredEngine = ''+newDeal.value.auto.isRegisteredEngine
+  newDeal.value.auto.isOriginalVC = ''+newDeal.value.auto.isOriginalVC
+  newDeal.value.auto.isCertifiedPreOwned = ''+newDeal.value.auto.isCertifiedPreOwned
 }
 
 defineExpose({ open })
