@@ -77,7 +77,77 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="История изменений статуса" name="tab_3">
-        История изменений статуса
+        <h3>История изменений статуса</h3>
+        <el-table
+            style="margin-top: 24px"
+            :data="tableDataWorkflow"
+            empty-text="Нет данных"
+            highlight-current-row
+        >
+          <el-table-column label="Пользователь" prop="userTitle" width="150"/>
+          <el-table-column label="Статус" prop="statusTitle" width="250"/>
+          <el-table-column label="Дата начала" width="150">
+            <template #default="scope">
+              {{ formatDMY_hm(scope.row.dateStart) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Дата окончания" width="150">
+            <template #default="scope">
+              {{ formatDMY_hm(scope.row.dateEnd) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Длительность" width="150">
+            <template #default="scope">
+              <div v-if="scope.row.duration">
+                <span v-if="scope.row.duration.days">
+                  {{ scope.row.duration.days }} д.
+                </span>
+                <span v-if="scope.row.duration.hours">
+                  {{ scope.row.duration.hours }} ч.
+                </span>
+                <span v-if="scope.row.duration.minutes">
+                  {{ scope.row.duration.minutes }}
+                  <span v-if="scope.row.duration.hours">мин.</span>
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Комментарий" prop="comment">
+            <template #default="scope">
+              <span v-if="scope.row.type == 'workflow' && scope.row.description">
+                {{ scope.row.description }}<br/>
+              </span>
+              <span v-if="scope.row.type == 'workflow'">{{ scope.row.comment }}</span>
+              <span v-if="scope.row.type == 'event' && scope.row.description">
+                    Описание: {{ scope.row.description }}<br/>
+              </span>
+              <span v-if="scope.row.type == 'event' && scope.row.comment">
+                Комментарий: {{ scope.row.comment }}
+              </span>
+              <br/>
+              <span v-if="scope.row.workflowStatus==40">
+                    Цена продажи: {{ scope.row.priceMarket }} руб.<br/>
+                    Макс. цена выкупа: {{ scope.row.maxPriceBought }} руб.
+                </span>
+              <span v-if="scope.row.workflowStatus==75">
+                Цена клиента: {{ scope.row.priceDemanded }} руб. </span>
+              <span v-if="scope.row.workflowStatus==50">
+                Договорная цена выкупа: {{ scope.row.priceDemanded }} руб. </span>
+              <span v-if="scope.row.workflowStatus==310">
+                    Установлена цена продажи: {{ scope.row.priceMarketOnSale }} руб.
+              </span>
+              <span v-if="scope.row.workflowStatus==320">
+                    Сумма согласованная с клиентом: {{ scope.row.priceFactOnSale }} руб.
+              </span>
+              <span v-if="scope.row.workflowStatus==350">
+                Сумма предоплаты: {{ scope.row.reservePrepayment }} руб.
+              </span>
+              <span v-if="scope.row.workflowStatus==16">
+                Причина: {{ scope.row.archiveRequest }}
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
 
     </el-tabs>
@@ -93,7 +163,6 @@
 
 .row-hide {
   display: none;
-  background: blue;
 }
 
 
@@ -104,10 +173,11 @@ import {useDealStore} from '@/stores/dealStore'
 import {formatDMY_hm} from '@/utils/globalFunctions'
 import {ref} from 'vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 
 const dealStore = useDealStore()
 const radio = ref(10)
+const tableDataWorkflow = ref([])
 const tableDataDeal = ref([])
 const tableData = ref([])
 const activeName = ref('tab_1')
@@ -121,6 +191,11 @@ function tableRowClassName(val) {
 
 function tabClick(val: any) {
   if (val.props.name === 'tab_2') getGrade()
+  if (val.props.name === 'tab_3') getWorkflowHistory()
+}
+
+function getWorkflowHistory() {
+  dealStore.getWorkflowHistory(dealStore.deal.dealId).then(res => tableDataWorkflow.value = res.data.items)
 }
 
 function getSimularDeals() {
