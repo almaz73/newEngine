@@ -61,7 +61,7 @@ function open(val, appeal) {
 }
 
 function save() {
-  if(!mod.value.type) return ElMessage.warning('Менеджер обязателен для выбора')
+  if(!mod.value.type) return ElMessage.warning('Поле "Менеджер" обязателен для заполнения')
   let params = {
     comment: mod.value.comment,
     id: mod.value.appealId,

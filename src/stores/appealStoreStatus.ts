@@ -37,5 +37,9 @@ export const useAppealStoreStatus = defineStore("appealStoreStatus", {
             reasons.forEach(el => link += '&reasons=' + el)
             return await axios.post('/api/deal/appealToArchiveRequest' + link).then(q => q)
         },
+        async getUsersSearch(roles: Array) {
+            let link= roles.join('&roles=')
+            return await axios.get('/api/user/search?byOrganization=true&roles=' + link).then(q => q)
+        },
     }
 })
