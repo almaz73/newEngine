@@ -198,6 +198,9 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api/work/getbycto`)
             return (cache['getbycto'] = res)
         },
+        async getWorkflowHistory(dealId: number) {
+            return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
+        },
     }
 })
 
