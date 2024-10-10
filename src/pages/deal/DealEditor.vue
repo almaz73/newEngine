@@ -54,7 +54,7 @@ function init() {
   // globalStore.steps = [{ name: 'Обращение', done: true },
   //   { name: 'Осмотр', done: true }, { name: 'Оценка', done: false }]
 
-  globalStore.steps = mod.value.workflowsChain
+  if (mod.value) globalStore.steps = mod.value.workflowsChain
 }
 
 
