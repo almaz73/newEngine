@@ -56,6 +56,8 @@ interface Status {
 
 function makeChoice(status: Status) {
   console.log('status=', status)
+  
+  console.log('dealStore.deal = ',dealStore.deal)
 
   if (status.id === 20) st_Inspection.value.open(status, dealStore.deal.dealId) //Осмотр
   if (status.id === 23) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
@@ -64,6 +66,9 @@ function makeChoice(status: Status) {
   if (status.id === 40) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
   if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
+
+  // ?? if (status.id === 77) dealStore.getbyinspectionbycategory(dealStore.deal.inspectionId, 90) //'Оформить выкуп
+
 
   if (![20, 23, 28, 30, 40, 75, 70].includes(status.id)) alert('Новое')
 }

@@ -85,11 +85,11 @@ function sortFunction() {
 
 function makeChoice(val) {
   if (val.id === 11) statusStart.value.open(val, props.appeal.id) //'Обращение. В работу'
+  if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
   if (val.id === 17) statusArchive.value.open(val, props.appeal) //'Обращение. Архивировать'
   if (val.id === 263) statusComission.value.open(val, props.appeal) //'Передать на комиссию'
-  if (val.id === 265) statusTradeIn.value.open(val, props.appeal) //'Передать на комиссию'
   if (val.id === 264) statusBuyout.value.open(val, props.appeal) //'Передать на выкуп'
-  if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
+  if (val.id === 265) statusTradeIn.value.open(val, props.appeal) //'Передать на комиссию'
   if (val.id === 400) statusDecor.value.open(val, props.appeal) //'Обращение. Оформление'
 
   if (val.id === 340) {

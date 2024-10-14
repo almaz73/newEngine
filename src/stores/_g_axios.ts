@@ -6,7 +6,7 @@ import {ElMessage} from "element-plus";
 axios.interceptors.response.use(resp => resp
     , err => {
         console.warn(' П е р е х в а т ы в а ю   в с е   о ш и б к и')
-        console.warn(" err.request.status = ", err.request.status)
+        console.warn(" err.request.status = ", err)
 
         if (!navigator.onLine) {
             console.log('Связи нет, сайт работает офлайн!')
@@ -21,10 +21,11 @@ axios.interceptors.response.use(resp => resp
 
         if (err.code === 'ERR_BAD_REQUEST') {
           if (err.response.statusText === 'Unauthorized') return ElMessage.error('Вы не авторизовались')
-          if (err.response.data) ElMessage({ message: err.response.data.errorText, type: 'error' })
+          if (err.response.data) ElMessage({ message: err.response.data.errorText, type: 'error',
+            showClose: true, duration: 7000 })
         }
-        if (err.request.status === 404) {
-            ElMessage({message: 'Ошибка 404. Не найдено ', type: 'warning',})
+        if (err.request.status === 404 && (!err.request.response)) {
+            ElMessage({message: 'Ошибка 404. Не найдено ', type: 'warning'})
         }
         if (err.request.status === 500) {
             ElMessage({message: 'Ошибка 500. Внутрення ошибка сервера', type: 'warning',})

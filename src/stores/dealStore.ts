@@ -201,6 +201,27 @@ export const useDealStore = defineStore('dealStore', {
         async getWorkflowHistory(dealId: number) {
             return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
         },
+        async GetMarkupMatrix(locationId: number, fullSumm: number) {
+            if (cache['GetMarkupMatrix' + locationId + fullSumm]) return cache['GetMarkupMatrix' + locationId + fullSumm]
+            const res = await axios.get(`/api/MarkupMatrix/GetByLocation?locationId=${locationId}&priceMarket=${fullSumm}`)
+            return (cache['GetMarkupMatrix' + locationId + fullSumm] = res.data)
+        },
+        async GetMarkupCategory(locationId: number, fullSumm: number) {
+            if (cache['GetMarkupCategory' + locationId + fullSumm]) return cache['GetMarkupCategory' + locationId + fullSumm]
+            const res = await axios.get(`/api/MarkupCategory/GetByLocation?locationId=${locationId}&priceMarket=${fullSumm}`)
+            return (cache['GetMarkupCategory' + locationId + fullSumm] = res.data)
+        },
+        async GetTurnoverRate(locationId: number) {
+            if (cache['GetTurnoverRate'+locationId]) return cache['GetTurnoverRate'+locationId]
+            const res = await axios.get(`/api/TurnoverRate/GetByLocation?locationId=${locationId}`)
+            return (cache['GetTurnoverRate'+locationId] = res)
+        },
+        async GetMileageRate(locationId: number) {
+            if (cache['GetMileageRate'+locationId]) return cache['GetMileageRate'+locationId]
+            const res = await axios.get(`/api//MileageRate/GetByLocation?locationId=${locationId}`)
+            return (cache['GetMileageRate'+locationId] = res)
+        }
+
     }
 })
 
