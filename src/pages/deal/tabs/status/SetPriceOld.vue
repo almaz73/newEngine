@@ -13,68 +13,30 @@
               <el-input v-model="priceMarket" @input="()=>priceMarket=numberWithSpaces(priceMarket)" />
             </div>
 
+            <div class="info-filed">
+              <label class="label l_300"> Максимальная цена выкупа</label>
+              <el-input v-model="mod.maxPriceBought" />
+            </div>
+
+            <div class="info-filed">
+              <label class="label l_300"> Наценка</label>
+              <el-input v-model="mod.margin" />
+            </div>
+
             <div class="info-filed" v-if="plannedPreSaleCosts">
               <label class="label l_300"> Предполагаемые расходы</label>
               &nbsp; &nbsp; {{ plannedPreSaleCosts }} руб.
             </div>
 
-            <div class="info-filed">
-              <label class="label l_300"> Матрица</label>
-               <el-select
-                 style="width: 200px"
-                 placeholder="Выберите значение"
-                 v-model="mod.carBrandId"
-                 :filterable="!globalStore.isMobileView"
-                 @change="changeBrand(mod.carBrandId)"
-                 clearable
-               >
-              <el-option v-for="(loc, id) in matrix" :key="id" :label="loc" :value="loc" />
-            </el-select>
 
-            </div>
 
             <div class="info-filed">
-              <label class="label l_300"> История</label>
-               <el-select
-                 style="width: 200px"
-                 placeholder="Выберите значение"
-                 v-model="mod.normEl"
-                 @change="changeBrand(mod.normEl)"
-                 clearable
-               >
-                <el-option v-for="loc in mileageRate" :key="loc.id" :label="loc.typeTitle" :value="loc.id" />
-               </el-select>
-
-            </div>
-
-            <div class="info-filed">
-              <label class="label l_300"> Оборачиваемость</label>
-               <el-select
-                 style="width: 200px"
-                 placeholder="Выберите значение"
-                 v-model="mod.turnEl"
-                 @change="changeBrand(mod.turnEl)"
-                 clearable
-               >
-                <el-option v-for="loc in turnoverRate" :key="loc.id" :label="loc.typeTitle" :value="loc.id" />
-               </el-select>
-            </div>
-
-            <div class="info-filed">
-              <label class="label l_300"> Категория</label>
+              <label class="label l_300"> Шаблон комментария</label>
                 &nbsp; &nbsp; {{ autoCategoryName }}
               <span v-if="categoryPrecent"> &nbsp; &nbsp; &nbsp; {{ categoryPrecent }} %</span>
             </div>
 
-            <div class="info-filed">
-              <label class="label l_300"> Наценка</label>
-              <el-input v-model="mod.comment" />
-            </div>
 
-            <div class="info-filed">
-              <label class="label l_300"> Максимальная цена выкупа</label>
-              <el-input v-model="mod.comment" />
-            </div>
 
           </small>
 
@@ -126,7 +88,7 @@ const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false)
-const priceMarket = ref(null)
+const priceMarket = ref('')
 const mod = ref({})
 const closeModal = () => isOpen.value = false
 const plannedPreSaleCosts = ref(0)
@@ -141,6 +103,7 @@ const Kf_root = ref({
   localeMileageRate: [],
   localeTurnoverRate: []
 })
+const minMargin  = ref(40001);
 
 
 function changeSum () {
@@ -148,7 +111,7 @@ function changeSum () {
   
   let fullSumm = priceMarket.value.replace(/ /g, '')
   priceMarket.value = String(fullSumm).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-  console.log('fullSumm = ',fullSumm)
+  console.log('> > > > > > > fullSumm = ',fullSumm)
 
   categoryPrecent.value = 0
   matrixPrecent.value = 0
@@ -158,66 +121,9 @@ function changeSum () {
 
 
 
-  const promise1 = new Promise(resolve => {
-    if (cashe['MarkupMatrix_' + fullSumm] != undefined) {
-      Kf_root.LocationMatrix = cashe['MarkupMatrix_' + fullSumm]
-      scope.isMatrix = !!cashe['MarkupMatrix_' + fullSumm]
-      resolve()
-    } else $http.get(config.apiUrl + '/MarkupMatrix/GetByLocation?locationId=' + scope.locationId + '&priceMarket=' + fullSumm).then(res => {
-      if (res && res.data != undefined) {
-        Kf_root.LocationMatrix = res.data
-        cashe['MarkupMatrix_' + fullSumm] = res.data
-        scope.isMatrix = !!res.data
-      }
-      resolve()
-    })
-  })
 
-
-  const promise2 = new Promise(resolve => {
-    if (cashe['MarkupCategory_' + fullSumm] != undefined) {
-      Kf_root.LocationCategory = cashe['MarkupCategory_' + fullSumm]
-      resolve()
-    } else $http.get(config.apiUrl + '/MarkupCategory/GetByLocation?locationId=' + scope.locationId + '&priceMarket=' + fullSumm).then(res => {
-      if (res && res.data != undefined) Kf_root.LocationCategory = res.data
-      cashe['MarkupCategory_' + fullSumm] = res.data
-      resolve()
-    })
-  })
-
-  const promise3 = new Promise(resolve => {
-    if (cashe['TurnoverRate_'] != undefined) {
-      scope.turnoverRate = cashe['TurnoverRate_'].models
-      resolve()
-    } else $http.get(config.apiUrl + '/TurnoverRate/GetByLocation?locationId=' + scope.locationId)
-      .then(res => {
-        if (res && res.data != undefined) {
-          cashe['TurnoverRate_'] = res.data
-          scope.turnoverRate = res.data.models //localeTurnoverRate
-        }
-        if (res && res.data) scope.turnoverRate = res.data.models //localeTurnoverRate
-        resolve()
-      })
-  })
-
-  const promise4 = new Promise(resolve => {
-    if (cashe['MileageRate_'] != undefined) {
-      scope.mileageRate = cashe['MileageRate_'].models
-      resolve()
-    } else $http.get(config.apiUrl + '/MileageRate/GetByLocation?locationId=' + scope.locationId)
-      .then(res => {
-        if (res && res.data != undefined) {
-          scope.mileageRate = res.data.models
-          cashe['MileageRate_'] = res.data
-        }
-        resolve()
-      })
-  })
-
-  Promise.all([promise1, promise2, promise3, promise4])
-    .then(values => scope.changeDatas())
 }
-changeSum()
+// changeSum()
 
 
 
@@ -236,10 +142,33 @@ function changeBrand() {
   console.log(' changeBrand = ',)
 }
 
+function calcMargin() {
+  // console.log('priceMarket.value = ',priceMarket.value)
+
+
+  // let priceMarket = priceMarket.value.replace(/ /g, '')
+  // console.log('priceMarket = ',priceMarket)
+
+  let priceMarket = 888
+  // var priceMarket = Number(priceMarket.value.replace(/ /g, '')) || 0;
+  // console.log('priceMarket.value = ',priceMarket.value)
+  
+  var maxPriceBought = Number(dealStore.deal.maxPriceBought || 0);
+  if (priceMarket > 0 && maxPriceBought > 0)
+    mod.value.margin = priceMarket - maxPriceBought - scope.plannedPreSaleCosts;
+  else mod.value.margin = '';
+  
+  console.log(' mod.value.margin = ', mod.value.margin)
+}
+
+
+
 function open(val, deal) {
   console.log('deal = ', deal)
 
   priceMarket.value = numberWithSpaces(deal.priceMarket)
+
+  console.log(' ? ? priceMarket.value = ',priceMarket.value)
 
   mod.value = val
   isOpen.value = true
@@ -256,8 +185,8 @@ function open(val, deal) {
   dealStore.GetMileageRate(dealStore.deal.locationId).then(res => mileageRate.value = res.data.models)
   dealStore.GetTurnoverRate(dealStore.deal.locationId).then(res => turnoverRate.value = res.data.models)
 
-  //turnoverRate
-
+  mod.value.maxPriceBought = numberWithSpaces(dealStore.deal.maxPriceBought)
+  calcMargin()
 }
 
 function save() {

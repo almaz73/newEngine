@@ -15,11 +15,16 @@ axios.interceptors.response.use(resp => resp
 
         if (!err.request.status && err.code === "ERR_NETWORK") {
             // возможно у токена вышел срок, перекидываем на страницу авторизации
+
+            console.log('возможно у токена вышел срок, = ')
+
+            localStorage.removeItem('account')
             useGlobalStore().isAuthorized = false
             navigator.onLine && router.push('login')
         }
 
         if (err.code === 'ERR_BAD_REQUEST') {
+            console.log('err = ',err)
           if (err.response.statusText === 'Unauthorized') return ElMessage.error('Вы не авторизовались')
           if (err.response.data) ElMessage({ message: err.response.data.errorText, type: 'error',
             showClose: true, duration: 7000 })
@@ -29,6 +34,13 @@ axios.interceptors.response.use(resp => resp
         }
         if (err.request.status === 500) {
             ElMessage({message: 'Ошибка 500. Внутрення ошибка сервера', type: 'warning',})
+        }
+        if (err.request.status === 404 && err.response.statusText === 'Not Found' && useGlobalStore().isAuthorized) {
+            console.log('9 - - - - - 99 = ',9 - - - - - 99)
+            // после потери связи с сервером
+            localStorage.removeItem('account')
+            useGlobalStore().isAuthorized = false
+            navigator.onLine && router.push('login')
         }
         return err
     })

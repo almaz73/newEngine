@@ -54,17 +54,17 @@
             empty-text="Нет данных"
             highlight-current-row
         >
-          <el-table-column label="Пользователь">
+          <el-table-column label="Пользователь"  min-width="100">
             <template #default="scope">
               {{ scope.row.userFirstName }} {{ scope.row.userLastName }}
             </template>
           </el-table-column>
-          <el-table-column label="Дата" width="200">
+          <el-table-column label="Дата" min-width="100">
             <template #default="scope">
               {{ formatDMY_hm(scope.row.dateOfChanges) }}
             </template>
           </el-table-column>
-          <el-table-column label="Параметр">
+          <el-table-column label="Параметр"  min-width="200">
             <template #default="scope">
               <div v-for="value in scope.row.values">
                 {{ value.property }} : &nbsp; &nbsp;

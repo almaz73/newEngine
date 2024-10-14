@@ -220,8 +220,13 @@ export const useDealStore = defineStore('dealStore', {
             if (cache['GetMileageRate'+locationId]) return cache['GetMileageRate'+locationId]
             const res = await axios.get(`/api//MileageRate/GetByLocation?locationId=${locationId}`)
             return (cache['GetMileageRate'+locationId] = res)
-        }
+        },
 
+        async getWorkflowHistory(dealId: number) {
+            return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
+        },
+        // api/plannedwork/getbydeal/392438?id=
+        // для scope.plannedPreSaleCosts
     }
 })
 

@@ -42,6 +42,9 @@ onMounted(() => {
     globalStore.isAuthorized = true
   } else {
     globalStore.isAuthorized = false
+    
+    console.log('navigator.onLine = ',navigator.onLine)
+    
     navigator.onLine && router.push('login')
   }
 

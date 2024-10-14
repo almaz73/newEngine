@@ -22,6 +22,7 @@
     <MoreInfo ref="moreInfo" />
     <ClientBack ref="clientBack" />
     <SetPrice ref="setPrice" />
+    <SetPriceOld ref="setPriceOld"/>
   </div>
 </template>
 
@@ -36,6 +37,7 @@ import St_ATrefused from '@/pages/deal/tabs/status/St_ATrefused.vue'
 import MoreInfo from '@/pages/deal/tabs/status/MoreInfo.vue'
 import ClientBack from '@/pages/deal/tabs/status/ClientBack.vue'
 import SetPrice from '@/pages/deal/tabs/status/SetPrice.vue'
+import SetPriceOld from "@/pages/deal/tabs/status/SetPriceOld.vue";
 
 const dealStore = useDealStore()
 
@@ -48,6 +50,7 @@ const st_ATrefused = ref(null)
 const moreInfo = ref(null)
 const clientBack = ref(null)
 const setPrice = ref(null)
+const setPriceOld = ref(null)
 
 interface Status {
   id: number,
@@ -63,7 +66,9 @@ function makeChoice(status: Status) {
   if (status.id === 23) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
   if (status.id === 28) clientBack.value.open(status, dealStore.deal.dealId) //Вернуть
   if (status.id === 30) st_AnalistConfimation.value.open(status, dealStore.deal.dealId) //Подтверждение аналитика'}
-  if (status.id === 40) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
+  if (status.id === 40 && dealStore.deal.useUpdatedMarkup) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
+  if (status.id === 40 && !dealStore.deal.useUpdatedMarkup) setPriceOld.value.open(status, dealStore.deal) //Подтверждение аналитика старая'}
+
   if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
 
