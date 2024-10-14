@@ -39,7 +39,10 @@ const cache = {
     getDamageitem: null,
     getExploitationHistoryTypes: null,
     getDeal: null,
-    getbycto: null
-
+    getbycto: null,
+    GetMarkupMatrix: null,
+    GetMarkupCategory: null,
+    GetTurnoverRate: null,
+    GetMileageRate: null
 }
 export default cache

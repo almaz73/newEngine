@@ -59,7 +59,7 @@ function open(val, appeal) {
 }
 
 function save() {
-  if (!mod.value.type.length) return ElMessage.warning('Не указана причина')
+  if (!mod.value.type || !mod.value.type.length) return ElMessage.warning('Поле "Причина запроса в архив" обязателен для заполнения')
   let params = {
     comment: mod.value.comment,
     id: mod.value.appealId,

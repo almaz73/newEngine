@@ -232,7 +232,7 @@ export const DealStatusTable = [
     {id: 75, name: 'Отказ со стороны клиента'},
     {id: 23, name: 'Уточнить данные'},
     {id: 70, name: 'Отказ со стороны АЦ'},
-    // {id: , name: 'Установить цену'},
+    {id: 40, name: 'Установить цену'},
     // {id: , name: 'Установить цену новая'},
     {id: 73, name: 'Аналитик согласовал цену'},
 
@@ -264,7 +264,7 @@ export const DealStatusTable = [
     {id: 28, name: 'Вернуть клиенту'},
 
   //<li ng-if="::checkStatus(dealStatusEnum.analyticResponse) && deal.dealStatus == 80">
-    {id: 40, name: 'Oтмена выкупа'},
+  //   {id: 40, name: 'Oтмена выкупа ???? '},
 
   // <ul ng-if="deal.dealType == 30 && availableStatuses.length > 0">
     {id: 25, name: 'Перевести на хранение'},

@@ -21,12 +21,13 @@
   <StatusBuyout ref="statusBuyout"/>
   <StatusToArchive ref="statusToArchive"/>
   <StatusDecor ref="statusDecor"/>
+  <CreateTypeSell ref="createTypeSell"/>
 </template>
 
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {useDealStore} from '@/stores/dealStore'
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref } from 'vue'
 import {AppealStatusTable} from "@/utils/globalConstants";
 import StatusStart from "@/pages/appeal/appealEditFields/status/StatusStart.vue";
 import StatusArchive from "@/pages/appeal/appealEditFields/status/StatusArchive.vue";
@@ -35,6 +36,7 @@ import StatusTradeIn from "@/pages/appeal/appealEditFields/status/StatusTradeIn.
 import StatusBuyout from "@/pages/appeal/appealEditFields/status/StatusBuyout.vue";
 import StatusToArchive from "@/pages/appeal/appealEditFields/status/StatusToArchive.vue";
 import StatusDecor from "@/pages/appeal/appealEditFields/status/StatusDecor.vue";
+import CreateTypeSell from '@/pages/appeal/appealEditFields/status/CreateTypeSell.vue'
 
 const props = defineProps(['appeal'])
 const globalStore = useGlobalStore()
@@ -48,6 +50,7 @@ const statusTradeIn = ref(null)
 const statusBuyout = ref(null)
 const statusToArchive = ref(null)
 const statusDecor = ref(null)
+const createTypeSell = ref(null)
 
 onMounted(() => {
   let appealId = +location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
@@ -82,12 +85,22 @@ function sortFunction() {
 
 function makeChoice(val) {
   if (val.id === 11) statusStart.value.open(val, props.appeal.id) //'Обращение. В работу'
+  if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
   if (val.id === 17) statusArchive.value.open(val, props.appeal) //'Обращение. Архивировать'
   if (val.id === 263) statusComission.value.open(val, props.appeal) //'Передать на комиссию'
-  if (val.id === 265) statusTradeIn.value.open(val, props.appeal) //'Передать на комиссию'
   if (val.id === 264) statusBuyout.value.open(val, props.appeal) //'Передать на выкуп'
-  if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
+  if (val.id === 265) statusTradeIn.value.open(val, props.appeal) //'Передать на комиссию'
   if (val.id === 400) statusDecor.value.open(val, props.appeal) //'Обращение. Оформление'
+
+  if (val.id === 340) {
+    console.log('todo нужно проверить')
+    createTypeSell.value.open(val, props.appeal)
+  } //'Создание обращения с типом "Продажа"' // не смог проверить
+
+  if (![11, 17, 263, 265, 264, 16, 400].includes(val.id)) {
+    console.log('val.id = ',val.id)
+    alert(' новое не проверенное ')
+  }
 }
 
 </script>

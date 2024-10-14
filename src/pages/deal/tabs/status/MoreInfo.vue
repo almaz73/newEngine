@@ -7,18 +7,7 @@
             draggable>
     <div>
         <span class="modal-field">
-            <label class="label ">Менеджер</label>
-            <el-select
-                title="Тип"
-                placeholder="Выберите менеджера"
-                v-model="mod.type"
-
-                filterable
-                clearable>
-              <el-option v-for="item in types" :key="item.id" :label="item.title" :value="item.id"/>
-            </el-select>
-
-            <label class="label">Комментарий</label>
+            <label class="label-right l_100">Комментарий</label>
             <el-input
                 v-model="mod.comment"
                 type="textarea"
@@ -27,7 +16,7 @@
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-           <el-button type="info" @click="isOpen = false">Отмена</el-button>
+          <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
     </div>
@@ -36,42 +25,34 @@
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";
-import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
-import {ElMessage} from "element-plus";
+import {useGlobalStore} from "@/stores/globalStore";
 
-const globalStore = useGlobalStore();
+const globalStore=useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false);
 const mod = ref({});
 const closeModal = () => isOpen.value = false;
-const types = ref([])
 
 function open(val, appeal) {
+  console.log('appeal = ',appeal)
   mod.value = val
-  mod.value.appealId = appeal.id
+  mod.value.dealId = appeal
   isOpen.value = true;
-
-  globalStore.getRoles([10, 20]).then(res => {
-    types.value = res.items
-  })
-
 }
 
 function save() {
-  if(!mod.value.type) return ElMessage.warning('Поле "Менеджер" обязателен для заполнения')
+  console.log(mod.value)
   let params = {
     comment: mod.value.comment,
-    id: mod.value.appealId,
-    newStatus: mod.value.id,
-    ResponsibleUser: mod.value.type
+    id: mod.value.dealId,
+    newStatus: mod.value.id
   }
-
-  globalStore.isWaiting = true
+ globalStore.isWaiting = true
   appealStoreStatus.setStatus(params).then(res => {
-    globalStore.isWaiting = false
+   globalStore.isWaiting = false
     if (res.status === 200) location.reload()
   })
 }

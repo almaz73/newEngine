@@ -189,8 +189,10 @@ a:hover {
     cursor: pointer;
 }
 
-.modal-fields .el-input {
-    /*margin: 2px 12px;*/
+.modal-field .info-filed {
+    display: flex;
+    height: 30px;
+    align-items: center;
 }
 
 .label-red {

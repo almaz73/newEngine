@@ -3,7 +3,9 @@ import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
+import { getCurrentInstance } from 'vue'
 
+const instance = getCurrentInstance();
 const router = createRouter({
     history: createWebHistory('/v2/'),
     routes: [
@@ -126,8 +128,8 @@ const router = createRouter({
 })
 
 router.beforeEach(res=>{
-    // console.log('%c ...прослушивание изменения адресной строки=', 'color: orange; font-size:smaller')
-    // console.log(':::', res)
+    // console.log('%c ...прослушивание ROUTE=', 'color: orange; font-size:smaller', res)
+    instance?.proxy?.$forceUpdate()
 })
 
 function fail(val: any) {
