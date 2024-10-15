@@ -14,18 +14,18 @@
             </div>
 
             <div class="info-filed">
-              <label class="label l_300"> Максимальная цена выкупа</label>
+              <label class="label l_300"> Макс. цена выкупа, руб.</label>
               <el-input v-model="mod.maxPriceBought" />
             </div>
 
             <div class="info-filed">
               <label class="label l_300"> Наценка</label>
-              <el-input v-model="mod.margin" />
+              &nbsp; {{ mod.margin}} руб.
             </div>
 
             <div class="info-filed" v-if="plannedPreSaleCosts">
               <label class="label l_300"> Предполагаемые расходы</label>
-              &nbsp; &nbsp; {{ plannedPreSaleCosts }} руб.
+              &nbsp; {{ plannedPreSaleCosts }} руб.
             </div>
 
 
@@ -77,7 +77,7 @@
 
 <script setup>
 import AppModal from '@/components/AppModal.vue'
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
@@ -88,7 +88,7 @@ const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false)
-const priceMarket = ref('')
+const priceMarket = ref(0)
 const mod = ref({})
 const closeModal = () => isOpen.value = false
 const plannedPreSaleCosts = ref(0)
@@ -106,23 +106,24 @@ const Kf_root = ref({
 const minMargin  = ref(40001);
 
 
-function changeSum () {
-  if (!priceMarket.value) return false
-  
-  let fullSumm = priceMarket.value.replace(/ /g, '')
-  priceMarket.value = String(fullSumm).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-  console.log('> > > > > > > fullSumm = ',fullSumm)
-
-  categoryPrecent.value = 0
-  matrixPrecent.value = 0
-  mod.value.matrixEl = null
-  mod.value.normEl = null
-  mod.value.turnEl = null
-
-
-
-
-}
+// function changeSum () {
+//   console.log('---- ---- changeSum  - - = ', priceMarket)
+//   if (!priceMarket.value) return false
+//
+//   let fullSumm = priceMarket.value.replace(/ /g, '')
+//   priceMarket.value = String(fullSumm).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+//   console.log('> > > > > > > fullSumm = ',fullSumm)
+//
+//   categoryPrecent.value = 0
+//   matrixPrecent.value = 0
+//   mod.value.matrixEl = null
+//   mod.value.normEl = null
+//   mod.value.turnEl = null
+//
+//
+//
+//
+// }
 // changeSum()
 
 
@@ -142,34 +143,29 @@ function changeBrand() {
   console.log(' changeBrand = ',)
 }
 
+watchEffect(()=>{
+  mod.margin
+})
+
 function calcMargin() {
-  // console.log('priceMarket.value = ',priceMarket.value)
-
-
-  // let priceMarket = priceMarket.value.replace(/ /g, '')
-  // console.log('priceMarket = ',priceMarket)
-
-  let priceMarket = 888
-  // var priceMarket = Number(priceMarket.value.replace(/ /g, '')) || 0;
-  // console.log('priceMarket.value = ',priceMarket.value)
+  let price = priceMarket.value.replace(/ /g, '')
   
-  var maxPriceBought = Number(dealStore.deal.maxPriceBought || 0);
-  if (priceMarket > 0 && maxPriceBought > 0)
-    mod.value.margin = priceMarket - maxPriceBought - scope.plannedPreSaleCosts;
-  else mod.value.margin = '';
+  console.log('dealStore.deal.maxPriceBought = ',dealStore.deal.maxPriceBought)
   
-  console.log(' mod.value.margin = ', mod.value.margin)
+  var maxPriceBought = Number(dealStore.deal.maxPriceBought || 0)
+  if (price > 0 && maxPriceBought > 0) {
+
+    console.log('plannedPreSaleCosts.value = ', plannedPreSaleCosts.value)
+
+    mod.value.margin = price - maxPriceBought - plannedPreSaleCosts.value
+  }
+  else mod.value.margin = ''
 }
 
 
 
 function open(val, deal) {
-  console.log('deal = ', deal)
-
   priceMarket.value = numberWithSpaces(deal.priceMarket)
-
-  console.log(' ? ? priceMarket.value = ',priceMarket.value)
-
   mod.value = val
   isOpen.value = true
 
@@ -190,7 +186,7 @@ function open(val, deal) {
 }
 
 function save() {
-  console.log(mod.value)
+  console.log('SAVE = ', mod.value)
   //  let params = {
   //    comment: mod.value.comment,
   //    id: mod.value.dealId,
