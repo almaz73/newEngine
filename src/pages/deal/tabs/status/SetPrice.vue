@@ -121,6 +121,7 @@ import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { useDealStore } from '@/stores/dealStore'
+import { numberWithSpaces } from '@/utils/globalFunctions'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -145,7 +146,7 @@ const Kf_root = ref({
 
 function changeSum () {
   if (!priceMarket.value) return false
-  
+
   let fullSumm = priceMarket.value.replace(/ /g, '')
   priceMarket.value = String(fullSumm).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
   console.log('fullSumm = ',fullSumm)
@@ -221,12 +222,6 @@ changeSum()
 
 
 
-// добавление пробелов для удобного отображении цен
-function numberWithSpaces(x) {
-  x = parseInt(x.toString().replace(/ /g, ''))
-  if (!x) return 0
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-}
 
 if (Kf_root.LocationCategory) {
   categoryPrecent.value = Kf_root.LocationCategory['category' + autoCategoryName.value]
