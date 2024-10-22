@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useDealStore } from '@/stores/dealStore'
 import { DealStatusTable } from '@/utils/globalConstants'
 import St_Inspection from '@/pages/deal/tabs/status/St_Inspection.vue'
@@ -38,6 +38,10 @@ import MoreInfo from '@/pages/deal/tabs/status/MoreInfo.vue'
 import ClientBack from '@/pages/deal/tabs/status/ClientBack.vue'
 import SetPrice from '@/pages/deal/tabs/status/SetPrice.vue'
 import SetPriceOld from "@/pages/deal/tabs/status/SetPriceOld.vue";
+import {bought} from '@/pages/deal/tabs/status/Bought77'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const dealStore = useDealStore()
 
@@ -60,7 +64,6 @@ interface Status {
 function makeChoice(status: Status) {
   console.log('status=', status)
   
-  console.log('dealStore.deal = ',dealStore.deal)
 
   if (status.id === 20) st_Inspection.value.open(status, dealStore.deal.dealId) //Осмотр
   if (status.id === 23) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
@@ -72,10 +75,10 @@ function makeChoice(status: Status) {
   if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
 
-  // ?? if (status.id === 77) dealStore.getbyinspectionbycategory(dealStore.deal.inspectionId, 90) //'Оформить выкуп
+  if (status.id === 77) bought(dealStore.deal, route.params) //'Оформить выкуп
 
 
-  if (![20, 23, 28, 30, 40, 75, 70].includes(status.id)) alert('Новое')
+  if (![20, 23, 28, 30, 40, 75, 70, 77].includes(status.id)) alert('Новое')
 }
 
 // Список приходит разный, но будем выдавать в едином установленном порядке
@@ -95,17 +98,14 @@ function sortFunction() {
 
 
 onMounted(() => {
-  const dealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
-  dealStore.getStatuses(dealId).then(res => {
-    availableStatuses.value = res.items
+  // const dealId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+  const dealId = route.params.appealId
 
-    // console.log('availableStatuses.value = ',availableStatuses.value)
+  dealStore.getStatuses(+dealId).then(res => {
+    availableStatuses.value = res.items
 
     res.items.forEach((el: any) => {
       let item = DealStatusTable.find(item => item.id === el.value)
-
-      // console.log('el.value = ',el.value)
-      // console.log('item = ',item)
 
       item && StatusTypes.value.push(item)
     })

@@ -365,3 +365,13 @@ export function Declension(number, titles) {
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
 }
+
+export function numberWithSpaces(x:string) { //добавление пробелов для удобного отображении цен
+    if (!x) return 0
+    x = parseInt(x.toString().replace(/ /g, ''))
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+}
+
+export function numberNoSpace(x:string) { //убрать проблеы среди числе
+    return Number(x.replace(/ /g, ''))
+}

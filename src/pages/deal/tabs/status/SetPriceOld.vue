@@ -10,30 +10,47 @@
           <small>
             <div class="info-filed">
               <label class="label l_300"> Цена продажи (план) руб.</label>
-              <el-input v-model="priceMarket" @input="()=>priceMarket=numberWithSpaces(priceMarket)" />
+              <el-input
+                  v-model="priceMarket"
+                  @input="()=>{priceMarket=numberWithSpaces(priceMarket);calcMargin()}"/>
             </div>
 
             <div class="info-filed">
-              <label class="label l_300"> Макс. цена выкупа, руб.</label>
-              <el-input v-model="mod.maxPriceBought" />
+              <label class="label l_300"> Максимальная цена выкупа</label>
+              <el-input v-model="mod.maxPriceBought"
+                        @change="calcMargin()"
+                        @input="()=>{mod.maxPriceBought=numberWithSpaces(mod.maxPriceBought);calcMargin()}"/>
             </div>
 
             <div class="info-filed">
-              <label class="label l_300"> Наценка</label>
-              &nbsp; {{ mod.margin}} руб.
+              <label class="label l_300"> Наценка, руб</label>
+              <el-input v-model="mod.margin" readonly/>
             </div>
 
             <div class="info-filed" v-if="plannedPreSaleCosts">
               <label class="label l_300"> Предполагаемые расходы</label>
-              &nbsp; {{ plannedPreSaleCosts }} руб.
+              &nbsp; &nbsp{{ plannedPreSaleCosts }} руб.
             </div>
 
 
 
             <div class="info-filed">
               <label class="label l_300"> Шаблон комментария</label>
-                &nbsp; &nbsp; {{ autoCategoryName }}
-              <span v-if="categoryPrecent"> &nbsp; &nbsp; &nbsp; {{ categoryPrecent }} %</span>
+
+              <el-select
+                  v-model="mod.comment"
+                  style="width: 190px"
+              >
+              <el-option
+                  v-for="item in AnalystCommentTemplates"
+                  :key="item.id"
+                  style="width: 360px;"
+                  :label="item.value"
+                  :value="item.value"
+                  :title="item.value"
+
+              />
+              </el-select>
             </div>
 
 
@@ -42,34 +59,19 @@
 
             <small class="label-right l_100">Комментарий</small>
             <el-input
-              style="width: 380px;float: right;"
-              v-model="mod.comment"
-              type="textarea"
-              placeholder="Введите комментарий">
+                style="width: 380px;float: right;"
+                v-model="mod.comment"
+                type="textarea"
+                placeholder="Введите комментарий">
             </el-input>
-          <div style="clear: both"></div>
 
-            <el-upload
-              class="upload-demo"
-              drag
-              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-              multiple
-            >
-              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-              <div class="el-upload__text">
-                Перетащите файл сюда или <em>нажмите, чтобы загрузить</em>
-              </div>
-              <template #tip>
-                <div class="el-upload__tip">
-                  jpg/png files with a size less than 500kb
-                </div>
-              </template>
-             </el-upload>
+          <br><br>
+          <el-divider/>
 
           <span class="modal-buttons-bottom">
-          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-          <el-button type="info" @click="isOpen = false">Отмена</el-button>
-        </span>
+            <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+            <el-button type="info" @click="isOpen = false">Отмена</el-button>
+          </span>
         </span>
     </div>
   </AppModal>
@@ -77,7 +79,7 @@
 
 <script setup>
 import AppModal from '@/components/AppModal.vue'
-import { ref, watchEffect } from 'vue'
+import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
@@ -88,7 +90,7 @@ const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const appealStoreStatus = useAppealStoreStatus()
 const isOpen = ref(false)
-const priceMarket = ref(0)
+const priceMarket = ref('')
 const mod = ref({})
 const closeModal = () => isOpen.value = false
 const plannedPreSaleCosts = ref(0)
@@ -103,70 +105,43 @@ const Kf_root = ref({
   localeMileageRate: [],
   localeTurnoverRate: []
 })
-const minMargin  = ref(40001);
+const minMargin = ref(40001);
 
+const AnalystCommentTemplates = [
+  {
+    id: 10,
+    value: 'Расчёт выполнен предварительно, окончательный расчёт после комплексной диагностики и осмотра в чистом виде.'
+  },
+  {
+    id: 2010,
+    value: 'Расчёт выполнен предварительно с наценкой'
+  },
+  {
+    id: 3010,
+    value: 'Автомобиль высоколиквидный, возможно согласование специальных условий. При отрицательных результатах переговоров, связаться с руководителем.'
+  }
+]
 
-// function changeSum () {
-//   console.log('---- ---- changeSum  - - = ', priceMarket)
-//   if (!priceMarket.value) return false
-//
-//   let fullSumm = priceMarket.value.replace(/ /g, '')
-//   priceMarket.value = String(fullSumm).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
-//   console.log('> > > > > > > fullSumm = ',fullSumm)
-//
-//   categoryPrecent.value = 0
-//   matrixPrecent.value = 0
-//   mod.value.matrixEl = null
-//   mod.value.normEl = null
-//   mod.value.turnEl = null
-//
-//
-//
-//
-// }
-// changeSum()
-
-
-
-// добавление пробелов для удобного отображении цен
-function numberWithSpaces(x) {
-  x = parseInt(x.toString().replace(/ /g, ''))
-  if (!x) return 0
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-}
 
 if (Kf_root.LocationCategory) {
   categoryPrecent.value = Kf_root.LocationCategory['category' + autoCategoryName.value]
 }
 
-function changeBrand() {
-  console.log(' changeBrand = ',)
-}
-
-watchEffect(()=>{
-  mod.margin
-})
 
 function calcMargin() {
-  let price = priceMarket.value.replace(/ /g, '')
-  
-  console.log('dealStore.deal.maxPriceBought = ',dealStore.deal.maxPriceBought)
-  
-  var maxPriceBought = Number(dealStore.deal.maxPriceBought || 0)
-  if (price > 0 && maxPriceBought > 0) {
+  var placeM = numberNoSpace(priceMarket.value);
+  var maxPriceBought = mod.value.maxPriceBought && numberNoSpace(mod.value.maxPriceBought);
 
-    console.log('plannedPreSaleCosts.value = ', plannedPreSaleCosts.value)
-
-    mod.value.margin = price - maxPriceBought - plannedPreSaleCosts.value
-  }
-  else mod.value.margin = ''
+  if (placeM > 0 && maxPriceBought > 0) {
+    mod.value.margin = numberWithSpaces(placeM - maxPriceBought - plannedPreSaleCosts.value);
+  } else mod.value.margin = '';
 }
-
 
 
 function open(val, deal) {
   priceMarket.value = numberWithSpaces(deal.priceMarket)
   mod.value = val
+  mod.value.dealId = deal.dealId
   isOpen.value = true
 
   // Предполагаемые расходы (Перегон, Мойка, химчиска, полировка, подготовка...)
@@ -174,7 +149,7 @@ function open(val, deal) {
   dealStore.getPlannedWork(deal.dealId).then(res => {
     res.data.items.forEach(res => plannedPreSaleCosts.value += res.price)
     plannedPreSaleCosts.value = numberWithSpaces(plannedPreSaleCosts.value)
-    // scope.changeDatas()
+    calcMargin()
   })
 
 
@@ -182,25 +157,27 @@ function open(val, deal) {
   dealStore.GetTurnoverRate(dealStore.deal.locationId).then(res => turnoverRate.value = res.data.models)
 
   mod.value.maxPriceBought = numberWithSpaces(dealStore.deal.maxPriceBought)
-  calcMargin()
 }
 
 function save() {
-  console.log('SAVE = ', mod.value)
-  //  let params = {
-  //    comment: mod.value.comment,
-  //    id: mod.value.dealId,
-  //    newStatus: mod.value.id
-  //  }
-  // globalStore.isWaiting = true
-  //  appealStoreStatus.setStatus(params).then(res => {
-  //   globalStore.isWaiting = false
-  //    if (res.status === 200) location.reload()
-  //  })
+  let params = {
+    comment: mod.value.comment,
+    id: mod.value.dealId,
+    newStatus: mod.value.id,
+    priceMarket: numberNoSpace(priceMarket.value),
+    MaxPriceBought: numberNoSpace(mod.value.maxPriceBought)
+  }
+
+
+  globalStore.isWaiting = true
+  appealStoreStatus.setStatus(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
+  })
 }
 
 
-defineExpose({ open })
+defineExpose({open})
 
 
 </script>
