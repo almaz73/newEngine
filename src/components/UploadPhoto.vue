@@ -49,7 +49,7 @@
  * Два вида использования, либо просмотр + редактирование, либо только просмотр noEdit=true
  */
 
-import {ElMessage} from "element-plus";
+import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 import {Delete, Download, Plus, ZoomIn} from "@element-plus/icons-vue";
 import {ref, watchEffect} from "vue";
 
@@ -79,18 +79,8 @@ const uploadBlur = () => isClickparent.value = false
 
 watchEffect(() => photoUrl.value = props.url)
 
-const checkBeforeUpload = (rawFile) => {
-  if (!rawFile.type.includes('image')) {
-    ElMessage.error('Не подходящий формат для фотографии!')
-    return true
-  } else if (rawFile.size > 2000000) {
-    ElMessage.error('Фото не может быть больше 2 mb!')
-    return true
-  }
-}
-
 function uploadFiles(obj) {
-  if (checkBeforeUpload(obj.file)) return false
+  if (checkPictureBeforeUpload(obj.file, 2)) return false
   const f = obj.file;
 
   if (f) {

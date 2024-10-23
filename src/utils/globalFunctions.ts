@@ -375,3 +375,14 @@ export function numberWithSpaces(x:string) { //добавление пробел
 export function numberNoSpace(x:string) { //убрать проблеы среди числе
     return Number(x.replace(/ /g, ''))
 }
+
+export function checkPictureBeforeUpload(rawFile: File, limit: number, allFiles: string) {
+    // limit - в мегабайтах
+    if (!rawFile.type.includes('image') && !allFiles) {
+        ElMessage.error('Не подходящий формат для фотографии!')
+        return true
+    } else if (rawFile.size > limit * 1000000) {
+        ElMessage.error((allFiles ? 'Файл' : 'Фото') + ` не может быть больше ${limit} mb!`)
+        return true
+    }
+}

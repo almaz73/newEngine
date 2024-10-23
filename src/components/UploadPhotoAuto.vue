@@ -51,13 +51,12 @@
 
 
 <script setup>
-
-import { ElMessage } from 'element-plus'
 import { PhotoNumberBuyer } from '@/utils/globalConstants'
 import { Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
+import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 
 const dealStore = useDealStore()
 const props = defineProps(['photo', 'number', 'listBigPictures'])
@@ -105,27 +104,16 @@ const deleteFile = () => {
 }
 
 function rotatePhoto(type) {
-  globalStore.rotatoPhoto(props.photo.id, type).then(res => {
+  globalStore.rotatoPhoto(props.photo.id, type).then(() => {
     emits('setNewPhoto', true)
     isDirty.value = '?' + parseInt(Math.random() * 100)
   })
 }
 
 
-const checkBeforeUpload = (rawFile) => {
-  if (!rawFile.type.includes('image')) {
-    ElMessage.error('Не подходящий формат для фотографии!')
-    return true
-  } else if (rawFile.size > 2000000) {
-    ElMessage.error('Фото не может быть больше 2 mb!')
-    return true
-  }
-}
-
-
 function uploadFiles(obj) {
 
-  if (checkBeforeUpload(obj.file)) return false
+  if (checkPictureBeforeUpload(obj.file, 2)) return false
 
   if (obj.file) {
     const fr = new FileReader()
