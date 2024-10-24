@@ -87,22 +87,7 @@
             </el-input>
           <div style="clear: both"></div>
 
-            <el-upload
-              class="upload-demo"
-              drag
-              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-              multiple
-            >
-              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-              <div class="el-upload__text">
-                Перетащите файл сюда или <em>нажмите, чтобы загрузить</em>
-              </div>
-              <template #tip>
-                <div class="el-upload__tip">
-                  jpg/png files with a size less than 500kb
-                </div>
-              </template>
-             </el-upload>
+          <UploadSсreenShot/>
 
           <span class="modal-buttons-bottom">
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
@@ -119,9 +104,9 @@ import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
-import { UploadFilled } from '@element-plus/icons-vue'
 import { useDealStore } from '@/stores/dealStore'
 import { numberWithSpaces } from '@/utils/globalFunctions'
+import UploadSсreenShot from "@/components/UploadSсreenShot.vue";
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()

@@ -122,6 +122,7 @@ import { useDealStore } from '@/stores/dealStore'
 import { CircleCheck, CircleClose, Plus } from '@element-plus/icons-vue'
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
 const listData = ref([])
@@ -150,21 +151,15 @@ function deleteFile(itemIndex, ind) {
   listData.value[itemIndex].documents.splice(ind, 1)
 }
 
-const checkBeforeUpload = (rawFile: any) => {
-  if (rawFile.size > 10000000) {
-    ElMessage.error('Прикрепляемый файл не может быть больше 10 mb!')
-    return true
-  }
-}
-
 function uploadFiles(obj) {
-  if (checkBeforeUpload(obj.file)) return false
+  if (checkPictureBeforeUpload(obj.file, 10, 'allFiles')) return false
   const f = obj.file
 
   if (f) {
     const fr = new FileReader()
     fr.onload = () => {
       const fbase64 = fr.result //файл в base64
+      if (!listData.value[activeItemIndex.value].documents) listData.value[activeItemIndex.value].documents = []
       listData.value[activeItemIndex.value].documents.push({
         mimeType: setMimeType(obj.file.name),
         Document: fbase64.split('base64,')[1],
