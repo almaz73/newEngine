@@ -8,9 +8,15 @@
     <div>
         <span class="modal-field">
           <small>
+            <div v-if="attentionActive" style="background: pink; padding: 10px; text-align: center;">
+                Наценка ниже минимального уровня!
+            </div>
+
             <div class="info-filed">
+
               <label class="label l_300"> Цена продажи (план) руб.</label>
-              <el-input v-model="priceMarket" @input="()=>priceMarket=numberWithSpaces(priceMarket)" />
+              <el-input v-model="priceMarket"
+                        @input="()=>{priceMarket=numberWithSpaces(priceMarket); changeDatas()}" />
             </div>
 
             <div class="info-filed" v-if="plannedPreSaleCosts">
@@ -89,7 +95,8 @@
 
             <div class="info-filed">
               <label class="label l_300"> Максимальная цена выкупа</label>
-              <el-input v-model="mod.priceHand" @input="()=>mod.priceHand=numberWithSpaces(mod.priceHand)" />
+              <el-input v-model="mod.priceHand"
+                        @input="()=>{mod.priceHand=numberWithSpaces(mod.priceHand); changeDatas(true)}" />
               <span> &nbsp; &nbsp; &nbsp;{{ allProcent <= 1 ? 1 : allProcent }} %</span>
             </div>
 
@@ -122,10 +129,10 @@
           <!--                </div>-->
           <!--              </template>-->
           <!--             </el-upload>-->
-          <UploadSсreenShot />
+          <UploadSсreenShot ref="uploadSсreenShot"/>
 
           <span class="modal-buttons-bottom">
-          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+          <el-button type="danger" @click="saveButtonClick()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
         </span>
@@ -135,7 +142,7 @@
 
 <script setup>
 import AppModal from '@/components/AppModal.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
@@ -143,6 +150,7 @@ import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import { useDealStore } from '@/stores/dealStore'
 import { numberWithSpaces, numberNoSpace } from '@/utils/globalFunctions'
 import UploadSсreenShot from '@/components/UploadSсreenShot.vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
@@ -169,6 +177,9 @@ const allProcent = ref(0)
 const exploitationHistoryType = ref(0)
 const computedPrice = ref(0)
 const isMatrix = ref(false)
+const minMargin = 40001 // Минимальная наценка, чтобы предупредить оператора
+const attentionActive = computed(() => margin.value < minMargin)
+const uploadSсreenShot = ref(null)
 
 
 function changeSum() {
@@ -244,7 +255,10 @@ function changeSum() {
     }
   })
 
-  Promise.all([promise1, promise2, promise3, promise4]).then(() => changeDatas())
+  Promise.all([promise1, promise2, promise3, promise4]).then(() => {
+    changeDatas()
+    isOpen.value = true
+  })
 }
 
 
@@ -305,37 +319,55 @@ function setComment() {
   if (allProcent.value <= 1) mod.value.comment += `\n👉 Наценка:  1 %.`
   if (allProcent.value > 1) mod.value.comment += `\n👉 Общая наценка:  ${allProcent.value} %.`
 
-  if (numberNoSpace(mod.value.priceHand) !== parseInt(computedPrice.value)) mod.value.comment += `\n👉 Максимальная цена выкупа отредактирована`
+  if (numberNoSpace(mod.value.priceHand) !== parseInt(computedPrice.value)) mod.value.comment += `\n👉 👆 Максимальная цена выкупа отредактирована`
 }
 
 function open(val, deal) {
-  isOpen.value = true
   mod.value = val
-
   priceMarket.value = numberWithSpaces(deal.priceMarket)
   exploitationHistoryType.value = dealStore.deal.auto.exploitationHistoryType || 0
-
   plannedPreSaleCosts.value = 0// Предполагаемые расходы (Перегон, Мойка, химчиска, полировка, подготовка...)
   dealStore.getPlannedWork(deal.dealId).then(res => {
     res.data.items.forEach(res => plannedPreSaleCosts.value += res.price)
     plannedPreSaleCosts.value = numberWithSpaces(plannedPreSaleCosts.value)
+    changeSum()
   })
+}
 
-  changeSum()
+function checkBeforeSave() {
+  if (Kf_root.LocationMatrix.id && !mod.value.matrixEl) return ElMessage.warning('Поле "Матрица" обязателен для заполнения')
+  if (mileageRate.value && mileageRate.value.length && !mod.value.normEl) return ElMessage.warning('Поле "История" обязателен для заполнения')
+  if (turnoverRate.value && turnoverRate.value.length && !mod.value.turnEl) return ElMessage.warning('Поле "Оборачиваемость" обязателен для заполнения')
 }
 
 function save() {
-  console.log('S A V E = ', mod.value)
-  //  let params = {
-  //    comment: mod.value.comment,
-  //    id: mod.value.dealId,
-  //    newStatus: mod.value.id
-  //  }
-  // globalStore.isWaiting = true
-  //  appealStoreStatus.setStatus(params).then(res => {
-  //   globalStore.isWaiting = false
-  //    if (res.status === 200) location.reload()
-  //  })
+  if(checkBeforeSave()) return false
+  uploadSсreenShot.value.saveScreens()
+
+   let params = {
+     comment: mod.value.comment,
+     maxPriceBought: numberNoSpace(mod.value.priceHand),
+     priceMarket: numberNoSpace(priceMarket.value),
+     id: dealStore.deal.id,
+     newStatus: mod.value.id
+   }
+  
+  globalStore.isWaiting = true
+   appealStoreStatus.setStatus(params).then(res => {
+    globalStore.isWaiting = false
+    if (res.status === 200) location.reload()
+   })
+}
+
+
+function saveButtonClick() {
+  if (margin.value < minMargin) {
+    ElMessageBox.confirm('Наценка ниже минимального уровня, вы хотите продолжить?', 'Внимание', {
+      confirmButtonText: 'Да',
+      cancelButtonText: 'Нет'
+    })
+      .then(res => res && save())
+  } else save()
 }
 
 

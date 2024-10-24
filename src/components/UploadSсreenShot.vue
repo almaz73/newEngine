@@ -12,19 +12,21 @@
            viewBox="0 0 24 24" class="upload-loader__image">
         <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242M12 12v9"></path>
         <path d="m16 16-4-4-4 4"></path>
-      </svg><br>
+      </svg>
+      <br>
 
       <span> Добавьте сюда скриншоты по ctrl+V ⯑</span>
     </div>
-  </div>
 
-  <div v-if="allPhoto.length">
-    <span v-for="photo in allPhoto" style="display: inline-flex">
-            <img :src="photo.img64" alt=""
-                 style="border: 1px dotted #111; width: 150px; max-height: 100px; object-fit:contain"/>
-            <span title="Удалить" @click="deletePhoto(photo.file)"
-                  style="cursor: pointer; margin-right: 20px; vertical-align: top">❌</span>
-    </span>
+    <div v-if="allPhoto.length">
+      <span v-for="photo in allPhoto" style="display: inline-flex">
+              <img :src="photo.img64" alt=""
+                   style="border: 1px dotted #111; width: 140px; max-height: 100px; object-fit:contain" />
+              <span title="Удалить" @click="deletePhoto(photo.file)"
+                    style="cursor: pointer; margin-right: 20px; vertical-align: top">❌</span>
+      </span>
+    </div>
+
   </div>
 
   <el-divider/>
@@ -39,6 +41,7 @@
   text-align: center;
   color: #444;
   margin: 6px 0;
+  background: white;
 }
 .shot-field:hover{
   box-shadow: 0 0 12px #999;
@@ -51,7 +54,11 @@
 import {ElMessage} from "element-plus";
 import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 import {onUnmounted, ref} from "vue";
+import {useGlobalStore } from '@/stores/globalStore'
+import {useDealStore} from '@/stores/dealStore'
 
+const dealStore = useDealStore()
+const globalStore=useGlobalStore()
 const isActive = ref(false)
 const allPhoto=ref([])
 
@@ -97,9 +104,6 @@ function addedAndShowPhoto(file: File) {
 }
 
 
-
-
-
 function deletePhoto(file: File) {
   allPhoto.value = allPhoto.value.filter(el => el.file.lastModified !== file.lastModified)
 }
@@ -130,4 +134,27 @@ function uploadFiles(obj) {
   }
 }
 
+function saveScreens() {
+  allPhoto.value.forEach(el => sendPhotoToServer(el.file))
+}
+
+function sendPhotoToServer(file:File) {
+
+  globalStore.uploadFile({ file: file, fileName: file.name }).then(res => {
+    let files = res.data.files
+    let params = {
+      fullPhotoId: files[0].id,
+      thumbMediumId: files[1].id,
+      thumbSmallId: files[2].id,
+      autoId: dealStore.deal.auto.autoId,
+      dealId: dealStore.deal.id,
+      number: 5
+    }
+
+    globalStore.attachFile(params)
+  })
+
+}
+
+defineExpose({ saveScreens })
 </script>

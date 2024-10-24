@@ -191,6 +191,15 @@
 
       <el-collapse-item title="Фото, Видео, Файлы" name="7">
         <C_PhotoVideoFiles ref="c_PhotoVideoFiles"/>
+        <div>
+          <h3 class="uk-float-left a-photo-title" ng-show="analiticPhoto && analiticPhoto.length">
+
+          <a style="color: black; text-decoration: none" ng-click="showAnaliticPhoto = !showAnaliticPhoto">
+            <span style="font-size: 12px"> Фото прикрепленная аналитиком при оценке:</span>
+            <i class="a-icon  {{showAnaliticPhoto? 'a-icon-arrow-up': 'a-icon-arrow-down'}}"></i>
+          </a>
+        </h3>
+        </div>
       </el-collapse-item>
 
       <el-collapse-item title="Комментарии" name="8">
