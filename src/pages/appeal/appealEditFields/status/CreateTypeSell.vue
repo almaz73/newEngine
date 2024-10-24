@@ -53,8 +53,6 @@ const closeModal = () => isOpen.value = false
 const persons = ref([])
 
 function open(val, appeal) {
-  console.log('val, appeal = ', val, appeal)
-
   mod.value.yearReleased = appeal.yearReleased
   mod.value.workflowLeadType = appeal.workflowLeadType
   if (appeal.lead) mod.value.leadId = appeal.lead.leadId

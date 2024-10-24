@@ -21,7 +21,7 @@
   <div v-if="allPhoto.length">
     <span v-for="photo in allPhoto" style="display: inline-flex">
             <img :src="photo.img64" alt=""
-                 style="border: 1px dotted #111; width: 115px; max-height: 100px; object-fit:contain"/>
+                 style="border: 1px dotted #111; width: 150px; max-height: 100px; object-fit:contain"/>
             <span title="Удалить" @click="deletePhoto(photo.file)"
                   style="cursor: pointer; margin-right: 20px; vertical-align: top">❌</span>
     </span>

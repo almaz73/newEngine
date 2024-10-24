@@ -368,11 +368,12 @@ export function Declension(number, titles) {
 
 export function numberWithSpaces(x:string) { //добавление пробелов для удобного отображении цен
     if (!x) return 0
-    x = parseInt(x.toString().replace(/ /g, ''))
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    let x_ = parseInt(x.toString().replace(/ /g, ''))
+    return x_.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
 export function numberNoSpace(x:string) { //убрать проблеы среди числе
+    if (!x) return 0
     return Number(x.replace(/ /g, ''))
 }
 

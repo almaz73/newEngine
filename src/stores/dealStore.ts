@@ -129,12 +129,14 @@ export const useDealStore = defineStore('dealStore', {
             return (cache['getPlanedWork'] = res)
         },
         async getDamages() {
-            if (cache['getDamages']) return cache['getDamages']
-            const res = axios.get(`/api/damageitem/`)
-            return (cache['getDamages'] = res)
+          if (cache['getDamages']) return cache['getDamages']
+          const res = await axios.get(`/api/damageitem/`)
+          return (cache['getDamages'] = res)
         },
         async getPlannedWork(dealId: number) {
-            return await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
+          if (cache['getPlannedWork' + dealId]) return cache['getPlannedWork' + dealId]
+          const res = await axios.get(`/api/plannedwork/getbydeal/${dealId}`)
+          return (cache['getPlannedWork' + dealId] = res)
         },
         async getDWorkChanged(inspectionId: number) {
             return await axios.get(`/api/plannedwork/getchanged/${inspectionId}`)
@@ -201,10 +203,10 @@ export const useDealStore = defineStore('dealStore', {
         async getWorkflowHistory(dealId: number) {
             return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
         },
-        async GetMarkupMatrix(locationId: number, fullSumm: number) {
-            if (cache['GetMarkupMatrix' + locationId + fullSumm]) return cache['GetMarkupMatrix' + locationId + fullSumm]
-            const res = await axios.get(`/api/MarkupMatrix/GetByLocation?locationId=${locationId}&priceMarket=${fullSumm}`)
-            return (cache['GetMarkupMatrix' + locationId + fullSumm] = res.data)
+        async GetMarkupMatrix(storageId: number, fullSumm: number, buyCategory: number) {
+          if (cache['GetMarkupMatrix' + storageId + fullSumm + buyCategory]) return cache['GetMarkupMatrix' + storageId + fullSumm + buyCategory]
+          const res = await axios.get(`/api/MarkupMatrix/GetByLocation?locationId=${storageId}&priceMarket=${fullSumm}&buyCategory=${buyCategory}`)
+          return (cache['GetMarkupMatrix' + storageId + fullSumm + buyCategory] = res.data)
         },
         async GetMarkupCategory(locationId: number, fullSumm: number) {
             if (cache['GetMarkupCategory' + locationId + fullSumm]) return cache['GetMarkupCategory' + locationId + fullSumm]
@@ -225,8 +227,7 @@ export const useDealStore = defineStore('dealStore', {
         async getWorkflowHistory(dealId: number) {
             return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
         },
-        // api/plannedwork/getbydeal/392438?id=
-        // для scope.plannedPreSaleCosts
+
     }
 })
 

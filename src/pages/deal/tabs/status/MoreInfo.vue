@@ -37,7 +37,6 @@ const mod = ref({});
 const closeModal = () => isOpen.value = false;
 
 function open(val, appeal) {
-  console.log('appeal = ',appeal)
   mod.value = val
   mod.value.dealId = appeal
   isOpen.value = true;

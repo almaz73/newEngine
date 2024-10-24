@@ -62,7 +62,7 @@ interface Status {
 }
 
 function makeChoice(status: Status) {
-  console.log('status=', status)
+  console.warn('status=', status)
   
 
   if (status.id === 20) st_Inspection.value.open(status, dealStore.deal.dealId) //Осмотр

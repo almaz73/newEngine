@@ -85,6 +85,7 @@ import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 import { useGlobalStore } from '@/stores/globalStore'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { useDealStore } from '@/stores/dealStore'
+import {numberWithSpaces, numberNoSpace} from '@/utils/globalFunctions'
 
 const dealStore = useDealStore()
 const globalStore = useGlobalStore()
