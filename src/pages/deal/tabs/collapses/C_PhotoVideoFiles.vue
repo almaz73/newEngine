@@ -10,6 +10,9 @@
       />
     </div>
   </div>
+
+  <C_PhotoVideoFilesAnalitic ref="c_PhotoVideoFilesAnalitic"/>
+
 </template>
 
 <script setup lang="ts">
@@ -18,12 +21,16 @@ import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from "@/stores/globalStore";
 import {PhotoNumberBuyer} from "@/utils/globalConstants";
 import UploadPhotoAuto from "@/components/UploadPhotoAuto.vue";
+import C_PhotoVideoFilesAnalitic from '@/pages/deal/tabs/collapses/C_PhotoVideoFilesAnalitic.vue'
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const bigPhotos = ref({})
 const photoOrder = ref({})
 const mandatoryPhotoList = [10, 20, 22, 24, 290, 19, 11, 23, 308, 306, 307]
+const analiticPhoto = ref([])
+const c_PhotoVideoFilesAnalitic = ref(null)
+
 
 
 function open() {
@@ -32,9 +39,17 @@ function open() {
 
 function getData(upd) {
   if (upd) photoOrder.value = {}
+  analiticPhoto.value = []
   dealStore.getPhoto(dealStore.deal.dealId, upd).then(res => {
     let arr = res.data.items
-    arr.forEach(el => bigPhotos.value[el.number] = el.fullPhotoUrl)
+
+    arr.forEach(el => {
+      bigPhotos.value[el.number] = el.fullPhotoUrl
+      if (el.number === 5) analiticPhoto.value.push(el)
+    })
+
+    c_PhotoVideoFilesAnalitic.value.open(analiticPhoto.value)
+
     mandatoryPhotoList.forEach(el => {
       let p = arr.find(item => item.number === el)
       if (p) {
@@ -44,6 +59,7 @@ function getData(upd) {
           id: p.id
         }
       }
+
     })
   })
 }

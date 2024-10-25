@@ -112,23 +112,6 @@
             </el-input>
           <div style="clear: both"></div>
 
-
-          <!--            <el-upload-->
-          <!--              class="upload-demo"-->
-          <!--              drag-->
-          <!--              action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"-->
-          <!--              multiple-->
-          <!--            >-->
-          <!--              <el-icon class="el-icon&#45;&#45;upload"><upload-filled /></el-icon>-->
-          <!--              <div class="el-upload__text">-->
-          <!--                Перетащите файл сюда или <em>нажмите, чтобы загрузить</em>-->
-          <!--              </div>-->
-          <!--              <template #tip>-->
-          <!--                <div class="el-upload__tip">-->
-          <!--                  jpg/png files with a size less than 500kb-->
-          <!--                </div>-->
-          <!--              </template>-->
-          <!--             </el-upload>-->
           <UploadSсreenShot ref="uploadSсreenShot"/>
 
           <span class="modal-buttons-bottom">

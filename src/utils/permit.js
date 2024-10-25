@@ -16,6 +16,8 @@ export function permit( moduleName = null, node) {
             return node && reportPermissions[node] && reportPermissions[node].includes(role)
         case 'reportTabs':
             return node && reportTabs[node] && reportTabs[node].includes(role)
+        case 'inspectionPhoto':
+          return inspectionPhoto.includes(role)
     }
 
 }
@@ -179,4 +181,21 @@ const reportTabs = {
     ],
 
 }
+
+const inspectionPhoto = [
+    'BuyerEmployee',
+    'BuyerManager',
+    'GenManager',
+    'RegionManager',
+    'AnalystEmployee',
+    'AnalystManager',
+    'STOManager',
+    'STODispatcher',
+    'Photographer',
+    'Agent',
+    'GenDirector',
+    'KSOEmployee',
+    'KSOManager',
+    'PsmManager'
+]
 
