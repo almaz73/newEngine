@@ -6,11 +6,13 @@
         {{ dealStore.deal.auto.carBrand }} {{ dealStore.deal.auto.carModel }}, {{ dealStore.deal.auto.yearReleased }}
         г.в.
         ( VIN: {{ dealStore.deal.auto.vin }} )
-        &nbsp;
         <RouterLink :to="`/auto/${dealStore.deal.auto.autoId}/edit/${dealStore.deal.dealId}`">
           <EditPensilCtrl/>
         </RouterLink>
 
+        <el-tooltip v-if=" dealStore.deal.malfunctions" :content="dealStore.deal.malfunctions">
+          <span v-if=" dealStore.deal.malfunctions"><a>Возможные неисправности</a></span>
+        </el-tooltip>
 
       </h3>
       <RightMenuButtons/>

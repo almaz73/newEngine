@@ -63,25 +63,26 @@ interface Status {
 
 function makeChoice(status: Status) {
   console.warn('status=', status)
-  
+
 
   if (status.id === 20) st_Inspection.value.open(status, dealStore.deal.dealId) //Осмотр
   if (status.id === 23) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
   if (status.id === 28) clientBack.value.open(status, dealStore.deal.dealId) //Вернуть
   if (status.id === 30) st_AnalistConfimation.value.open(status, dealStore.deal.dealId) //Подтверждение аналитика'}
-  if (status.id === 40 && dealStore.deal.useUpdatedMarkup) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
-  if (status.id === 40 && !dealStore.deal.useUpdatedMarkup) setPriceOld.value.open(status, dealStore.deal) //Подтверждение аналитика старая'}
-
-  if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
+  if (status.id === 40) {
+    if (dealStore.deal.useUpdatedMarkup) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
+    else setPriceOld.value.open(status, dealStore.deal) //Подтверждение аналитика, старая'}
+  }
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
-
+  if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 77) bought(dealStore.deal, route.params) //'Оформить выкуп
+  if (status.id === 261) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
 
 
-  if (![20, 23, 28, 30, 40, 75, 70, 77].includes(status.id)) alert('Новое')
+  if (![20, 23, 28, 30, 40, 75, 70, 77, 261].includes(status.id)) alert('Новое')
 }
 
-// Список приходит разный, но будем выдавать в едином установленном порядке
+// Список приходит неупорядоченный, будем выдавать в таком порядке:
 let myList = [20, 30, 261, 262, 75, 23, 70, 76, 40, 50, 45, 60, 77, 80, 90, 150, 160,
   170, 175, 180, 185, 28, 25, 101, 102, 103, 104, 105, 106, 107,
   108, 109, 110, 111, 340, 310, 350, 149, 100, 300, 320, 350, 330, 360]
