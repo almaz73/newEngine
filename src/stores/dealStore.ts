@@ -223,10 +223,19 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api//MileageRate/GetByLocation?locationId=${locationId}`)
             return (cache['GetMileageRate'+locationId] = res)
         },
-
         async getWorkflowHistory(dealId: number) {
             return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
         },
+        async getCommissionFee() {
+            if (cache['getCommissionFee']) return cache['getCommissionFee']
+            const res = await axios.get(`/api/buy/get/available/commission-fee`)
+            return (cache['getCommissionFee'] = res)
+        },
+        async getMaxPriceByLocation(storageId: number) {
+            return await axios.get(`/api/Analytic/GetMaxPriceByLocation?locationId==${storageId}`)
+        },
+
+
 
     }
 })

@@ -146,8 +146,7 @@ function open(row, cbModal) {
   cb = cbModal;
   isOpen.value = true;
   title.value = "Организация";
-  adminStore.getOrg(row.id).then(res => {
-    console.log('res', res)
+  adminStore.getOrganization(row.id).then(res => {
     org.value = res.view
   })
 

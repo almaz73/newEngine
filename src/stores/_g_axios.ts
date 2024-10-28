@@ -38,9 +38,7 @@ axios.interceptors.response.use(resp => resp
         if (err.request.status === 404 && err.response.statusText === 'Not Found' && useGlobalStore().isAuthorized) {
             console.log('9 - - - - - 99 = ',9 - - - - - 99)
             // после потери связи с сервером
-            localStorage.removeItem('account')
-            useGlobalStore().isAuthorized = false
-            navigator.onLine && router.push('login')
+
         }
         return err
     })

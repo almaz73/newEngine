@@ -24,6 +24,7 @@
     <SetPrice ref="setPrice" />
     <SetPriceOld ref="setPriceOld"/>
     <RequestConformation ref="requestConformation"/>
+    <ConfirmYourRequest ref="confirmYourRequest"/>
   </div>
 </template>
 
@@ -42,6 +43,7 @@ import SetPriceOld from "@/pages/deal/tabs/status/SetPriceOld.vue";
 import RequestConformation from "@/pages/deal/tabs/status/RequestConformation.vue";
 import {bought} from '@/pages/deal/tabs/status/Bought77'
 import { useRoute } from 'vue-router'
+import ConfirmYourRequest from "@/pages/deal/tabs/status/ConfirmYourRequest.vue";
 
 const route = useRoute()
 
@@ -58,6 +60,7 @@ const clientBack = ref(null)
 const setPrice = ref(null)
 const setPriceOld = ref(null)
 const requestConformation = ref(null)
+const confirmYourRequest = ref(null)
 
 interface Status {
   id: number,
@@ -76,14 +79,16 @@ function makeChoice(status: Status) {
     if (dealStore.deal.useUpdatedMarkup) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
     else setPriceOld.value.open(status, dealStore.deal) //Подтверждение аналитика, старая'}
   }
+  if (status.id === 45) moreInfo.value.open(status, dealStore.deal.dealId) // Уточнить данные (у менеджера по закупкам)
   if (status.id === 50) requestConformation.value.open(status, dealStore.deal.dealId) //Запрос подтверждения выкупа
+  if (status.id === 60) confirmYourRequest.value.open(status, dealStore.deal) //Подтвердить заявку
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 77) bought(dealStore.deal, route.params) //'Оформить выкуп
   if (status.id === 261) moreInfo.value.open(status, dealStore.deal.dealId) //Переговоры
 
 
-  if (![20, 23, 28, 30, 40, 50, 75, 70, 77, 261].includes(status.id)) alert('Новое')
+  if (![20, 23, 28, 30, 40, 45, 50, 60, 70, 75, 77, 261].includes(status.id)) alert('Новое')
 }
 
 // Список приходит неупорядоченный, будем выдавать в таком порядке:
