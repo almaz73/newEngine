@@ -23,6 +23,7 @@
     <ClientBack ref="clientBack" />
     <SetPrice ref="setPrice" />
     <SetPriceOld ref="setPriceOld"/>
+    <RequestConformation ref="requestConformation"/>
   </div>
 </template>
 
@@ -38,6 +39,7 @@ import MoreInfo from '@/pages/deal/tabs/status/MoreInfo.vue'
 import ClientBack from '@/pages/deal/tabs/status/ClientBack.vue'
 import SetPrice from '@/pages/deal/tabs/status/SetPrice.vue'
 import SetPriceOld from "@/pages/deal/tabs/status/SetPriceOld.vue";
+import RequestConformation from "@/pages/deal/tabs/status/RequestConformation.vue";
 import {bought} from '@/pages/deal/tabs/status/Bought77'
 import { useRoute } from 'vue-router'
 
@@ -55,6 +57,7 @@ const moreInfo = ref(null)
 const clientBack = ref(null)
 const setPrice = ref(null)
 const setPriceOld = ref(null)
+const requestConformation = ref(null)
 
 interface Status {
   id: number,
@@ -73,13 +76,14 @@ function makeChoice(status: Status) {
     if (dealStore.deal.useUpdatedMarkup) setPrice.value.open(status, dealStore.deal) //Подтверждение аналитика'}
     else setPriceOld.value.open(status, dealStore.deal) //Подтверждение аналитика, старая'}
   }
+  if (status.id === 50) requestConformation.value.open(status, dealStore.deal.dealId) //Запрос подтверждения выкупа
   if (status.id === 70) st_ATrefused.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 75) st_clientsRefusal.value.open(status, dealStore.deal.dealId) //Отказ со стороны клиента
   if (status.id === 77) bought(dealStore.deal, route.params) //'Оформить выкуп
-  if (status.id === 261) moreInfo.value.open(status, dealStore.deal.dealId) //Вернуть
+  if (status.id === 261) moreInfo.value.open(status, dealStore.deal.dealId) //Переговоры
 
 
-  if (![20, 23, 28, 30, 40, 75, 70, 77, 261].includes(status.id)) alert('Новое')
+  if (![20, 23, 28, 30, 40, 50, 75, 70, 77, 261].includes(status.id)) alert('Новое')
 }
 
 // Список приходит неупорядоченный, будем выдавать в таком порядке:
