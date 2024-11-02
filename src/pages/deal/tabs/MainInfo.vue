@@ -116,9 +116,7 @@
       </div>
 
       <div class="info-filed">
-
-        <label class="label l_200">Место выкупа</label>
-        {{ dealStore.deal.location_Name }}
+        <StorageEditCtrl :deal="dealStore.deal"/>
       </div>
 
       <div class="info-filed" v-if="dealStore.deal.locationName && dealStore.deal.locationName != ' '">
@@ -237,6 +235,7 @@ import C_InspectionGibdd from '@/pages/deal/tabs/collapses/C_InspectionGibdd.vue
 import C_FinanceCalculation from '@/pages/deal/tabs/collapses/C_FinanceCalculation.vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import DealTypeEditorCtrl from '@/controls/DealTypeEditorCtrl.vue'
+import StorageEditCtrl from "@/controls/StorageEditCtrl.vue";
 import C_PTS from '@/pages/deal/tabs/collapses/C_PTS.vue'
 import {formattingPhone} from '@/utils/globalFunctions'
 import RightMenuButtons from '@/pages/deal/RightMenuButtons.vue'

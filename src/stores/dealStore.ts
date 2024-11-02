@@ -234,8 +234,12 @@ export const useDealStore = defineStore('dealStore', {
         async getMaxPriceByLocation(storageId: number) {
             return await axios.get(`/api/Analytic/GetMaxPriceByLocation?locationId==${storageId}`)
         },
-
-
+        async getLocations(workflowLeadType: number | null, BuyTypes: number | null, DealStatus: number | null, UserId: number | null) {
+            return await axios.get(`/api/Location/GetLocations?workflowLeadType=${workflowLeadType}&BuyTypes=${BuyTypes}&DealStatus=${DealStatus}&UserId=${UserId}`);
+        },
+        async setLocations(dealId: number | null, storageId: number | null) {
+            return await axios.post(`/api/buy/set/location/${dealId}/${storageId}`);
+        }
 
     }
 })
