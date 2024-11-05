@@ -13,9 +13,16 @@
       {{ inspection.lastUpdateUserLastName }} {{ inspection.lastUpdateUserFistName }}
     </div>
 
+    <div style="display: inline-block; margin-left: 30px; font-size: larger">
+      <el-tooltip v-if=" dealStore.deal.malfunctions" :content="dealStore.deal.malfunctions">
+        <span v-if=" dealStore.deal.malfunctions && !dealStore.deal.isBuyBlocked "><a>Возможные неисправности</a></span>
+        <span v-if="dealStore.deal.isBuyBlocked"><a>Ограничение выкупа</a></span>
+      </el-tooltip>
+    </div>
 
     <div style="margin-top: 12px">
-      <span style="background: #d34338;  padding: 3px 10px; margin-right: 8px"></span> <span>Создан</span>
+      <span style="background: #d34338;  padding: 3px 10px; margin-right: 8px"></span>
+      <span>Создан</span>
       <span style="margin-left:60px ;background: #3cac71;  padding: 3px 10px; margin-right: 8px"></span>
       <span>Изменен</span>
     </div>

@@ -84,19 +84,19 @@
             empty-text="Нет данных"
             highlight-current-row
         >
-          <el-table-column label="Пользователь" prop="userTitle" width="150"/>
-          <el-table-column label="Статус" prop="statusTitle" width="250"/>
-          <el-table-column label="Дата начала" width="150">
+          <el-table-column label="Пользователь" prop="userTitle" maxWidth="150"/>
+          <el-table-column label="Статус" prop="statusTitle" maxWidth="250"/>
+          <el-table-column label="Дата начала">
             <template #default="scope">
               {{ formatDMY_hm(scope.row.dateStart) }}
             </template>
           </el-table-column>
-          <el-table-column label="Дата окончания" width="150">
+          <el-table-column label="Дата окончания">
             <template #default="scope">
               {{ formatDMY_hm(scope.row.dateEnd) }}
             </template>
           </el-table-column>
-          <el-table-column label="Длительность" width="150">
+          <el-table-column label="Длительность">
             <template #default="scope">
               <div v-if="scope.row.duration">
                 <span v-if="scope.row.duration.days">
@@ -112,36 +112,55 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="Комментарий" prop="comment">
+          <el-table-column label="Комментарий" prop="comment" minWidth="200">
             <template #default="scope">
-              <span v-if="scope.row.type == 'workflow' && scope.row.description">
-                {{ scope.row.description }}<br/>
-              </span>
-              <span v-if="scope.row.type == 'workflow'">{{ scope.row.comment }}</span>
-              <span v-if="scope.row.type == 'event' && scope.row.description">
-                    Описание: {{ scope.row.description }}<br/>
-              </span>
-              <span v-if="scope.row.type == 'event' && scope.row.comment">
-                Комментарий: {{ scope.row.comment }}
-              </span>
-              <br/>
               <span v-if="scope.row.workflowStatus==40">
                     Цена продажи: {{ scope.row.priceMarket }} руб.<br/>
                     Макс. цена выкупа: {{ scope.row.maxPriceBought }} руб.
                 </span>
+              <br/>
+
+              <span v-if="scope.row.type == 'workflow' && scope.row.description">
+                {{ scope.row.description }}<br/>
+              </span>
+
+              <span v-if="scope.row.type == 'workflow'"
+                    style="color:#a12d24">
+                {{ scope.row.comment }}
+              </span>
+
+              <div v-if="scope.row.commentDanger" style="background: yellow">
+                Автомобиль запрещен к выкупу, только через согласование руководителя.
+              </div>
+
+              <span v-if="scope.row.type == 'event' && scope.row.description">
+                    Описание: {{ scope.row.description }}<br/>
+              </span>
+
+              <span v-if="scope.row.type == 'event' && scope.row.comment">
+                Комментарий: {{ scope.row.comment }}
+              </span>
+
               <span v-if="scope.row.workflowStatus==75">
-                Цена клиента: {{ scope.row.priceDemanded }} руб. </span>
+                Цена клиента: {{ scope.row.priceDemanded }} руб.
+              </span>
+
               <span v-if="scope.row.workflowStatus==50">
-                Договорная цена выкупа: {{ scope.row.priceDemanded }} руб. </span>
+                Договорная цена выкупа: {{ scope.row.priceDemanded }} руб.
+              </span>
+
               <span v-if="scope.row.workflowStatus==310">
                     Установлена цена продажи: {{ scope.row.priceMarketOnSale }} руб.
               </span>
+
               <span v-if="scope.row.workflowStatus==320">
                     Сумма согласованная с клиентом: {{ scope.row.priceFactOnSale }} руб.
               </span>
+
               <span v-if="scope.row.workflowStatus==350">
                 Сумма предоплаты: {{ scope.row.reservePrepayment }} руб.
               </span>
+
               <span v-if="scope.row.workflowStatus==16">
                 Причина: {{ scope.row.archiveRequest }}
               </span>
@@ -195,7 +214,17 @@ function tabClick(val: any) {
 }
 
 function getWorkflowHistory() {
-  dealStore.getWorkflowHistory(dealStore.deal.dealId).then(res => tableDataWorkflow.value = res.data.items)
+  dealStore.getWorkflowHistory(dealStore.deal.dealId).then(res => {
+    tableDataWorkflow.value = res.data.items
+    tableDataWorkflow.value.map(el => { // выделяем в отдельную строку
+      if (el.comment && el.comment.includes('Автомобиль запрещен к выкупу')) {
+        el.comment = el.comment.replace('Автомобиль запрещен к выкупу, только через согласование руководителя.', '')
+        el.commentDanger = true
+      }
+    })
+
+    console.log('tableDataWorkflow.value', tableDataWorkflow.value);
+  })
 }
 
 function getSimularDeals() {

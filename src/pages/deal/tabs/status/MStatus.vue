@@ -97,7 +97,6 @@ let myList = [20, 30, 261, 262, 75, 23, 70, 76, 40, 50, 45, 60, 77, 80, 90, 150,
   108, 109, 110, 111, 340, 310, 350, 149, 100, 300, 320, 350, 330, 360]
 
 function sortFunction() {
-
   let newList: [] = []
   myList.forEach(el => {
     let founded = StatusTypes.value.find(item => el === item.id)

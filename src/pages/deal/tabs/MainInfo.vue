@@ -11,7 +11,8 @@
         </RouterLink>
 
         <el-tooltip v-if=" dealStore.deal.malfunctions" :content="dealStore.deal.malfunctions">
-          <span v-if=" dealStore.deal.malfunctions"><a>Возможные неисправности</a></span>
+          <span v-if=" dealStore.deal.malfunctions && !dealStore.deal.isBuyBlocked "><a>Возможные неисправности</a></span>
+          <span v-if="dealStore.deal.isBuyBlocked"><a>Ограничение выкупа</a></span>
         </el-tooltip>
 
       </h3>
