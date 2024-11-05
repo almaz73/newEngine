@@ -27,6 +27,7 @@
 import { ref } from "vue";
 import { useDealStore } from "@/stores/dealStore";
 import EditPensilCtrl from "@/controls/EditPensilCtrl.vue";
+import { ElMessage } from "element-plus";
 
 const { deal } = defineProps(["deal"]);
 const isEdit = ref(false);
@@ -35,7 +36,7 @@ const storages = ref([]);
 
 function changeStorage() {
   dealStore.setLocations(deal.dealId, deal.storageId).then(res => {
-    if (res.status === 200) location.reload();
+    if (res.status === 200) ElMessage({ message: "Место выкупа успешно изменилось", type: "success" });
   });
 }
 
