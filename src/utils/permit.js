@@ -143,6 +143,13 @@ const reportPermissions = {
         'LocalCallManager',
         'CallEmployee'
     ],
+    rOverDue: [
+        'Admin',
+        'CallManager',
+        'LocalCallEmployee',
+        'LocalCallManager',
+        'CallEmployee'
+    ],
     rCountEmployers:[
         'BuyerEmployee',
     ]

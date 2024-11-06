@@ -115,6 +115,29 @@ export const useReportStore = defineStore("reportStore", {
               `/api/report/sell/creditApplicationFunnel?highDate=${params.endDate}&lowDate=${params.startDate}&org=${params.organization}&communicationType=${params.communicationType}`)
               .then(res => res);
             return res.data;
+        },
+        async getExpiredEventsReport(DateStart: Date | null, DateEnd: Date | null, Roles: number[]|null, Skip: number|null, Take: number|null) {
+
+            console.log('...DateStart', DateStart);
+            let link  = `?DateStart=${DateStart}&DateEnd=${DateEnd}`
+            if (Roles && Roles.length) Roles.forEach(el => link += "&Roles=" + el);
+            link+= `&Skip=${Skip}&Take=${Take}`
+            console.log('link', link);
+            // return await axios.post('/api/report/call-center/GetExpiredEventsReport/?DateStart='+link);
         }
+
+        /*
+        https://dev.autonet.pro/api/report/call-center/GetExpiredEventsReport/?DateStart=01.10.2024&DateEnd=31.10.2024&Roles=110&Roles=111&Roles=112&Roles=113&Skip=0&Take=25
+
+
+DateStart: 01.10.2024
+DateEnd: 31.10.2024
+Roles: 110
+Roles: 111
+Roles: 112
+Roles: 113
+Skip: 0
+Take: 25
+        * **/
     }
 })

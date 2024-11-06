@@ -239,7 +239,8 @@ export const useDealStore = defineStore('dealStore', {
         },
         async setLocations(dealId: number | null, storageId: number | null) {
             return await axios.post(`/api/buy/set/location/${dealId}/${storageId}`);
-        }
+        },
+
 
     }
 })

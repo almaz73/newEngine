@@ -26,6 +26,11 @@
           <el-button :icon="Flag" @click="changeType('rAсtual')"> По актуальности</el-button>
           Отчет актуальности обращений
         </div>
+        <div  v-if="permit('reports','rOverDue')">
+          <el-button :icon="Flag" @click="changeType('rOverDue')"> По просроченным событиям</el-button>
+          Отчет колл-центра по просроченным событиям
+        </div>
+
       </div>
     </div>
     <component :is="type_report"/>
@@ -42,6 +47,7 @@ import rArchive from "./rArchive.vue"
 import rCalls from "./rCalls.vue"
 import rBuyout from "./rBuyout.vue"
 import rAсtual from "./rAсtual.vue"
+import rOverDue from "./rOverDue.vue"
 import {permit} from "@/utils/permit.js";
 
 const expander = ref(null)
@@ -52,7 +58,8 @@ const types = {
   'rArchive': rArchive,
   'rCalls': rCalls,
   'rBuyout': rBuyout,
-  'rAсtual': rAсtual
+  'rAсtual': rAсtual,
+  'rOverDue': rOverDue
 }
 
 function changeType(report, memory) {
