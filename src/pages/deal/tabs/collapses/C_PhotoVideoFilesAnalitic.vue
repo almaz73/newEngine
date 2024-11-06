@@ -1,6 +1,5 @@
 <template>
   <div v-if="permit('inspectionPhoto')">
-    99999999999
     <div v-show="analiticPhoto && analiticPhoto.length">
       <h3 @click="()=>showAnaliticPhoto=!showAnaliticPhoto" style="cursor: pointer"> Фото прикрепленная аналитиком при
         оценке:

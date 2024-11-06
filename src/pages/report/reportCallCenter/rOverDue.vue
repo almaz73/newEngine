@@ -29,22 +29,35 @@
       </div>
 
       <div>
-        <label class="label l_300">Вариант отчета</label>
+        <label class="label l_300">Тип сделки</label>
         <el-select
           style="width: 220px"
-          v-model="searchFilter.variant"
+          v-model="searchFilter.dealType"
           filterable>
-          <el-option v-for="item in variants" :key="item.value" :label="item.title" :value="item.value"/>
+          <el-option v-for="item in dealTypes" :key="item.value" :label="item.title" :value="item.value"/>
         </el-select>
       </div>
 
       <div>
-        <label class="label l_300">Тип коммуникации</label>
+        <label class="label l_300">Роли</label>
         <el-select
           style="width: 220px"
-          v-model="searchFilter.communicationType"
+          multiple
+          @change="changeGroup()"
+          v-model="searchFilter.Roles"
           filterable>
-          <el-option v-for="item in communicationTypes" :key="item.value" :label="item.title" :value="item.value"/>
+          <el-option v-for="item in roles" :key="item.value" :label="item.title" :value="item.value"/>
+        </el-select>
+      </div>
+
+      <div>
+        <label class="label l_300">Сотрудник</label>
+        <el-select
+          style="width: 220px"
+          multiple
+          v-model="searchFilter.Users"
+          filterable>
+          <el-option v-for="item in myEmployees" :key="item.id" :label="item.title" :value="item.id"/>
         </el-select>
       </div>
 
@@ -64,30 +77,10 @@
       @row-click="rowClick"
       highlight-current-row
     >
-      <el-table-column width="180" label="Организация">
-        <template #default="scope">
-          <span style="float: left;" :class="{cityName:scope.row.level===1}">
-            {{ scope.row.title }}
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-for="(column, index) in tableColumns.slice(1)"
-        :key="index"
-        :label="column.headerTitle">
-        <template #default="scope">
-          {{ index === 0 ? scope.row.totalAppealCount : '' }}
-          {{ index === 1 ? scope.row.statusNewCount : '' }}
-          {{ index === 2 ? scope.row.statusInWorkCount : '' }}
-          {{ index === 3 ? scope.row.statusRequestArchiveCount : '' }}
-          {{ index === 4 ? scope.row.statusArchiveCount : '' }}
-          {{ index === 5 ? columnValue(scope.row, index) : '' }}
-          {{ index === 6 ? columnValue(scope.row, index) : '' }}
-          {{ index === 7 ? columnValue(scope.row, index) : '' }}
-          {{ index === 8 ? columnValue(scope.row, index) : '' }}
-          {{ index === 9 ? columnValue(scope.row, index) : '' }}
-        </template>
-      </el-table-column>
+      <el-table-column label="ФИО ИЕНЕДЖЕРА" prop="responsible"/>
+      <el-table-column label="ТИП СДЕЛКИ" prop="appealType"/>
+      <el-table-column label="МЕСТО ВЫКУПА" prop="location"/>
+      <el-table-column label="НОМЕР ОБРАЩЕНИЯ" prop="loclocationation"/>
     </el-table>
   </main>
 </template>
@@ -96,21 +89,20 @@ import {Grid} from "@element-plus/icons-vue";
 import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {useGlobalStore} from '@/stores/globalStore'
 
-const searchFilter = ref({DateStart: new Date()})
+const globalStore = useGlobalStore()
+const searchFilter = ref({})
 const reportStore = useReportStore()
 const tableData = ref([])
-const tableColumns = ref([])
-const variants = [
-  {title: 'Выкуп. По организациям', value: 10},
-  {title: 'Выкуп. По сотрудникам', value: 20},
+const myEmployees = ref([])
+const allEmployees = ref([])
+const dealTypes = [
+  { title: 'Выкуп (трейд-ин)', value: 10 },
+  { title: 'Комиссия', value: 20 }
 ]
-const communicationTypes = [
-  {title: 'Все коммуникации', value: 10},
-  {title: 'Исходящий звонок', value: 20},
-  {title: 'Входящий звонок', value: 30},
-]
-const period = ref(10)
+const roles = ref([])
+const period = ref(30)
 const periodItem = [
   {title: 'За все время', value: 40},
   {title: 'Текущий месяц', value: 10},
@@ -118,9 +110,21 @@ const periodItem = [
   {title: '2 месяца назад', value: 30},
 ]
 
-function columnValue(row, ind) {
-  return row.reasons[ind - 5].count + ' (' + (row.reasons[ind - 5].count * 100 / row.totalAppealCount).toFixed(1) + '%)'
+
+globalStore.getRoles([110, 111, 112, 113]).then(res => {
+  allEmployees.value = res.items
+  myEmployees.value = JSON.parse(JSON.stringify(allEmployees.value))
+})
+
+function changeGroup() {
+  searchFilter.value.employeeId = null
+  myEmployees.value = allEmployees.value.filter(el => {
+    if (searchFilter.value.Roles.includes(el.role)) return el
+  })
 }
+
+
+reportStore.getRolesForExpiredEventsReport().then(res=>roles.value = res)
 
 const tableRowClassName = ({row}) => {
   let styles = ''
@@ -147,14 +151,6 @@ function rowClick(row) {
   }
 }
 
-function init() {
-  searchFilter.value.DateStart = formatDateDDMMYYYY(new Date(new Date().setDate(1)))
-  searchFilter.value.DateEnd = formatDateDDMMYYYY(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
-  searchFilter.value.communicationType = 10
-  searchFilter.value.variant = 10
-}
-
-init()
 
 
 function monthChanged() {
@@ -174,20 +170,10 @@ function monthChanged() {
 
 function toSearch() {
   let S = searchFilter.value
-  // let params = {
-  //   DateStart: S.DateStart,
-  //   DateEnd: S.DateEnd,
-  //   Roles: S.Roles,
-  //   Skip: 0,
-  //   Take: 25
-  // }
 
-  // console.log('S.DateStart', S.DateStart);
-  // console.log('params', params);
-
-  reportStore.getExpiredEventsReport(S.DateStart, S.DateEnd, S.Roles, 0, 25).then(res => {
-    console.log('res', res);
-    // tableData.value = res.items.row
+  reportStore.getExpiredEventsReport(S.DateStart, S.DateEnd, S.Roles, S.Users,0, 25).then(res => {
+    console.log(':::: res', res);
+    tableData.value = res.items
     // tableColumns.value = res.items.headersList
     // if (!tableData.value.length) ElMessage.warning('Нет данных')
   })

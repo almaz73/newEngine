@@ -44,6 +44,7 @@ const cache = {
     GetMarkupCategory: null,
     GetTurnoverRate: null,
     GetMileageRate: null,
-    getCommissionFee: null
+    getCommissionFee: null,
+    getRolesForExpiredEventsReport: null
 }
 export default cache
