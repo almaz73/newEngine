@@ -122,13 +122,8 @@ export const useReportStore = defineStore("reportStore", {
             const res = await axios.get('/api/Enum/GetRolesForExpiredEventsReport')
             return (cache.getRolesForExpiredEventsReport = res.data)
         },
-        async getExpiredEventsReport(DateStart: Date | null, DateEnd: Date | null, Roles: number[]|null,
-                                     Users: number[]|null, Skip: number|null, Take: number|null) {
-            let link  = `?DateStart=${DateStart}&DateEnd=${DateEnd}`
-            if (Roles && Roles.length) Roles.forEach(el => link += "&Roles=" + el);
-            if (Users && Users.length) Users.forEach(el => link += '&Users=' + el);
-            link+= `&Skip=${Skip}&Take=${Take}`
-            return await axios.get('/api/report/call-center/GetExpiredEventsReport/'+link);
+        async getExpiredEventsReport(link: string) {
+            return await axios.get('/api/report/call-center/GetExpiredEventsReport/' + link);
         }
 
     }

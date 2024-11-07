@@ -63,36 +63,63 @@
 
 
       <br>
-      <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
+      <el-button :icon="Grid" type="danger" @click="getData()">Сформировать</el-button>
       <el-button type="info" @click="init()">Сброс</el-button>
+      <el-button :icon="Printer"  type="info"  @click="toPrint()">Печать</el-button>
     </div>
+    <br>
     <el-table
-      class="report-days-table"
       :data="tableData"
       size="small"
       v-if="tableData.length"
       border
       empty-text="Нет данных"
       :row-class-name="tableRowClassName"
-      @row-click="rowClick"
       highlight-current-row
     >
-      <el-table-column label="ФИО ИЕНЕДЖЕРА" prop="responsible"/>
-      <el-table-column label="ТИП СДЕЛКИ" prop="appealType"/>
+      <el-table-column label="ФИО МЕНЕДЖЕРА" prop="responsible"/>
+      <el-table-column label="ТИП СДЕЛКИ" prop="appealTypeName"/>
       <el-table-column label="МЕСТО ВЫКУПА" prop="location"/>
-      <el-table-column label="НОМЕР ОБРАЩЕНИЯ" prop="loclocationation"/>
+      <el-table-column label="НОМЕР ОБРАЩЕНИЯ">
+        <template #default="scope">
+          <a @click="openLink(scope.row)">{{scope.row.appealId}}</a>
+        </template>
+      </el-table-column>
+      <el-table-column label="ФИО клиента / Телефон">
+        <template #default="scope">
+          {{formattingPhone(scope.row.clientPhone)}}
+        </template>
+      </el-table-column>
+      <el-table-column label="Марка / Модель" prop="auto"/>
+      <el-table-column label="ДАТА ПРОСРОЧЕННОГО СОБЫТИЯ" prop="expiredEventDate"/>
+      <el-table-column label="ТИП СОБЫТИЯ" prop="type"/>
+      <el-table-column label="СОБЫТИЕ" prop="expiredEventDescription" min-width="200"/>
+
     </el-table>
+
+    <template v-if="total>2">
+      <el-pagination
+        v-model:page-size="rowsPerPage"
+        :page-sizes="[5, 10, 20, 50]"
+        layout="prev, pager, next, sizes"
+        @current-change="changePage"
+        @size-change="changePageSize"
+        :total="total"
+      />
+      <div class="page-info">Всего {{ total }}</div>
+    </template>
   </main>
 </template>
-<script setup>
-import {Grid} from "@element-plus/icons-vue";
+<script setup lang="ts">
+import {Grid, Printer} from "@element-plus/icons-vue";
 import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
-import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import { formatDateDDMMYYYY, formattingPhone } from "@/utils/globalFunctions";
 import {useGlobalStore} from '@/stores/globalStore'
+import { ElMessage } from "element-plus";
 
 const globalStore = useGlobalStore()
-const searchFilter = ref({})
+const searchFilter = ref({Take:25, Skip:0})
 const reportStore = useReportStore()
 const tableData = ref([])
 const myEmployees = ref([])
@@ -109,6 +136,23 @@ const periodItem = [
   {title: 'Прошлый месяц', value: 20},
   {title: '2 месяца назад', value: 30},
 ]
+const rowsPerPage = ref(25);
+const total = ref(0);
+let WorkflowLeadTypes = [];
+
+reportStore.getwWorkflowLeadTypes().then(res => WorkflowLeadTypes = res.items);
+
+function init() {
+  period.value = 30;
+  searchFilter.value.Roles = [];
+  searchFilter.value.Users = [];
+  searchFilter.value.dealType = null;
+  tableData.value = [];
+  monthChanged();
+}
+
+init();
+
 
 
 globalStore.getRoles([110, 111, 112, 113]).then(res => {
@@ -134,25 +178,6 @@ const tableRowClassName = ({row}) => {
 }
 
 
-function rowClick(row) {
-  if (row.level === 1) { // по нажатию родителя скрываем/показываем строку
-    tableData.value.map(el => {
-      if (el.number === row.number) {
-        if (el.isExpanded) {
-          el.isExpanded = false
-          if (el.level === 2) el.isShow = false
-        } else {
-          el.isExpanded = true
-          if (el.level === 2) el.isShow = true
-        }
-      }
-      return el
-    })
-  }
-}
-
-
-
 function monthChanged() {
   let currentMonth = new Date(new Date().setDate(1))
   if (period.value === 20) currentMonth = new Date(currentMonth.setMonth(currentMonth.getMonth() - 1))
@@ -168,15 +193,64 @@ function monthChanged() {
 
 }
 
-function toSearch() {
-  let S = searchFilter.value
+function getLink() {
+  let S = searchFilter.value;
 
-  reportStore.getExpiredEventsReport(S.DateStart, S.DateEnd, S.Roles, S.Users,0, 25).then(res => {
-    console.log(':::: res', res);
-    tableData.value = res.items
-    // tableColumns.value = res.items.headersList
-    // if (!tableData.value.length) ElMessage.warning('Нет данных')
-  })
+  if (!S.Roles || !S.Roles.length) S.Roles = roles.value.map(el => el.value);
+
+  let link = `?DateStart=`;
+
+  if (S.DateStart) link += S.DateStart;
+  link += `&DateEnd=`;
+  if (S.DateEnd) link += `${S.DateEnd}`;
+  if (S.Roles && S.Roles.length) S.Roles.forEach(el => link += "&Roles=" + el);
+  if (S.Users && S.Users.length) S.Users.forEach(el => link += "&Users=" + el);
+  S.Skip = S.Skip ? S.Skip : 0;
+  S.Take = S.Take ? S.Take : 25;
+  link += `&Skip=${S.Skip}&Take=${S.Take}`;
+
+  setTimeout(() => {
+    if (S.Roles.length === 4) S.Roles = [];
+  });
+
+  return link;
+}
+
+function toPrint() {
+  ElMessage({ message: "Готово! Файл можно забрать из загрузок браузера.", type: "success" });
+  location.href = "/api/report/call-center/GetExpiredEventsReportFile/" + getLink();
+}
+
+
+function getData() {
+  reportStore.getExpiredEventsReport(getLink()).then(res => {
+    tableData.value = res.data.items;
+    total.value = res.data.total;
+
+    tableData.value.map(el => {
+      let found = WorkflowLeadTypes.find(item => item.name === el.appealType);
+      if (found) el.appealTypeName = found.title;
+    });
+
+    if (!tableData.value.length) ElMessage.warning("Нет данных");
+  });
+
+}
+
+function changePageSize() {
+  searchFilter.value.Take = rowsPerPage.value;
+  getData();
+}
+
+function changePage(val) {
+  searchFilter.value.Skip = (val - 1) * rowsPerPage.value;
+  getData();
+}
+
+
+function openLink(row) {
+  if (row.appealType === "Commission") window.open("appeal/commission/" + row.appealId);
+  else window.open("appeal/" + row.appealId);
 }
 
 
