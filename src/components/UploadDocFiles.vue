@@ -2,12 +2,12 @@
   <div>
     <div v-for="(file, ind) in files">
       <div class="file-frame">
-        <img src="@/assets/img/doc.png" v-if="file.mimeType==='doc'" />
-        <img src="@/assets/img/txt.png" v-if="file.mimeType==='txt'" />
-        <img src="@/assets/img/pdf.png" v-if="file.mimeType==='pdf'" />
-        <img src="@/assets/img/rtf.png" v-if="file.mimeType==='rtf'" />
-        <img src="@/assets/img/xls.png" v-if="file.mimeType==='xls'" />
-        <img src="@/assets/img/picture.png"
+        <img alt="" src="@/assets/img/doc.png" v-if="file.mimeType==='doc'" />
+        <img alt="" src="@/assets/img/txt.png" v-if="file.mimeType==='txt'" />
+        <img alt="" src="@/assets/img/pdf.png" v-if="file.mimeType==='pdf'" />
+        <img alt="" src="@/assets/img/rtf.png" v-if="file.mimeType==='rtf'" />
+        <img alt="" src="@/assets/img/xls.png" v-if="file.mimeType==='xls'" />
+        <img alt="" src="@/assets/img/picture.png"
              v-if="['png','jpg','gif','raw','tiff','bmp','psd'].includes(file.mimeType)" />
 
         <a v-if="!file.Document" @click="openFile(file)">{{ file.title }}</a>
