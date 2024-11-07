@@ -7,7 +7,7 @@
             draggable>
     <div style="display: flex; gap: 30px">
       <div>
-        <span class="modal-field">
+        <div class="modal-field">
 
           <el-tooltip
             v-if="dealStore.deal.malfunctions" :content="dealStore.deal.malfunctions">
@@ -53,7 +53,7 @@
             </el-input>
           </div>
 
-        </span>
+        </div>
       </div>
 
       <div v-if="dealStore.deal.useDealCheck">
@@ -78,35 +78,9 @@
         <el-switch v-model="checklist.isLegalCheccked"
                    :active-text="checklist.isLegalCheccked?'Подтверждено':''"/>
 
-      <br>
-        <small v-for="(file, ind) in checklist.files">
-          <div class="file-frame">
-            <img src="@/assets/img/doc.png" v-if="file.mimeType==='doc'" />
-            <img src="@/assets/img/txt.png" v-if="file.mimeType==='txt'" />
-            <img src="@/assets/img/pdf.png" v-if="file.mimeType==='pdf'" />
-            <img src="@/assets/img/rtf.png" v-if="file.mimeType==='rtf'" />
-            <img src="@/assets/img/xls.png" v-if="file.mimeType==='xls'" />
-            <img src="@/assets/img/picture.png"
-                 v-if="['png','jpg','gif','raw','tiff','bmp','psd'].includes(file.mimeType)" />
-
-            <a v-if="!file.Document" @click="openFile(itemIndex, ind)">{{ file.title }}</a>
-            <span v-if="file.Document">{{ file.title }}</span>
-            <span size="small" style="cursor: pointer" @click="deleteFile(itemIndex, ind)"> ✖ </span>
-          </div>
-        </small>
-
         <br>
-        <el-upload
-          ref="upload"
-          :show-file-list="false"
-          style="float: right"
-          :http-request="uploadFiles"
-          :auto-upload="true"
-        >
-          <template #trigger>
-            <el-button :icon="Plus"> Файл</el-button>
-          </template>
-        </el-upload>
+
+        <UploadDocFiles @setFiles="setFiles" :files="checklist.files" />
 
       </div>
 
@@ -132,6 +106,8 @@ import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import { checkPictureBeforeUpload, numberNoSpace, numberWithSpaces } from "@/utils/globalFunctions";
 import {useAdminStore} from "@/stores/adminStore";
 import {ElMessage} from "element-plus";
+import UploadDocFiles from "@/components/UploadDocFiles.vue";
+
 
 const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore()
@@ -142,56 +118,14 @@ const closeModal = () => isOpen.value = false;
 const managerPrice = ref(null)
 const isCommissionFee = ref(false)
 const checklist = ref({files:[]})
-const listData = ref([])
 let isBuyerManager = globalStore.account.role === 'BuyerManager'
 let maxPercentage = 0
 let maxPrice = 0
 let useMaxPrice = false // галочка "Использовать пороговое значение"
 
 
-function deleteFile(itemIndex, ind) {
-  checklist.value.files.splice(ind, 1)
-}
-function uploadFiles(obj) {
-  if (checkPictureBeforeUpload(obj.file, 10, 'allFiles')) return false
-  const f = obj.file
-
-  if (f) {
-    const fr = new FileReader()
-    fr.onload = () => {
-      const fbase64 = fr.result //файл в base64
-      if (!checklist.value.files) checklist.value.files = []
-      checklist.value.files.push({
-        mimeType: setMimeType(obj.file.name),
-        Document: fbase64.split('base64,')[1],
-        title: obj.file.name
-      })
-
-    }
-    fr.readAsDataURL(f)
-  }
-}
-
-function getTextAfterLastDot(str) {
-  const lastIndex = str.lastIndexOf('.')
-  return lastIndex !== -1 ? str.substring(lastIndex + 1) : ''
-}
-
-function setMimeType(fileName) {
-  let mimeType = getTextAfterLastDot(fileName)
-  if (mimeType.toLowerCase().includes('xls')) mimeType = 'xls'
-  if (mimeType.toLowerCase().includes('doc')) mimeType = 'doc'
-
-  if (['exe', 'bat'].includes(mimeType.toLowerCase())) {
-    ElMessage.warning('Осторожно! Вы сохраняете запускаемый файл')
-    return false
-  }
-
-  if (!mimeType || !['txt', 'doc', 'xls', 'pdf', 'rtf', 'png', 'jpg', 'gif', 'raw', 'tiff', 'bmp', 'psd'].includes(mimeType)) {
-    mimeType = 'txt'
-  }
-
-  return mimeType.toLowerCase()
+function setFiles(val) {
+  checklist.value.files = val
 }
 
 function changeManagerPrice() {
