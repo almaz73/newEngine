@@ -12,7 +12,7 @@
 
         <a v-if="!file.Document" @click="openFile(file)">{{ file.title }}</a>
         <span v-if="file.Document">{{ file.title }}</span>
-        <span size="small" style="cursor: pointer" @click="deleteFile(itemIndex, ind)"> ✖ </span>
+        <span style="cursor: pointer" @click="deleteFile(itemIndex, ind)"> ✖ </span>
       </div>
     </div>
 
