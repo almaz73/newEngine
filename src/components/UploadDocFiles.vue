@@ -1,6 +1,6 @@
 <template>
   <div>
-    <small v-for="(file, ind) in files">
+    <div v-for="(file, ind) in files">
       <div class="file-frame">
         <img src="@/assets/img/doc.png" v-if="file.mimeType==='doc'" />
         <img src="@/assets/img/txt.png" v-if="file.mimeType==='txt'" />
@@ -14,7 +14,7 @@
         <span v-if="file.Document">{{ file.title }}</span>
         <span size="small" style="cursor: pointer" @click="deleteFile(itemIndex, ind)"> ✖ </span>
       </div>
-    </small>
+    </div>
 
     <br>
     <el-upload

@@ -103,7 +103,7 @@ import {Plus} from "@element-plus/icons-vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useDealStore} from "@/stores/dealStore";
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
-import { checkPictureBeforeUpload, numberNoSpace, numberWithSpaces } from "@/utils/globalFunctions";
+import {numberNoSpace, numberWithSpaces} from "@/utils/globalFunctions";
 import {useAdminStore} from "@/stores/adminStore";
 import {ElMessage} from "element-plus";
 import UploadDocFiles from "@/components/UploadDocFiles.vue";
