@@ -57,7 +57,7 @@
       </div>
 
       <div v-if="dealStore.deal.useDealCheck">
-        <div>Проверено :</div>
+        <div>Подтверждено :</div>
         <label class="label l_200">Кузов:</label>
         <el-switch v-model="checklist.isBodyChecked"
                    :active-text="checklist.isBodyChecked?'Подтверждено':''"
@@ -186,6 +186,27 @@ function open(val, deal) {
   })
 }
 
+function saveCheckList() {
+  if (mod.value.useDealCheck === 'false') return false
+  checklist.value.buyWorkflowId = +mod.value.dealId
+
+  if (!checklist.value.isBodyChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по кузову')
+  }
+  if (!checklist.value.isTechChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по технической части')
+  }
+  if (!checklist.value.isDiagnosticsChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по диагностике')
+  }
+  if (!checklist.value.isLegalCheccked) {
+    return ElMessage.warning('Отсутствует подтверждение по юридической проверке')
+  }
+  if (!checklist.value.files[0] || !checklist.value.files[0].title) {
+    return ElMessage.warning('Прикрепляемый файл обязателен')
+  }
+}
+
 function save() {
   let params = {
     comment: mod.value.comment,
@@ -195,12 +216,33 @@ function save() {
     newStatus: mod.value.id,
   }
 
+  if (saveCheckList()) return false;
+
+  if (!managerPrice.value) return ElMessage.warning('Поле "Цена руководителя" обязателен для заполнения')
+  if (isBuyerManager && changeManagerPrice()) return false
 
   globalStore.isWaiting = true
   appealStoreStatus.setStatus(params).then(res => {
     globalStore.isWaiting = false
     isOpen.value = false
-    if (res.status === 200) location.reload()
+
+    if (res.data) {
+      if (res.data.items[0].dealDaysOver === true) {
+        ElMessage.warning(
+          'Дата создания оценки превышает текущую на 2 дня. </br> Смена статуса на - Запрос цены в аналитический центр',
+        );
+      }
+
+      if (mod.value.useDealCheck !== 'false') {
+        dealStore.saveCheckList(checklist.value).then(() => {
+          ElMessage.success('Успешно');
+          location.reload()
+        })
+      } else if (res.status === 200){
+        location.reload()
+      }
+    }
+
   })
 
 }
