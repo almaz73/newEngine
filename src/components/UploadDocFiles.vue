@@ -10,8 +10,8 @@
         <img alt="" src="@/assets/img/picture.png"
              v-if="['png','jpg','gif','raw','tiff','bmp','psd'].includes(file.mimeType)" />
 
-        <a v-if="!file.Document" @click="openFile(file)">{{ file.title }}</a>
-        <span v-if="file.Document">{{ file.title }}</span>
+        <a v-if="!file.Document" @click="openFile(file)">{{ file.name }}</a>
+        <span v-if="file.Document">{{ file.name }}</span>
         <span style="cursor: pointer" @click="deleteFile(itemIndex, ind)"> ✖ </span>
       </div>
     </div>
@@ -62,8 +62,8 @@ function uploadFiles(obj) {
       if (!files.value) files.value = []
       files.value.push({
         mimeType: setMimeType(obj.file.name),
-        Document: fbase64.split('base64,')[1],
-        title: obj.file.name
+        content: fbase64.split('base64,')[1],
+        name: obj.file.name
       })
       emits('setFiles', files.value)
     }

@@ -1,11 +1,12 @@
 <template>
+<!--  :width="dealStore.deal.useDealCheck?750:360"-->
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="dealStore.deal.useDealCheck?750:360"
+            :width="(dealStore.deal.useDealCheck && !globalStore.isMobileView)?750:360"
             :top="40"
             :title="mod.name"
             draggable>
-    <div style="display: flex; gap: 30px">
+    <div style="display: flex; gap: 30px; flex-wrap: wrap">
       <div>
         <div class="modal-field">
 
@@ -26,7 +27,7 @@
                       placeholder="Введите цену"/>
           </div>
 
-          <br>
+          <br v-if="!globalStore.isMobileView">
           <div>
             <el-input
                 v-model="mod.comment"
@@ -35,13 +36,13 @@
             </el-input>
           </div>
 
-          <br>
+          <br v-if="!globalStore.isMobileView"><br>
           <div>
             <label class="label l_300">Цена, установленная аналитиком</label>
           {{ numberWithSpaces(mod.maxPriceBought) }} ₽
           </div>
 
-          <br>
+          <br v-if="!globalStore.isMobileView">
           <div class="info-filed" v-if="isCommissionFee">
             <label class="label">Комиссионное вознаграждение</label>
             <el-input
@@ -60,23 +61,23 @@
         <div>Подтверждено :</div>
         <label class="label l_200">Кузов:</label>
         <el-switch v-model="checklist.isBodyChecked"
-                   :active-text="checklist.isBodyChecked?'Подтверждено':''"
+                   :active-text="(checklist.isBodyChecked&&!globalStore.isMobileView)?'Подтверждено':''"
         />
 
         <br>
         <label class="label l_200">Техническая часть</label>
         <el-switch v-model="checklist.isTechChecked"
-                   :active-text="checklist.isTechChecked?'Подтверждено':''"/>
+                   :active-text="(checklist.isTechChecked&&!globalStore.isMobileView)?'Подтверждено':''"/>
 
         <br>
         <label class="label l_200">Диагностика</label>
         <el-switch v-model="checklist.isDiagnosticsChecked"
-                   :active-text="checklist.isDiagnosticsChecked?'Подтверждено':''"/>
+                   :active-text="(checklist.isDiagnosticsChecked&&!globalStore.isMobileView)?'Подтверждено':''"/>
 
         <br>
         <label class="label l_200">Юр. проверка</label>
         <el-switch v-model="checklist.isLegalCheccked"
-                   :active-text="checklist.isLegalCheccked?'Подтверждено':''"/>
+                   :active-text="(checklist.isLegalCheccked&&!globalStore.isMobileView)?'Подтверждено':''"/>
 
         <br>
 
@@ -202,7 +203,7 @@ function saveCheckList() {
   if (!checklist.value.isLegalCheccked) {
     return ElMessage.warning('Отсутствует подтверждение по юридической проверке')
   }
-  if (!checklist.value.files[0] || !checklist.value.files[0].title) {
+  if (!checklist.value.files[0] || !checklist.value.files[0].name) {
     return ElMessage.warning('Прикрепляемый файл обязателен')
   }
 }
