@@ -1,5 +1,5 @@
 <template>
-  <main style="margin: 8px">
+  <main style="margin: 8px; font-family: 'Calibri Light'">
     <h3>Ver. 0.10.0</h3>
     <p>
       В оценках заработал целиком лист осмотра.<br><br>

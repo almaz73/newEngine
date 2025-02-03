@@ -61,6 +61,7 @@ import {Grid} from "@element-plus/icons-vue";
 import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
+import {ElMessage} from 'element-plus'
 
 const reportStore = useReportStore()
 const searchFilter = ref({startDate: new Date()})

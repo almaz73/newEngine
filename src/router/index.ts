@@ -22,6 +22,10 @@ const router = createRouter({
             name: 'version',
             component: VersionPage
         }, {
+            path: '/undercontruction',
+            name: 'undercontruction',
+            component: () => import('@/pages/UnderConstructionPage.vue').catch(val => fail(val))
+        }, {
             path: '/desktop',
             name: 'desktop',
             component: () => import('@/pages/desktop/DeskTopPage.vue').catch(val => fail(val))
@@ -130,6 +134,13 @@ const router = createRouter({
 router.beforeEach(res=>{
     // console.log('%c ...прослушивание ROUTE=', 'color: orange; font-size:smaller', res)
     instance?.proxy?.$forceUpdate()
+})
+
+router.afterEach((to, from) => {
+    let acceptedPaths = ['/reports', '/undercontruction']
+    if (location.hostname === "live.autonet.pro") {
+        if (!acceptedPaths.includes(to.path)) router.push(`/undercontruction`)
+    }
 })
 
 function fail(val: any) {
