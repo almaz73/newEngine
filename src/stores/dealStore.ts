@@ -241,6 +241,9 @@ export const useDealStore = defineStore('dealStore', {
             return await axios.post(`/api/buy/set/location/${dealId}/${storageId}`);
         },
 
+        async saveCheckList(params: {params: any}) {
+            return await axios.post("/api/Buy/SaveCheckList", params);
+        }
 
     }
 })

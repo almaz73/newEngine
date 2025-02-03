@@ -1,13 +1,25 @@
 <template>
+<!--  :width="dealStore.deal.useDealCheck?750:360"-->
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="390"
+            :width="(dealStore.deal.useDealCheck && !globalStore.isMobileView)?750:360"
             :top="40"
             :title="mod.name"
             draggable>
-    <div>
-        <span class="modal-field">
+    <div style="display: flex; gap: 30px; flex-wrap: wrap">
+      <div>
+        <div class="modal-field">
 
+          <el-tooltip
+            v-if="dealStore.deal.malfunctions" :content="dealStore.deal.malfunctions">
+            <div  style="background: yellow; text-align: center" >
+            <span v-if=" dealStore.deal.malfunctions && !dealStore.deal.isBuyBlocked "><a>Возможные неисправности</a></span>
+            <span v-if="dealStore.deal.isBuyBlocked"><a>Ограничение выкупа</a></span>
+            </div>
+            <br/><br/>
+          </el-tooltip>
+
+          <br>
           <div class="info-filed">
             <label class="label ">Цена руководителя</label>
             <el-input v-model="managerPrice"
@@ -15,7 +27,7 @@
                       placeholder="Введите цену"/>
           </div>
 
-          <br>
+          <br v-if="!globalStore.isMobileView">
           <div>
             <el-input
                 v-model="mod.comment"
@@ -24,31 +36,64 @@
             </el-input>
           </div>
 
-
+          <br v-if="!globalStore.isMobileView"><br>
           <div>
             <label class="label l_300">Цена, установленная аналитиком</label>
           {{ numberWithSpaces(mod.maxPriceBought) }} ₽
           </div>
 
-          <br>
-           <div class="info-filed" v-if="isCommissionFee">
-            <label class="label l_300">Комиссионное вознаграждение</label>
-             <el-input
-                 type="number"
-                 @input="()=>{mod.commissionFee=parseInt(mod.commissionFee)}"
-                 style="width: 180px;"
-                 v-model="mod.commissionFee"
-                 placeholder="Введите комиссию">
+          <br v-if="!globalStore.isMobileView">
+          <div class="info-filed" v-if="isCommissionFee">
+            <label class="label">Комиссионное вознаграждение</label>
+            <el-input
+                   type="number"
+                   @input="()=>{mod.commissionFee=parseInt(mod.commissionFee)}"
+                   style="width: 180px;"
+                   v-model="mod.commissionFee"
+                   placeholder="Введите комиссию">
             </el-input>
           </div>
 
+        </div>
+      </div>
 
-          <span class="modal-buttons-bottom">
-          <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
-          <el-button type="info" @click="isOpen = false">Отмена</el-button>
-        </span>
+      <div v-if="dealStore.deal.useDealCheck">
+        <div>Подтверждено :</div>
+        <label class="label l_200">Кузов:</label>
+        <el-switch v-model="checklist.isBodyChecked"
+                   :active-text="(checklist.isBodyChecked&&!globalStore.isMobileView)?'Подтверждено':''"
+        />
+
+        <br>
+        <label class="label l_200">Техническая часть</label>
+        <el-switch v-model="checklist.isTechChecked"
+                   :active-text="(checklist.isTechChecked&&!globalStore.isMobileView)?'Подтверждено':''"/>
+
+        <br>
+        <label class="label l_200">Диагностика</label>
+        <el-switch v-model="checklist.isDiagnosticsChecked"
+                   :active-text="(checklist.isDiagnosticsChecked&&!globalStore.isMobileView)?'Подтверждено':''"/>
+
+        <br>
+        <label class="label l_200">Юр. проверка</label>
+        <el-switch v-model="checklist.isLegalCheccked"
+                   :active-text="(checklist.isLegalCheccked&&!globalStore.isMobileView)?'Подтверждено':''"/>
+
+        <br>
+
+        <UploadDocFiles @setFiles="setFiles" :files="checklist.files" />
+
+      </div>
+
+    </div>
+    <div>
+
+      <span class="modal-buttons-bottom">
+            <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
+            <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
     </div>
+
   </AppModal>
 </template>
 
@@ -62,6 +107,8 @@ import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import {numberNoSpace, numberWithSpaces} from "@/utils/globalFunctions";
 import {useAdminStore} from "@/stores/adminStore";
 import {ElMessage} from "element-plus";
+import UploadDocFiles from "@/components/UploadDocFiles.vue";
+
 
 const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore()
@@ -71,17 +118,22 @@ const mod = ref({});
 const closeModal = () => isOpen.value = false;
 const managerPrice = ref(null)
 const isCommissionFee = ref(false)
+const checklist = ref({files:[]})
 let isBuyerManager = globalStore.account.role === 'BuyerManager'
 let maxPercentage = 0
 let maxPrice = 0
 let useMaxPrice = false // галочка "Использовать пороговое значение"
 
 
+function setFiles(val) {
+  checklist.value.files = val
+}
+
 function changeManagerPrice() {
   //managerPrice.value - цена руководителя
   //mod.value.maxPriceBought  - цена аналитика
   let price = managerPrice.value.replace(/ /g, '')
-  if (!useMaxPrice || maxPercentage == undefined || maxPrice == undefined) return false
+  if (!useMaxPrice || maxPercentage === undefined || maxPrice === undefined) return false
   let porogProcent = Math.round(mod.value.maxPriceBought * (1 + maxPercentage / 100))
   let predel = mod.value.maxPriceBought + maxPrice;
 
@@ -105,6 +157,7 @@ function changeManagerPrice() {
 
 function open(val, deal) {
   mod.value = val
+  mod.value.commissionFee = mod.value.commissionFee | 0;
   mod.value.storageId = deal.storageId
   mod.value.maxPriceBought = deal.maxPriceBought
   mod.value.useDealCheck = deal.useDealCheck
@@ -118,7 +171,7 @@ function open(val, deal) {
 
   if (isBuyerManager) {
     globalStore.getOrganization(dealStore.deal.storageId).then(res => {
-      if (res.data == '') {
+      if (res.data === '') {
         maxPercentage = undefined
         maxPrice = undefined
       } else {
@@ -134,6 +187,27 @@ function open(val, deal) {
   })
 }
 
+function saveCheckList() {
+  if (mod.value.useDealCheck === 'false') return false
+  checklist.value.buyWorkflowId = +mod.value.dealId
+
+  if (!checklist.value.isBodyChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по кузову')
+  }
+  if (!checklist.value.isTechChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по технической части')
+  }
+  if (!checklist.value.isDiagnosticsChecked) {
+    return ElMessage.warning('Отсутствует подтверждение по диагностике')
+  }
+  if (!checklist.value.isLegalCheccked) {
+    return ElMessage.warning('Отсутствует подтверждение по юридической проверке')
+  }
+  if (!checklist.value.files[0] || !checklist.value.files[0].name) {
+    return ElMessage.warning('Прикрепляемый файл обязателен')
+  }
+}
+
 function save() {
   let params = {
     comment: mod.value.comment,
@@ -143,12 +217,33 @@ function save() {
     newStatus: mod.value.id,
   }
 
+  if (saveCheckList()) return false;
+
+  if (!managerPrice.value) return ElMessage.warning('Поле "Цена руководителя" обязателен для заполнения')
+  if (isBuyerManager && changeManagerPrice()) return false
 
   globalStore.isWaiting = true
   appealStoreStatus.setStatus(params).then(res => {
     globalStore.isWaiting = false
     isOpen.value = false
-    if (res.status === 200) location.reload()
+
+    if (res.data) {
+      if (res.data.items[0].dealDaysOver === true) {
+        ElMessage.warning(
+          'Дата создания оценки превышает текущую на 2 дня. </br> Смена статуса на - Запрос цены в аналитический центр',
+        );
+      }
+
+      if (mod.value.useDealCheck !== 'false') {
+        dealStore.saveCheckList(checklist.value).then(() => {
+          ElMessage.success('Успешно');
+          location.reload()
+        })
+      } else if (res.status === 200){
+        location.reload()
+      }
+    }
+
   })
 
 }

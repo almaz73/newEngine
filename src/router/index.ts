@@ -48,6 +48,11 @@ const router = createRouter({
             props: true,
             component: () => import('@/pages/appeal/AppealEditor.vue').catch(val => fail(val))
         }, {
+            path: '/appeal/commission/:id',
+            name: 'comiisionEdit',
+            props: true,
+            component: () => import('@/pages/appeal/AppealEditor.vue').catch(val => fail(val))
+        }, {
             path: '/deal',
             name: 'deal',
             component: () => import('@/pages/deal/DealPage.vue').catch(val => fail(val))
