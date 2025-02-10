@@ -18,6 +18,8 @@
 
     <div class="pusher"/>
 
+    <a @click="toVer1()">Ver.1 &nbsp; &nbsp; </a>
+
     <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
       <div>{{ globalStore.account.roleTitle }}</div>
@@ -45,6 +47,10 @@ const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/ass
 
 function showMenu() {
   globalStore.isShowPanel = !globalStore.isShowPanel
+}
+
+function toVer1() {
+  location.href = location.href.replace('v2','#')
 }
 
 
