@@ -200,9 +200,6 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api/work/getbycto`)
             return (cache['getbycto'] = res)
         },
-        async getWorkflowHistory(dealId: number) {
-            return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
-        },
         async GetMarkupMatrix(storageId: number, fullSumm: number, buyCategory: number) {
           if (cache['GetMarkupMatrix' + storageId + fullSumm + buyCategory]) return cache['GetMarkupMatrix' + storageId + fullSumm + buyCategory]
           const res = await axios.get(`/api/MarkupMatrix/GetByLocation?locationId=${storageId}&priceMarket=${fullSumm}&buyCategory=${buyCategory}`)

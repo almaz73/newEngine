@@ -214,20 +214,22 @@ function makeStandart() {
       count4 += el.boughtCount
       count5 += el.onCommissionProc
       el.id = idCount
-      el.buyoutLocations.forEach(item => {
-        let arrList = item.listAppeals
-        if (star.value === 2) arrList = item.listBuys
-        if (star.value === 3) arrList = item.listBoughts
-        arrList.forEach(z => {
-          count++;
-          idCount++
-          z.id = idCount
-          if (isPlace) z.locationTitle = item.locationTitle
-          z.employeeTitle = count + '. Выкуп'
-          z.appealCount = z.appealClientTitle
-          z.buyCount = '☎ ' + z.appealClientPhone
-          z.appealBuyProc = '🚕 ' + z.appealAuto
-          el.children.push(z)
+      el.citys.forEach(row => {
+        row.buyoutLocations.forEach(item => {
+          let arrList = item.listAppeals
+          if (star.value === 2) arrList = item.listBuys
+          if (star.value === 3) arrList = item.listBoughts
+          arrList.forEach(z => {
+            count++;
+            idCount++
+            z.id = idCount
+            if (isPlace) z.locationTitle = item.locationTitle
+            z.employeeTitle = count + '. Выкуп'
+            z.appealCount = z.appealClientTitle
+            z.buyCount = '☎ ' + z.appealClientPhone
+            z.appealBuyProc = '🚕 ' + z.appealAuto
+            el.children.push(z)
+          })
         })
       })
     })
@@ -243,25 +245,27 @@ function makeStandart() {
       count4 += el.boughtCount
       count5 += el.onCommissionProc
       el.id = idCount
-      el.buyoutLocations.forEach(item => {
-        item.children = []
-        idCount++;
-        item.id = idCount
-        item.employeeTitle = item.locationTitle
-        let arrList = item.listAppeals
-        if (star.value === 2) arrList = item.listBuys
-        if (star.value === 3) arrList = item.listBoughts
-        arrList.forEach(z => {
-          count++;
-          idCount++
-          z.id = idCount
-          z.employeeTitle = count + '. Выкуп'
-          z.appealCount = z.appealClientTitle
-          z.buyCount = '☎ ' + z.appealClientPhone
-          z.appealBuyProc = '🚕 ' + z.appealAuto
-          item.children.push(z)
+      el.citys.forEach(row => {
+        row.buyoutLocations.forEach(item => {
+          item.children = []
+          idCount++;
+          item.id = idCount
+          item.employeeTitle = item.locationTitle
+          let arrList = item.listAppeals
+          if (star.value === 2) arrList = item.listBuys
+          if (star.value === 3) arrList = item.listBoughts
+          arrList.forEach(z => {
+            count++;
+            idCount++
+            z.id = idCount
+            z.employeeTitle = count + '. Выкуп'
+            z.appealCount = z.appealClientTitle
+            z.buyCount = '☎ ' + z.appealClientPhone
+            z.appealBuyProc = '🚕 ' + z.appealAuto
+            item.children.push(z)
+          })
+          el.children.push(item)
         })
-        el.children.push(item)
       })
     })
   }
