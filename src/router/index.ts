@@ -141,11 +141,13 @@ router.beforeEach(res=>{
     instance?.proxy?.$forceUpdate()
 })
 
-router.afterEach((to, from) => {
-    let acceptedPaths = ['/reports', '/undercontruction']
+router.afterEach((to) => {
+    let acceptedPaths = ['/undercontruction', '/reports', '/login', ]
     if (location.hostname === "live.autonet.pro") {
+    // if (location.hostname === "localhost") {
         if (!acceptedPaths.includes(to.path)) router.push(`/undercontruction`)
     }
+    window.scrollTo({top: 0}) // прокручиваю наверх
 })
 
 function fail(val: any) {

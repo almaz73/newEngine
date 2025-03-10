@@ -69,7 +69,7 @@ onMounted(() => {
     LastReport = JSON.parse(LastReport)
     activeName.value = LastReport.tab
     tabchange({props: {name: LastReport.tab}, LastReport})
-  }
+  } else refCallCenter.value.open({tab: 'callCenter'})
 })
 
 </script>
