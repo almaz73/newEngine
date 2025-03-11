@@ -5,29 +5,29 @@
             :top="40"
             :title="'Категория наценки'"
             draggable>
-    <el-scrollbar maxHeight="480px">
+    <el-scrollbar>
       <el-form ref="form" :model="model" class="error-to-message">
       <span class="modal-fields">
-        <el-form-item prop="orgElement.id" :rules="{required: true, message: 'Организация', trigger: ['change']}">
             <label class="label-right l_100">Организация</label>
             <el-select
                 style="width: 190px"
                 placeholder="Организация"
                 @change="changeOrg"
-                v-model="model.orgElement.id"
+                v-model="model.orgElements"
                 filterable
+                multiple
                 clearable>
               <el-option v-for="item in organizations" :key="item.id" :label="item.name"
                          :value="item.id"/>
            </el-select>
-        </el-form-item>
         <el-form-item prop="department.id" :rules="{required: false, message: 'Отдел', trigger: ['change']}">
             <label class="label-right l_100">Отдел</label>
             <el-select
                 style="width: 190px"
                 title="Отдел"
                 placeholder="Отдел"
-                v-model="model.department.id"
+                v-model="model.departments"
+                multiple
                 filterable
                 clearable>
               <el-option v-for="item in departments" :key="item.id" :label="item.name"
@@ -111,7 +111,7 @@ let cb;
 
 
 function changeOrg(id) {
-  adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
+  adminStore.getBuyLocationsByOrganizations(id).then(res => departments.value = res)
 }
 
 function open(row, cbModal,copy) {
@@ -125,7 +125,7 @@ function open(row, cbModal,copy) {
     model.value.id = 0
   }
   globalStore.getOrganizations().then(res => organizations.value = res.items)
-  if (model.value.orgElement.id) changeOrg(model.value.orgElement.id)
+  if (model.value.orgElements) changeOrg(model.value.orgElements)
 }
 
 function checkPercentage(category) {
