@@ -143,6 +143,6 @@ function deleteRow(row){
   
   
   getData()
-  globalStore.setTitle('Автомобильные бренды')
+  globalStore.setTitle('Админка - Марки по ПТС')
   globalStore.steps = []
   </script>

@@ -138,6 +138,6 @@ function getData() {
 }
 
 getData()
-globalStore.setTitle('Марки шин')
+globalStore.setTitle('Админка - Шины')
 globalStore.steps = []
 </script>

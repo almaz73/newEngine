@@ -100,7 +100,7 @@ function getData() {
   })
 }
 
-globalStore.setTitle('Виды работ')
+globalStore.setTitle('Админка - Виды работ')
 globalStore.steps = []
 getData()
 

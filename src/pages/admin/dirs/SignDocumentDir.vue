@@ -141,7 +141,7 @@
     })
   }
   
-  globalStore.setTitle('Подпись документов')
+  globalStore.setTitle('Админка - Подпись документов')
   globalStore.steps = []
   getData()
   

@@ -95,7 +95,7 @@
     })
   }
   
-  globalStore.setTitle('Шаблоны причин')
+  globalStore.setTitle('Админка - Шаблоны причин')
   globalStore.steps = []
   getData()
   

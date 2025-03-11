@@ -127,7 +127,7 @@ function getData() {
   })
 }
 
-globalStore.setTitle('Возможные неисправности')
+globalStore.setTitle('Админка - Возможные неисправности')
 globalStore.steps = []
 getData()
 

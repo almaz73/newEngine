@@ -156,8 +156,6 @@ function openModalUserDir(row: any | null) {
 }
 
 
-globalStore.setTitle('Клиенты')
-globalStore.steps = []
 getData()
 
 </script>

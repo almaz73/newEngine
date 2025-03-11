@@ -178,7 +178,7 @@
     globalStore.getOrganizations().then(res => organizations.value = res.items)
   }
 
-globalStore.setTitle('Место хранения')
+globalStore.setTitle('Админка - Место хранения')
 globalStore.steps = []
 getData()
 

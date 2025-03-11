@@ -102,7 +102,7 @@ const currentDirectory = ref(lastUsedDirectories.value[0])
 selectDir(currentDirectory.value)
 
 function found(val: string) {
-  let count = globalStore.isMobileView ? 3 : 5;
+  let count = !globalStore.isMobileView ? 7 : 3;
   lastUsedDirectories.value = lastUsedDirectories.value && lastUsedDirectories.value.filter(el => el != val)
   lastUsedDirectories.value.unshift(val)
   if (lastUsedDirectories.value.length > count) lastUsedDirectories.value.length = count

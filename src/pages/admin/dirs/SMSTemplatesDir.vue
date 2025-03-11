@@ -81,7 +81,7 @@ function getData() {
   })
 }
 
-globalStore.setTitle('СМС шаблоны')
+globalStore.setTitle('Админка - СМС шаблоны')
 globalStore.steps = []
 getData()
 

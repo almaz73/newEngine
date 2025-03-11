@@ -146,8 +146,6 @@ function getData() {
   adminStore.getLegals(filter).then(res => {
     globalStore.isWaiting = false
 
-    console.log('res = ', res)
-
     res.data.items.map(el => {
       // if (el.person.homeAddress && el.person.homeAddress.fias &&
       //     (el.person.homeAddress.text || el.person.homeAddress.fias.value)
@@ -174,7 +172,7 @@ function openModalUserDir(row: any | null) {
 }
 
 
-globalStore.setTitle('Клиенты')
+globalStore.setTitle('Админка - Клиенты')
 globalStore.steps = []
 
 defineExpose({open})

@@ -135,7 +135,7 @@
     })
   }
   
-  globalStore.setTitle('Политики')
+  globalStore.setTitle('Админка - Политики')
   globalStore.steps = []
   getData()
   

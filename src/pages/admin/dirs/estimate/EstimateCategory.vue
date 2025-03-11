@@ -222,7 +222,7 @@ function getData() {
   globalStore.getOrganizations().then(res => organizations.value = res.items)
 }
 
-globalStore.setTitle('Категория наценки')
+globalStore.setTitle('Админка - Категория наценки')
 globalStore.steps = []
 getData()
 

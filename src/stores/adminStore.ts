@@ -21,8 +21,6 @@ export const useAdminStore = defineStore("adminStore", {
             return await axios.get(url).then(res => res)
         },
         async getLegals(filter: any) {
-            console.log('filter = ',filter)
-
             const {quickSearch, offset, limit} = filter
             let url = '/api/lead/get/legals';
             url += '?offset=' + offset

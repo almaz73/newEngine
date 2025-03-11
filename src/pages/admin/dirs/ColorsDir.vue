@@ -118,7 +118,7 @@ function getData() {
   })
 }
 
-globalStore.setTitle('Цвета кузова')
+globalStore.setTitle('Админка - Цвета кузова')
 globalStore.steps = []
 getData()
 

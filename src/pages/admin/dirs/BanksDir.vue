@@ -167,7 +167,7 @@ function getFilials(id:number = BankIdFilials.value) {
     })
 }
 
-globalStore.setTitle('Банки')
+globalStore.setTitle('Админка - Банки')
 globalStore.steps = []
 getData()
 

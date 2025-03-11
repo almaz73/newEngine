@@ -99,7 +99,7 @@
     })
   }
   
-  globalStore.setTitle('Цвета кузова по ПТС')
+  globalStore.setTitle('Админка - Цвета кузова по ПТС')
   globalStore.steps = []
   getData()
   

@@ -89,8 +89,8 @@
     })
   }
   function open(){
-    globalStore.setTitle('Повреждения')
-    globalStore.steps = []
+    // globalStore.setTitle('Повреждения')
+    // globalStore.steps = []
     getData()
   }
 

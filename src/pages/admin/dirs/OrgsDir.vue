@@ -72,7 +72,7 @@ function getData() {
   })
 }
 
-globalStore.setTitle('Организационная структура')
+globalStore.setTitle('Админка - Организационная структура')
 globalStore.steps = []
 getData()
 

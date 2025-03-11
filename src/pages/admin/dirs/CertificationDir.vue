@@ -65,7 +65,7 @@
     })
   }
   
-  globalStore.setTitle('Программы сертификации')
+  globalStore.setTitle('Админка - Программы сертификации')
   globalStore.steps = []
   getData()
   

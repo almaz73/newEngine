@@ -23,7 +23,7 @@ describe('Тесты Админка / Цвет кузова', function () {
     it('Добавление и удаление строки', () => {
         cy.visit(site + '/v2/admin') // заходим в раздел справочники
         cy.get('.el-select').contains("Выбери справочник").click();
-        cy.get('.el-select-dropdown__item').contains('Цвета кузова').click();
+        cy.get('.el-select-dropdown__item').contains('Админка - Цвета кузова').click();
         cy.get('.el-button').contains('Добавить').click();
         cy.get('input[placeholder="Цвет"]').type('Необычайный')
         cy.contains('Сохранить').click();

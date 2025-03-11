@@ -219,7 +219,7 @@
   }
 
   function open(){
-    globalStore.setTitle('Матрица наценки')
+    globalStore.setTitle('Админка - Норма оборачиваемости')
     globalStore.steps = []
     getData()
   }

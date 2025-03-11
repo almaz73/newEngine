@@ -80,7 +80,7 @@
     })
   }
 
-  globalStore.setTitle('Источник')
+  globalStore.setTitle('Админка - Источник')
   globalStore.steps = []
   getData()
 

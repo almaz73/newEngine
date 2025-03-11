@@ -103,7 +103,7 @@ function getData() {
     tableDataMemory = JSON.parse(JSON.stringify(res.items))
   })
 }
-globalStore.setTitle('Осмотр')
+globalStore.setTitle('Админка - Лист осмотра')
 globalStore.steps = []
 getData()
 

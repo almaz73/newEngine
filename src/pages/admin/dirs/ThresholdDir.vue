@@ -131,7 +131,7 @@ function getData() {
 
 }
 
-globalStore.setTitle('Пороговые значения')
+globalStore.setTitle('Админка - Пороговые значения')
 globalStore.steps = []
 getData()
 

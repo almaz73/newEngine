@@ -218,7 +218,7 @@ function deleteUser(id: number) {
 
 
 
-globalStore.setTitle('Пользователи')
+globalStore.setTitle('Админка - Пользователи')
 globalStore.steps = []
 getData()
 </script>

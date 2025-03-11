@@ -1,12 +1,15 @@
 <template>
   <main style="margin: 8px;">
 
-    <h3>Доступ временно закрыт.<br> Разрабатывается. </h3>
+    <h4>⌧ Доступ в некоторые разделы временно закрыт.</h4>
 
-    &nbsp; &nbsp; &nbsp; Попробуйте доступные разделы:<br><br>
-      - Отчеты
+    &nbsp; &nbsp; &nbsp; Доступные разделы:<br><br>
+      - Отчеты<br>
+      - Админка<br>
 
   </main>
 
 
 </template>
+<script setup lang="ts">
+</script>

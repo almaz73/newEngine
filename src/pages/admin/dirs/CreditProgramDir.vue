@@ -82,7 +82,7 @@
     })
   }
   
-  globalStore.setTitle('Кредитные программы')
+  globalStore.setTitle('Админка - Кредитные программы')
   globalStore.steps = []
   getData()
   
