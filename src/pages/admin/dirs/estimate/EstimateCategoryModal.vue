@@ -20,7 +20,6 @@
               <el-option v-for="item in organizations" :key="item.id" :label="item.name"
                          :value="item.id"/>
            </el-select>
-        <el-form-item prop="department.id" :rules="{required: false, message: 'Отдел', trigger: ['change']}">
             <label class="label-right l_100">Отдел</label>
             <el-select
                 style="width: 190px"
@@ -33,7 +32,6 @@
               <el-option v-for="item in departments" :key="item.id" :label="item.name"
                          :value="item.id"/>
            </el-select>
-        </el-form-item>
         <el-form-item prop="categoryA" :rules="{required: true, message: 'A, %', trigger: ['change']}">
              <label class="label-right l_100">A, %</label>
              <el-input type="number" v-model="model.categoryA" class="input-width" min="0" max="100" @input="checkPercentage('categoryA')"/>
@@ -118,8 +116,8 @@ function open(row, cbModal,copy) {
   cb = cbModal;
   isOpen.value = true;
   
-  if (row && !row.department) row.department = {id: null}
-  if (!row) model.value = {orgElement: {id: null}, department: {id: null}};
+  if (row && !row.departments) row.departments = []
+  if (!row) model.value = {orgElements: [], departments: []};
   else model.value = JSON.parse(JSON.stringify(row))
   if (copy) {
     model.value.id = 0

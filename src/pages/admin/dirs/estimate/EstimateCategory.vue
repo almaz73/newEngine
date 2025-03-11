@@ -17,7 +17,6 @@
                     :value="item.id"/>
           </el-select>
 
-          <span v-if="search.orgElements" style="display: flex">
           <span style="margin-right:15px; height: 100%">Отдел</span>
           <el-select
           :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
@@ -33,7 +32,6 @@
           <el-option v-for="item in departments" :key="item.id" :label="item.name"
                     :value="item.id"/>
           </el-select>
-        </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
     <br><br>
@@ -89,7 +87,7 @@
 
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-        <span>{{ row.orgElement.name }}
+        <span>{{ row.orgElementsName }}
           <EditPensilCtrl @click="openModal(row)"/>
         </span>
                
@@ -149,7 +147,7 @@ const rowsPerPage = ref(10)
 const currentPage = ref(1)
 const departments = ref([])
 const organizations = ref([])
-const search = ref({orgElements:[],department:''})
+const search = ref({orgElements:[],departments:[]})
 const filter = {
   filter: {},
   limit: rowsPerPage.value,
@@ -157,18 +155,18 @@ const filter = {
   search: ''
 }
 function find() {
-    if (!search.value.orgElements.length && !search.value.departments.length) filter.search = '';
-    else {
-      let OrgIds=''
-      search.value.orgElements.forEach(it=>OrgIds+='&OrgId='+it)
-      let DepartmentIds=''
-      search.value.departments && search.value.departments.forEach(it=>DepartmentIds+='&DepartmentId='+it)
-      filter.search = `${OrgIds}${DepartmentIds}`;
-    }
-    getData()
+  if (!search.value.orgElements.length && !search.value.departments.length) filter.search = '';
+  else {
+    let OrgIds=''
+    search.value.orgElements.forEach(it=>OrgIds+='&OrgId='+it)
+    let DepartmentIds=''
+    search.value.departments && search.value.departments.forEach(it=>DepartmentIds+='&DepartmentId='+it)
+    filter.search = `${OrgIds}${DepartmentIds}`;
   }
+  getData()
+}
 
-function changeOrg(id: Array) {
+function changeOrg(id) {
   if (id) adminStore.getBuyLocationsByOrganizations(id)
       .then(res => departments.value = res)
   else {

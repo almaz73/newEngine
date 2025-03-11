@@ -274,6 +274,7 @@ export const useAdminStore = defineStore("adminStore", {
         async getBuyLocationsByOrganizations(orgIds: Array) {
             let link = ''
             orgIds.forEach(it=>link+='&orgids='+it)
+            if (!link) return false
             return await axios.get('/api/OrgElement/GetBuyLocationsByOrganizations?' + link).then(res => res.data)
         },
         async saveMarkupCategory(params: any) {

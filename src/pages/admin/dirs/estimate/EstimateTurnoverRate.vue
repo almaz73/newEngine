@@ -9,15 +9,15 @@
             :prefix-icon="Search"
             placeholder="Организация"
             @change="changeOrg"
-            v-model="search.orgElement"
+            v-model="search.orgElements"
             filterable
+            multiple
             clearable>
           <el-option v-for="item in organizations" :key="item.id" :label="item.name"
                     :value="item.id"/>
           </el-select>
           <br>
-          <span v-if="search.orgElement">
-          <span style="margin-right:15px;">Отдел</span>          
+          <span style="margin-right:15px;">Отдел</span>
           <el-select
           :style="{marginRight: globalStore.isMobileView?'80px':'50px'}"
           :prefix-icon="Search"
@@ -25,13 +25,13 @@
             title="Отдел"
             placeholder="Отдел"
             @change="changeDep"
-            v-model="search.department"
+            v-model="search.departments"
             filterable
+            multiple
             clearable>
             <el-option v-for="item in departments" :key="item.id" :label="item.name"
                     :value="item.id"/>
           </el-select>
-          </span>
       <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
@@ -40,11 +40,10 @@
                 style="width: 100%; margin-bottom: 20px"
                 :default-sort="{ prop: 'order', order: 'descending'}"
                 >
-        <el-table-column label="Организация" prop="orgElement.name" width="185" sortable/>
-        <el-table-column prop="department.name" label="Отдел"/>
-        <el-table-column prop="typeTitle" label="Название">
-        </el-table-column>
-        <el-table-column prop="rate" label="Процент, %"/>
+        <el-table-column label="Организация" prop="orgElementsName" width="185" sortable/>
+        <el-table-column prop="departmentsName" label="Отдел"/>
+        <el-table-column prop="typeTitle" label="Название"  width="140"/>
+        <el-table-column prop="rate" label="Процент, %"  width="140"/>
         <el-table-column label="Период действия, с" sortable>
           <template #default="scope">
             <span v-if="isEdit && selectedRow.id===scope.row.id">
@@ -89,11 +88,11 @@
 
       <div class="vertical-table" v-if="globalStore.isMobileView">
         <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
-          <span>{{ row.orgElement.name }}
+          <span>{{ row.orgElementsName }}
             {{ formatDateDDMMYYYY(row.validFrom) }}
             <EditPensilCtrl @click="openModal(row)"/>
           </span>
-          <div v-if="row.department && row.department.name"><small>Отдел:</small> {{ row.department?.name }}</div>
+          <div v-if="row.departmentsName"><small>Отдел:</small> {{ row.departmentsName }}</div>
             <div v-if="row.typeTitle"><small>Название:</small> {{ row.typeTitle }}</div>
             <div ><small>Процент, %:</small> {{ row.rate }}</div>
             <div v-if="row.validFrom"><small>Период действия, с:</small> {{ formatDateDDMMYYYY(row.validFrom) }}</div>
@@ -133,7 +132,7 @@
   const total = ref(0)
   const rowsPerPage = ref(10)
   const currentPage = ref(1)
-  const search = ref({orgElement:'',department:''})
+  const search = ref({orgElements:[],departments:[]})
   const departments = ref([])
   const organizations = ref([])
   const filter = {
@@ -150,21 +149,27 @@
   })
 
   function find() {
-    if (!search.value.orgElement && !search.value.department) filter.search = '';
-    else filter.search = `OrgId=${search.value.orgElement}&DepartmentId=${search.value.department}`;
+    if (!search.value.orgElements.length && !search.value.departments.length) filter.search = '';
+    else {
+      let OrgIds=''
+      search.value.orgElements.forEach(it=>OrgIds+='&OrgId='+it)
+      let DepartmentIds=''
+      search.value.departments && search.value.departments.forEach(it=>DepartmentIds+='&DepartmentId='+it)
+      filter.search = `${OrgIds}${DepartmentIds}`;
+    }
     getData()
   }
   function changeOrg(id) {
-    if(id) adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
+    if(id) adminStore.getBuyLocationsByOrganizations(id).then(res => departments.value = res)
     else{
-      search.value.orgElement = ''
-      search.value.department = ''
+      search.value.orgElements = []
+      search.value.departments = []
     }
     find()
   }
 
   function changeDep(id){
-    if(!id)  search.value.department = ''
+    if(!id)  search.value.departments = []
     find()
   }
 
@@ -213,6 +218,12 @@
 
     adminStore.getTurnoverRate(filter).then(res => {
       tableData.value = res.models
+      tableData.value.map(el=>{
+        el.orgElementsName = el.orgElements.map(it => it.name).join(', ')
+        el.orgElements = el.orgElements.map(it => it.id)
+        el.departmentsName = el.departments.map(it => it.name).join(', ')
+        el.departments = el.departments.map(it => it.id)
+      })
       total.value = res.totalCount
     })
     globalStore.getOrganizations().then(res => organizations.value = res.items)
