@@ -1,12 +1,10 @@
 <template>
   <ForFullSceen>
-
+    <div class="custom-report-table_bts">
+      <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
+      <button class="bt" @click="toSubSection(2)" title="Все узлы">⭶</button>
+    </div>
     <table class="custom-report-table">
-      <div style="position: absolute; top: 0">
-        <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
-        <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
-        <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
-      </div>
       <thead>
       <tr>
         <th> ФИО</th>

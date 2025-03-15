@@ -4,9 +4,15 @@
     font-size: smaller;
 }
 
-.custom-report-table .bt {
-    width: 26px;
+.custom-report-table_bts {
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.custom-report-table_bts button {
     margin-right: 1px;
+    width: 26px;
 }
 
 .custom-report-table th {
