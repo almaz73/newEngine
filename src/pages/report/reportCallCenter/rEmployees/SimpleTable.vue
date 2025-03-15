@@ -3,7 +3,7 @@
 
     <table class="custom-report-table">
       <div style="position: absolute; top: 0px">
-        <button class="bt" @click="toSubSection(1)" title="Скрыть уровни">⭱</button>
+        <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
         <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
         <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
       </div>
@@ -71,7 +71,7 @@ let oldNeedUpdate = 0
 watchEffect(() => {
   if (oldNeedUpdate !== needUpdate) {
     oldNeedUpdate = needUpdate
-    subSections.value=1
+    subSections.value = 1
     tableData.value = []
     init()
   }
@@ -106,8 +106,8 @@ function init() {
           a.employeeTitle = (count++) + '. ' + a.appealTypeTitle
           a.cityName = item.cityName
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 2
           a.level = 2
           a.parentId = el.idCount
@@ -120,8 +120,8 @@ function init() {
           a.employeeTitle = (count3++) + '. ' + 'Оценка '
           a.cityName = item.cityName
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 3
           a.level = 2
           a.parentId = el.idCount
@@ -135,8 +135,8 @@ function init() {
           a.employeeTitle = (count5++) + '. ' + 'Выкуплено '
           a.cityName = item.cityName
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 5
           a.level = 2
           a.parentId = el.idCount

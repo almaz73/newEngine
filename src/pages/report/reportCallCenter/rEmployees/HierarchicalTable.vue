@@ -3,7 +3,7 @@
 
     <table class="custom-report-table">
       <div style="position: absolute; top: 0px">
-        <button class="bt" @click="toSubSection(1)" title="Скрыть уровни">⭱</button>
+        <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
         <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
         <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
       </div>
@@ -122,8 +122,8 @@ function init() {
         it.listAppeals && it.listAppeals.forEach(a => {
           a.employeeTitle = (count++) + '. ' + a.appealTypeTitle
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 2
           a.level = 4
           a.parentId = it.idCount
@@ -135,8 +135,8 @@ function init() {
         it.listBuys && it.listBuys.forEach(a => {
           a.employeeTitle = (count3++) + '. ' + 'Оценка '
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 3
           a.level = 4
           a.parentId = it.idCount
@@ -149,8 +149,8 @@ function init() {
         it.listBoughts && it.listBoughts.forEach(a => {
           a.employeeTitle = (count5++) + '. ' + 'Выкуплено '
           a.appealCount = a.appealClientTitle
-          a.buyCount = a.appealClientPhone
-          a.boughtCount = a.appealAuto
+          a.buyCount = '☎ ' + a.appealClientPhone
+          if (a.appealAuto) a.boughtCount = '🚕 ' + a.appealAuto
           a.active = 5
           a.level = 4
           a.parentId = it.idCount

@@ -59,12 +59,12 @@
     display: grid;
     grid-template-rows: 0fr;
     overflow: hidden;
-    transition: grid-template-rows .7s;
+    transition: grid-template-rows .3s;
 }
 
 .expander-content {
     min-height: 0;
-    transition: visibility .3s ease-out;
+    transition: visibility .1s ease-out;
     visibility: hidden;
 }
 

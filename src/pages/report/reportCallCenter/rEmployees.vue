@@ -48,11 +48,11 @@
       <br><br>
     </div>
     <el-tabs v-model="activeName" v-if="tableData.length">
-      <el-tab-pane label="Простой" name="standart">
-        <SimpleTable :data="JSON.parse(JSON.stringify(tableData))" :needUpdate="needUpdate" />
-      </el-tab-pane>
       <el-tab-pane label="Иерархический" name="ierarh">
         <HierarchicalTable :data="JSON.parse(JSON.stringify(tableData))" :needUpdate="needUpdate" />
+      </el-tab-pane>
+      <el-tab-pane label="Простой" name="standart">
+        <SimpleTable :data="JSON.parse(JSON.stringify(tableData))" :needUpdate="needUpdate" />
       </el-tab-pane>
     </el-tabs>
 
@@ -79,7 +79,7 @@ const reportStore = useReportStore()
 const star = ref(1)
 const tableData = ref([])
 const needUpdate = ref(0)
-const activeName = ref('standart')
+const activeName = ref('ierarh')
 let data = []
 const dealTypes = [{ title: 'Выкуп (трейд-ин)', value: 10 }, { title: 'Комиссия', value: 20 }]
 
@@ -109,9 +109,11 @@ function toSearch() {
   if (S.dealType) params.dealType = S.dealType
   if (S.employeeId) params.employeeId = S.employeeId
   if (S.buyTypeView) params.buyTypeView = S.buyTypeView
+  globalStore.isWaiting = true
   reportStore.getEmployee(params).then(res => {
     tableData.value = res.employees
     needUpdate.value++
+    globalStore.isWaiting = false
     if (!tableData.value.length) ElMessage.warning('Нет данных')
   })
 }
