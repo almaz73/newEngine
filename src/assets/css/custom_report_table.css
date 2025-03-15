@@ -6,6 +6,7 @@
 
 .custom-report-table_bts {
     position: absolute;
+    display: contents;
     top: 0;
     width: 100%;
 }

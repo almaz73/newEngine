@@ -3,6 +3,8 @@
     <div class="custom-report-table_bts">
       <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
       <button class="bt" @click="toSubSection(2)" title="Все узлы">⭶</button>
+
+      &nbsp; <input v-model="searchTxt"  placeholder="фильтр по ФИО"  @input="init()" />
     </div>
     <table class="custom-report-table">
       <thead>
@@ -64,6 +66,7 @@ const activeColumn = ref(2)
 const selectedRow = ref(-1)
 const subSections = ref(1)
 const updateKey = ref(0)
+const searchTxt = ref('')
 let oldNeedUpdate = 0
 
 watchEffect(() => {
@@ -85,6 +88,8 @@ function init() {
   let count5 = 0
   data && data.forEach(el => {
     el.level = 1
+    if(searchTxt.value && searchTxt.value.length>2 &&
+      !el.employeeTitle.toUpperCase().includes(searchTxt.value.toUpperCase())) return false
     idCount++
     count1 += el.appealCount
     count2 += el.appealBuyProc
