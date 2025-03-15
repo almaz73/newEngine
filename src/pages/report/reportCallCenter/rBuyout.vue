@@ -82,7 +82,9 @@ import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
+import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const searchFilter = ref({})
 const reportStore = useReportStore()
 const star = ref(1)
@@ -127,10 +129,12 @@ function init() {
 init()
 
 function toSearch() {
+  globalStore.isWaiting = true
   reportStore.getByuouts(searchFilter.value).then(res => {
     dataOld = res.items
     if (dataOld.length) makeStandart(true)
     else ElMessage.warning('Нет данных')
+    globalStore.isWaiting = false
   })
 }
 

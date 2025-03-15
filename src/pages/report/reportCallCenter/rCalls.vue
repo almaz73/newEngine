@@ -127,9 +127,11 @@ function toSearch() {
     year: S.selectedMonth.getFullYear(),
     month: S.selectedMonth.getMonth() + 1
   }
+  globalStore.isWaiting = true
   reportStore.getCalls(params).then(res => {
     if (!res.report.length) ElMessage.warning('Нет данных')
     else  normalizeTableData(res.report)
+    globalStore.isWaiting = false
   })
 
 }

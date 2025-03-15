@@ -123,7 +123,7 @@ init()
 function toSearch() {
   let params = {date: searchFilter.value.date}
   if (searchFilter.value.employeeId) params.employeeId = searchFilter.value.employeeId
-
+  globalStore.isWaiting = true
   reportStore.getActual(params).then(res => {
     if (res) {
       oldData = res.report
@@ -131,6 +131,7 @@ function toSearch() {
     }
 
     if (!tableData.value || !tableData.value.length) ElMessage.warning('Нет данных')
+    globalStore.isWaiting = false
   })
 }
 

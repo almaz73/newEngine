@@ -97,7 +97,9 @@ import {ref} from "vue";
 import {useReportStore} from "@/stores/reportStore";
 import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import {ElMessage} from "element-plus";
+import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const searchFilter = ref({lowCreateDatePeriod: new Date()})
 const reportStore = useReportStore()
 const tableData = ref([])
@@ -174,11 +176,12 @@ function toSearch() {
     variant: S.variant,
     communicationType: S.communicationType
   }
-
+  globalStore.isWaiting = true
   reportStore.getArchiveClients(params).then(res => {
     tableData.value = res.items.row
     tableColumns.value = res.items.headersList
     if (!tableData.value.length) ElMessage.warning('Нет данных')
+    globalStore.isWaiting = false
   })
 }
 

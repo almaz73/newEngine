@@ -145,7 +145,9 @@ function toSearch() {
     dealType: S.chosenDealType,
     type: S.chosenReportType
   }
+  globalStore.isWaiting = true
   reportStore.getMonthly(params).then(res => {
+    globalStore.isWaiting = false
     tableData.value = res.items
     if (!tableData.value.length) ElMessage.warning('Нет данных')
   })

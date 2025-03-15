@@ -2,7 +2,7 @@
   <ForFullSceen>
 
     <table class="custom-report-table">
-      <div style="position: absolute; top: 0px">
+      <div style="position: absolute; top: 0">
         <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
         <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
         <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
@@ -22,11 +22,11 @@
         <tr
           @click="toSelectedRow(row, i)"
           style="padding: 0; margin: 0"
-          :class="{selected: i == selectedRow }"
+          :class="{selected: i === selectedRow }"
           v-if="
-          (row.isShow && (!row.active || row.active==activeColumn)) ||
+          (row.isShow && (!row.active || row.active===activeColumn)) ||
           (row.level<subSections+1
-          && (!row.active || (row.active && row.active==activeColumn)))">
+          && (!row.active || (row.active && row.active===activeColumn)))">
           <td>
            <span v-if="row.level===1" class="lev1">
           {{ row.employeeTitle }}
@@ -189,7 +189,7 @@ function clearPoints() {
 }
 
 function toSubSection(val) {
-  if (val == 2 && subSections.value == 2) subSections.value = 3
+  if (val === 2 && subSections.value === 2) subSections.value = 3
   else if (val === 2 && subSections.value === 3) subSections.value = 2
   else subSections.value = val
   clearPoints()
@@ -201,14 +201,14 @@ function toSelectedRow(row, i) {
   let listToClose = []
 
   tableData.value.map(el => {
-    if (el.idCount == row.idCount) {
+    if (el.idCount === row.idCount) {
       if (!row.isOpen) row.isOpen = true
       else {
         row.isOpen = false
         listToClose.push(row.idCount)  // находим всех потомков d дальнейшем и будем закрывать
       }
     }
-    if (el.parentId == row.idCount) el.isShow = true
+    if (el.parentId === row.idCount) el.isShow = true
 
     if (listToClose && listToClose.includes(el.parentId)) {
       if (!listToClose.includes(el.idCount)) listToClose.push(el.idCount)
