@@ -13,13 +13,21 @@
           v-model="searchFilter.lowCreateDatePeriod"
 
         />
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp;
         <el-date-picker
           format="DD.MM.YYYY"
           value-format="DD.MM.YYYY"
           :clearable="false"
           v-model="searchFilter.highCreateDatePeriod"
         />
+        &nbsp; &nbsp;
+        <el-select
+          style="width: 220px"
+          @change="monthChanged()"
+          v-model="period"
+          filterable>
+          <el-option v-for="item in periodItem" :key="item.value" :label="item.title" :value="item.value" />
+        </el-select>
 
       </div>
 
@@ -34,12 +42,12 @@
       </div>
 
       <div>
-        <label class="label l_300">Cотрудник</label>
+        <label class="label l_300">Категория</label>
         <el-select
           style="width: 220px"
-          v-model="searchFilter.employeeId"
+          v-model="searchFilter.roleGroup"
           filterable>
-          <el-option v-for="item in myEmployees" :key="item.id" :label="item.title" :value="item.id" />
+          <el-option v-for="item in roles" :key="item.group.title" :label="item.group.title" :value="item.group" />
         </el-select>
       </div>
       <br>
@@ -68,9 +76,8 @@ import { useReportStore } from '@/stores/reportStore'
 import { formatDateDDMMYYYY } from '@/utils/globalFunctions'
 import { ElMessage } from 'element-plus'
 import SimpleTable from './rEmployees/SimpleTable.vue'
-// import {datas} from './rEmployees/data_little'
-// import { datas } from './rEmployees/data'
 import HierarchicalTable from '@/pages/report/reportCallCenter/rEmployees/HierarchicalTable.vue'
+import { useAdminStore } from '@/stores/adminStore'
 
 
 const searchFilter = ref({})
@@ -80,15 +87,33 @@ const star = ref(1)
 const tableData = ref([])
 const needUpdate = ref(0)
 const activeName = ref('ierarh')
+const roles = ref([])
 let data = []
 const dealTypes = [{ title: 'Выкуп (трейд-ин)', value: 10 }, { title: 'Комиссия', value: 20 }]
-
+const adminStore = useAdminStore()
+const period = ref(10)
+const periodItem = [
+  { title: 'Текущий месяц', value: 10 },
+  { title: 'Прошлый месяц', value: 20 },
+  { title: '2 месяца назад', value: 30 }
+]
 const tableRowClassName = ({ row }) => {
   if (row.appealId) return 'red-text'
 }
 
-const myEmployees = ref([])
-globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
+function monthChanged() {
+  let currentMonth = new Date(new Date().setDate(1))
+  if (period.value === 20) currentMonth = new Date(currentMonth.setMonth(currentMonth.getMonth() - 1))
+  if (period.value === 30) currentMonth = new Date(currentMonth.setMonth(currentMonth.getMonth() - 2))
+  searchFilter.value.lowCreateDatePeriod = formatDateDDMMYYYY(currentMonth)
+  searchFilter.value.highCreateDatePeriod = formatDateDDMMYYYY(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0))
+}
+
+
+adminStore.getUserRoles().then(res => {
+  roles.value = res.items.filter(it => [60, 61].includes(it.group.value))
+})
+
 
 function init() {
   searchFilter.value.lowCreateDatePeriod = formatDateDDMMYYYY(new Date(new Date().setDate(1)))
@@ -106,6 +131,7 @@ function toSearch() {
     lowCreateDatePeriod: S.lowCreateDatePeriod,
     highCreateDatePeriod: S.highCreateDatePeriod
   }
+  if (S.roleGroup) params.CategoryId = S.roleGroup.value
   if (S.dealType) params.dealType = S.dealType
   if (S.employeeId) params.employeeId = S.employeeId
   if (S.buyTypeView) params.buyTypeView = S.buyTypeView
