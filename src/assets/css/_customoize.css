@@ -228,6 +228,18 @@ li.el-menu-item {
 /**/
 
 
+.b_green_source .el-select__wrapper {
+    background: #518468;
+}
+
+.b_green_source .el-select__wrapper:hover {
+    background: #3d3d3d
+}
+
+.b_green_source .el-select__selected-item {
+    color: white;
+}
+
 .el-select-group .el-select-dropdown__item {
     margin-left: 30px;
 }
@@ -280,7 +292,6 @@ li.el-menu-item {
 
 .timer-list-upd {
     position: absolute;
-    top: 24px;
     font-size: 10px;
     width: 100px;
     right: 15px;

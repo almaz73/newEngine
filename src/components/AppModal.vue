@@ -71,9 +71,8 @@
   top: v-bind(panelTop);
   left: v-bind(panelCenter);
   padding: 10px;
-  border-radius: 4px;
   box-shadow: 0 0 5px black;
-  background: #ddd;
+  background: #eee;
 
   font-size: large;
 }
@@ -95,7 +94,7 @@
 }
 
 .modal__info {
-  background: #eee;
+  background: #fcfcfc;
 }
 
 .dark .modal__info {

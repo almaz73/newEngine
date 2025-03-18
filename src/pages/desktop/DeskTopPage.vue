@@ -1,5 +1,6 @@
 <template>
   <main>
+    <br>
     <el-form ref="form" :model="appeal" @change="isDirty=true">
       <div class="main__flex custom">
         <div>
@@ -115,16 +116,17 @@
             <el-button-group class="group-button " v-if="!globalStore.isMobileView || appeal.communication.type!==15"/>
 
             <div class="fields yourPlace">
-              <div>{{ Workflows.find(el => el.value === appeal.workflow.workflowLeadType).title }}</div>
+              <div>{{ WorkflowType }}</div>
               <br><br>
               <el-form-item
                   v-if="appeal.communication.type===15"
                   style="min-width: calc(100% - 35px)">
                 <el-input
+                    style="border-bottom: 3px solid #66b1ff"
                     :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
                     @input="weblinkTreatment(appeal.communication.weblink)"
                     clearable
-                    v-model.number="appeal.communication.weblink" placeholder="Веб-ссылка"/>
+                    v-model.number="appeal.communication.weblink" placeholder="Скопируйте сюда ссылку с Авита"/>
               </el-form-item>
             </div>
           </div>
@@ -134,10 +136,11 @@
               <br>
               <el-button v-for="workflow in Workflows"
                          :key="workflow.id"
-                         @click="changeWorkflow(workflow.value)"
+                         @click="changeWorkflow(workflow)"
                          :class="{active:workflow.value === appeal.workflow.workflowLeadType}">
                 {{ workflow.title }}
               </el-button>
+              <button @click="moreButtons()"> {{ Workflows.length < 4 ? 'еще..' : 'скрыть..' }}</button>
             </el-button-group>
 
             <div class="fields">
@@ -145,10 +148,10 @@
 
 
                 <el-form-item
-                    v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)"
+                    v-if="[1,2,3].includes(appeal.workflow.workflowLeadType) && appeal.communication.type!==15"
                     prop="workflow.auto['vin']"
                     :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
-                  <el-input placeholder="VIN 17 символов" @change="getAutoWithVIN()"
+                  <el-input placeholder="VIN 17 символов" @input="getAutoWithVIN()"
                             maxlength="17"
                             v-model="appeal.workflow.auto.vin"/>
                 </el-form-item>
@@ -158,6 +161,7 @@
                       v-model="appeal.workflow.brandId"
                       @change="changeBrand(appeal.workflow.brandId)"
                       placeholder="Марка"
+                      title="Марка"
                       :clearable="!globalStore.isMobileView"
                       :filterable="!globalStore.isMobileView"
                   >
@@ -172,6 +176,7 @@
                   <el-select v-model="appeal.workflow.carModelId"
                              :clearable="!globalStore.isMobileView"
                              :filterable="!globalStore.isMobileView"
+                             title="Модель"
                              placeholder="Модель">
                     <el-option v-for="item in models"
                                :key="item.id"
@@ -182,6 +187,7 @@
 
                 <el-form-item v-if="[1,2,3,4,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select placeholder="Год выпуска"
+                             title="Год выпуска"
                              clearable
                              v-model="appeal.workflow.yearReleased">
                     <el-option v-for="item in Years"
@@ -192,7 +198,9 @@
                 </el-form-item>
 
                 <el-form-item v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)">
-                  <el-input placeholder="Пробег автомобиля" type="number" v-model="appeal.workflow.mileageAuto"/>
+                  <el-input placeholder="Пробег автомобиля"
+                            title="Пробег автомобиля"
+                            type="number" v-model="appeal.workflow.mileageAuto"/>
                 </el-form-item>
 
                 <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
@@ -200,12 +208,15 @@
                             @input="changeRegistartionMark(appeal.workflow.registrationMark)"
                             style="text-transform: uppercase"
                             placeholder="X 000 XX 000"
+                            title='Государственный номерной знак'
                             maxlength="12"
                             @key.enter="emits('changed')"/>
                 </el-form-item>
 
                 <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
-                  <el-select v-model="appeal.workflow.engineType" placeholder="Тип двигателя">
+                  <el-select v-model="appeal.workflow.engineType"
+                             title="Тип двигателя"
+                             placeholder="Тип двигателя">
                     <el-option v-for="item in EngineType"
                                :key="item.id"
                                :label="item.name"
@@ -214,7 +225,7 @@
                 </el-form-item>
 
                 <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
-                  <el-select v-model="appeal.workflow.gearboxType" placeholder="Тип КПП">
+                  <el-select v-model="appeal.workflow.gearboxType" placeholder="Тип КПП" title="Тип КПП">
                     <el-option v-for="item in GearboxType"
                                :key="item.id"
                                :label="item.name"
@@ -227,6 +238,7 @@
                   <el-select v-model="appeal.workflow.bodyColorId"
                              :clearable="!globalStore.isMobileView"
                              :filterable="!globalStore.isMobileView"
+                             title="Цвет кузова"
                              placeholder="Цвет кузова">
                     <el-option v-for="item in colors"
                                :key="item.id"
@@ -294,7 +306,7 @@
         <div class="field_left gray-buttons" style="background: none">
           <div style="margin: 17px 0">Источник обращения</div>
           <el-form-item>
-            <el-select v-model="appeal.communication.type">
+            <el-select v-model="appeal.communication.type" class="b_green_source">
               <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-form-item>
@@ -320,16 +332,24 @@
           <el-button @click="resetForm(form)" :disabled="!isDirty">Сброс</el-button>
         </div>
 
+        <div>
+          <button
+              @click="openTodaysModal()"
+              style="background: #518468; padding: 0; border: none; cursor:pointer; height: 46px; width: 49px">
+            <img alt="" title="Недавние обращения" src="@/assets/icons/eventTestDriveWhite.png">
+          </button>
+        </div>
+
       </div>
     </el-form>
 
     <ModalParams :listAppeals="listAppeals"
                  :isOpen="isOpen"
-                 :clients="clientsPhone"
                  :tel="appeal.lead.person.phone"
                  @setFoundClient="setFoundClient"
                  @closeModal="closeModal"/>
   </main>
+  <TodayListModal ref="todayListModal"/>
 </template>
 <style>
 
@@ -337,24 +357,15 @@
 </style>
 <script setup>
 import {useGlobalStore} from "@/stores/globalStore";
-import {computed, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {BuyCategoryTypes, CommunicationTypes, EngineType, GearboxType, Years} from '@/utils/globalConstants'
 import {emailValidate, formattingPhone, vetRegNumber, weblink} from "@/utils/globalFunctions";
 import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
 import ModalParams from "@/pages/desktop/ModalParams.vue";
+import TodayListModal from "@/pages/desktop/TodayListModal.vue";
 
-let Workflows = [{id: 2, value: 2, title: 'Выкуп'},
-  {id: 1, value: 1, title: 'Продажа'},
-  {id: 3, value: 3, title: 'Сервис'},
-  {id: 4, value: 4, title: 'КСО'},
-  {id: 5, value: 5, title: 'Fleet'},
-  {id: 6, value: 6, title: 'Франшиза'},
-  {id: 7, value: 7, title: 'Доп.оборуд.'},
-  {id: 8, value: 8, title: 'Комиссия'},
-  {id: 9, value: 9, title: 'Подбор авто'},
-  {id: 10, value: 10, title: 'Сделка через салон'}]
 
 const desktopStore = useDesktopStore()
 const form = ref(null)
@@ -369,12 +380,41 @@ const treatmentSources = ref([])
 const organizations = ref([])
 const isOpen = ref(false)
 const listAppeals = ref([])
-let clientsPhone = ref([])
 const isDirty = ref(false)
+const WorkflowType = ref('Выкуп')
+let Workflows_more = ([
+  {id: 2, value: 2, title: 'Выкуп'},
+  {id: 8, value: 8, title: 'Комиссия'},
+  {id: 1, value: 1, title: 'Продажа'},
+  {id: 3, value: 3, title: 'Сервис'},
+  {id: 4, value: 4, title: 'КСО'},
+  {id: 5, value: 5, title: 'Fleet'},
+  {id: 6, value: 6, title: 'Франшиза'},
+  {id: 7, value: 7, title: 'Доп.оборуд.'},
+  {id: 9, value: 9, title: 'Подбор авто'},
+  {id: 10, value: 10, title: 'Сделка через салон'}])
+if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
+  Workflows_more = Workflows_more.filter(el => el.title !== "Франшиза")
+}
+const Workflows = ref(Workflows_more.slice(0, 3))
+const todayListModal = ref(null)
+
+
+function moreButtons() {
+  if (Workflows.value.length < 4) Workflows.value = Workflows_more
+  else Workflows.value = Workflows_more.slice(0, 3)
+}
+
+onMounted(() => {
+  document.querySelector('form').addEventListener('submit', event => {
+    event.preventDefault();  // Стоп! Прерываем действие по умолчанию.
+  });
+})
+
 
 let isNeedCheckUnSaved = false
 const sources = computed(() => {
-  return treatmentSources.value.filter(el => el.communicationType === appeal.communication.type)
+  return treatmentSources.value.filter(el => el.parentName && el.communicationType === appeal.communication.type)
 })
 
 const appealStart = {
@@ -394,7 +434,8 @@ const appealStart = {
     organizationId: null
   },
   communication: {
-    type: 10, sourceId: 15, callType: null, city: 'Казань',
+    type: 10,
+    sourceId: null, callType: null, city: 'Казань',
     weblink: '', description: ''
   },
   buyLead: {
@@ -404,9 +445,6 @@ const appealStart = {
 
 const appeal = reactive(JSON.parse(JSON.stringify(appealStart)))
 
-if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
-  Workflows = Workflows.filter(el => el.title !== "Франшиза")
-}
 
 globalStore.getBrands().then(res => brands.value = res)
 globalStore.getColors().then(res => colors.value = res.items)
@@ -424,28 +462,28 @@ globalStore.getTreatmentSources().then(res => {
 
 let telRequestList = {}
 const telChanged = (value) => {
-  setTimeout(() => {
-    value = value.replace(/\D/g, '')
-    let t = value.length > 11 ? value.slice(0, -1) : value
-    if (t.length < 10) telRequestList = {}
-    if (t.length === 11 && !telRequestList[t]) {
-      telRequestList[t] = true
-      if (t[0] === '7') t = '8' + t.slice(1)
-      desktopStore.getLeadsByPhone(t).then(res => openPhoneModal(res.items))
-    }
-  })
+  value = value.replace(/\D/g, '')
+  let t = value.length > 11 ? value.slice(0, -1) : value
+  if (t.length < 10) telRequestList = {}
+  if (t.length === 11 && !telRequestList[t]) {
+    globalStore.isWaiting = true
+    telRequestList[t] = true
+    if (t[0] === '7') t = '8' + t.slice(1)
+    desktopStore.getLeadsByPhone(t).then(res => {
+      globalStore.isWaiting = false
+      openPhoneModal(res.items)
+    })
+  }
 }
 
 // показ вариантов кто с телефоном
 function openPhoneModal(appeals) {
-  clientsPhone.value = []
-  appeals.forEach(el => {
-    if (!clientsPhone.value.find(item => item.name === el.leadName)) {
-      clientsPhone.value.push({name: el.leadName, leadId: el.leadId})
-    }
-  })
   listAppeals.value = appeals
   if (appeals.length) isOpen.value = true
+}
+
+function openTodaysModal() {
+  todayListModal.value.open()
 }
 
 const closeModal = () => isOpen.value = false
@@ -459,17 +497,23 @@ function setFoundClient(val, appeals) {
 }
 
 
-const changeBrand = id => id && globalStore.getModels(id).then((res) => models.value = res)
+const changeBrand = id => {
+  appeal.workflow.carModelId = null
+  id && globalStore.getModels(id).then((res) => models.value = res)
+}
+
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
   formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
   isNeedCheckUnSaved && saveUnSaved(cbForEdit)
+  isDirty.value = false
 }
 
 function changeWorkflow(val) {
-  appeal.workflow.workflowLeadType = val
-  if (val === 10) appeal.lead.leadType = 10
+  appeal.workflow.workflowLeadType = val.value
+  WorkflowType.value = val.title
+  if (val.value === 10) appeal.lead.leadType = 10
 }
 
 function changeRegistartionMark(value) {
@@ -484,7 +528,16 @@ function weblinkTreatment(link) {
     appeal.workflow.mileageAuto = res.line
     appeal.workflow.yearReleased = res.year
     appeal.workflow.gearboxType = res.kpp
+    if (res.brandId) {
+      setTimeout(() => appeal.communication.weblink = '', 500)
+      ElMessage.success('Данные по автомобилю заполнены')
+    }
+  }, err => {
+    link && ElMessage.error('Нет получилось распарсить ссылку')
   })
+  setTimeout(() => {
+    globalStore.isWaiting = false
+  }, 400)
 }
 
 function checkAndWarning() {
@@ -585,7 +638,12 @@ function prepareAndSave() {
 }
 
 function getAutoWithVIN() {
+  if (appeal.workflow.auto.vin.length != 17) return false
+  globalStore.isWaiting = true
   desktopStore.getAutoVIN(appeal.workflow.auto.vin).then(el => {
+    if (el.vin) ElMessage({message: 'Автомобиль с таким Vin найден в системе.', type: 'success'})
+    else if (appeal.workflow.auto.vin.length === 17) ElMessage({message: 'Новый Vin', type: 'info'})
+    globalStore.isWaiting = false
     if (el.carBrandId) {
       appeal.workflow.brandId = el.carBrandId
       changeBrand(el.carBrandId)

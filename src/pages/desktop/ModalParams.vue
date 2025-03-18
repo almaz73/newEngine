@@ -3,24 +3,27 @@
   <AppModal v-if="isOpen"
             @closeModal="emits('closeModal')"
             :width="globalStore.isMobileView? 330: 1000"
-            :title="`Тел.: ${tel}`"
-            :subtitle="'Есть не завершенные обращения по данному номеру'"
+            :title="'Переход на незавершенные обращения по телефону'"
+            :subtitle="`Тел.: ${tel}`"
             draggable
             resizable>
-    <el-scrollbar maxHeight="400px">
-      <div v-for="client in clients" :key="client.leadId" class="client-phone-modal">
-        <el-button @click="emits('setFoundClient', client, listAppeals)"> +</el-button>
-        {{ client.name }} | <small>клиент</small>
+    <el-scrollbar maxHeight="600px">
+      <div v-for="appeal in listAppeals" :key="appeal.id" class="client-phone-modal">
+        <button @click="emits('setFoundClient', appeal, listAppeals)"
+                   title="Добавить новое обращение по этому телефону"> +</button>
+          {{ appeal.leadName }} | <small>клиент</small>
         <el-table
-            :data="listAppeals.filter(el=>el.leadId===client.leadId)"
+            :data="listAppeals.filter(el=>el.leadId===appeal.leadId)"
             empty-text="Нет данных"
+            @row-click="openAppeal(appeal.id)"
             :show-header="false"
             :row-class-name="tableRowClassName"
         >
           <template v-if="!globalStore.isMobileView">
             <el-table-column>
               <template #default="scope">
-                {{ scope.row.statusTitle }}<br>
+                <ColorButtons  @click="openAppeal(scope.row.id)" :statusTitle="scope.row.statusTitle"/>
+                <br>
                 {{ scope.row.sourceTitle }}
               </template>
             </el-table-column>
@@ -94,12 +97,18 @@ import AppModal from "@/components/AppModal.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {formatDate} from "@/utils/globalFunctions";
+import ColorButtons from "@/controls/ColorButtons.vue";
+import router from "@/router";
 
 const globalStore = useGlobalStore()
 
 
-const {listAppeals, tel, isOpen, clients} = defineProps(['listAppeals', 'tel', 'isOpen', 'clients'])
+const {listAppeals, tel, isOpen} = defineProps(['listAppeals', 'tel', 'isOpen'])
 const emits = defineEmits(['closeModal', 'setFoundClient'])
+
+function openAppeal(id) {
+  router.push({path: '/appeal/' + id})
+}
 
 const tableRowClassName = ({row}) => {
   if (row.statusTitle === 'Новый') {

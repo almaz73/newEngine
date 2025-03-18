@@ -174,7 +174,7 @@ export const formattingPhone = function (val: string, fn: any) {
 }
 
 // телефон должен состоять только из цифр
-export const simplePhone = function(val: string) {
+export const simplePhone = function (val: string) {
     if (!val) return ''
     if (val.slice(0, 2) == '+7') val = val.replaceAll('+7', '8')
     return val.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
@@ -190,51 +190,26 @@ export const emailValidate = function (val: string) {
 let brands = []
 const kppTypes = {'amt': 40, 'at': 20, 'mt': 10, 'cvt': 30}
 export const weblink = function (link: string) {
-    return new Promise((resolve) => {
-        if (!link || !link.includes('/')) return false
+    return new Promise((resolve, reject) => {
+        if (!link || !link.includes('/')) {
+            reject()
+            return false
+        }
         const car = link.split('/').pop().split('_');
-        let brand, kpp, line = '';
-        car.pop();
-        ['amt', 'at', 'mt', 'cvt'].forEach((type) => {// вырезаем тип КПП
-            if (car.includes(type)) {
-                kpp = kppTypes[type]
-                const place = car.indexOf(type)
-                if (type == 'at' && !Number.isFinite(+car[place - 1])) return car.splice(place, 1)
-                car.splice(place - 1, 2)
-            }
+
+        let indexKpp: number = 4
+        Object.keys(kppTypes).forEach(it => {
+            let ind: number = car.findIndex((el: string) => el === it)
+            if (ind > 0) indexKpp = ind
         })
-
-        if (!car.includes('km') && car.find(el => el.includes('km'))) car.push('km')
-
-        if (car.includes('km')) { // вытаскиваем км
-            const placeYear = car.findLastIndex(el => el.match(/\b\d{4}\b/g))
-            const placeKM = car.indexOf('km')
-            let count = 0
-
-            for (let i = placeYear + 1; i < placeKM; i++) {
-                count++
-                line = line + car[i]
-            }
-
-            for (let i = 0; i < count + 1; i++) {
-                car.pop()
-            }
-        }
-
-        const year = car.pop();
-
-        if (brands.find(el => el.name === car[0].toUpperCase())) {
-            car[1] = car[1] + car[2]
-            car.pop()
-        }
-
-        if (car.length > 2 && car[0] != 'geely') brand = car.splice(0, 2);
-        else brand = car.splice(0, 1);
-
-        let model = car;
-
-        brand = brand && brand.join('').toUpperCase()
-        model = model && model.join('').toUpperCase()
+        const brand = car[0].toUpperCase()
+        const model = car[1].toUpperCase();
+        const kpp = kppTypes[car[indexKpp]];
+        const year = car[indexKpp + 1];
+        let line = car[indexKpp + 2] + car[indexKpp + 3]
+        line = line.replace(/\D/g, '');
+        const indexKm: number = car.findIndex((el: string) => el === 'km')
+        if (indexKm == -1) line = null
 
         if (!brands.length) {
             useGlobalStore().getBrands().then(res => {
@@ -337,7 +312,7 @@ export const getFiasByName = (queryString: string, cb: any) => {
     useGlobalStore().getFias(queryString).then(res => cb(res.data.items || []))
 }
 
-export function timeAgoF(input) {
+export function timeAgoF(input: Date): string | undefined {
     const date = (input instanceof Date) ? input : new Date(input)
     const formatter = new Intl.RelativeTimeFormat('ru')
     const ranges = {
@@ -359,20 +334,20 @@ export function timeAgoF(input) {
     }
 }
 
-export function Declension(number, titles) {
-    if(!number || !titles) return ''
+export function Declension(number: number, titles: any) {
+    if (!number || !titles) return ''
     // titles { 0: 'одна позиция', 1: 'две позиции', 2: 'много позиций' }
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[number % 100 > 4 && number % 100 < 20 ? 2 : cases[number % 10 < 5 ? number % 10 : 5]];
 }
 
-export function numberWithSpaces(x:string) { //добавление пробелов для удобного отображении цен
+export function numberWithSpaces(x: string) { //добавление пробелов для удобного отображении цен
     if (!x) return 0
     let x_ = parseInt(x.toString().replace(/ /g, ''))
     return x_.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
 
-export function numberNoSpace(x:string) { //убрать проблеы среди числе
+export function numberNoSpace(x: string) { //убрать проблеы среди числе
     if (!x) return 0
     return Number(x.replace(/ /g, ''))
 }
@@ -385,5 +360,13 @@ export function checkPictureBeforeUpload(rawFile: File, limit: number, allFiles:
     } else if (rawFile.size > limit * 1000000) {
         ElMessage.error((allFiles ? 'Файл' : 'Фото') + ` не может быть больше ${limit} mb!`)
         return true
+    }
+}
+
+export function colorBox(txt: string) {
+    if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
+    if (['В работе', 'Оформление', 'Запрос на архивирование'].includes(txt)) return {
+        background: '#3cac71',
+        color: 'white'
     }
 }

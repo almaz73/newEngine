@@ -24,7 +24,8 @@
 
     <div style="position: relative">
       <FilterTagsCtrl @getData="getData" />
-      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" title="Обновить таблицу">{{timeAgo}}</el-button>
+      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" 
+                 title="Обновить таблицу">{{timeAgo}}</el-button>
     </div>
 
     <!-- для компа таблица -->
@@ -39,10 +40,7 @@
     >
       <el-table-column label="Обращение" width="150">
         <template #default="scope">
-          <div :style="colorBox(scope.row.statusTitle)"
-               style="display:inline-block;padding:4px 12px;border-radius: 3px;margin-top: 2px;line-height:1"
-          > {{ scope.row.statusTitle }}
-          </div>
+          <ColorButtons @click="openModal(row)" :statusTitle="scope.row.statusTitle"/>
           <div class="red-text">{{ scope.row.id }}</div>
           <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
         </template>
@@ -190,7 +188,7 @@
   </main>
 </template>
 <script setup>
-import {formatDate, formatDMY_hm, gotoTop, timeAgoF} from "@/utils/globalFunctions";
+import {formatDate, formatDMY_hm, gotoTop, timeAgoF, colorBox} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import AppealFilter from "@/pages/appeal/AppealFilter.vue";
@@ -204,6 +202,7 @@ import AppealPageModal from "@/pages/appeal/AppealPageModal.vue";
 import router from "@/router";
 import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import ColorButtons from "@/controls/ColorButtons.vue";
 
 
 const tableData = ref([])
@@ -255,15 +254,6 @@ function highlightCell(deal) {
   }
   return statusClass;
 }
-
-function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#01a9db', color: 'white'}
-  if (['В работе', 'Оформление', 'Запрос на архивирование'].includes(txt)) return {
-    background: '#3cac71',
-    color: 'white'
-  }
-}
-
 function getButType(buyWorkflowDealType) {
   let bt = buyTypes.find(el => el.id === buyWorkflowDealType)
   return bt && bt.name

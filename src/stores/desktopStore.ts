@@ -51,6 +51,9 @@ export const useDesktopStore = defineStore('desktopStore', {
         },
         async getHostesUser() {
             return axios.get(`/api/user/list/policy?roles=53`).then(res => res.data)
+        },
+        async getleadworkflowsbydate(date: Date){
+            return axios.get(`/api/workflow/getleadworkflowsbydate/${date}?limit=12&offset=0`).then(res => res.data)
         }
     }
 })

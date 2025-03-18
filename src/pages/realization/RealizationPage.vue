@@ -32,7 +32,7 @@
     >
       <el-table-column label="Обращение">
         <template #default="scope">
-          <div :style="colorBox(scope.row.statusTitle)"><b> {{ scope.row.statusTitle }}</b></div>
+          <ColorButtons :statusTitle="scope.row.statusTitle"/>
           <div class="red-text">{{ scope.row.id }}</div>
           <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
         </template>
@@ -112,6 +112,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {useRealizationStore} from "@/stores/realizationStore";
 import {reactive, ref, computed, onMounted} from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
+import ColorButtons from "@/controls/ColorButtons.vue";
 
 
 const globalStore = useGlobalStore()
@@ -133,12 +134,6 @@ const filter = {
   search: ''
 }
 let filterOld; // кучковый способ запросов
-
-function colorBox(txt) {
-  if (txt === 'Новый') return {background: '#0187af', color: 'white'}
-  if (txt === 'В работе') return {background: '#308a5a', color: 'white'}
-
-}
 
 function openFilter() {
   isFilterOpened.value = !isFilterOpened.value
