@@ -233,7 +233,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/myView" >
+      <RouterLink to="/myView" v-if="permit('menu', '')">
         <el-menu-item index="0">
           <el-icon>
             ИДЕИ

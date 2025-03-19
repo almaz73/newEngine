@@ -26,10 +26,10 @@
             <el-button-group v-model="appeal.lead.leadType" class="group-button gray-buttons">
               <div>Клиент</div>
               <br>
-              <el-button @click="appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
+              <el-button @click="resetForm();appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
                 Физ. лицо
               </el-button>
-              <el-button @click="appeal.lead.leadType=20"
+              <el-button @click="resetForm();appeal.lead.leadType=20"
                          :disabled="appeal.workflow.workflowLeadType===10"
                          :class="{active:appeal.lead.leadType===20}">
                 Юр. лицо
@@ -265,8 +265,9 @@
                   <el-select v-model="appeal.workflow.locationId"
                              :clearable="!globalStore.isMobileView"
                              :filterable="!globalStore.isMobileView"
+                             @change="changeSalon()"
                              placeholder="Салон">
-                    <el-option v-for="item in places"
+                    <el-option v-for="item in storages"
                                :key="item.id"
                                :label="item.title"
                                :value="item.id"/>
@@ -294,7 +295,7 @@
                              placeholder="Ответственный">
                     <el-option v-for="item in managers"
                                :key="item.id"
-                               :label="item.title"
+                               :label="item.fullName"
                                :value="item.id"/>
                   </el-select>
                 </el-form-item>
@@ -336,7 +337,7 @@
           <button
               @click="openTodaysModal()"
               style="background: #518468; padding: 0; border: none; cursor:pointer; height: 46px; width: 49px">
-            <img alt="" title="Недавние обращения" src="@/assets/icons/eventTestDriveWhite.png">
+            <img alt="" title="Список обращений по дате" src="@/assets/icons/eventTestDriveWhite.png">
           </button>
         </div>
 
@@ -348,8 +349,8 @@
                  :tel="appeal.lead.person.phone"
                  @setFoundClient="setFoundClient"
                  @closeModal="closeModal"/>
+    <TodayListModal ref="todayListModal"/>
   </main>
-  <TodayListModal ref="todayListModal"/>
 </template>
 <style>
 
@@ -365,8 +366,10 @@ import {emailValidate, formattingPhone, vetRegNumber, weblink} from "@/utils/glo
 import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
 import ModalParams from "@/pages/desktop/ModalParams.vue";
 import TodayListModal from "@/pages/desktop/TodayListModal.vue";
+import {useDealStore} from "@/stores/dealStore";
 
 
+const dealStore=useDealStore()
 const desktopStore = useDesktopStore()
 const form = ref(null)
 const globalStore = useGlobalStore()
@@ -374,7 +377,7 @@ const brands = ref([])
 const models = ref([])
 const colors = ref([])
 const cities = ref([])
-const places = ref([])
+const storages = ref([])
 const managers = ref([])
 const treatmentSources = ref([])
 const organizations = ref([])
@@ -451,14 +454,21 @@ globalStore.getColors().then(res => colors.value = res.items)
 globalStore.getOrganizations().then(res => organizations.value = res.items)
 globalStore.getPlaces().then(res => {
   cities.value = res.citys
-  places.value = res.items
+  // places.value = res.items
 })
-globalStore.getUsers().then(res => {
-  managers.value = res.items
-})
+
+
+dealStore.getLocations(2).then(res => storages.value = res.data.items);
 globalStore.getTreatmentSources().then(res => {
   treatmentSources.value = res.items
 })
+
+function changeSalon() {
+  desktopStore.getResponsible(appeal.workflow.locationId, appeal.workflow.workflowLeadType).then(res=>{
+    appeal.workflow.managerId = null
+    managers.value = res.items
+  })
+}
 
 let telRequestList = {}
 const telChanged = (value) => {
@@ -507,7 +517,6 @@ const resetForm = formEl => {
   formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
   isNeedCheckUnSaved && saveUnSaved(cbForEdit)
-  isDirty.value = false
 }
 
 function changeWorkflow(val) {
@@ -532,8 +541,8 @@ function weblinkTreatment(link) {
       setTimeout(() => appeal.communication.weblink = '', 500)
       ElMessage.success('Данные по автомобилю заполнены')
     }
-  }, err => {
-    link && ElMessage.error('Нет получилось распарсить ссылку')
+  }, (err) => {
+    link && ElMessage.error('Нет получилось распарсить ссылку', err)
   })
   setTimeout(() => {
     globalStore.isWaiting = false
@@ -638,7 +647,7 @@ function prepareAndSave() {
 }
 
 function getAutoWithVIN() {
-  if (appeal.workflow.auto.vin.length != 17) return false
+  if (appeal.workflow.auto.vin.length !== 17) return false
   globalStore.isWaiting = true
   desktopStore.getAutoVIN(appeal.workflow.auto.vin).then(el => {
     if (el.vin) ElMessage({message: 'Автомобиль с таким Vin найден в системе.', type: 'success'})

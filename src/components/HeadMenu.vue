@@ -25,7 +25,7 @@
 
     <img :src="loginPhotoSrc"
          @click="isAccountShow=true"
-         alt="photo"
+         alt=""
          class="icon-face"/>
 
     <LoginPanel @closeLoginPanel="isAccountShow = false" v-if="isAccountShow"/>

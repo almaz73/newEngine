@@ -2,8 +2,8 @@
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 330: 930"
-            :top="40"
-            :title="'Недавние обращения'"
+            :top="60"
+            :title="'Список обращений по дате'"
             draggable
             resizable>
     <el-date-picker
@@ -65,10 +65,6 @@
     </el-scrollbar>
   </AppModal>
 </template>
-<style>
-
-
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";

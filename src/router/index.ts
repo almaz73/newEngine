@@ -137,8 +137,8 @@ const router = createRouter({
 })
 
 router.beforeEach(res=>{
-    // console.log('%c ...прослушивание ROUTE=', 'color: orange; font-size:smaller', res)
-    instance?.proxy?.$forceUpdate()
+    console.log('%c ...прослушивание route=', 'color: orange; font-size:smaller', res)
+    setTimeout(()=>instance?.proxy?.$forceUpdate())
 })
 
 router.afterEach((to) => {

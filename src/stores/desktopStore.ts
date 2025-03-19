@@ -54,6 +54,9 @@ export const useDesktopStore = defineStore('desktopStore', {
         },
         async getleadworkflowsbydate(date: Date){
             return axios.get(`/api/workflow/getleadworkflowsbydate/${date}?limit=12&offset=0`).then(res => res.data)
+        },
+        async getResponsible(locationId: number, workflowLeadType: number){
+            return axios.get(`/api/orgElement/users/${locationId}/${workflowLeadType}`).then(res => res.data)
         }
     }
 })
