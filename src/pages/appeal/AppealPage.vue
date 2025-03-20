@@ -24,7 +24,7 @@
 
     <div style="position: relative">
       <FilterTagsCtrl @getData="getData" />
-      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()" 
+      <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()"
                  title="Обновить таблицу">{{timeAgo}}</el-button>
     </div>
 
@@ -188,7 +188,7 @@
   </main>
 </template>
 <script setup>
-import {formatDate, formatDMY_hm, gotoTop, timeAgoF, colorBox} from "@/utils/globalFunctions";
+import {formatDate, formatDMY_hm, gotoTop, timeAgoF, colorBox, formatDateDDMMYYYY} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import AppealFilter from "@/pages/appeal/AppealFilter.vue";
@@ -299,12 +299,18 @@ function validateFilter() {
 
   let easy = {}
   Object.keys(searchFilter.value).forEach(el => {
+    console.log('отловить и команду выпольнить el = ',el)
+
     let val = searchFilter.value[el]
     if (!val) return true
     if (!(val instanceof Array)) easy[el] = searchFilter.value[el]
     else if (val.length > 1) easy[el] = searchFilter.value[el]
   })
   filterOld = Object.assign({}, filter, easy)
+
+  // почему-то понадобилась подкорректироать дату
+  filterOld.lowCreateDatePeriod = formatDateDDMMYYYY(filterOld.lowCreateDatePeriod)
+  filterOld.highCreateDatePeriod = formatDateDDMMYYYY(filterOld.highCreateDatePeriod)
 
   if (globalRef.tags.length) localStorage.setItem('appealFilters', JSON.stringify(globalRef.tags))
   else localStorage.removeItem('appealFilters')

@@ -31,6 +31,7 @@ const globalStore = useGlobalStore()
 const brands = ref([])
 const models = ref([])
 const cities = ref([])
+const orgelements = ref([])
 const places = ref([])
 const managers = ref([])
 const tags = ref([])
@@ -43,6 +44,12 @@ let oldCarBrandId = null
 const lists = ref({bodyTypes, buyTypes, categoryAutos, driveTypies, kpp, statuses})
 
 const fields = [
+  {
+    type: '2. Список', listName: 'orgelements',
+    label: 'Организация',
+    name: 'OrgId',
+    placeholder: 'Выберите организацию'
+  },
   {
     type: '2. Список без кодов', listName: 'cities',
     label: 'Город',
@@ -159,6 +166,10 @@ function open() {
     res.items.map(el => el.name = el.title + '  - (' + el.city + ' ' + el.typeTitle + ')')
     cities.value = lists.value.cities = res.citys
     places.value = lists.value.places = res.items
+  })
+
+  globalStore.getOrganizations().then(res => {
+    orgelements.value = res.items
   })
 
   globalStore.getUsers().then((res) => {
