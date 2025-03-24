@@ -142,7 +142,7 @@ router.beforeEach(res=>{
 })
 
 router.afterEach((to) => {
-    let acceptedPaths = ['/undercontruction', '/reports', '/login', '/admin']
+    let acceptedPaths = ['/undercontruction', '/reports', '/login', '/admin', '/desktop', '/calendar']
     if (location.hostname === "live.autonet.pro") {
     // if (location.hostname === "localhost") {
         if (!acceptedPaths.includes(to.path)) router.push(`/undercontruction`)
