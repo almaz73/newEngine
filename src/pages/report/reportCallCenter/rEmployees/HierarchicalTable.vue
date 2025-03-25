@@ -5,26 +5,42 @@
       <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
       <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
 
-      &nbsp; <input v-model="searchTxt"  placeholder="фильтр по ФИО"  @input="init()" />
+      &nbsp; <input v-model="searchTxt" placeholder="фильтр по ФИО" @input="init()"/>
     </div>
     <table class="custom-report-table">
       <thead>
       <tr>
         <th> ФИО</th>
-        <th><a @click="toActive(2)">ОБРАЩЕНИЯ {{ activeColumn === 2 ? '⭐' : ' ✰ ' }}</a></th>
-        <th><a @click="toActive(3)">ОЦЕНКИ А/М {{ activeColumn === 3 ? '⭐' : ' ✰ ' }}</a></th>
+        <th><a @click="toActive(2)">ОБРАЩЕНИЯ {{ activeColumn === 2 ? '⭐' : ' ✰ ' }} </a>
+          &nbsp; &nbsp; &nbsp;<a title="сортировка" @click="toSort(1)">
+            {{ sortIcon(1) }}
+          </a>
+        </th>
+        <th><a @click="toActive(3)">ОЦЕНКИ А/М {{ activeColumn === 3 ? '⭐' : ' ✰ ' }}</a>
+          &nbsp; &nbsp; &nbsp;<a title="сортировка" @click="toSort(2)">
+            {{ sortIcon(2) }}
+          </a>
+        </th>
         <th> ОБРАЩЕНИЯ-ОЦЕНКИ, %</th>
-        <th><a @click="toActive(5)">ВЫКУПЛЕНО А/М, % {{ activeColumn === 5 ? '⭐' : ' ✰ ' }}</a></th>
-        <th> ОБРАЩЕНИЯ - ВЫКУП, %</th>
+        <th><a @click="toActive(5)">ВЫКУПЛЕНО А/М, % {{ activeColumn === 5 ? '⭐' : ' ✰ ' }}</a>
+          &nbsp; &nbsp; &nbsp;<a title="сортировка" @click="toSort(3)">
+            {{ sortIcon(3) }}
+          </a>
+        </th>
+        <th> ОБРАЩЕНИЯ - ВЫКУП, %
+          &nbsp; &nbsp; &nbsp;<a title="сортировка" @click="toSort(4)">
+            {{ sortIcon(4) }}
+          </a>
+        </th>
       </tr>
       </thead>
       <tbody :key="updateKey">
       <template v-for="(row, i) in tableData" :style="{fontSize:row.level===4?'11px':''}">
         <tr
-          @click="toSelectedRow(row, i)"
-          style="padding: 0; margin: 0"
-          :class="{selected: i === selectedRow }"
-          v-if="
+            @click="toSelectedRow(row, i)"
+            style="padding: 0; margin: 0"
+            :class="{selected: i === selectedRow }"
+            v-if="
           (row.isShow && (!row.active || row.active===activeColumn)) ||
           (row.level<subSections+1
           && (!row.active || (row.active && row.active===activeColumn)))">
@@ -55,11 +71,11 @@
   </ForFullSceen>
 </template>
 <script setup>
-import { ref, watchEffect } from 'vue'
+import {ref, watchEffect} from 'vue'
 import ForFullSceen from '@/components/ForFullSceen.vue'
 
 
-const { data, needUpdate } = defineProps(['data', 'needUpdate'])
+const {data, needUpdate} = defineProps(['data', 'needUpdate'])
 const tableData = ref([])
 const activeColumn = ref(2)
 const selectedRow = ref(-1)
@@ -67,11 +83,44 @@ const subSections = ref(1)
 const updateKey = ref(0)
 const searchTxt = ref('')
 let oldNeedUpdate = 0
+const sortCol = ref(0) // активная колонка сортировки
+let sortOrder = false // true - по возрастанию, false - по убыванию
+
+const sortIcon = function (col) {
+  if (sortCol.value === col) return sortOrder ? '▲' : '▼'
+  return '▷'
+}
+
+function toSort(col) {
+  sortOrder = !sortOrder
+  toSubSection(1)
+  sortCol.value = col
+
+  if (col === 1) {
+    sortOrder && data.sort((a, b) => a.appealCount < b.appealCount ? 1 : -1)
+    !sortOrder && data.sort((a, b) => a.appealCount > b.appealCount ? 1 : -1)
+  }
+  if (col === 2) {
+    sortOrder && data.sort((a, b) => a.buyCount < b.buyCount ? 1 : -1)
+    !sortOrder && data.sort((a, b) => a.buyCount > b.buyCount ? 1 : -1)
+  }
+  if (col === 3) {
+    sortOrder && data.sort((a, b) => a.boughtCount < b.boughtCount ? 1 : -1)
+    !sortOrder && data.sort((a, b) => a.boughtCount > b.boughtCount ? 1 : -1)
+  }
+  if (col === 4) {
+    sortOrder && data.sort((a, b) => a.appealBuyProc < b.appealBuyProc ? 1 : -1)
+    !sortOrder && data.sort((a, b) => a.appealBuyProc > b.appealBuyProc ? 1 : -1)
+  }
+
+
+  init()
+}
 
 watchEffect(() => {
   if (oldNeedUpdate !== needUpdate) {
     oldNeedUpdate = needUpdate
-    subSections.value=1
+    subSections.value = 1
     tableData.value = []
     init()
   }
@@ -87,8 +136,8 @@ function init() {
   let count5 = 0
   data && data.forEach(el => {
     el.level = 1
-    if(searchTxt.value && searchTxt.value.length>2 &&
-      !el.employeeTitle.toUpperCase().includes(searchTxt.value.toUpperCase())) return false
+    if (searchTxt.value && searchTxt.value.length > 2 &&
+        !el.employeeTitle.toUpperCase().includes(searchTxt.value.toUpperCase())) return false
     idCount++
     count1 += el.appealCount
     count2 += el.appealBuyProc

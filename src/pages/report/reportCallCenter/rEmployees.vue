@@ -1,7 +1,7 @@
 <template>
   <main>
     <div class="filter-report">
-      <h2>Отчет колл-центра по сотрудникам 🦄</h2>
+      <h2>Отчет колл-центра по сотрудникам  🦄</h2>
 
       <div>
         <label class="label l_300">Период</label>
@@ -53,6 +53,7 @@
       <br>
       <el-button :icon="Grid" type="danger" @click="toSearch()">Сформировать</el-button>
       <el-button type="info" @click="init()">Сброс</el-button>
+      <el-button @click="reportPrint()">Печать</el-button>
       <br><br>
     </div>
     <el-tabs v-model="activeName" v-if="tableData.length">
@@ -120,10 +121,25 @@ function init() {
   searchFilter.value.highCreateDatePeriod = formatDateDDMMYYYY(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
   searchFilter.value.dealType = 10
   searchFilter.value.employeeId = null
-  searchFilter.value.buyTypeView = null
+  searchFilter.value.buyTypeView = 0
 }
 
 init()
+
+
+
+function reportPrint() {
+  ElMessage.info('Готово! Файл можно забрать из загрузок браузера.');
+
+
+  let link =  '/api/report/CallCenterEmployeePrint/' +
+      '?highCreateDatePeriod=' + searchFilter.value.highCreateDatePeriod +
+      '&lowCreateDatePeriod=' + searchFilter.value.lowCreateDatePeriod +
+      '&ReportType=' + searchFilter.value.buyTypeView
+  if (searchFilter.value.dealType) link += '&dealType=' + searchFilter.value.dealType
+  if (searchFilter.value.employeeId) link += '&employeeId=' + searchFilter.value.employeeId
+  location.href = link
+}
 
 function toSearch() {
   let S = searchFilter.value
