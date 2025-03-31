@@ -22,7 +22,7 @@
       <br>
       <small>
         <label class="label-red label-right" style="width: 200px">Текст отправляемой смс:</label>
-        <el-input v-model="txtSms" readonly type="textarea" rows="4" resize="none"/>
+        <el-input v-model="txtSms" readonly type="textarea"  resize="none"/>
       </small>
       <br><br>
       <small>
@@ -92,9 +92,11 @@ function clear() {
 function changeTeplate() {
   let tx = smsTemplates.value.find(el => el.id === smsTemplate.value)
   txtSms.value = tx && tx.text
-  txtSms.value = txtSms.value.replace('[appealId]', appeal.value.id)
-  txtSms.value = txtSms.value.replace('[meetDate]', formatDMY_hm(smsDate.value))
-  txtSms.value = txtSms.value.replace('[appealManagerName]', appeal.value.managerName)
+  if (txtSms.value) {
+    txtSms.value = txtSms.value.replace('[appealId]', appeal.value.id)
+    txtSms.value = txtSms.value.replace('[meetDate]', formatDMY_hm(smsDate.value))
+    txtSms.value = txtSms.value.replace('[appealManagerName]', appeal.value.managerName)
+  }
 }
 
 function checkDate() {

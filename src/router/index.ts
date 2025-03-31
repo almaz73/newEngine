@@ -143,9 +143,15 @@ router.beforeEach(res=>{
 
 router.afterEach((to) => {
     let acceptedPaths = ['/undercontruction', '/reports', '/login', '/admin', '/desktop', '/calendar', '/appeal']
-    if (location.hostname === "live.autonet.pro") {
-    // if (location.hostname === "localhost") {
-        if (!acceptedPaths.includes(to.path)) router.push(`/undercontruction`)
+
+    if (location.hostname === "localhost") {
+        let door = acceptedPaths.includes(to.path)
+        if(!door) { // Если раздел доступен - открвыаем подразделам
+            let part = to.path.slice(0,to.path.lastIndexOf('/'))
+            door = acceptedPaths.includes(part)
+        }
+
+       if (!door ) router.push(`/undercontruction`)
     }
     window.scrollTo({top: 0}) // прокручиваю наверх
 })
