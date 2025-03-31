@@ -113,9 +113,9 @@ const dealStore = useDealStore()
 const globalStore = useGlobalStore()
 const route = useRoute()
 const dealId = ref<string | string[]>('')
-const categoryId = ref<string | string[]>('')
-const listData = ref([])
-const auto = ref({})
+const categoryId = ref<any>()
+const listData = ref<any>()
+const auto = ref<any>()
 const ins_tmp = ref(null)
 const ins_90 = ref(null)
 const Titles = {
@@ -129,7 +129,7 @@ const Titles = {
   80: 'Прочие работы',
   90: 'Юридическая проверка'
 }
-const defects = ref({})
+const defects = ref<any>()
 const err_counter = ref(0) // количество ошибок + предупреждений
 let showOnlyErrors = false
 const hiderText = ref('скрыть исправные')
@@ -141,16 +141,16 @@ function hider() {
   showOnlyErrors = !showOnlyErrors
 
   if (showOnlyErrors) {
-    listData.value.map(el => {
+    listData.value.map((el:any) => {
       if (!defects.value.redYellowIds.includes(el.id)) el.isHidden = true
     })
-  } else listData.value.map(el => el.isHidden = false)
+  } else listData.value.map((el:any) => el.isHidden = false)
 
   hiderText.value = showOnlyErrors ? 'показать все' : 'cкрыть исправные'
 
   if (['10', '20'].includes(categoryId.value)) {
-    if (showOnlyErrors) listData.value.map(el => el.isHidden = !el.isStock)
-    else listData.value.map(el => el.isHidden = false)
+    if (showOnlyErrors) listData.value.map((el:any) => el.isHidden = !el.isStock)
+    else listData.value.map((el:any) => el.isHidden = false)
     hiderText.value = showOnlyErrors ? 'показать все' : 'показать комплектацию'
   }
 
@@ -158,7 +158,7 @@ function hider() {
 
 function listChanged() {
   // поймать не заполненные поля
-  let elem = listData.value.find(el => {
+  let elem = listData.value.find((el:any) => {
     if (!el.isNorm && el.damageItems && el.damageItems.length && (!el.damageTypeArr || !el.damageTypeArr.length)) return el
     else false
   })
@@ -189,7 +189,7 @@ function clear() {
   if (categoryId.value == 40 && !dealStore.deal.additionalAutoInfo.isMileageOriginal)
     dealStore.deal.additionalAutoInfo.isMileageOriginal = true
 
-  listData.value.forEach(item => {
+  listData.value.forEach((item:any) => {
     switch (item.inspectionItemCategory) {
       case 10:
       case 20:
@@ -222,8 +222,8 @@ function clear() {
 }
 
 function save() {
-  listData.value.map(el => {
-    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map(item => ({id: item}))
+  listData.value.map((el:any) => {
+    if (el.damageTypeArray) el.damageTypeArray = el.damageTypeArray.map((item:number) => ({id: item}))
     return el
   })
   dealStore.saveInspection(listData.value).then(() => goNext())
@@ -371,6 +371,6 @@ router.beforeEach(res => {  // качаем данные, если пришли 
 
 onMounted(() => {  // качаем данные, если обновили броузер
   getData(+route.params.categoryId)
-  if (!dealStore.deal.id) dealStore.getDeal(route.params.dealId).then(res => dealStore.deal = res)
+  if (!dealStore.deal.id) dealStore.getDeal(route.params.dealId, false).then(res => dealStore.deal = res)
 })
 </script>

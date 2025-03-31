@@ -21,7 +21,7 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(url).then(res => res)
             return (cache['getDeals' + url] = res.data)
         },
-        async getDeal(id: string, noCach: boolean) {
+        async getDeal(id: number, noCach: boolean) {
             if (!noCach && cache.getDeal) return cache.getDeal
             const res = await axios.get('/api/deal/' + id)
             return (cache.getDeal = res.data)
@@ -181,7 +181,7 @@ export const useDealStore = defineStore('dealStore', {
         async saveInspection40(params: { params: any }) {
             return await axios.post('/api/inspectionitem/buy', params).then(q => q)
         },
-        async getbycategories(arr: Array) {
+        async getbycategories(arr: any) {
             let link=''
             arr.forEach((el:number)=>link+='categories='+el+'&')
             return await axios.get(`/api/InspectionItemType/getbycategories?`+link)

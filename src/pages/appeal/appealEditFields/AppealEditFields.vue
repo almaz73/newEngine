@@ -135,20 +135,18 @@
         <div style="padding: 0 30px">
           <span v-if="appeal.carModel"><span class="label">
             Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
-<!--            <img src="@/assets/icons/icon-pencil-gray.png" alt=""-->
-<!--                 title="Данные со слов клиента"-->
-<!--                 @click="editCar()"-->
-<!--                 style="cursor: pointer; margin: 0 12px">-->
 
-            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
-                        v-if="permit_locale() && !appeal.auto">
-              <el-button :icon="Edit" size="small">Оценивать </el-button>
-            </RouterLink>
+            <span style="float: inline-end">
+              <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
+                          v-if="permit_locale() && !appeal.auto">
+                <el-button :icon="Edit" size="small">Оценивать </el-button>
+              </RouterLink>
 
-             <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
-                         v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
-              <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
-            </RouterLink>
+              <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
+                           v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
+                <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
+              </RouterLink>
+            </span>
           <br></span>
 
           <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}

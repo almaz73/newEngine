@@ -65,7 +65,7 @@
       <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </template>
   </div>
-  <ThresholdDirModal ref="modal"/>
+  <ThresholdDirModal ref="thresholdDirModal"/>
 </template>
 <script setup lang="ts">
 import {useAdminStore} from "@/stores/adminStore";
@@ -78,11 +78,11 @@ import ThresholdDirModal from "@/pages/admin/dirs/ThresholdDirModal.vue"
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
-const tableData = ref([])
+const tableData = ref<any>()
 const isEdit = ref(false)
 const selectedRow = ref({id: null})
 let selectedIndex = 0
-const modal = ref(null)
+const thresholdDirModal = ref(null)
 const total = ref(0)
 const rowsPerPage = ref(10)
 const pageDescription = ref('')
@@ -104,7 +104,7 @@ function changePage(val: number) {
 
 
 function openModal(row: any) {
-  modal.value && modal.value.open(row, getData)
+  thresholdDirModal.value && thresholdDirModal.value.open(row, getData)
 }
 
 

@@ -32,7 +32,7 @@
                     :value="item.id"/>
           </el-select>
           </span>
-      <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
+      <el-button @click="openModal(null)" type="danger" :icon="Plus"> Добавить</el-button>
     </div>
       <br><br>
       <el-table v-if="!globalStore.isMobileView"
@@ -89,7 +89,7 @@
       </div>
     </div>
     </div>
-    <StorageDirModal  ref="modal"/>
+    <StorageDirModal  ref="storageDirModal"/>
   </template>
   <script setup lang="ts">
   import {useAdminStore} from "@/stores/adminStore";
@@ -102,15 +102,15 @@
   import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
-  const tableData = ref([])
+  const tableData = ref<any>()
   const isEdit = ref(false)
   const selectedRow = ref(false)
-  const modal = ref(null)
+  const storageDirModal = ref(null)
   const total = ref(0)
   const rowsPerPage = ref(10)
   const search = ref({orgElement:'',department:''})
-  const departments = ref([])
-  const organizations = ref([])
+  const departments = ref<any>()
+  const organizations = ref<any>()
   const filter = {
     filter: {},
     limit: rowsPerPage.value,
@@ -125,7 +125,7 @@
     else filter.search = `OrgId=${search.value.orgElement}&DepartmentId=${search.value.department}`;
     getData()
   }
-  function changeOrg(id) {
+  function changeOrg(id:number) {
     if(id) adminStore.getDepartmentsWithBuyLocations(id).then(res => departments.value = res)
     else{
       search.value.orgElement = ''
@@ -134,14 +134,14 @@
     find()
   }
 
-  function changeDep(id){
+  function changeDep(id:number|null){
     if(!id)  search.value.department = ''
     find()
   }
 
 
-  function openModal(row: any | null) {
-    modal.value.open(row, getData)
+  function openModal(row: any) {
+    if(storageDirModal.value) storageDirModal.value.open(row, getData)
   }
 
   function toggleActive(id:number) {
@@ -173,7 +173,7 @@
     adminStore.getLocation(false,true).then(res => {
       tableData.value = res.items
       total.value = res.total
-      tableData.value = tableData.value.map(item => ({...item,"typeName": getLocationType(item.type)}));
+      tableData.value = tableData.value.map((item:any) => ({...item,"typeName": getLocationType(item.type)}));
     })
     globalStore.getOrganizations().then(res => organizations.value = res.items)
   }

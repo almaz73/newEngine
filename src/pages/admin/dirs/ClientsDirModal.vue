@@ -17,7 +17,7 @@
             <el-form-item prop="treatmentSourceId"
                           style="display: inline-block; width: 420px"
                           :rules="{required: true, message: 'Источник', trigger: ['change']}">
-              <el-select v-model="client.treatmentSourceId" placeholder="Выберите источник">
+              <el-select v-model="client" placeholder="Выберите источник">
                 <el-option-group
                   v-for="group in treatmentsGroup"
                   :key="group.id"

@@ -34,24 +34,24 @@ const c_PhotoVideoFilesAnalitic = ref(null)
 
 
 function open() {
-  getData()
+  getData(false)
 }
 
-function getData(upd) {
+function getData(upd:boolean) {
   if (upd) photoOrder.value = {}
   analiticPhoto.value = []
   dealStore.getPhoto(dealStore.deal.dealId, upd).then(res => {
     let arr = res.data.items
 
-    arr.forEach(el => {
+    arr.forEach((el:any) => {
       bigPhotos.value[el.number] = el.fullPhotoUrl
       if (el.number === 5) analiticPhoto.value.push(el)
     })
 
-    c_PhotoVideoFilesAnalitic.value.open(analiticPhoto.value)
+    if (c_PhotoVideoFilesAnalitic.value)c_PhotoVideoFilesAnalitic.value.open(analiticPhoto.value)
 
     mandatoryPhotoList.forEach(el => {
-      let p = arr.find(item => item.number === el)
+      let p = arr.find((item:any) => item.number === el)
       if (p) {
         photoOrder.value[el] ={
           smallPhoto: p.thumbSmallUrl,

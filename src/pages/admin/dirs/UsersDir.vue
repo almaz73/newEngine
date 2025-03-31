@@ -9,7 +9,7 @@
                 :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
 
                 @keydown.enter="getData()"/>
-      <el-button @click="openModalUserDir()" type="danger" :icon="Plus"> Добавить</el-button>
+      <el-button @click="openModalUserDir(null, null)" type="danger" :icon="Plus"> Добавить</el-button>
       <el-input v-model="myKey"
                 :style="{opacity:isMyKey?1:0}"
                 @click="isMyKey = true"
@@ -80,7 +80,7 @@
                  src="@/assets/icons/copy.gif"
                  title="Создать новый на основе этого"
             >
-            <EditPensilCtrl @click="openModalUserDir(scope.row)"/>
+            <EditPensilCtrl @click="openModalUserDir(scope.row, null)"/>
             <img @click="deleteUser(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
                  title="Удалить">
@@ -93,7 +93,7 @@
     <div class="vertical-table" v-if="globalStore.isMobileView">
       <div v-for="(row, ind) in tableData" :key="ind" style="border-top:8px solid #ddd">
         <span>{{ row.login }}
-             <EditPensilCtrl @click="openModalUserDir(row)" />
+             <EditPensilCtrl @click="openModalUserDir(row, null)" />
           &nbsp;
            <img v-if="row.isActive" @click="switchuser(row)" alt=""
                 title="Активный"
@@ -135,10 +135,11 @@ import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
 import {encryptPassword} from "@/utils/globalFunctions";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
+
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const UserModal = ref(null)
-const tableData = ref([])
+const tableData = ref<any>()
 const total = ref(0)
 const rowsPerPage = ref(5)
 const pageDescription = ref('')
@@ -146,18 +147,18 @@ const search = ref('')
 const myKey = ref(null)
 const isMyKey = ref(false)
 const filter = {offset: 0, limit: 5, search: '', Organizations: [], role: null}
-const organizations = ref([])
+const organizations = ref<any>()
 const filterStatus = ref([])
 const statuses = [
   {name: 'Активные', type: 'IsActive', value: false},
   {name: 'Заблокированные', type: 'Blocked', value: false},
   {name: 'Удаленные', type: 'deleted', value: false}
 ]
-const roles = ref([])
+const roles = ref<any>()
 
 
 globalStore.getOrganizations().then(res => organizations.value = res.items)
-adminStore.getUserRoles().then(res => res.items.forEach(item => roles.value.push(...item.roles)))
+adminStore.getUserRoles().then(res => res.items.forEach((item:any) => roles.value.push(...item.roles)))
 
 function saveHashMyKey() {
   let hash: null | string = myKey.value && encryptPassword(myKey.value)
@@ -196,11 +197,11 @@ function switchuser(row: any) {
 }
 
 function doubleClickOpenModal(row: any) {
-  openModalUserDir(row)
+  openModalUserDir(row, null)
 }
 
 function openModalUserDir(row: any | null, copy: string | null) {
-  UserModal.value.open(row, getData, copy)
+  UserModal.value && UserModal.value.open(row, getData, copy)
 }
 
 function deleteUser(id: number) {

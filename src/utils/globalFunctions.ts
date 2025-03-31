@@ -187,15 +187,15 @@ export const emailValidate = function (val: string) {
 }
 
 /** вытаскивание из ссылки модель-бренд-год-КПП и пробег автомобиля **/
-let brands = []
-const kppTypes = {'amt': 40, 'at': 20, 'mt': 10, 'cvt': 30}
+let brands:any[] = []
+const kppTypes:any = {'amt': 40, 'at': 20, 'mt': 10, 'cvt': 30}
 export const weblink = function (link: string) {
     return new Promise((resolve, reject) => {
         if (!link || !link.includes('/')) {
             reject()
             return false
         }
-        const car = link.split('/').pop().split('_');
+        const car: string[] = link.split('/').pop().split('_');
 
         let indexKpp: number = 4
         Object.keys(kppTypes).forEach(it => {
@@ -209,13 +209,13 @@ export const weblink = function (link: string) {
         let line = car[indexKpp + 2] + car[indexKpp + 3]
         line = line.replace(/\D/g, '');
         const indexKm: number = car.findIndex((el: string) => el === 'km')
-        if (indexKm == -1) line = null
+        if (indexKm == -1) line = ''
 
         if (!brands.length) {
             useGlobalStore().getBrands().then(res => {
                 brands = JSON.parse(JSON.stringify(res))
                 brands.map(el => { // нормализация списка автомобилей
-                    el.name = [...el.name].map(item => translitRu2En(item)).join('')
+                    el.name = [...el.name].map(item => translitRu2En(item, false)).join('')
                     el.name = el.name.replace('(', '').replace(')', '').replace(/ /g, '').toUpperCase()
                 })
                 getCar()
@@ -223,7 +223,7 @@ export const weblink = function (link: string) {
         } else getCar()
 
         function getCar() {
-            findCarAndModel(brand, model).then(res => {
+            findCarAndModel(brand, model).then((res:any) => {
                 resolve({
                     brandId: res.foundBrand && res.foundBrand.id,
                     modelId: res.foundModel && res.foundModel.id,
@@ -237,16 +237,16 @@ export const weblink = function (link: string) {
 }
 
 
-function findCarAndModel(brand: any[], model: any[]) {
+function findCarAndModel(brand: string, model: string) {
     return new Promise((resolve) => {
         let foundBrand = brands.find(el => el.name.toUpperCase() === brand)
         if (!foundBrand) foundBrand = brands.find(el => el.name.toUpperCase().includes(brand))
         foundBrand && useGlobalStore().getModels(foundBrand.id).then(res => {
             const models = JSON.parse(JSON.stringify(res))
-            let foundModel = models.find(el => el.name.replace(/ /g, '').replace('(', '').replace(')', '').toUpperCase() == model)
+            let foundModel = models.find((el:any) => el.name.replace(/ /g, '').replace('(', '').replace(')', '').toUpperCase() == model)
             if (!foundModel) {
-                foundModel = models.find(el => {
-                    el.name = [...el.name].map(item => translitRu2En(item.toUpperCase())).join('')
+                foundModel = models.find((el:any) => {
+                    el.name = [...el.name].map(item => translitRu2En(item.toUpperCase(), false)).join('')
                     return el.name.replace(' ', '').includes(model)
                 })
             }
@@ -302,7 +302,7 @@ export function checkEmptyFields(formEl: any) {
     })
 }
 
-export function getPeriods(ev) {
+export function getPeriods(ev:any) {
     let startTime = new Date(ev.dateStart).getHours() + ':' + new Date(ev.dateStart).getMinutes()
     let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
     return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
@@ -315,7 +315,7 @@ export const getFiasByName = (queryString: string, cb: any) => {
 export function timeAgoF(input: Date): string | undefined {
     const date = (input instanceof Date) ? input : new Date(input)
     const formatter = new Intl.RelativeTimeFormat('ru')
-    const ranges = {
+    const ranges:any = {
         years: 3600 * 24 * 365,
         months: 3600 * 24 * 30,
         weeks: 3600 * 24 * 7,

@@ -9,7 +9,7 @@
               :style="{marginRight: globalStore.isMobileView?'80px':'30px'}"
               @input="toSearch()"/>
 
-    <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
+    <el-button @click="openModal(null)" type="danger" :icon="Plus"> Добавить</el-button>
 
     <br><br>
   </span>
@@ -61,15 +61,15 @@ import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
-const tableData = ref([])
-let tableDataMemory = []
+const tableData = ref<any>()
+let tableDataMemory:any = []
 const isEdit = ref(false)
 const selectedRow = ref(false)
 const WorksModal = ref(null)
 const like = ref('')
 
 function openModal(row: any | null) {
-  WorksModal.value.open(row, getData)
+  WorksModal.value && WorksModal.value.open(row, getData)
 }
 
 
