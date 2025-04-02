@@ -113,6 +113,11 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/Workflow/GetSwapPhoneHistory/?appealId=${id}`).then(q => q)
             return (cache.getSwapPhoneHistory = res.data)
         },
+        async getCommunication(id: number) {
+            if (cache.getCommunication) return cache.getCommunication
+            const res = await axios.get(`/api/communication/appeal/get?id=${id}`)
+            return (cache.getCommunication = res.data)
+        }
     }
 })
 

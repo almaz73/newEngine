@@ -376,21 +376,21 @@ const smsText = ref('')
 const smsTemplate = ref(null)
 const smsDate = ref(null)
 const isOpen = ref(false)
-const newDeal = ref({
+const newDeal = ref<any>({
   dealStatus: 0,
   type: 0,
   lead: {leadType: 10},
   auto: {vinNotExist: false, yearReleased: null, autoType: 10},
   arrest: false
 })
-const brands = ref([])
-const models = ref([])
-const colors = ref([])
+const brands = ref<any>()
+const models = ref<any>()
+const colors = ref<any>()
 const svgColor = ref('white')
-const autoTypes = ref(null)
+const autoTypes = ref<any>()
 const subtitle = ref('')
-const carGenerations = ref([])
-const carModifications = ref([])
+const carGenerations = ref<any>()
+const carModifications = ref<any>()
 const form = ref(null)
 const dealType = [
   {id: 20, name: 'Trade-in'},
@@ -398,7 +398,7 @@ const dealType = [
   {id: 50, name: 'Выкуп у юр. лица'},
   {id: 60, name: 'A/м через салон'}
 ]
-let row = null
+let row:any = null
 
 function changeEngine() {
   let en = newDeal.value.auto.isNativeEngine === 'true'
@@ -474,7 +474,7 @@ function open(_row: any) {
 
 function setBrand() {
   if (!newDeal.value.auto || !newDeal.value.auto.carBrandId && row.carBrand) {
-    let brand = brands.value.find(el => el.name === row.carBrand)
+    let brand:any = brands.value.find((el:any) => el.name === row.carBrand)
     if (brand) newDeal.value.auto.carBrandId = brand.id
   }
   changeBrand(newDeal.value.auto.carBrandId)
@@ -492,7 +492,7 @@ function changeModel(modelId: number) {
   useAdminStore().getGenerations(modelId).then(res => carGenerations.value = res)
 }
 
-function getModifications(ids) {
+function getModifications(ids:number) {
   adminStore.getModifications([ids]).then(res => carModifications.value = res)
 }
 
@@ -507,13 +507,13 @@ function clear() {
 
 function changeColor(colorId: number) {
   if (!colorId) return false
-  let c = colors.value.find(el => el.id === colorId)
+  let c:any = colors.value.find((el:any) => el.id === colorId)
   if (c) svgColor.value = c.colorCode
 }
 
 
 function save() {
-  checkEmptyFields(form.value).then(res => {
+  checkEmptyFields(form.value).then((res:any) => {
 
     console.log('ЭТО НЕ СОХРАНЯЕТСЯ ПОКА TODO \n newDeal.value', newDeal.value)
 

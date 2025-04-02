@@ -19,15 +19,15 @@
                           :rules="{required: true, message: 'Источник', trigger: ['change']}">
               <el-select v-model="client" placeholder="Выберите источник">
                 <el-option-group
-                  v-for="group in treatmentsGroup"
-                  :key="group.id"
-                  :label="group.name"
+                    v-for="group in treatmentsGroup"
+                    :key="group.id"
+                    :label="group.name"
                 >
                   <el-option
-                    v-for="item in group.groups"
-                    :key="item.id"
-                    :value="item.id"
-                    :label="item.name"
+                      v-for="item in group.groups"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="item.name"
                   />
                 </el-option-group>
               </el-select>
@@ -54,7 +54,8 @@
               v-model="client.person.gender"
               style="width:160px"
           >
-                  <el-option v-for="item in [{id:0, name:' '}, {id:10, name:'мужской'}, {id:20, name:'женский'}]" :key="item.id"
+                  <el-option v-for="item in [{id:0, name:' '}, {id:10, name:'мужской'}, {id:20, name:'женский'}]"
+                             :key="item.id"
                              :label="item.name" :value="item.id"/>
               </el-select>
            </span>
@@ -63,22 +64,22 @@
                     @change="emailValidate(client.person.email)"
                     title="Email" v-model="client.person.email"/>
           &nbsp;&nbsp;
-<!--          <el-input placeholder="Телефон" title="Телефон"-->
-<!--                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"-->
-<!--                    v-model="client.person.phone"/>-->
+          <!--          <el-input placeholder="Телефон" title="Телефон"-->
+          <!--                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"-->
+          <!--                    v-model="client.person.phone"/>-->
 
           <el-form-item prop="person.phone"
                         style="display: inline-block; width: 200px; margin: 0 !important;"
                         :rules="{required: true, message: 'Телефон', trigger: ['change']}">
             <el-input placeholder="Телефон" title="Телефон"
-                      :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone=val)"
-                      v-model="client.person.phone" />
+                      :formatter="(value:string) =>value && formattingPhone(value, (val:any)=>client.person.phone=val)"
+                      v-model="client.person.phone"/>
           </el-form-item>
 
 
           &nbsp;&nbsp;
           <el-input placeholder="Доп.телефон" title="Доп.телефон"
-                    :formatter="(value) =>value && formattingPhone(value, (val)=>client.person.phone2=val)"
+                    :formatter="(value:string) =>value && formattingPhone(value, (val:any)=>client.person.phone2=val)"
                     v-model="client.person.phone2"/>
 
 
@@ -116,34 +117,34 @@
 
 
               <el-checkbox v-model="client.person.personalDataAgree"
-                           label="Согласие на обработку персональных данных" />
+                           label="Согласие на обработку персональных данных"/>
 
-              <el-checkbox v-model="client.person.smsReceivingAgree" label="Согласие на получение смc" />
+              <el-checkbox v-model="client.person.smsReceivingAgree" label="Согласие на получение смc"/>
 
 
               <div class="line" v-if="client.person.registrationAddress">
                 <small class="label l_100">Адрес регистрации</small>
                 <el-autocomplete
-                  :title="client.person.registrationAddress.fias.value"
-                  style="width: 200px"
-                  v-model="client.person.registrationAddress.fias.value"
-                  :fetch-suggestions="getFiasByName"
-                  clearable
-                  placeholder="Введите адрес"
-                  @select="addressSelect"
+                    :title="client.person.registrationAddress.fias.value"
+                    style="width: 200px"
+                    v-model="client.person.registrationAddress.fias.value"
+                    :fetch-suggestions="getFiasByName"
+                    clearable
+                    placeholder="Введите адрес"
+                    @select="addressSelect"
                 />
               </div>
 
               <small v-if="client.person.homeAddress">
                 <small class="label l_100">Фактический адрес</small>
                 <el-autocomplete
-                  :title="client.person.homeAddress.fias.value"
-                  style="width: 200px"
-                  v-model="client.person.homeAddress.fias.value"
-                  :fetch-suggestions="getFiasByName"
-                  clearable
-                  placeholder="Введите адрес"
-                  @select="addressSelect2"
+                    :title="client.person.homeAddress.fias.value"
+                    style="width: 200px"
+                    v-model="client.person.homeAddress.fias.value"
+                    :fetch-suggestions="getFiasByName"
+                    clearable
+                    placeholder="Введите адрес"
+                    @select="addressSelect2"
                 />
               </small>
 
@@ -164,7 +165,7 @@
                       <div v-if="!doc.deleted">
                         <div>
                           <small class="label l_150">Тип документа </small><small>&nbsp;
-                          {{ documentTypes.find(el => el.value === doc.type).title }}</small>
+                          {{ documentTypes.find((el: any) => el.value === doc.type).title }}</small>
                         </div>
 
                         <div>
@@ -199,32 +200,34 @@
                         <div>
                           <small class="label" style="min-width: 150px">Банк</small>
                           <el-select
-                            style="width: 300px; margin: 0 12px;"
-                            placeholder="Выберите банк"
-                            v-model="bill.bankId"
-                            filterable
-                            @change="changeBank(bill.bankId, index)"
-                            clearable>
+                              style="width: 300px; margin: 0 12px;"
+                              placeholder="Выберите банк"
+                              v-model="bill.bankId"
+                              filterable
+                              @change="changeBank(bill.bankId, index)"
+                              clearable>
                             <el-option v-for="item in banks" :key="item.id" :label="item.name" :value="item.id"/>
                           </el-select>
                         </div>
 
                         <div>
-                          <small class="label"  style="min-width: 150px">Филиал</small>
+                          <small class="label" style="min-width: 150px">Филиал</small>
                           <el-select
-                            placeholder="Выберите филиал"
-                            style="width: 300px; margin: 0 12px;"
-                            v-model="bill.bankItemId"
-                            filterable
-                            clearable>
-                            <el-option v-for="item in banksFilials[bill.bankId]" :key="item.id" :label="item.name" :value="item.id"/>
+                              placeholder="Выберите филиал"
+                              style="width: 300px; margin: 0 12px;"
+                              v-model="bill.bankItemId"
+                              filterable
+                              clearable>
+                            <el-option v-for="item in banksFilials[bill.bankId]" :key="item.id" :label="item.name"
+                                       :value="item.id"/>
                           </el-select>
                         </div>
 
                         <div>
-                          <small class="label"  style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
+                          <small class="label" style="min-width: 150px; margin-right: 25px">Расчетный счет </small>
                           <el-input maxlength="20" v-model="bill.personalAccount"/>
-                          &nbsp; <el-button  @click="deleteBank(bill)">
+                          &nbsp;
+                          <el-button @click="deleteBank(bill)">
                             Удалить
                           </el-button>
                         </div>
@@ -259,20 +262,20 @@ import {useAdminStore} from "@/stores/adminStore";
 import {computed, ref} from "vue";
 import {Plus} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {checkEmptyFields, emailValidate, formattingPhone, simplePhone, getFiasByName} from '@/utils/globalFunctions'
+import {checkEmptyFields, emailValidate, formattingPhone, getFiasByName, simplePhone} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 import ClientsDirDocumentsModal from "@/pages/admin/dirs/ClientsDirDocumentsModal.vue";
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
-const clientInit = {
+const clientInit = <any>{
   bills: [],
   person: {
     firstName: '',
     middleName: '',
     lastName: '',
-    registrationAddress: { fias: {} },
-    homeAddress: { fias: {} }
+    registrationAddress: {fias: {}},
+    homeAddress: {fias: {}}
   }
 }
 
@@ -282,16 +285,16 @@ const title = ref('')
 const сlientsDirModal_History = ref(null)
 const clientsDirDocumentsModal = ref(null)
 const adminStore = useAdminStore()
-const treatmentsGroup = ref([])
-const departments = ref([])
-const form = ref(null)
-const banks = ref([])
+const treatmentsGroup = ref<any>()
+const departments = ref<any>()
+const form = ref<any>()
+const banks = ref<any>()
 const banksFilials = ref({})
 const isBankIsAdded = ref(false)
-const clientDocuments = ref([])
-const documentTypes = ref([])
+const clientDocuments = ref<any>()
+const documentTypes = ref<any>()
 const activeName = ref('first')
-let cb;
+let cb: any;
 const subtitle = computed(() => {
   let fio = ''
   if (client.value.person.firstName) fio += client.value.person.firstName + ' '
@@ -314,9 +317,9 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
   }
 }
 
-function changeBank(id, index) {
-  if (index !== undefined) client.value.bills[index].bankItemId = null
-  id && adminStore.getBankFilials(id).then(res => banksFilials.value[id] = res.items)
+function changeBank(id: number, index: number | null) {
+  if (index) client.value.bills[index].bankItemId = null
+  id && adminStore.getBankFilials(id).then((res: any) => banksFilials.value[id] = res.items)
 }
 
 
@@ -326,12 +329,12 @@ function addBank() {
 }
 
 function deleteBank(bank: any) {
-  client.value.bills = client.value.bills.filter(el => !(el.bankId === bank.bankId && el.bankItemId === bank.bankItemId))
+  client.value.bills = client.value.bills.filter((el:any) => !(el.bankId === bank.bankId && el.bankItemId === bank.bankItemId))
   if (client.value.bills.length === 0) addBank()
 }
 
 
-function open(leadId, cbModal) {
+function open(leadId: number, cbModal: any) {
   cb = cbModal
   isOpen.value = true
   isBankIsAdded.value = false
@@ -343,15 +346,15 @@ function open(leadId, cbModal) {
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
 
     title.value = 'Редактирование клиента'
-    if (client.value.bills) client.value.bills.forEach(bank => changeBank(bank.bankId))
+    if (client.value.bills) client.value.bills.forEach((bank:any) => changeBank(bank.bankId, null))
   })
 
 
   globalStore.getTreatments().then(res => {
-    treatmentsGroup.value = res.items.filter(el => !el.parentName)
-    treatmentsGroup.value.map(el => {
+    treatmentsGroup.value = res.items.filter((el: any) => !el.parentName)
+    treatmentsGroup.value.map((el: any) => {
       el.groups = []
-      res.items.forEach(item => {
+      res.items.forEach((item: any) => {
         if (item.parentName === el.name) el.groups.push(item)
       })
     })
@@ -361,32 +364,32 @@ function open(leadId, cbModal) {
   adminStore.getDepartments().then(res => departments.value = res.items)
 }
 
-function getDocs(id) {
+function getDocs(id: number) {
   adminStore.getClientDocunets(id).then(res => clientDocuments.value = res.items)
   adminStore.getDocumentTypes().then(res => documentTypes.value = res.items)
 }
 
 function openClientDocs() {
-  clientsDirDocumentsModal.value.open(client.value, clientDocuments.value, getDocs)
+  clientsDirDocumentsModal.value?.open(client.value, clientDocuments.value, getDocs)
 }
 
 function tabChosen() {
-  adminStore.getBanks().then(res => banks.value = res.items)
+  adminStore.getBanks(null).then(res => banks.value = res.items)
 }
 
 function showHistory() {
   let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
-  сlientsDirModal_History.value.open('клиента', client.value.leadId, name, 'getClientHistory')
+  сlientsDirModal_History.value?.open('клиента', client.value.leadId, name, 'getClientHistory')
 }
 
 function showBanksHistory() {
   let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
-  сlientsDirModal_History.value.open('клиента по счетам', client.value.leadId, name, 'getBanksHistory')
+  сlientsDirModal_History.value?.open('клиента по счетам', client.value.leadId, name, 'getBanksHistory')
 }
 
 
 function save() {
-  checkEmptyFields(form.value).then(noErr => {
+  checkEmptyFields(form.value).then((noErr: boolean) => {
 
     if (!noErr) return false
 

@@ -10,7 +10,7 @@
         <el-button @click="isOnlyEvents=!isOnlyEvents"
                    v-if="events.length"
                    type="info" style="margin: 0 8px">
-          Cобытия - {{ events.length }}
+          Cобытия ({{ events.length }})
         </el-button>
 
 
@@ -57,7 +57,7 @@
         </div>
       </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'SMS '+(countSms?` - ${countSms} `:'')" name="smsTab">
+    <el-tab-pane :label="'SMS '+(countSms?` (${countSms}) `:'')" name="smsTab">
       <el-scrollbar>
         <el-button @click="openModalSms()" :icon="Plus" style="margin: 0 8px">Отправить СМС-сообщение клиенту
         </el-button>
@@ -73,7 +73,7 @@
 
     </el-tab-pane>
 
-    <el-tab-pane :label="'История '+(countHistory?` - ${countHistory}`:'')" name="historyTab">
+    <el-tab-pane :label="'История '+(countHistory?` (${countHistory})`:'')" name="historyTab">
       <el-scrollbar>
         <el-timeline style="background: #ddd; margin: 8px 50px; padding: 12px 12px 0 12px">
           <el-timeline-item
@@ -88,7 +88,7 @@
         </el-timeline>
       </el-scrollbar>
     </el-tab-pane>
-    <el-tab-pane :label="'Комментарии '+(countComments?` - ${countComments}`:'')" name="commentsTab">
+    <el-tab-pane :label="'Комментарии '+(countComments?` (${countComments})`:'')" name="commentsTab">
 
       <el-scrollbar>
         <div>

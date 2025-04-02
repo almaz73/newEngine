@@ -113,18 +113,28 @@
 
           </div>
           <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
-            <div><span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}
+            <div v-if="appeal.lead.person.dateOfBirth">
+              <span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}
             </div>
-            <div><span class="label">Пол:</span>
+            <div v-if="appeal.lead.person.gender">
+              <span class="label">Пол:</span>
               {{ appeal.lead.person.gender === 10 ? 'муж.' : '' }}
               {{ appeal.lead.person.gender === 20 ? 'жен.' : '' }}
             </div>
-            <div><span class="label">Место проживания:</span>
-              {{ appeal.lead.person.homeAddress.fiasAddress && appeal.lead.person.homeAddress.fiasAddress.value }}
+            <div v-if="appeal.lead.person.homeAddress.fiasAddress?.value">
+              <span class="label">Место проживания:</span>
+              {{appeal.lead.person.homeAddress.fiasAddress?.value }}
             </div>
-            <div><span class="label">Место регистрации:</span> {{
-                appeal.lead.person.registrationAddress.fiasAddress && appeal.lead.person.registrationAddress.fiasAddress.value
+            <div v-if="appeal.lead.person.registrationAddress.fiasAddress?.value">
+              <span class="label">Место регистрации:</span> {{
+                appeal.lead.person.registrationAddress.fiasAddress?.value
               }}
+            </div>
+
+            <div v-if="communicationLink"><span class="label">Коммуникация:</span>
+              <span  style="width: 200px; overflow: hidden;display: inline-grid">
+                <a :href="communicationLink" target="_blank"> {{ communicationLink }} </a>
+              </span>
             </div>
           </div>
         </div>
@@ -219,6 +229,7 @@ const clientsDirModal = ref(null)
 const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
+const communicationLink = ref('')
 let timerSwap = null
 let openSwapmodal = function () {
   swapPhoneHistoryModal.value.open(appeal.value.id)
@@ -309,6 +320,11 @@ function getEvents() {
 function init() {
   globalStore.setTitle(appeal.value.id + ' - Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
   globalStore.steps = [{title: 'Обращение', done: true}]
+  console.log('appeal.id = ',appeal.value.id)
+  appealStore.getCommunication(appeal.value.id).then(res=>{
+    console.log('res = ',res)
+    communicationLink.value = res.description
+  })
 }
 
 defineExpose({open})

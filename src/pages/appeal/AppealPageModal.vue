@@ -47,8 +47,8 @@ const closeModal = () => {
 }
 
 
-
 function open(row, cbModal) {
+  if (!row) return false
   if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
   cb = cbModal;
   isOpen.value = true;
