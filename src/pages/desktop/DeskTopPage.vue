@@ -39,12 +39,18 @@
             <div class="fields" v-if="appeal.workflow.workflowLeadType!==10">
               <div class="fields__in">
                 <el-form-item prop="lead.person['phone']"
+                              v-if="appeal.lead.leadType===20"
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Основной телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                             @input="telChanged(appeal.lead.person.phone)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
+                <el-input placeholder="* Основной телефон"
+                          v-else
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
+                          @input="telChanged(appeal.lead.person.phone)"
+                          v-model="appeal.lead.person.phone"/>
 
                 <el-form-item>
                   <el-input placeholder="Подменный телефон"
@@ -552,7 +558,7 @@ function weblinkTreatment(link) {
 function checkAndWarning() {
   if (appeal.lead.leadType === 20 && !appeal.lead.legalEntity.name)
     return ElMessage({message: 'Поле "Название организации" не заполнено', type: 'error'})
-  if (!appeal.lead.person.phone) return ElMessage({message: 'Поле "Основной телефон" не заполнен', type: 'error'})
+  if (!appeal.lead.person.phone && appeal.lead.leadType === 20) return ElMessage({message: 'Поле "Основной телефон" не заполнен', type: 'error'})
   if (!appeal.lead.person.firstName) return ElMessage({message: 'Поле "Имя" не заполнено', type: 'error'})
   if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
     return ElMessage({message: 'Поле "Вид выкупа" не заполнено', type: 'error'})
