@@ -55,7 +55,7 @@ function open(val, appeal) {
   mod.value.appealId = appeal.id
   isOpen.value = true;
 
-  globalStore.пetTradeInDirectionTypes().then(res => {
+  globalStore.getTradeInDirectionTypes().then(res => {
     types.value = res
   })
 }

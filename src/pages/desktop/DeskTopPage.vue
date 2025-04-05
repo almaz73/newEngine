@@ -394,9 +394,7 @@ let Workflows_more = ([
   {id: 7, value: 7, title: 'Доп.оборуд.'},
   {id: 9, value: 9, title: 'Подбор авто'},
   {id: 10, value: 10, title: 'Сделка через салон'}])
-if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
-  Workflows_more = Workflows_more.filter(el => el.title !== "Франшиза")
-}
+
 const Workflows = ref(Workflows_more.slice(0, 3))
 const todayListModal = ref(null)
 
@@ -446,6 +444,10 @@ const appealStart = {
 
 const appeal = reactive(JSON.parse(JSON.stringify(appealStart)))
 
+if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
+  Workflows_more = Workflows_more.filter(el => el.title !== 'Франшиза')
+  appeal.communication.type = 15
+}
 
 globalStore.getBrands().then(res => brands.value = res)
 globalStore.getColors().then(res => colors.value = res.items)
@@ -536,8 +538,7 @@ function weblinkTreatment(link) {
     appeal.workflow.yearReleased = res.year
     appeal.workflow.gearboxType = res.kpp
     if (res.brandId) {
-      setTimeout(() => appeal.communication.weblink = '', 500)
-      ElMessage.success('Данные по автомобилю заполнены')
+      ElMessage.success('Данные авто заполнены')
     }
   }, (err) => {
     link && ElMessage.error('Нет получилось распарсить ссылку', err)
@@ -590,8 +591,7 @@ function prepareAndSave() {
 
     desktopStore.saveAppealComission(commission).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        resetForm(form.value)
+        router.push({path: '/appeal/commission' + res.data.id}) // открываем после сохранения
       } else {
         ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
@@ -619,8 +619,7 @@ function prepareAndSave() {
 
     desktopStore.saveAppealSalon(deal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        resetForm(form.value)
+        router.push({path: '/appeal/salon-deal/' + res.data.id})
       } else {
         ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
       }
@@ -634,8 +633,7 @@ function prepareAndSave() {
 
     desktopStore.saveAppeal(appeal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        router.push({path: '/appeal/' + res.data.id}) // открываем после сохранения
+        router.push({path: '/appeal/' + res.data.id})
       } else {
         ElMessage({message: 'Ошибка сохранения. ' + res.message, type: 'error'})
       }

@@ -3,7 +3,7 @@ import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
-import { getCurrentInstance } from 'vue'
+//import { getCurrentInstance } from 'vue'
 
 //const instance = getCurrentInstance();
 const router = createRouter({
@@ -143,7 +143,7 @@ router.beforeEach(res => {
         if (res.fullPath.includes("/appeal/") && document.body.textContent
           && !document.body.textContent.includes("Результаты и действия")) {
             console.log("%c ... force обновление страницы ", "color: blue; background: red");
-            // setTimeout(()=>location.reload());
+            location.reload();
         }
     }, 730)
 });
