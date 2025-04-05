@@ -35,7 +35,7 @@ const toggleDark = useToggle(isDark)
 const textButtons = ref()
 
 function themeChanged() {
-  textButtons.value = isDark.value ? "Темная тема" : "Светлая тема"
+  textButtons.value = isDark.value ? "Светлая тема" : "Темная тема"
 }
 
 themeChanged()

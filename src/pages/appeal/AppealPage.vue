@@ -38,7 +38,7 @@
         empty-text="Нет данных"
         highlight-current-row
     >
-      <el-table-column label="Обращение" width="150">
+      <el-table-column label="Обращение">
         <template #default="scope">
           <ColorButtons @click="openModal(row)" :statusTitle="scope.row.statusTitle"/>
           <div class="red-text">{{ scope.row.id }}</div>
@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Клиент" width="250">
+      <el-table-column label="Клиент">
         <template #default="scope">
           <div><b> {{ scope.row.leadName }}</b></div>
           <div> {{ scope.row.leadPhone }}</div>
