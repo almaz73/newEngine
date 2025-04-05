@@ -1,7 +1,7 @@
 <template>
   <main>
     <br>
-    <el-form ref="form" :model="appeal" @change="isDirty=true">
+    <el-form ref="form" :model="appeal">
       <div class="main__flex custom">
         <div>
           <div class="desk" style="margin-bottom: -40px;">
@@ -46,35 +46,27 @@
                             @input="telChanged(appeal.lead.person.phone)"
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
-                <el-input placeholder="* Основной телефон"
+                <el-input placeholder="Основной телефон"
                           v-else
                           :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                           @input="telChanged(appeal.lead.person.phone)"
                           v-model="appeal.lead.person.phone"/>
 
-                <el-form-item>
-                  <el-input placeholder="Подменный телефон"
+                <el-input placeholder="Подменный телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                             v-model="appeal.workflow.swapPhone"/>
-                </el-form-item>
 
-                <el-form-item>
-                  <el-input placeholder="Эл.почта"
+                <el-input placeholder="Эл.почта"
                             @change="emailValidate(appeal.lead.person.email)"
                             v-model="appeal.lead.person.email"/>
-                </el-form-item>
               </div>
               <div class="fields__in">
                 <el-form-item prop="lead.person['firstName']"
                               :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
                   <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
                 </el-form-item>
-                <el-form-item>
-                  <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"/>
-                </el-form-item>
-                <el-form-item>
-                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
-                </el-form-item>
+                <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"/>
+                <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
               </div>
             </div>
 
@@ -191,7 +183,7 @@
                   </el-select>
                 </el-form-item>
 
-                <el-form-item v-if="[1,2,3,4,9].includes(appeal.workflow.workflowLeadType)">
+                <el-form-item v-if="[1,2,3,4,8,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select placeholder="Год выпуска"
                              title="Год выпуска"
                              clearable
@@ -336,7 +328,7 @@
           <br><br><br>
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
           <br><br>
-          <el-button @click="resetForm(form)" :disabled="!isDirty">Сброс</el-button>
+          <el-button @click="resetForm(form)">Сброс</el-button>
         </div>
 
         <div>
@@ -373,6 +365,7 @@ import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
 import ModalParams from "@/pages/desktop/ModalParams.vue";
 import TodayListModal from "@/pages/desktop/TodayListModal.vue";
 import {useDealStore} from "@/stores/dealStore";
+import router from "@/router";
 
 
 const dealStore=useDealStore()
@@ -389,7 +382,6 @@ const treatmentSources = ref([])
 const organizations = ref([])
 const isOpen = ref(false)
 const listAppeals = ref([])
-const isDirty = ref(false)
 const WorkflowType = ref('Выкуп')
 let Workflows_more = ([
   {id: 2, value: 2, title: 'Выкуп'},
@@ -643,9 +635,9 @@ function prepareAndSave() {
     desktopStore.saveAppeal(appeal).then(res => {
       if (res.status === 200) {
         ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        resetForm(form.value)
+        router.push({path: '/appeal/' + res.data.id}) // открываем после сохранения
       } else {
-        ElMessage({duration: 0, message: 'Ошибка сохранения. ' + res.message, type: 'error'})
+        ElMessage({message: 'Ошибка сохранения. ' + res.message, type: 'error'})
       }
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })

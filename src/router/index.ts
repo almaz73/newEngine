@@ -5,7 +5,7 @@ import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
 import { getCurrentInstance } from 'vue'
 
-const instance = getCurrentInstance();
+//const instance = getCurrentInstance();
 const router = createRouter({
     history: createWebHistory('/v2/'),
     routes: [
@@ -136,10 +136,17 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach(res=>{
-    console.log('%c ...прослушивание route=', 'color: orange; font-size:smaller', res.fullPath)
-    setTimeout(()=>instance?.proxy?.$forceUpdate())
-})
+router.beforeEach(res => {
+    console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
+    //setTimeout(()=>instance?.proxy?.$forceUpdate())
+    setTimeout(()=>{
+        if (res.fullPath.includes("/appeal/") && document.body.textContent
+          && !document.body.textContent.includes("Результаты и действия")) {
+            console.log("%c ... force обновление страницы ", "color: blue; background: red");
+            // setTimeout(()=>location.reload());
+        }
+    }, 730)
+});
 
 router.afterEach((to) => {
     let acceptedPaths = ['/undercontruction', '/reports', '/login', '/admin', '/desktop', '/calendar', '/appeal']
