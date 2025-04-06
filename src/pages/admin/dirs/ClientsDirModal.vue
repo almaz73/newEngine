@@ -5,8 +5,7 @@
             :top="40"
             :title="title"
             :subtitle="subtitle"
-            draggable
-            resizable>
+            draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
       <div class="modal-fields">
@@ -49,7 +48,7 @@
           </el-form-item>
           <el-input placeholder="Отчество" title="Отчество" v-model="client.person.middleName"/>
 
-          <span><small style="padding: 0 24px">Пол: </small><el-select
+          <span><small style="padding: 0 10px">Пол: </small><el-select
               placeholder="Выберите пол"
               v-model="client.person.gender"
               style="width:160px"
@@ -83,9 +82,8 @@
                     v-model="client.person.phone2"/>
 
 
-          <span><small style="padding: 0 24px">Д/р.:</small>
+          <span><small style="padding: 0 10px">Д/р.:</small>
              <el-date-picker
-                 style="width: 150px; overflow: hidden"
                  clearable
                  placeholder="День рождения" title="День рождения"
                  v-model="client.person.dateOfBirth"/>
@@ -289,7 +287,7 @@ const treatmentsGroup = ref<any>()
 const departments = ref<any>()
 const form = ref<any>()
 const banks = ref<any>()
-const banksFilials = ref({})
+const banksFilials = ref<any>()
 const isBankIsAdded = ref(false)
 const clientDocuments = ref<any>()
 const documentTypes = ref<any>()
@@ -396,6 +394,7 @@ function save() {
     client.value.person.phone = simplePhone(client.value.person.phone)
     if (client.value.person.phone2) client.value.person.phone2 = simplePhone(client.value.person.phone2)
 
+    globalStore.isWaiting = true
     adminStore.saveClient(client.value).then(res => {
       if (res.status === 200) {
         ElMessage({message: 'Данные клиента успешно сохранены', type: 'success'})
@@ -403,6 +402,7 @@ function save() {
         client.value = clientInit
         cb && cb()
       }
+      globalStore.isWaiting = false
     })
   })
 }

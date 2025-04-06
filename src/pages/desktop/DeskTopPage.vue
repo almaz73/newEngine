@@ -10,6 +10,12 @@
             <div class="fields yourPlace">
               <div v-if="appeal.lead.leadType===10">Физическое лицо</div>
               <div v-if="appeal.lead.leadType===20">Юридическое лицо</div>
+              <span v-if="isShowEditClient && appeal.lead.leadType===10">
+                <EditPensilCtrl @click="editClient()"/>
+                 <img @click="resetForm()" alt=""
+                      src="@/assets/icons/icon-cross-gray.png"
+                      title="Удалить">
+              </span>
               <br><br>
               <el-form-item
                   v-if="appeal.lead.leadType===20"
@@ -26,10 +32,10 @@
             <el-button-group v-model="appeal.lead.leadType" class="group-button gray-buttons">
               <div>Клиент</div>
               <br>
-              <el-button @click="resetForm();appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
+              <el-button @click="changeLeadType(10)" :class="{active:appeal.lead.leadType===10}">
                 Физ. лицо
               </el-button>
-              <el-button @click="resetForm();appeal.lead.leadType=20"
+              <el-button @click="changeLeadType(20)"
                          :disabled="appeal.workflow.workflowLeadType===10"
                          :class="{active:appeal.lead.leadType===20}">
                 Юр. лицо
@@ -44,10 +50,13 @@
                   <el-input placeholder="* Основной телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                             @input="telChanged(appeal.lead.person.phone)"
+                            clearable
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
                 <el-input placeholder="Основной телефон"
                           v-else
+                          clearable
+                          :disabled="!!appeal.lead.leadId"
                           :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                           @input="telChanged(appeal.lead.person.phone)"
                           v-model="appeal.lead.person.phone"/>
@@ -348,6 +357,7 @@
                  @setFoundClient="setFoundClient"
                  @closeModal="closeModal"/>
     <TodayListModal ref="todayListModal"/>
+    <ClientsDirModal ref="clientsDirModal"/>
   </main>
 </template>
 <style>
@@ -366,6 +376,8 @@ import ModalParams from "@/pages/desktop/ModalParams.vue";
 import TodayListModal from "@/pages/desktop/TodayListModal.vue";
 import {useDealStore} from "@/stores/dealStore";
 import router from "@/router";
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
 
 
 const dealStore=useDealStore()
@@ -383,6 +395,7 @@ const organizations = ref([])
 const isOpen = ref(false)
 const listAppeals = ref([])
 const WorkflowType = ref('Выкуп')
+const isShowEditClient = ref(false)
 let Workflows_more = ([
   {id: 2, value: 2, title: 'Выкуп'},
   {id: 8, value: 8, title: 'Комиссия'},
@@ -397,7 +410,11 @@ let Workflows_more = ([
 
 const Workflows = ref(Workflows_more.slice(0, 3))
 const todayListModal = ref(null)
+const clientsDirModal = ref(null)
 
+function editClient() {
+  if (appeal.lead.leadId) clientsDirModal.value.open(appeal.lead.leadId)
+}
 
 function moreButtons() {
   if (Workflows.value.length < 4) Workflows.value = Workflows_more
@@ -480,6 +497,7 @@ const telChanged = (value) => {
     telRequestList[t] = true
     if (t[0] === '7') t = '8' + t.slice(1)
     desktopStore.getLeadsByPhone(t).then(res => {
+      if(!res.items.length) ElMessage.info('По данному номеру клиента нет')
       globalStore.isWaiting = false
       openPhoneModal(res.items)
     })
@@ -502,8 +520,11 @@ function setFoundClient(val, appeals) {
   closeModal()
   let findAppeal = appeals.find(el => el.leadId === val.leadId)
   appeal.lead.person.firstName = findAppeal.lead.person.firstName
-  appeal.lead.person.middleNAme = findAppeal.lead.person.middleNAme
+  appeal.lead.person.middleName = findAppeal.lead.person.middleName
   appeal.lead.person.lastName = findAppeal.lead.person.lastName
+  appeal.lead.person.email  = findAppeal.lead.person.email
+  appeal.lead.leadId = findAppeal.lead.leadId
+  isShowEditClient.value = true
 }
 
 
@@ -517,6 +538,12 @@ const resetForm = formEl => {
   formEl && formEl.resetFields()
   Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
   isNeedCheckUnSaved && saveUnSaved(cbForEdit)
+  isShowEditClient.value = false
+}
+
+const changeLeadType = leadType => {
+  if (appeal.lead.leadType !== leadType) resetForm()
+  appeal.lead.leadType = leadType
 }
 
 function changeWorkflow(val) {
@@ -598,7 +625,7 @@ function prepareAndSave() {
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   } else if (appeal.workflow.workflowLeadType === 10) { // сделка через салон
-    var deal = {
+    let deal = {
       buyLead: {
         leadId: appeal.buyLead.leadId,
         person: appeal.buyLead.person,
