@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore";
 import {useDealStore} from '@/stores/dealStore'
-import { onMounted, ref } from 'vue'
+import {ref, watchEffect} from 'vue'
 import {AppealStatusTable} from "@/utils/globalConstants";
 import StatusStart from "@/pages/appeal/appealEditFields/status/StatusStart.vue";
 import StatusArchive from "@/pages/appeal/appealEditFields/status/StatusArchive.vue";
@@ -43,27 +43,29 @@ const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const AppealStatusTypes = ref([])
 const appealAvailableStatuses = ref([])
-const statusStart = ref(null)
-const statusArchive = ref(null)
-const statusComission = ref(null)
-const statusTradeIn = ref(null)
-const statusBuyout = ref(null)
-const statusToArchive = ref(null)
-const statusDecor = ref(null)
-const createTypeSell = ref(null)
+const statusStart = ref<any>()
+const statusArchive = ref<any>()
+const statusComission = ref<any>()
+const statusTradeIn = ref<any>()
+const statusBuyout = ref<any>()
+const statusToArchive = ref<any>()
+const statusDecor = ref<any>()
+const createTypeSell = ref<any>()
 
-onMounted(() => {
-  let appealId = +location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+watchEffect(() => {
+  props.appeal.id && getStatuses(props.appeal.id)
+})
 
+function getStatuses(appealId: number) {
   dealStore.getStatuses(appealId).then(res => {
     appealAvailableStatuses.value = res.items
-    res.items.forEach((el:any) => {
+    res.items.forEach((el: any) => {
       let item = AppealStatusTable.find(item => item.id === el.value)
-      item && AppealStatusTypes.value.push(item)
+      if (item) AppealStatusTypes.value.push(item)
     })
     sortFunction()
   })
-})
+}
 
 // Список приходит разный, но будем выдавать в едином установленном порядке
 let myList = [11, 263, 264, 265, 8, 14, 16, 17, 400, 340, 100, 111, 149, 100, 104, 300, 340, 310, 320, 350, 330, 360]
@@ -75,7 +77,7 @@ function sortFunction() {
   if (props.appeal.workflowLeadType != 6) deleteNode(8)
   if (props.appeal.status == 17 && globalStore.account.role === 'CallEmployee') deleteNode(17)
 
-  let newList:[] = []
+  let newList: [] = []
   myList.forEach(el => {
     let founded = AppealStatusTypes.value.find(item => el === item.id)
     if (founded && !newList.includes(founded)) newList.push(founded)
@@ -83,7 +85,7 @@ function sortFunction() {
   AppealStatusTypes.value = newList
 }
 
-function makeChoice(val) {
+function makeChoice(val: any) {
   if (val.id === 11) statusStart.value.open(val, props.appeal.id) //'Обращение. В работу'
   if (val.id === 16) statusToArchive.value.open(val, props.appeal) //'Обращение. Запрос архивирования'
   if (val.id === 17) statusArchive.value.open(val, props.appeal) //'Обращение. Архивировать'
@@ -98,7 +100,6 @@ function makeChoice(val) {
   } //'Создание обращения с типом "Продажа"' // не смог проверить
 
   if (![11, 17, 263, 265, 264, 16, 400].includes(val.id)) {
-    console.log('val.id = ',val.id)
     alert(' новое не проверенное ')
   }
 }

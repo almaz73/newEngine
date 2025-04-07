@@ -8,12 +8,12 @@
     </div>
 
     <div class="appealStatRight">
-      <small>
+      <div style="font-size: smaller">
         <div class="label-red ">Результаты и действия:</div>
         <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
         <div v-if="lastTaskAndResult" v-html="lastTaskAndResult"/>
         <div>⚡{{ prevTask }}</div>
-      </small>
+      </div>
     </div>
   </div>
   <br>
@@ -321,7 +321,6 @@ function init() {
   globalStore.steps = [{title: 'Обращение', done: true}]
   console.log('appeal.id = ',appeal.value.id)
   appealStore.getCommunication(appeal.value.id).then(res=>{
-    console.log('res = ',res)
     communicationLink.value = res.description
   })
 }
