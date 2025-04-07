@@ -5,8 +5,7 @@
             :top="40"
             :title="title"
             :subtitle="subtitle"
-            draggable
-            resizable>
+            draggable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
       <div class="modal-fields">
@@ -50,9 +49,11 @@
           <el-input placeholder="Email"
                     @change="emailValidate(user.person.email)"
                     title="Email" v-model="user.person.email"/>
+          &nbsp;&nbsp;
           <el-input placeholder="Телефон" title="Телефон" clearable
                     :formatter="(value) =>value && formattingPhone(value, (val)=>user.person.phone=val)"
                     v-model="user.person.phone"/>
+          &nbsp;&nbsp;
           <el-input placeholder="Доп.телефон" title="Доп.телефон" clearable
                     :formatter="(value) =>value && formattingPhone(value, (val)=>user.person.phone2=val)"
                     v-model="user.person.phone2"/>
@@ -285,12 +286,14 @@ function setNewPhoto(file) {
 }
 
 function save() {
-  checkEmptyFields(form.value).then(noErr => {
-    noErr && adminStore.saveUser(user.value).then(res => {
+  globalStore.isWaiting = true
+  checkEmptyFields(form.value).then(res => {
+    res && adminStore.saveUser(user.value).then(res => {
       res && ElMessage({message: 'Успешно', type: 'success'})
       isOpen.value = false
       cb && cb()
     })
+    globalStore.isWaiting = false
   })
 }
 

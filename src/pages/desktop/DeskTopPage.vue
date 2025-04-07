@@ -5,31 +5,44 @@
       <div class="main__flex custom">
         <div>
           <div class="desk" style="margin-bottom: -40px;">
-            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType===10"/>
+            <el-button-group class="group-button" v-if="!globalStore.isMobileView || appeal.lead.leadType===10" />
 
             <div class="fields yourPlace">
               <div v-if="appeal.lead.leadType===10">Физическое лицо</div>
               <div v-if="appeal.lead.leadType===20">Юридическое лицо</div>
+              <span v-if="isShowEditClient && appeal.lead.leadType===10">
+                <EditPensilCtrl @click="editClient()" />
+                 <img @click="resetForm()" alt=""
+                      src="@/assets/icons/icon-cross-gray.png"
+                      title="Удалить">
+              </span>
               <br><br>
               <el-form-item
-                  v-if="appeal.lead.leadType===20"
-                  style="min-width: calc(100% - 35px)"
-                  prop="lead.legalEntity['name']"
-                  :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">
+                v-if="appeal.lead.leadType===20"
+                style="min-width: calc(100% - 35px)"
+                prop="lead.legalEntity['name']"
+                :rules="{required: true, message: 'Введите название организации', trigger: ['blur', 'change']}">
                 <el-input
-                    :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
-                    v-model.number="appeal.lead.legalEntity.name" placeholder="* Название организации"/>
+                  :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
+                  v-model.number="appeal.lead.legalEntity.name" placeholder="* Название организации" />
               </el-form-item>
+              <el-autocomplete
+                v-if="appeal.lead.leadType===20"
+                v-model="appeal.lead.legalEntity.inn"
+                :fetch-suggestions="innChanged"
+                placeholder="ИНН"
+                @select="setLead"
+              />
             </div>
           </div>
           <div class="desk">
             <el-button-group v-model="appeal.lead.leadType" class="group-button gray-buttons">
               <div>Клиент</div>
               <br>
-              <el-button @click="resetForm();appeal.lead.leadType=10" :class="{active:appeal.lead.leadType===10}">
+              <el-button @click="changeLeadType(10)" :class="{active:appeal.lead.leadType===10}">
                 Физ. лицо
               </el-button>
-              <el-button @click="resetForm();appeal.lead.leadType=20"
+              <el-button @click="changeLeadType(20)"
                          :disabled="appeal.workflow.workflowLeadType===10"
                          :class="{active:appeal.lead.leadType===20}">
                 Юр. лицо
@@ -44,29 +57,32 @@
                   <el-input placeholder="* Основной телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                             @input="telChanged(appeal.lead.person.phone)"
+                            clearable
                             v-model="appeal.lead.person.phone"/>
                 </el-form-item>
                 <el-input placeholder="Основной телефон"
                           v-else
+                          clearable
+                          :disabled="!!appeal.lead.leadId"
                           :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                           @input="telChanged(appeal.lead.person.phone)"
                           v-model="appeal.lead.person.phone"/>
 
                 <el-input placeholder="Подменный телефон"
-                            :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
-                            v-model="appeal.workflow.swapPhone"/>
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
+                          v-model="appeal.workflow.swapPhone" />
 
                 <el-input placeholder="Эл.почта"
-                            @change="emailValidate(appeal.lead.person.email)"
-                            v-model="appeal.lead.person.email"/>
+                          @change="emailValidate(appeal.lead.person.email)"
+                          v-model="appeal.lead.person.email" />
               </div>
               <div class="fields__in">
                 <el-form-item prop="lead.person['firstName']"
                               :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
-                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
+                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName" />
                 </el-form-item>
-                <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName"/>
-                <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
+                <el-input placeholder="Отчество" v-model="appeal.lead.person.middleName" />
+                <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName" />
               </div>
             </div>
 
@@ -78,16 +94,16 @@
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
-                            v-model="appeal.lead.person.phone"/>
+                            v-model="appeal.lead.person.phone" />
                 </el-form-item>
 
                 <el-form-item prop="lead.person['firstName']"
                               :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
-                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName"/>
+                  <el-input placeholder="* Имя" v-model="appeal.lead.person.firstName" />
                 </el-form-item>
 
                 <el-form-item>
-                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName"/>
+                  <el-input placeholder="Фамилия" v-model="appeal.lead.person.lastName" />
                 </el-form-item>
               </div>
               <div class="fields__in">
@@ -96,35 +112,35 @@
                               :rules="{required: true, message: 'Введите номер телефона', trigger: ['blur']}">
                   <el-input placeholder="* Телефон"
                             :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
-                            v-model="appeal.buyLead.person.phone"/>
+                            v-model="appeal.buyLead.person.phone" />
                 </el-form-item>
 
                 <el-form-item prop="buyLead.person['firstName']"
                               :rules="{required: true, message: 'Введите имя', trigger: ['blur', 'change']}">
-                  <el-input placeholder="* Имя" v-model="appeal.buyLead.person.firstName"/>
+                  <el-input placeholder="* Имя" v-model="appeal.buyLead.person.firstName" />
                 </el-form-item>
 
                 <el-form-item>
-                  <el-input placeholder="Фамилия" v-model="appeal.buyLead.person.lastName"/>
+                  <el-input placeholder="Фамилия" v-model="appeal.buyLead.person.lastName" />
                 </el-form-item>
               </div>
             </div>
           </div>
           <div class="desk" style="margin-bottom: -40px;">
-            <el-button-group class="group-button " v-if="!globalStore.isMobileView || appeal.communication.type!==15"/>
+            <el-button-group class="group-button " v-if="!globalStore.isMobileView || appeal.communication.type!==15" />
 
             <div class="fields yourPlace">
               <div>{{ WorkflowType }}</div>
               <br><br>
               <el-form-item
-                  v-if="appeal.communication.type===15"
-                  style="min-width: calc(100% - 35px)">
+                v-if="appeal.communication.type===15"
+                style="min-width: calc(100% - 35px)">
                 <el-input
-                    style="border-bottom: 3px solid #66b1ff"
-                    :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
-                    @input="weblinkTreatment(appeal.communication.weblink)"
-                    clearable
-                    v-model.number="appeal.communication.weblink" placeholder="Скопируйте сюда ссылку с Авита"/>
+                  style="border-bottom: 3px solid #66b1ff"
+                  :style="{minWidth:globalStore.isMobileView? '183%':'100%' }"
+                  @input="weblinkTreatment(appeal.communication.weblink)"
+                  clearable
+                  v-model.number="appeal.communication.weblink" placeholder="Скопируйте сюда ссылку с Авита" />
               </el-form-item>
             </div>
           </div>
@@ -146,27 +162,27 @@
 
 
                 <el-form-item
-                    v-if="[1,2,3].includes(appeal.workflow.workflowLeadType) && appeal.communication.type!==15"
-                    prop="workflow.auto['vin']"
-                    :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
+                  v-if="[1,2,3].includes(appeal.workflow.workflowLeadType) && appeal.communication.type!==15"
+                  prop="workflow.auto['vin']"
+                  :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
                   <el-input placeholder="VIN 17 символов" @input="getAutoWithVIN()"
                             maxlength="17"
-                            v-model="appeal.workflow.auto.vin"/>
+                            v-model="appeal.workflow.auto.vin" />
                 </el-form-item>
 
                 <el-form-item v-if="[1,2,3,4,8,9].includes(appeal.workflow.workflowLeadType)">
                   <el-select
-                      v-model="appeal.workflow.brandId"
-                      @change="changeBrand(appeal.workflow.brandId)"
-                      placeholder="Марка"
-                      title="Марка"
-                      :clearable="!globalStore.isMobileView"
-                      :filterable="!globalStore.isMobileView"
+                    v-model="appeal.workflow.brandId"
+                    @change="changeBrand(appeal.workflow.brandId)"
+                    placeholder="Марка"
+                    title="Марка"
+                    :clearable="!globalStore.isMobileView"
+                    :filterable="!globalStore.isMobileView"
                   >
                     <el-option v-for="item in brands"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -179,7 +195,7 @@
                     <el-option v-for="item in models"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -191,14 +207,14 @@
                     <el-option v-for="item in Years"
                                :key="item.name"
                                :label="item.name"
-                               :value="item.name"/>
+                               :value="item.name" />
                   </el-select>
                 </el-form-item>
 
                 <el-form-item v-if="[1,2,3].includes(appeal.workflow.workflowLeadType)">
                   <el-input placeholder="Пробег автомобиля"
                             title="Пробег автомобиля"
-                            type="number" v-model="appeal.workflow.mileageAuto"/>
+                            type="number" v-model="appeal.workflow.mileageAuto" />
                 </el-form-item>
 
                 <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
@@ -208,7 +224,7 @@
                             placeholder="X 000 XX 000"
                             title='Государственный номерной знак'
                             maxlength="12"
-                            @key.enter="emits('changed')"/>
+                            @key.enter="emits('changed')" />
                 </el-form-item>
 
                 <el-form-item v-if="[3].includes(appeal.workflow.workflowLeadType)">
@@ -218,7 +234,7 @@
                     <el-option v-for="item in EngineType"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -227,7 +243,7 @@
                     <el-option v-for="item in GearboxType"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -241,7 +257,7 @@
                     <el-option v-for="item in colors"
                                :key="item.id"
                                :label="item.colorName"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -254,7 +270,7 @@
                     <el-option v-for="item in BuyCategoryTypes"
                                :key="item.id"
                                :label="item.title"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -268,7 +284,7 @@
                     <el-option v-for="item in storages"
                                :key="item.id"
                                :label="item.title"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -282,7 +298,7 @@
                     <el-option v-for="item in organizations"
                                :key="item.id"
                                :label="item.name"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
 
@@ -294,7 +310,7 @@
                     <el-option v-for="item in managers"
                                :key="item.id"
                                :label="item.fullName"
-                               :value="item.id"/>
+                               :value="item.id" />
                   </el-select>
                 </el-form-item>
               </div>
@@ -306,24 +322,24 @@
           <div style="margin: 17px 0">Источник обращения</div>
           <el-form-item>
             <el-select v-model="appeal.communication.type" class="b_green_source">
-              <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in CommunicationTypes" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
 
           <el-form-item>
             <el-select v-model="appeal.communication.sourceId">
-              <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id"/>
+              <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
 
           <el-form-item>
             <el-select v-model="appeal.communication.city" placeholder="Город" :filterable="!globalStore.isMobileView">
-              <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item"/>
+              <el-option v-for="(item, ind) in cities" :key="ind" :label="item" :value="item" />
             </el-select>
           </el-form-item>
 
 
-          <el-input placeholder="Описание" v-model="appeal.communication.description"/>
+          <el-input placeholder="Описание" v-model="appeal.communication.description" />
 
           <br><br><br>
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
@@ -333,8 +349,8 @@
 
         <div>
           <button
-              @click="openTodaysModal()"
-              style="background: #518468; padding: 0; border: none; cursor:pointer; height: 46px; width: 49px">
+            @click="openTodaysModal()"
+            style="background: #518468; padding: 0; border: none; cursor:pointer; height: 46px; width: 49px">
             <img alt="" title="Список обращений по дате" src="@/assets/icons/eventTestDriveWhite.png">
           </button>
         </div>
@@ -346,8 +362,9 @@
                  :isOpen="isOpen"
                  :tel="appeal.lead.person.phone"
                  @setFoundClient="setFoundClient"
-                 @closeModal="closeModal"/>
-    <TodayListModal ref="todayListModal"/>
+                 @closeModal="closeModal" />
+    <TodayListModal ref="todayListModal" />
+    <ClientsDirModal ref="clientsDirModal" />
   </main>
 </template>
 <style>
@@ -355,20 +372,23 @@
 
 </style>
 <script setup>
-import {useGlobalStore} from "@/stores/globalStore";
-import {computed, onMounted, reactive, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {useDesktopStore} from "@/stores/desktopStore";
-import {BuyCategoryTypes, CommunicationTypes, EngineType, GearboxType, Years} from '@/utils/globalConstants'
-import {emailValidate, formattingPhone, vetRegNumber, weblink} from "@/utils/globalFunctions";
-import {saveInLocalStorage, saveUnSaved} from "@/utils/unsavedRequests";
-import ModalParams from "@/pages/desktop/ModalParams.vue";
-import TodayListModal from "@/pages/desktop/TodayListModal.vue";
-import {useDealStore} from "@/stores/dealStore";
-import router from "@/router";
+import { useGlobalStore } from '@/stores/globalStore'
+import { useAppealStore } from '@/stores/appealStore'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useDesktopStore } from '@/stores/desktopStore'
+import { BuyCategoryTypes, CommunicationTypes, EngineType, GearboxType, Years } from '@/utils/globalConstants'
+import { emailValidate, formattingPhone, vetRegNumber, weblink } from '@/utils/globalFunctions'
+import { saveInLocalStorage, saveUnSaved } from '@/utils/unsavedRequests'
+import ModalParams from '@/pages/desktop/ModalParams.vue'
+import TodayListModal from '@/pages/desktop/TodayListModal.vue'
+import { useDealStore } from '@/stores/dealStore'
+import router from '@/router'
+import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
 
-
-const dealStore=useDealStore()
+const appealStore = useAppealStore()
+const dealStore = useDealStore()
 const desktopStore = useDesktopStore()
 const form = ref(null)
 const globalStore = useGlobalStore()
@@ -383,23 +403,26 @@ const organizations = ref([])
 const isOpen = ref(false)
 const listAppeals = ref([])
 const WorkflowType = ref('Выкуп')
+const isShowEditClient = ref(false)
 let Workflows_more = ([
-  {id: 2, value: 2, title: 'Выкуп'},
-  {id: 8, value: 8, title: 'Комиссия'},
-  {id: 1, value: 1, title: 'Продажа'},
-  {id: 3, value: 3, title: 'Сервис'},
-  {id: 4, value: 4, title: 'КСО'},
-  {id: 5, value: 5, title: 'Fleet'},
-  {id: 6, value: 6, title: 'Франшиза'},
-  {id: 7, value: 7, title: 'Доп.оборуд.'},
-  {id: 9, value: 9, title: 'Подбор авто'},
-  {id: 10, value: 10, title: 'Сделка через салон'}])
-if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
-  Workflows_more = Workflows_more.filter(el => el.title !== "Франшиза")
-}
+  { id: 2, value: 2, title: 'Выкуп' },
+  { id: 8, value: 8, title: 'Комиссия' },
+  { id: 1, value: 1, title: 'Продажа' },
+  { id: 3, value: 3, title: 'Сервис' },
+  { id: 4, value: 4, title: 'КСО' },
+  { id: 5, value: 5, title: 'Fleet' },
+  { id: 6, value: 6, title: 'Франшиза' },
+  { id: 7, value: 7, title: 'Доп.оборуд.' },
+  { id: 9, value: 9, title: 'Подбор авто' },
+  { id: 10, value: 10, title: 'Сделка через салон' }])
+
 const Workflows = ref(Workflows_more.slice(0, 3))
 const todayListModal = ref(null)
+const clientsDirModal = ref(null)
 
+function editClient() {
+  if (appeal.lead.leadId) clientsDirModal.value.open(appeal.lead.leadId)
+}
 
 function moreButtons() {
   if (Workflows.value.length < 4) Workflows.value = Workflows_more
@@ -408,8 +431,8 @@ function moreButtons() {
 
 onMounted(() => {
   document.querySelector('form').addEventListener('submit', event => {
-    event.preventDefault();  // Стоп! Прерываем действие по умолчанию.
-  });
+    event.preventDefault()  // Стоп! Прерываем действие по умолчанию.
+  })
 })
 
 
@@ -422,12 +445,12 @@ const appealStart = {
   lead: {
     leadType: 10,
     leadId: 0,
-    legalEntity: {name: ''},
-    person: {phone: '', email: '', firstName: '', lastName: '', middleName: ''}
+    legalEntity: { name: '' },
+    person: { phone: '', email: '', firstName: '', lastName: '', middleName: '' }
   },
   workflow: {
     workflowLeadType: 2,
-    auto: {vin: ''},
+    auto: { vin: '' },
     swapPhone: '', brandId: null, carModelId: null,
     mileageAuto: null, bodyColorId: '',
     BuyCategory: null,
@@ -440,12 +463,16 @@ const appealStart = {
     weblink: '', description: ''
   },
   buyLead: {
-    person: {phone: '', firstName: '', lastName: ''}
+    person: { phone: '', firstName: '', lastName: '' }
   }
 }
 
 const appeal = reactive(JSON.parse(JSON.stringify(appealStart)))
 
+if (['CallManager', 'LocalCallEmployee'].includes(globalStore.account.role)) {
+  Workflows_more = Workflows_more.filter(el => el.title !== 'Франшиза')
+  appeal.communication.type = 15
+}
 
 globalStore.getBrands().then(res => brands.value = res)
 globalStore.getColors().then(res => colors.value = res.items)
@@ -456,13 +483,13 @@ globalStore.getPlaces().then(res => {
 })
 
 
-dealStore.getLocations(2).then(res => storages.value = res.data.items);
+dealStore.getLocations(2).then(res => storages.value = res.data.items)
 globalStore.getTreatmentSources().then(res => {
   treatmentSources.value = res.items
 })
 
 function changeSalon() {
-  desktopStore.getResponsible(appeal.workflow.locationId, appeal.workflow.workflowLeadType).then(res=>{
+  desktopStore.getResponsible(appeal.workflow.locationId, appeal.workflow.workflowLeadType).then(res => {
     appeal.workflow.managerId = null
     managers.value = res.items
   })
@@ -478,10 +505,36 @@ const telChanged = (value) => {
     telRequestList[t] = true
     if (t[0] === '7') t = '8' + t.slice(1)
     desktopStore.getLeadsByPhone(t).then(res => {
+      if (!res.items.length) ElMessage.info('По данному номеру клиента нет')
       globalStore.isWaiting = false
       openPhoneModal(res.items)
     })
   }
+}
+
+const setLead = (value) => {
+  appeal.lead.legalEntity.id = value.id
+  appeal.lead.legalEntity.inn = value.inn
+  appeal.lead.legalEntity.name = value.value
+  appeal.lead.person = value.person
+}
+
+let innTimer = false
+const innChanged = (value, cb) => {
+  value = value.replace(/\D/g, '')
+  if (value.length > 12) value = value.slice(0, 12)
+  appeal.lead.legalEntity.inn = value
+
+  clearTimeout(innTimer)
+  innTimer = setTimeout(() => {
+    appealStore.getInn(value, 20).then(res => {
+      if (res && res.models && !res.models.length) {
+        ElMessage.info('Не найдено организации с данным ИНН')
+        cb(null)
+      }
+      cb(res.models)
+    })
+  }, 1000)
 }
 
 // показ вариантов кто с телефоном
@@ -500,8 +553,11 @@ function setFoundClient(val, appeals) {
   closeModal()
   let findAppeal = appeals.find(el => el.leadId === val.leadId)
   appeal.lead.person.firstName = findAppeal.lead.person.firstName
-  appeal.lead.person.middleNAme = findAppeal.lead.person.middleNAme
+  appeal.lead.person.middleName = findAppeal.lead.person.middleName
   appeal.lead.person.lastName = findAppeal.lead.person.lastName
+  appeal.lead.person.email = findAppeal.lead.person.email
+  appeal.lead.leadId = findAppeal.lead.leadId
+  isShowEditClient.value = true
 }
 
 
@@ -513,8 +569,14 @@ const changeBrand = id => {
 const submitForm = formEl => formEl && formEl.validate(valid => !valid)
 const resetForm = formEl => {
   formEl && formEl.resetFields()
-  Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)));
+  Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)))
   isNeedCheckUnSaved && saveUnSaved(cbForEdit)
+  isShowEditClient.value = false
+}
+
+const changeLeadType = leadType => {
+  if (appeal.lead.leadType !== leadType) resetForm()
+  appeal.lead.leadType = leadType
 }
 
 function changeWorkflow(val) {
@@ -536,8 +598,7 @@ function weblinkTreatment(link) {
     appeal.workflow.yearReleased = res.year
     appeal.workflow.gearboxType = res.kpp
     if (res.brandId) {
-      setTimeout(() => appeal.communication.weblink = '', 500)
-      ElMessage.success('Данные по автомобилю заполнены')
+      ElMessage.success('Данные авто заполнены')
     }
   }, (err) => {
     link && ElMessage.error('Нет получилось распарсить ссылку', err)
@@ -549,11 +610,14 @@ function weblinkTreatment(link) {
 
 function checkAndWarning() {
   if (appeal.lead.leadType === 20 && !appeal.lead.legalEntity.name)
-    return ElMessage({message: 'Поле "Название организации" не заполнено', type: 'error'})
-  if (!appeal.lead.person.phone && appeal.lead.leadType === 20) return ElMessage({message: 'Поле "Основной телефон" не заполнен', type: 'error'})
-  if (!appeal.lead.person.firstName) return ElMessage({message: 'Поле "Имя" не заполнено', type: 'error'})
+    return ElMessage({ message: 'Поле "Название организации" не заполнено', type: 'error' })
+  if (!appeal.lead.person.phone && appeal.lead.leadType === 20) return ElMessage({
+    message: 'Поле "Основной телефон" не заполнен',
+    type: 'error'
+  })
+  if (!appeal.lead.person.firstName) return ElMessage({ message: 'Поле "Имя" не заполнено', type: 'error' })
   if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
-    return ElMessage({message: 'Поле "Вид выкупа" не заполнено', type: 'error'})
+    return ElMessage({ message: 'Поле "Вид выкупа" не заполнено', type: 'error' })
 }
 
 function save() {
@@ -577,11 +641,11 @@ function prepareAndSave() {
       Client: {
         leadId: appeal.lead.leadId,
         TreatmentSourceId: appeal.communication.sourceId,
-        Person: appeal.lead.person,
+        Person: appeal.lead.person
       },
-      Appeal: {ResponsibleId: appeal.workflow.managerId},
-      LeadType: appeal.lead.leadType,
-    };
+      Appeal: { ResponsibleId: appeal.workflow.managerId },
+      LeadType: appeal.lead.leadType
+    }
 
     if (!navigator.onLine) {
       saveInLocalStorage('desktopStore.saveAppealComission', commission).then(() => resetForm(form.value))
@@ -590,28 +654,31 @@ function prepareAndSave() {
 
     desktopStore.saveAppealComission(commission).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        resetForm(form.value)
+        router.push({ path: '/appeal/commission' + res.data.id }) // открываем после сохранения
       } else {
-        ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
+        ElMessage({
+          duration: 0,
+          message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message,
+          type: 'error'
+        })
       }
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   } else if (appeal.workflow.workflowLeadType === 10) { // сделка через салон
-    var deal = {
+    let deal = {
       buyLead: {
         leadId: appeal.buyLead.leadId,
         person: appeal.buyLead.person,
-        treatmentSourceId: 2,
+        treatmentSourceId: 2
       },
       locationId: appeal.workflow.locationId,
       sellLead: {
         leadId: appeal.lead.leadId,
         person: appeal.lead.person,
-        treatmentSourceId: 2,
+        treatmentSourceId: 2
       },
-      treatmentSourceId: appeal.communication.sourceId,
-    };
+      treatmentSourceId: appeal.communication.sourceId
+    }
     if (!navigator.onLine) {
       saveInLocalStorage('desktopStore.saveAppealSalon', deal).then(() => resetForm(form.value))
       return false
@@ -619,10 +686,13 @@ function prepareAndSave() {
 
     desktopStore.saveAppealSalon(deal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        resetForm(form.value)
+        router.push({ path: '/appeal/salon-deal/' + res.data.id })
       } else {
-        ElMessage({duration: 0, message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message, type: 'error'})
+        ElMessage({
+          duration: 0,
+          message: 'Ошибка. Данные не сохранились. Не доработано. ' + res.message,
+          type: 'error'
+        })
       }
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
@@ -634,10 +704,9 @@ function prepareAndSave() {
 
     desktopStore.saveAppeal(appeal).then(res => {
       if (res.status === 200) {
-        ElMessage({message: 'Обращение успешно сохранено', type: 'success'})
-        router.push({path: '/appeal/' + res.data.id}) // открываем после сохранения
+        router.push({ path: '/appeal/' + res.data.id })
       } else {
-        ElMessage({message: 'Ошибка сохранения. ' + res.message, type: 'error'})
+        ElMessage({ message: 'Ошибка сохранения. ' + res.message, type: 'error' })
       }
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
@@ -648,8 +717,8 @@ function getAutoWithVIN() {
   if (appeal.workflow.auto.vin.length !== 17) return false
   globalStore.isWaiting = true
   desktopStore.getAutoVIN(appeal.workflow.auto.vin).then(el => {
-    if (el.vin) ElMessage({message: 'Автомобиль с таким Vin найден в системе.', type: 'success'})
-    else if (appeal.workflow.auto.vin.length === 17) ElMessage({message: 'Новый Vin', type: 'info'})
+    if (el.vin) ElMessage({ message: 'Автомобиль с таким Vin найден в системе.', type: 'success' })
+    else if (appeal.workflow.auto.vin.length === 17) ElMessage({ message: 'Новый Vin', type: 'info' })
     globalStore.isWaiting = false
     if (el.carBrandId) {
       appeal.workflow.brandId = el.carBrandId
@@ -665,11 +734,11 @@ globalStore.setTitle('Новое обращение')
 globalStore.steps = []
 
 function cbForEdit(howMuchIsLeft, fromLocalStorage) {
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' })
   if (howMuchIsLeft) globalStore.setTitle('Несохраненных: ' + howMuchIsLeft)
   else globalStore.setTitle('Новое обращение')
   isNeedCheckUnSaved = !!howMuchIsLeft
-  if (fromLocalStorage) Object.assign(appeal, JSON.parse(JSON.stringify(fromLocalStorage)));
+  if (fromLocalStorage) Object.assign(appeal, JSON.parse(JSON.stringify(fromLocalStorage)))
 }
 
 saveUnSaved(cbForEdit)

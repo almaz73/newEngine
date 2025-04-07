@@ -82,6 +82,7 @@ const days = ref({})
 const selectDate = (val: CalendarDateType) => {
   if (!calendar.value) return
   calendar.value.selectDate(val)
+  getEvents(changedDate.value.getFullYear(), changedDate.value.getMonth())
 }
 
 getEvents(new Date().getFullYear(), new Date().getMonth())

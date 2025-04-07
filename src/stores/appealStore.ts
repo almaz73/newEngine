@@ -15,7 +15,7 @@ export const useAppealStore = defineStore("appealStore", {
             }, '/api/appeals/list/?filter={}')
 
             if (!noCach && cache['getAppeals' + newUrl]) return cache['getAppeals' + newUrl]
-            localStorage.setItem('appealListTime', Date.now())
+            localStorage.setItem('appealListTime', String(Date.now()))
 
             const res = await axios.get(newUrl).then(res => res)
             return (cache['getAppeals' + newUrl] = res.data)

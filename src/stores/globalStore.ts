@@ -22,7 +22,8 @@ export const useGlobalStore = defineStore('globalStore', {
             roleTitle: '',
             orgElementName: '',
             storage: '',
-            role:''
+            role:'',
+            avatarUrl:''
         },
         steps: [
           // приходит с сервера внутри workflowsChain
@@ -108,10 +109,10 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/treatmentSource/getTreatmentSources`).then(q => q)
             return (cache.getTreatmentSources = res.data)
         },
-        async пetTradeInDirectionTypes() {
-            if (cache.пetTradeInDirectionTypes) return cache.пetTradeInDirectionTypes // список статичный - кэшируем
+        async getTradeInDirectionTypes() {
+            if (cache.getTradeInDirectionTypes) return cache.getTradeInDirectionTypes // список статичный - кэшируем
             const res = await axios.get(`/api/buy/GetTradeInDirectionTypes`).then(q => q)
-            return (cache.пetTradeInDirectionTypes = res.data)
+            return (cache.getTradeInDirectionTypes = res.data)
         },
         async getServerTime() {
             const res = await axios.get(`/api/deal/getServerTime`).then(q => q)

@@ -1,4 +1,4 @@
-const cache = {
+const cache = <any>{
     getBrands: null,
     getPlaces: null,
     getOrganizations: null,
@@ -23,7 +23,7 @@ const cache = {
     getBanks: null,
     getDocumentTypes: null,
     getenabledemployeers: null,
-    пetTradeInDirectionTypes: null,
+    getTradeInDirectionTypes: null,
     getAllOrgWithDep: null,
     getTradeinDirectionTypes: null,
     getDealsByVin: null,

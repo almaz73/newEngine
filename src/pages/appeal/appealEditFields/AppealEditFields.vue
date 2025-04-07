@@ -247,7 +247,7 @@ function changeTypeClient() {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
-      .then(res => {
+      .then(() => {
         // router.push('/client/legal/add') в отдельной странице добавить клиента
         clientsDirLegalModal.value.open()
       }, () => {
@@ -280,7 +280,6 @@ function open(row) {
   isOpen.value = true;
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
-    getEvents()
     appealTabs.value.open(res)
     init()
   })

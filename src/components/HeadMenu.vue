@@ -8,15 +8,15 @@
          v-if="globalStore.isWaiting"
          class="waiter"
     />
-    <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()"/>
+    <img alt="" class="hamburger" src="@/assets/img/hamburger.png" @click="showMenu()" />
 
 
     <div class="head-text">
-      <h1 style="white-space: nowrap">{{ isOnline ? '' : "⌛" }}{{ globalStore.title }}</h1>
-      <StepsCtrl v-if="globalStore.steps && globalStore.steps.length"/>
+      <h1 style="white-space: nowrap">{{ isOnline ? '' : '⌛' }}{{ globalStore.title }}</h1>
+      <StepsCtrl v-if="globalStore.steps && globalStore.steps.length" />
     </div>
 
-    <div class="pusher"/>
+    <div class="pusher" />
 
     <div class="account" v-if="!globalStore.isMobileView">
       <div>{{ globalStore.account.lastName }} {{ globalStore.account.firstName }}</div>
@@ -26,28 +26,32 @@
     <img :src="loginPhotoSrc"
          @click="isAccountShow=true"
          alt=""
-         class="icon-face"/>
+         class="icon-face" />
 
-    <LoginPanel @closeLoginPanel="isAccountShow = false" v-if="isAccountShow"/>
+    <LoginPanel @closeLoginPanel="isAccountShow = false" v-if="isAccountShow" />
   </nav>
 </template>
 <script setup lang="ts">
-import {useGlobalStore} from "@/stores/globalStore";
-import {computed, ref} from "vue";
-import LoginPanel from "@/components/LoginPanel.vue";
-import StepsCtrl from "@/components/StepsCtrl.vue";
+import { useGlobalStore } from '@/stores/globalStore'
+import { computed, ref } from 'vue'
+import LoginPanel from '@/components/LoginPanel.vue'
+import StepsCtrl from '@/components/StepsCtrl.vue'
 
 const isOnline = ref(navigator.onLine)
 const globalStore = useGlobalStore()
 const isAccountShow = ref(false)
-const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/assets/icons/icon-face.png")
+
+const loginPhotoSrc = computed(() => {
+  if (globalStore.account.avatarUrl === '/images/icon-face.png') globalStore.account.avatarUrl = '/v2/src/assets/icons/icon-face.png'
+  return globalStore.account.avatarUrl
+})
 
 
 function showMenu() {
   globalStore.isShowPanel = !globalStore.isShowPanel
 }
 
-window.addEventListener('online', () => isOnline.value = true);
-window.addEventListener('offline', () => isOnline.value = false);
+window.addEventListener('online', () => isOnline.value = true)
+window.addEventListener('offline', () => isOnline.value = false)
 
 </script>
