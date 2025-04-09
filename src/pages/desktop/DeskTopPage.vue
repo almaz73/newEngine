@@ -16,6 +16,12 @@
                       src="@/assets/icons/icon-cross-gray.png"
                       title="Удалить">
               </span>
+              <small v-if="appeal.lead.leadType===10 && !isShowEditClient"
+                     @click="noTelephon()"
+                     style="margin: -9px 0 0 30px; cursor: pointer; color: #777" >
+                 <el-checkbox style="pointer-events: none"  v-model="isTel" /> Телефон отсутствует
+              </small>
+
               <br><br>
               <el-form-item
                 v-if="appeal.lead.leadType===20"
@@ -63,12 +69,13 @@
                 <el-input placeholder="Основной телефон"
                           v-else
                           clearable
-                          :disabled="!!appeal.lead.leadId"
+                          :disabled="!!appeal.lead.leadId || isTel"
                           :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.lead.person.phone=val)"
                           @input="telChanged(appeal.lead.person.phone)"
                           v-model="appeal.lead.person.phone"/>
 
                 <el-input placeholder="Подменный телефон"
+                          :disabled="isTel"
                           :formatter="(value) =>value && formattingPhone(value, (val)=>appeal.workflow.swapPhone=val)"
                           v-model="appeal.workflow.swapPhone" />
 
@@ -430,10 +437,10 @@ let Workflows_more = ([
   { id: 7, value: 7, title: 'Доп.оборуд.' },
   { id: 9, value: 9, title: 'Подбор авто' },
   { id: 10, value: 10, title: 'Сделка через салон' }])
-
 const Workflows = ref(Workflows_more.slice(0, 3))
 const todayListModal = ref(null)
 const clientsDirModal = ref(null)
+const isTel = ref(false)
 
 function editClient() {
   if (appeal.lead.leadId) clientsDirModal.value.open(appeal.lead.leadId)
@@ -632,6 +639,8 @@ function checkAndWarning() {
   })
   if (appeal.lead.leadType === 20 && !appeal.workflow.locationId)
     return ElMessage({ message: 'Поле "Салон" не заполнено', type: 'error' })
+  if (appeal.lead.leadType === 10 && !isTel.value && (!appeal.lead.person.phone && !appeal.workflow.swapPhone))
+    return ElMessage({ message: 'Если имеется, укажите телефон', type: 'warning' })
   if (!appeal.lead.person.firstName) return ElMessage({ message: 'Поле "Имя" не заполнено', type: 'error' })
   if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
     return ElMessage({ message: 'Поле "Вид выкупа" не заполнено', type: 'error' })
@@ -792,6 +801,12 @@ function cbForEdit(howMuchIsLeft, fromLocalStorage) {
   else globalStore.setTitle('Новое обращение')
   isNeedCheckUnSaved = !!howMuchIsLeft
   if (fromLocalStorage) Object.assign(appeal, JSON.parse(JSON.stringify(fromLocalStorage)))
+}
+
+function noTelephon() {
+  isTel.value = !isTel.value
+  appeal.lead.person.phone = ''
+  appeal.workflow.swapPhone = ''
 }
 
 saveUnSaved(cbForEdit)
