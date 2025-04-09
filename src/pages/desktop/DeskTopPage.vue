@@ -274,8 +274,7 @@
                   </el-select>
                 </el-form-item>
 
-
-                <el-form-item v-if="![6].includes(appeal.workflow.workflowLeadType)">
+                <el-form-item v-if="![6, 8].includes(appeal.workflow.workflowLeadType)">
                   <el-select v-model="appeal.workflow.locationId"
                              :clearable="!globalStore.isMobileView"
                              :filterable="!globalStore.isMobileView"
@@ -287,6 +286,21 @@
                                :value="item.id" />
                   </el-select>
                 </el-form-item>
+
+                <el-form-item prop="workflow.locationId"
+                              v-if="[8].includes(appeal.workflow.workflowLeadType)"
+                              :rules="{required: true, message: '', trigger: ['blur']}">
+                  <el-select v-model="appeal.workflow.locationId"
+                             :filterable="!globalStore.isMobileView"
+                             @change="changeSalon()"
+                             placeholder="* Салон">
+                    <el-option v-for="item in storages"
+                               :key="item.id"
+                               :label="item.title"
+                               :value="item.id" />
+                  </el-select>
+                </el-form-item>
+
 
                 <el-form-item v-if="[6].includes(appeal.workflow.workflowLeadType)"
                               :rules="{required: true, message: 'Введите франшизу', trigger: ['blur']}"
@@ -327,7 +341,8 @@
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="appeal.communication.sourceId" placeholder="Выберите ресурс">
+            <el-select v-model="appeal.communication.sourceId"
+                       placeholder="Выберите ресурс">
               <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-form-item>
@@ -378,7 +393,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useDesktopStore } from '@/stores/desktopStore'
 import { BuyCategoryTypes, CommunicationTypes, EngineType, GearboxType, Years } from '@/utils/globalConstants'
-import { emailValidate, formattingPhone, vetRegNumber, weblink } from '@/utils/globalFunctions'
+import {emailValidate, formattingPhone, simplePhone, vetRegNumber, weblink} from '@/utils/globalFunctions'
 import { saveInLocalStorage, saveUnSaved } from '@/utils/unsavedRequests'
 import ModalParams from '@/pages/desktop/ModalParams.vue'
 import TodayListModal from '@/pages/desktop/TodayListModal.vue'
@@ -611,10 +626,12 @@ function weblinkTreatment(link) {
 function checkAndWarning() {
   if (appeal.lead.leadType === 20 && !appeal.lead.legalEntity.name)
     return ElMessage({ message: 'Поле "Название организации" не заполнено', type: 'error' })
-  if (!appeal.lead.person.phone && appeal.lead.leadType === 20) return ElMessage({
+  if (appeal.lead.leadType === 20 && !appeal.lead.person.phone) return ElMessage({
     message: 'Поле "Основной телефон" не заполнен',
     type: 'error'
   })
+  if (appeal.lead.leadType === 20 && !appeal.workflow.locationId)
+    return ElMessage({ message: 'Поле "Салон" не заполнено', type: 'error' })
   if (!appeal.lead.person.firstName) return ElMessage({ message: 'Поле "Имя" не заполнено', type: 'error' })
   if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
     return ElMessage({ message: 'Поле "Вид выкупа" не заполнено', type: 'error' })
@@ -631,20 +648,38 @@ function save() {
 
 
 function prepareAndSave() {
+  appeal.lead.person.phone = simplePhone(appeal.lead.person.phone)
+  appeal.lead.person.phone2 = simplePhone(appeal.lead.person.phone2)
+
   if (!appeal.workflow.bodyColorId) delete appeal.workflow.bodyColorId
   if (!appeal.workflow.locationId) delete appeal.workflow.locationId
 
+  if (appeal.lead.leadType == 20) {
+    appeal.lead.legalEntity.person = appeal.lead.person;
+    appeal.lead.legalEntity.treatmentSourceId = 2
+    delete appeal.lead.person;
+  } else {
+    delete appeal.lead.legalEntity;
+  }
+
   if (appeal.workflow.workflowLeadType === 8) {// комиссия
     var commission = {
-      TreatmentSourceId: appeal.communication.sourceId,
+      TreatmentSourceId: appeal.communication.sourceId || 15,
       LocationId: appeal.workflow.locationId,
-      Client: {
+      client: {
         leadId: appeal.lead.leadId,
         TreatmentSourceId: appeal.communication.sourceId,
         Person: appeal.lead.person
       },
+      legal: appeal.lead.legalEntity,
       Appeal: { ResponsibleId: appeal.workflow.managerId },
       LeadType: appeal.lead.leadType
+    }
+
+    if (appeal.lead.leadType === 10) commission.legal = null
+    if (appeal.lead.leadType === 20) {
+      commission.client = null
+      delete commission.Appeal.ResponsibleId
     }
 
     if (!navigator.onLine) {
@@ -654,7 +689,7 @@ function prepareAndSave() {
 
     desktopStore.saveAppealComission(commission).then(res => {
       if (res.status === 200) {
-        router.push({ path: '/appeal/commission' + res.data.id }) // открываем после сохранения
+        router.push({ path: '/appeal/commission/' + res.data.id }) // открываем после сохранения
       } else {
         ElMessage({
           duration: 0,
