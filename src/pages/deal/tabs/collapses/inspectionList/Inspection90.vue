@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="(item, itemIndex) in listData">
+    <div v-for="(item, itemIndex) in listData" :key="itemIndex">
       <div v-if="!item.isHidden">
         <div style="float: left" :style="{'max-width':categoryId!=='30'?'350px':'273px'}">
 
@@ -69,7 +69,7 @@
 
         <div style="padding: 12px" v-if="item.inspectionUiType===10">
 
-          <small v-for="(file, ind) in item.documents">
+          <small v-for="(file, ind) in item.documents" :key="ind">
             <div class="file-frame">
               <img src="@/assets/img/doc.png" v-if="file.mimeType==='doc'" />
               <img src="@/assets/img/txt.png" v-if="file.mimeType==='txt'" />
@@ -125,33 +125,33 @@ import { ElMessage } from 'element-plus'
 import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
-const listData = ref([])
 const dealStore = useDealStore()
+const listData = ref<any>()
 const chapok = ref(false)
-const item = ref({})
-const dangerField = ref({})
+const item = ref<any>()
+const dangerField = ref<any>()
 const { categoryId } = defineProps(['categoryId'])
 const emits = defineEmits(['listChanged'])
 const exploitationHistoryType = ref(null)
 const inspectionAvtotec = ref(false)
-const activeItemIndex = ref(null)
-let quardColor = []
+const activeItemIndex =  ref<any>()
+let quardColor:any = []
 
 // берем типы цветов бакенда, остальные параметры зашиты в клиентский код, решили переходить тихонечко
 dealStore.getExploitationHistoryTypes().then(res => quardColor = res.data)
 
 item.value = dealStore.deal
 
-function openFile(itemIndex, ind) {
+function openFile(itemIndex:number, ind:number) {
   let file = listData.value[itemIndex].documents[ind].documentPath
   window.open(file)
 }
 
-function deleteFile(itemIndex, ind) {
+function deleteFile(itemIndex:number, ind:number) {
   listData.value[itemIndex].documents.splice(ind, 1)
 }
 
-function uploadFiles(obj) {
+function uploadFiles(obj: any) {
   if (checkPictureBeforeUpload(obj.file, 10, 'allFiles')) return false
   const f = obj.file
 
@@ -159,10 +159,11 @@ function uploadFiles(obj) {
     const fr = new FileReader()
     fr.onload = () => {
       const fbase64 = fr.result //файл в base64
-      if (!listData.value[activeItemIndex.value].documents) listData.value[activeItemIndex.value].documents = []
-      listData.value[activeItemIndex.value].documents.push({
+      const id:number = activeItemIndex.value
+      if (!listData.value[id].documents) listData.value[id].documents = []
+      listData.value[id].documents.push({
         mimeType: setMimeType(obj.file.name),
-        Document: fbase64.split('base64,')[1],
+        Document: fbase64 && fbase64.split('base64,')[1],
         title: obj.file.name
       })
     }
@@ -171,9 +172,9 @@ function uploadFiles(obj) {
 }
 
 // узнаем есть ли галочка автотеки
-function getCheck(inspection) {
+function getCheck(inspection:any) {
   dealStore.getbycategories([90]).then(res => {
-    let element = res.data.items.find(el => el.name === 'Автотека')
+    let element = res.data.items.find((el:any) => el.name === 'Автотека')
 
     if (element) inspectionAvtotec.value = element.workId === 65
     if (inspectionAvtotec.value) {
@@ -191,9 +192,9 @@ function getExploitationHistoryType() {
 function open(_listData: any, inspection: any) {
   listData.value = _listData
 
-  listData.value.map(el => {
+  listData.value.map((el:any) => {
     el.nav = el.id
-    el.documents && el.documents.map(item => item.mimeType = setMimeType(item.title))
+    el.documents && el.documents.map((item:any) => item.mimeType = setMimeType(item.title))
     if (!dangerField.value[el.id]) dangerField.value[el.id] = {}
     dangerField.value[el.id].isNorm = !el.isNorm // раскрываем поля с ошибками
     dangerField.value[el.id].isStock = !el.isStock // раскрываем поля с ошибками
@@ -202,7 +203,7 @@ function open(_listData: any, inspection: any) {
   getCheck(inspection)
 }
 
-function getTextAfterLastDot(str) {
+function getTextAfterLastDot(str:string) {
   const lastIndex = str.lastIndexOf('.')
   return lastIndex !== -1 ? str.substring(lastIndex + 1) : ''
 }
@@ -224,7 +225,7 @@ function setMimeType(fileName: string) {
   return mimeType.toLowerCase()
 }
 
-function switchColor(item, color) {
+function switchColor(item:any, color:string) {
   switch (color) {
     case 'red':
       item.isStock = false
@@ -239,7 +240,7 @@ function switchColor(item, color) {
       item.isNorm = true
       break
   }
-  exploitationHistoryType.value = quardColor.find(el => el.title === color).value
+  exploitationHistoryType.value = quardColor.find((el:any) => el.title === color).value
 }
 
 

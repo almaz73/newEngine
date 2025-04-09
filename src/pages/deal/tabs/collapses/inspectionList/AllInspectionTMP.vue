@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div v-for="item in listData">
+    <div v-for="item in listData" :key="item.id">
       <div v-if="!item.isHidden">
         <div style="float: left" :style="{'max-width':categoryId!=='30'?'350px':'273px'}">
           <span v-if="!['10','20','80','70'].includes(categoryId)">
             <el-icon style="color: green" v-if="item.isNorm && !item.isRepaired ">
-              <CircleCheckFilled />
+              <CircleCheckFilled/>
             </el-icon>
             <el-icon v-else :style="{color: dangerField[item.id].isNorm?'#f56c6c':'orange'}">
-              <RemoveFilled />
+              <RemoveFilled/>
             </el-icon>
           </span>
 
@@ -32,10 +32,10 @@
 
           <span v-else>
             <el-icon style="color: green" v-if="!dangerField[item.id].isStock">
-             <CircleCheck />
+             <CircleCheck/>
             </el-icon>
             <el-icon style="color: #f99" v-if="dangerField[item.id].isStock">
-             <CircleClose />
+             <CircleClose/>
             </el-icon>
           </span>
 
@@ -52,8 +52,8 @@
              @mouseleave="toMouseLeave(item, 'isNorm')"
         >
           &nbsp; &nbsp;<el-button
-          :type="!item.isNorm?'danger':'success'"
-          style="pointer-events:none; width: 111px">
+            :type="!item.isNorm?'danger':'success'"
+            style="pointer-events:none; width: 111px">
           <span>  {{ item.isNorm ? 'Целый' : 'Поврежден !' }}</span>
         </el-button>
         </div>
@@ -64,8 +64,8 @@
              @mouseleave="toMouseLeave(item, 'isRepaired')"
         >
           <el-button
-            :style="{'background' :item.isRepaired?'orange':'#3cac71'}"
-            style="pointer-events:none; width: 112px; color: white">
+              :style="{'background' :item.isRepaired?'orange':'#3cac71'}"
+              style="pointer-events:none; width: 112px; color: white">
             <span>  {{ !item.isRepaired ? 'Оригинал' : 'Не оригинал !' }}</span>
           </el-button>
         </div>
@@ -78,7 +78,7 @@
              @mouseleave="toMouseLeave(item, 'isStock')"
         >
           <el-button
-            :style="{'background' :!item.isStock?'#eee':'#c6e0cc'}" style="width: 150px; pointer-events:none">
+              :style="{'background' :!item.isStock?'#eee':'#c6e0cc'}" style="width: 150px; pointer-events:none">
             <span>  {{ item.isStock ? 'Присутствует' : 'Отсутствует' }}</span>
           </el-button>
         </div>
@@ -124,8 +124,10 @@
              @mouseleave="toMouseLeave(item, 'isNorm')"
         >
           <el-button
-            :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
-            <span>  {{ item.isNorm ? 'Норма' : (['60'].includes(categoryId)?'С нарушениями !':'Не норма !')  }}</span>
+              :type="!item.isNorm?'danger':'success'" style="width: 150px; pointer-events:none">
+            <span>  {{
+                item.isNorm ? 'Норма' : (['60'].includes(categoryId) ? 'С нарушениями !' : 'Не норма !')
+              }}</span>
           </el-button>
         </div>
 
@@ -139,7 +141,7 @@
                  @click="showLKP(item)">
             Толщина ЛКП (мкм)
             <el-icon>
-              <Bottom />
+              <Bottom/>
             </el-icon>
             <span v-if="!LKPfields[item.id]">
               &nbsp; {{ item.paintworks.join(', ') }}
@@ -152,14 +154,14 @@
                      type="number"
                      min="0"
                      v-model="lkpModel[item.id][ind]"
-                     style="width: 73px; text-align: center; border: none" />
+                     style="width: 73px; text-align: center; border: none"/>
               &nbsp;
               <el-icon @click="deleteLKP(item.id, ind)">
-                <DeleteCtrl title="Удалить" />
+                <DeleteCtrl title="Удалить"/>
               </el-icon>&nbsp;<el-icon @click="addLKP(item.id, ind)"
                                        size="small"
                                        v-if="lkpModel[item.id] && ind===lkpModel[item.id].length-1">
-              <DeleteCtrl style="transform: rotate(45deg)" />
+              <DeleteCtrl style="transform: rotate(45deg)"/>
             </el-icon>
             </div>
           </div>
@@ -175,76 +177,76 @@
           <div v-if="item.photos"
                style="display: flex; gap: 12px; float: left;  min-width: 282px; margin-top: 4px">
             <UploadPhotoInspection
-              v-if="item.photos[0]"
-              @setNewPhoto="setNewPhoto"
-              :itemId="item.id"
-              :photo="item.photos[0]" />
+                v-if="item.photos[0]"
+                @setNewPhoto="setNewPhoto"
+                :itemId="item.id"
+                :photo="item.photos[0]"/>
             <UploadPhotoInspection
-              v-if="item.photos[1]"
-              @setNewPhoto="setNewPhoto"
-              :itemId="item.id"
-              :photo="item.photos[1]" />
+                v-if="item.photos[1]"
+                @setNewPhoto="setNewPhoto"
+                :itemId="item.id"
+                :photo="item.photos[1]"/>
             <UploadPhotoInspection
-              v-if="!item.photos[0]"
-              :itemId="item.id"
-              @setNewPhoto="setNewPhoto" />
+                v-if="!item.photos[0]"
+                :itemId="item.id"
+                @setNewPhoto="setNewPhoto"/>
             <UploadPhotoInspection
-              v-if="item.photos[0] && !item.photos[1]"
-              :itemId="item.id"
-              @setNewPhoto="setNewPhoto" />
+                v-if="item.photos[0] && !item.photos[1]"
+                :itemId="item.id"
+                @setNewPhoto="setNewPhoto"/>
           </div>
 
           <div>
             <el-select
 
-              placeholder="можно несколько"
-              style="width: 238px; padding: 4px 0"
-              v-model="item.damageTypeArr"
-              multiple
-              @change="emits('listChanged')"
-              filterable>
+                placeholder="можно несколько"
+                style="width: 238px; padding: 4px 0"
+                v-model="item.damageTypeArr"
+                multiple
+                @change="emits('listChanged')"
+                filterable>
               <el-option v-for="item in item.damageItems"
                          :key="item.id"
                          :label="item.damageName"
-                         :value="item.id" />
+                         :value="item.id"/>
             </el-select>
 
             <div style="clear: both"></div>
           </div>
         </div>
         <small v-if="['10'].includes(categoryId)" style="color:#999"> Комментарий: <br>
-          <el-input v-model="item.comment"  type="textarea" :rows="2" placeholder="добавить"></el-input>
+          <el-input v-model="item.comment" type="textarea" :rows="2" placeholder="добавить"></el-input>
         </small>
-        <el-divider />
+        <el-divider/>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useGlobalStore } from '@/stores/globalStore'
-import { ref } from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
+import {ref} from 'vue'
 import UploadPhotoInspection from '@/components/UploadPhotoInspection.vue'
-import { Bottom, CircleCheck, CircleCheckFilled, CircleClose, RemoveFilled } from '@element-plus/icons-vue'
+import {Bottom, CircleCheck, CircleCheckFilled, CircleClose, RemoveFilled} from '@element-plus/icons-vue'
 import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 
 const globalStore = useGlobalStore()
-const dangerField = ref({})
+const dangerField = ref<any>()
 const chapok = ref(false) // помощник при нажатиии кнопок
-const listData = ref([])
+const listData = ref<any>()
 
-const { categoryId } = defineProps(['categoryId'])
+const {categoryId} = defineProps(['categoryId'])
 const emits = defineEmits(['listChanged'])
-const LKPfields = ref({}) // раскрытие ЛКП
-const lkpModel = ref({}) // содержимое ЛКП
+const LKPfields = ref<any>() // раскрытие ЛКП
+const lkpModel = ref<any>()  // содержимое ЛКП
 
 function addLKP(id: number) {
-  let row = listData.value.find(el => el.id === id)
+  let row = listData.value.find((el: any) => el.id === id)
   row.paintworks.push(0)
 }
 
 function deleteLKP(id: number, ind: number) {
-  let row = listData.value.find(el => el.id === id)
+  let row = listData.value.find((el: any) => el.id === id)
   row.paintworks.splice(ind, 1)
   if (!row.paintworks.length) addLKP(id)
 }
@@ -259,7 +261,7 @@ function showLKP(item: any) {
 function setNewPhoto(val: any, type: string) {
   if (type === 'delete') {
     listData.value = listData.value.map(el => {
-      el.photos = el.photos.filter(res => res.id !== val.id)
+      el.photos = el.photos.filter((res: any) => res.id !== val.id)
       return el
     })
   } else if (type === 'addPhoto') {
@@ -304,7 +306,7 @@ function changeItem(item: any, type: string) {
 
 function open(_listData: any) {
   listData.value = _listData
-  listData.value.map(el => {
+  listData.value.map((el: any) => {
     el.nav = el.id // ?
     if (!dangerField.value[el.id]) dangerField.value[el.id] = {}
     dangerField.value[el.id].isNorm = !el.isNorm // раскрываем поля с ошибками
@@ -316,5 +318,5 @@ function open(_listData: any) {
   })
 }
 
-defineExpose({ open })
+defineExpose({open})
 </script>

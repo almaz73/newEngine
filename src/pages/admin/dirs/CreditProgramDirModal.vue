@@ -112,7 +112,7 @@
   }
 
   function changeFilial(){
-    model.value.bankItem = filials.value.find(el => el.bankItemId == model.value.bankItem.bankItemId)
+    model.value.bankItem = filials.value.find(el => el.bankItemId === model.value.bankItem.bankItemId)
     model.value.bankItemId = model.value.bankItem.bankItemId
   }
 

@@ -10,7 +10,7 @@
       <div class="uk-form-row" v-show="showAnaliticPhoto">
         <!--            user-permission="autoPhoto.inspectionPhoto"-->
         <div v-show="analiticPhoto && analiticPhoto.length">
-              <span v-for="file in analiticPhoto" style="float: left; margin:0 30px 30px 0">
+              <span v-for="file in analiticPhoto" :key="file.id" style="float: left; margin:0 30px 30px 0">
                 <UploadPhotoViewer
                   :width="100"
                   :height="100"

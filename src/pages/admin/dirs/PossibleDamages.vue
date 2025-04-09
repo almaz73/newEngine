@@ -60,7 +60,8 @@
                style="cursor:pointer"
                :key="ind" :title="generation.name">Поколение-{{ ind + 1 }}
           </div></div>
-        <div v-if="row.modifications && row.modifications.length !== 0"><small>Модификации:</small>           <div v-for="(modification, ind) in row.modifications"
+        <div v-if="row.modifications && row.modifications.length !== 0"><small>Модификации:</small>
+          <div v-for="(modification, ind) in row.modifications"
                style="cursor:pointer"
                :key="ind" :title="modification.name">Модификация-{{ ind + 1 }}
           </div></div>
@@ -90,7 +91,7 @@ import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
-const tableData = ref([])
+const tableData = ref<any>()
 const isEdit = ref(false)
 const selectedRow = ref(false)
 const possibleDamModal = ref(null)

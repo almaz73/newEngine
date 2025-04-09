@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 0 30px">
-    <div v-for="el in tableData">
+    <div v-for="(el, ind) in tableData" :key="ind">
       {{ el.name }}
     </div>
   </div>

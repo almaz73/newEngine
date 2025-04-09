@@ -135,7 +135,7 @@
         </el-table-column>
         <el-table-column label="Вложенные файлы" width="110">
           <template #default="scope">
-            <div v-for="file in scope.row.documents">
+            <div v-for="(file, ind) in scope.row.documents" :key="ind">
               <a @click="openFile(file)">{{ file.title }}</a>
             </div>
           </template>

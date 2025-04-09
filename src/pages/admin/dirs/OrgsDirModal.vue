@@ -41,7 +41,7 @@
                    &nbsp; &nbsp; <el-button @click="addServer1C()"
                               :icon="Plus">Добавить</el-button>
                 </span>
-                <div v-for="serv in org.server1C">
+                <div v-for="(serv, ind) in org.server1C" :key="ind">
                   <small>
                     <label class="label l_300">Адрес сервера 1С:*</label>
                     <el-input type="text" v-model="serv.address1CServer"

@@ -66,7 +66,7 @@
           </el-table-column>
           <el-table-column label="Параметр"  min-width="200">
             <template #default="scope">
-              <div v-for="value in scope.row.values">
+              <div v-for="(value, ind) in scope.row.values" :key="ind">
                 {{ value.property }} : &nbsp; &nbsp;
                 <span class="border-val">{{ value.oldValue || '' }}</span>
                 ➔
@@ -120,11 +120,11 @@
                 </span>
               <br/>
 
-              <span v-if="scope.row.type == 'workflow' && scope.row.description">
+              <span v-if="scope.row.type === 'workflow' && scope.row.description">
                 {{ scope.row.description }}<br/>
               </span>
 
-              <span v-if="scope.row.type == 'workflow'"
+              <span v-if="scope.row.type === 'workflow'"
                     style="color:#a12d24">
                 {{ scope.row.comment }}
               </span>
@@ -133,11 +133,11 @@
                 Автомобиль запрещен к выкупу, только через согласование руководителя.
               </div>
 
-              <span v-if="scope.row.type == 'event' && scope.row.description">
+              <span v-if="scope.row.type==='event' && scope.row.description">
                     Описание: {{ scope.row.description }}<br/>
               </span>
 
-              <span v-if="scope.row.type == 'event' && scope.row.comment">
+              <span v-if="scope.row.type==='event' && scope.row.comment">
                 Комментарий: {{ scope.row.comment }}
               </span>
 
@@ -204,8 +204,8 @@ const isShowBeige = ref(null)
 let analogLength = 0;
 
 function tableRowClassName(val) {
-  if (isShowBeige.value == 1 && val.row.isAnother) return 'beige-fon'
-  if (isShowBeige.value == 2 && val.row.isAnother) return 'beige-fon row-hide'
+  if (isShowBeige.value === 1 && val.row.isAnother) return 'beige-fon'
+  if (isShowBeige.value === 2 && val.row.isAnother) return 'beige-fon row-hide'
 }
 
 function tabClick(val: any) {

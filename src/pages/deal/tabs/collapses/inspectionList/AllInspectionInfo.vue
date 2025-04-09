@@ -1,6 +1,6 @@
 <template>
   <div v-if="props.showInspectArr.includes(props.categoryId)" style="width: 100%">
-    <div v-for="group in props.groupItems" style="padding: 0 20px; flex-wrap: wrap;
+    <div v-for="(group, ind) in props.groupItems" :key="ind" style="padding: 0 20px; flex-wrap: wrap;
     display: flex; align-items: center; justify-content: space-between">
       <span>{{ group.name }}</span>
       <span style=" flex-grow: 1"></span>

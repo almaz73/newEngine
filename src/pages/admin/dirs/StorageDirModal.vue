@@ -154,7 +154,7 @@
   const adminStore = useAdminStore();
   let cb;
 function changeArrById(){
-    model.value.orgelements = model.value.orgElementsIds.map(modelId => org.value.find(el => el.id == modelId))
+    model.value.orgelements = model.value.orgElementsIds.map(modelId => org.value.find(el => el.id === modelId))
 }
   function open(row, cbModal) {
     cb = cbModal;
