@@ -319,8 +319,7 @@ function getEvents() {
 function init() {
   globalStore.setTitle(appeal.value.id + ' - Обращение. ' + ' ' + appeal.value.workflowLeadTypeTitle)
   globalStore.steps = [{title: 'Обращение', done: true}]
-  console.log('appeal.id = ',appeal.value.id)
-  appealStore.getCommunication(appeal.value.id).then(res=>{
+  appealStore.getCommunication(appeal.value.id).then(res => {
     communicationLink.value = res.description
   })
 }

@@ -327,8 +327,8 @@
           </el-form-item>
 
           <el-form-item>
-            <el-select v-model="appeal.communication.sourceId">
-              <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id" />
+            <el-select v-model="appeal.communication.sourceId" placeholder="Выберите ресурс">
+              <el-option v-for="item in sources" :key="item.id" :label="item.name" :value="item.id"/>
             </el-select>
           </el-form-item>
 
@@ -339,7 +339,7 @@
           </el-form-item>
 
 
-          <el-input placeholder="Описание" v-model="appeal.communication.description" />
+          <el-input type="textarea" placeholder="Описание" v-model="appeal.communication.description" />
 
           <br><br><br>
           <el-button @click="save()">+ Сохранить новое обращение</el-button>
@@ -459,7 +459,7 @@ const appealStart = {
   },
   communication: {
     type: 10,
-    sourceId: null, callType: null, city: 'Казань',
+    sourceId: null, callType: 10, city: 'Казань',
     weblink: '', description: ''
   },
   buyLead: {
@@ -532,7 +532,7 @@ const innChanged = (value, cb) => {
         ElMessage.info('Не найдено организации с данным ИНН')
         cb(null)
       }
-      cb(res.models)
+      res.models && cb(res.models)
     })
   }, 1000)
 }
@@ -697,12 +697,30 @@ function prepareAndSave() {
       isNeedCheckUnSaved && saveUnSaved(cbForEdit)
     })
   } else {
-    if (!navigator.onLine) {
+    if (!navigator.onLine) { // Если нет связи сохраняет в локалстораж и сохраняет, когда появляется сеть
       saveInLocalStorage('desktopStore.saveAppeal', appeal).then(() => resetForm(form.value))
       return false
     }
 
-    desktopStore.saveAppeal(appeal).then(res => {
+    let params = appeal
+
+    if (appeal.lead.leadType === 20) {
+      let lead = {
+        leadId: appeal.lead.legalEntity.id,
+        leadType: 20,
+        legalEntity: appeal.lead.legalEntity
+      }
+      lead.legalEntity.person = appeal.lead.person
+
+      params = {
+        communication: appeal.communication,
+        workflow: appeal.workflow,
+        lead
+      }
+    }
+
+    // сохраняет все виды обращений, кроме Комисиии и ВыкупаЧерезСалон для юр.лица и физ.лица
+    desktopStore.saveAppeal(params).then(res => {
       if (res.status === 200) {
         router.push({ path: '/appeal/' + res.data.id })
       } else {
