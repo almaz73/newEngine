@@ -1,4 +1,9 @@
 <template>
+  <img src="@/assets/img/loading.gif"
+       alt=""
+       v-if="globalStore.isWaiting"
+       class="waiter"
+  />
   <form class="login">
     <img alt="" src="@/assets/icons/logo-gray.png" height="42">
     <h1>Авторизация</h1>
@@ -51,6 +56,7 @@ function goMyFirstPage(role: string) {
 }
 
 function signIn(): void {
+  globalStore.isWaiting = true
   globalStore.signIn(login.value, password.value).then(res => {
     switch (res.request.status) {
       case 401:
@@ -60,6 +66,7 @@ function signIn(): void {
         authMessage.value = 'Пользователь заблокирован';
         break
       case 200:
+        globalStore.isWaiting = false
         globalStore.isAuthorized = true
         goMyFirstPage(res.data.role)
         break;

@@ -28,10 +28,13 @@
           more..
         </RouterLink>
       </span>
-      <el-button v-if="globalStore.isMobileView" @click="clearCash()">Очистить кэш</el-button>
+
     </div>
     <div class="account_window__buttons">
-      <RouterLink to="/feedback">➽ Страница обратной связи</RouterLink>
+      <RouterLink to="/feedback"
+                  @click="emits('closeLoginPanel')">
+        ➽ Страница обратной связи
+      </RouterLink>
     </div>
     <div class="under_window" @click="emits('closeLoginPanel')"></div>
   </div>
@@ -58,16 +61,14 @@ const globalStore = useGlobalStore()
 const UserModal = ref(null)
 const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/assets/icons/icon-face.png")
 
-function clearCash() {
-  localStorage.clear()
-}
-
 function signOut() {
+  globalStore.isWaiting = true
   localStorage.removeItem('LastReport')
   localStorage.removeItem('LastUsedDirectories')
   globalStore.signOut().then(() => {
     localStorage.removeItem('account')
     globalStore.isAuthorized = false
+    globalStore.isWaiting = false
     router.push('login')
   })
 }

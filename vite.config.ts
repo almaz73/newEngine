@@ -10,8 +10,8 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'http://localhost:5000', // локальный сервер
-                // target: 'https://dev.autonet.pro/', // удаленный сервер
+                // target: 'http://localhost:5000', // локальный сервер
+                target: 'https://dev.autonet.pro/', // удаленный сервер
                 changeOrigin: true
             }
         }

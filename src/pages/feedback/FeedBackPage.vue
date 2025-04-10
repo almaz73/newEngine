@@ -1,69 +1,75 @@
 <template>
-  <main class="feedback">
-    <el-input v-model="autor" placeholder="Ваше имя"/>
-    <br>
-    <el-input placeholder="Напишите ваши замечания"
-              v-model="text"
-              rows="4"
-              class="textarea"
-              type="textarea"/>
-    <el-collapse>
-      <el-collapse-item
+  <div>
+    <main class="feedback">
+      <el-input v-model="autor" placeholder="Ваше имя" />
+      <small style="color: #999"> &nbsp; &nbsp; &nbsp; * необязательно</small>
+      <br>
+      <el-input placeholder="Ваши замечания"
+                v-model="text"
+                class="textarea"
+                type="textarea" />
+      <el-collapse>
+        <el-collapse-item
           v-if="!globalStore.isMobileView"
           title="&nbsp; При необходимости добавить рисунок из буфера обмена Ctrl + V"
           class="collapse">
-        <div class="div">
-          Создать снимок экрана можно программой Ножницы от Windows ✂ <br>
-          В этой программе можете нарисовать стрелку, выделить что-нибудь. <br>
-          Так же удобно делать это горячими клавишами Win + Shift + S. <br>
-        </div>
-      </el-collapse-item>
-    </el-collapse>
+          <div class="div">
+            Создать скрин можно программой Ножницы от Windows ✂ <br>
+            Или чеерз горячие клавиши Win + Shift + S. <br>
+            Отметьте карандашом участки о чем пишете. <br>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
 
-    <p></p>
-    <img id="image" style="border: 10px solid #999; border-radius: 4px" alt=""/>
+      <p v-show="imgBase64">
 
-    <br><br>
-    <el-button type="info" @click="sendMessageToDeveloper()">Отправить сообщение разработчикам</el-button>
+        <img src="" id="image" style="border: 10px solid #999; border-radius: 4px" alt="" />
 
-    <br><br>
-    <el-table
+        <DeleteCtrl @click="imgBase64=null" />
+      </p>
+
+      <br><br>
+      <el-button type="info" @click="save()">Отправить сообщение разработчикам</el-button>
+
+      <br><br>
+      <el-table
         :data="tableData"
         empty-text="Нет данных"
         @row-dblclick="openModal"
         highlight-current-row
-    >
-      <el-table-column label="Автор" prop="fio" width="100"/>
-      <el-table-column label="Сообщение" prop="message"/>
-      <el-table-column label="Фото" width="100">
-        <template #default="scope">
-          <img :src="scope.row.imgBlob" style="width: 100px" alt=""/>
-        </template>
-      </el-table-column>
+      >
+        <el-table-column label="Автор" prop="fio" width="100" />
+        <el-table-column label="Сообщение" prop="message" />
+        <el-table-column label="Фото" width="100">
+          <template #default="scope">
+            <img :src="scope.row.imgBlob" style="width: 100px" alt="" />
+          </template>
+        </el-table-column>
 
-      <el-table-column label="Дата" width="100">
-        <template #default="scope">
-          {{ formatDMY_hm(scope.row.createDate) }}
-        </template>
-      </el-table-column>
+        <el-table-column label="Дата" width="100">
+          <template #default="scope">
+            {{ formatDMY_hm(scope.row.createDate) }}
+          </template>
+        </el-table-column>
 
-      <el-table-column width="40">
-        <template #default="scope">
-          <span class="edit-table-row" style="top:10px" @click="openModal(scope.row)"/>
-          <span class="edit-table-page" style="top:30px" @click="sound(scope.row)">🔱</span>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column width="40">
+          <template #default="scope">
+            <span class="edit-table-row" style="top:10px" @click="openModal(scope.row)" />
+            <span class="edit-table-page" style="top:30px" @click="sound(scope.row)">🔱</span>
+          </template>
+        </el-table-column>
+      </el-table>
 
-  </main>
-  <FeedBackModal ref="feedBackModal"/>
+    </main>
+    <FeedBackModal ref="feedBackModal" />
+  </div>
 </template>
 
-<style>
+<style scoped>
 .feedback {
-padding: 0;
-margin: 30px  130px;
+  padding: 0;
   z-index: -1;
+  max-width: 1200px;
 }
 
 .feedback .textarea {
@@ -93,34 +99,38 @@ margin: 30px  130px;
 </style>
 
 <script setup>
-import {onMounted, ref} from "vue";
-import {useGlobalStore} from "@/stores/globalStore";
-import {formatDMY_hm} from "@/utils/globalFunctions";
-import FeedBackModal from "@/pages/feedback/FeedBackModal.vue";
+import { onMounted, ref } from 'vue'
+import { useGlobalStore } from '@/stores/globalStore'
+import { formatDMY_hm } from '@/utils/globalFunctions'
+import FeedBackModal from '@/pages/feedback/FeedBackModal.vue'
+import { ElMessage } from 'element-plus'
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 
 const EntityId = 392110;
+// const EntityId = 392116
 
 const globalStore = useGlobalStore()
 const autor = ref('')
 const text = ref('')
 const tableData = ref([])
 const feedBackModal = ref(null)
-let imgBase64 = null
+let imageFiled = null
+let imgBase64 = ref(null)
 
-window.addEventListener("paste", e => {
+window.addEventListener('paste', e => {
   if (e.clipboardData) {
     // получаем все содержимое буфера
-    var items = e.clipboardData.items;
+    var items = e.clipboardData.items
     if (items) {
       for (var i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf("image") !== -1) {
+        if (items[i].type.indexOf('image') !== -1) {
           // представляем изображение в виде файла
-          let blob = items[i].getAsFile();
+          let blob = items[i].getAsFile()
           toBase64(blob)
           // создаем временный урл объекта
-          var URLObj = window.URL || window.webkitURL;
+          var URLObj = window.URL || window.webkitURL
           // добавляем картинку в DOM
-          document.getElementById("image").src = URLObj.createObjectURL(blob);
+          imageFiled.src = URLObj.createObjectURL(blob)
         }
       }
     }
@@ -133,24 +143,35 @@ function sound(row) {
 }
 
 function toBase64(file) {
-  let reader = new FileReader();
-  reader.onload = () => imgBase64 = reader.result;
-  reader.readAsDataURL(file);
+  let reader = new FileReader()
+  reader.onload = () => imgBase64.value = reader.result
+  reader.readAsDataURL(file)
 }
 
-function sendMessageToDeveloper() {
-  console.log(imgBase64)
+function save() {
+  if (!text.value) return ElMessage.error('Напишите ваши замечания')
+  console.log(imgBase64.value)
   globalStore.sendComment({
-    text: autor.value + ':::' + text.value + ':::' + imgBase64,
+    text: autor.value + ':::' + text.value + ':::' + imgBase64.value,
     EntityId: EntityId,
     entityType: 20
   })
-      .then(() => getdMessagesToDevelop())
+    .then(() => {
+      clearFields()
+      getdMessagesToDevelop()
+      ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
+    })
+}
 
+function clearFields() {
+  autor.value = ''
+  text.value = ''
+  imgBase64.value = null
 }
 
 function getdMessagesToDevelop() {
-  console.log(imgBase64)
+  console.log(imgBase64.value)
+  globalStore.isWaiting = true
   globalStore.getComments(20, EntityId).then(res => {
     res.items.map(el => {
       let part = el.text.split(':::')
@@ -159,7 +180,8 @@ function getdMessagesToDevelop() {
       el.imgBlob = part[2]
       return el
     })
-    tableData.value = res.items
+    tableData.value = res.items.sort((a, b) => new Date(b.createDate) > new Date(a.createDate) ? 1 : -1)
+    globalStore.isWaiting = false
   })
 }
 
@@ -171,6 +193,7 @@ function openModal(row) {
 
 onMounted(() => {
   globalStore.setTitle('Страница обратной связи')
+  imageFiled = document.getElementById('image')
 })
 
 </script>

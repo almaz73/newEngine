@@ -1,15 +1,15 @@
 <template>
   <AppModal v-if="isOpen"
             :title="'Сообщение'"
-            :subtitle="'от '+messageObj.fio"
+            :subtitle="'от '+(messageObj.fio || 'Анонимного пользователя')"
             :top="40"
-            :width="globalStore.isMobileView? 330: 730"
+            :width="globalStore.isMobileView? 360: 730"
             draggable
             resizable
             @closeModal="closeModal()">
     <el-scrollbar :maxHeight="globalStore.isMobileView?'500px':'680px'">
-      <img :src="messageObj.imgBlob" style=" margin: 12px; border: 3px solid #999; float: left" alt=""/>
-
+      <img :src="messageObj.imgBlob" style="margin: 12px 0; border: 3px solid #999" alt=""/>
+      <br>
       {{ messageObj.message }}
     </el-scrollbar>
   </AppModal>
