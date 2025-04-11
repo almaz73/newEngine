@@ -171,8 +171,7 @@ export const useGlobalStore = defineStore('globalStore', {
         async deleteFile(id: number) {
             return await axios.delete('/api/autophoto/'+id).then(q => q)
         },
-        // прикрепление сохраненного файла
-        async attachFile(params: any) {
+        async attachFile(params: any) {// прикрепление сохраненного файла
             return await axios.post(`/api/autophoto`, params).then(q => q)
         },
         async rotatoPhoto(id: number, type: number) {
@@ -180,8 +179,10 @@ export const useGlobalStore = defineStore('globalStore', {
         },
         async rotatoPhotoInspection(idSmall: number,idBig: number, type: number) {
             return await axios.post(`/api/inspectionitem/photosrotate/${idSmall},${idBig}/${type}`).then(q => q)
-        }
-
+        },
+        async getWorkflowHistory(id: number) { // история изменения при оценки автомобиля
+            return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${id}`)
+        },
 
     }
 })

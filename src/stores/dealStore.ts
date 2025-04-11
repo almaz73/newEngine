@@ -220,9 +220,6 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api//MileageRate/GetByLocation?locationId=${locationId}`)
             return (cache['GetMileageRate'+locationId] = res)
         },
-        async getWorkflowHistory(dealId: number) {
-            return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${dealId}`)
-        },
         async getCommissionFee() {
             if (cache['getCommissionFee']) return cache['getCommissionFee']
             const res = await axios.get(`/api/buy/get/available/commission-fee`)
@@ -237,7 +234,6 @@ export const useDealStore = defineStore('dealStore', {
         async setLocations(dealId: number | null, storageId: number | null) {
             return await axios.post(`/api/buy/set/location/${dealId}/${storageId}`);
         },
-
         async saveCheckList(params: {params: any}) {
             return await axios.post("/api/Buy/SaveCheckList", params);
         }

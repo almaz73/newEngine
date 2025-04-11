@@ -114,7 +114,7 @@
           </el-table-column>
           <el-table-column label="Комментарий" prop="comment" minWidth="200">
             <template #default="scope">
-              <span v-if="scope.row.workflowStatus==40">
+              <span v-if="scope.row.workflowStatus===40">
                     Цена продажи: {{ scope.row.priceMarket }} руб.<br/>
                     Макс. цена выкупа: {{ scope.row.maxPriceBought }} руб.
                 </span>
@@ -141,27 +141,25 @@
                 Комментарий: {{ scope.row.comment }}
               </span>
 
-              <span v-if="scope.row.workflowStatus==75">
+              <span v-if="scope.row.workflowStatus===75">
                 Цена клиента: {{ scope.row.priceDemanded }} руб.
               </span>
 
-              <span v-if="scope.row.workflowStatus==50">
+              <span v-if="scope.row.workflowStatus===50">
                 Договорная цена выкупа: {{ scope.row.priceDemanded }} руб.
               </span>
 
-              <span v-if="scope.row.workflowStatus==310">
+              <span v-if="scope.row.workflowStatus===310">
                     Установлена цена продажи: {{ scope.row.priceMarketOnSale }} руб.
               </span>
 
-              <span v-if="scope.row.workflowStatus==320">
+              <span v-if="scope.row.workflowStatus===320">
                     Сумма согласованная с клиентом: {{ scope.row.priceFactOnSale }} руб.
               </span>
-
-              <span v-if="scope.row.workflowStatus==350">
+              <span v-if="scope.row.workflowStatus===350">
                 Сумма предоплаты: {{ scope.row.reservePrepayment }} руб.
               </span>
-
-              <span v-if="scope.row.workflowStatus==16">
+              <span v-if="scope.row.workflowStatus===16">
                 Причина: {{ scope.row.archiveRequest }}
               </span>
             </template>
@@ -170,7 +168,6 @@
       </el-tab-pane>
 
     </el-tabs>
-
 
   </div>
 </template>
@@ -189,21 +186,23 @@
 
 <script setup lang="ts">
 import {useDealStore} from '@/stores/dealStore'
+import {useGlobalStore} from '@/stores/globalStore'
 import {formatDMY_hm} from '@/utils/globalFunctions'
 import {ref} from 'vue'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
 import {ElMessage} from 'element-plus'
 
+const globalStore = useGlobalStore()
 const dealStore = useDealStore()
 const radio = ref(10)
-const tableDataWorkflow = ref([])
-const tableDataDeal = ref([])
+const tableDataWorkflow = ref<any>()
+const tableDataDeal = ref<any>()
 const tableData = ref([])
 const activeName = ref('tab_1')
-const isShowBeige = ref(null)
+const isShowBeige =ref<any>()
 let analogLength = 0;
 
-function tableRowClassName(val) {
+function tableRowClassName(val:any) {
   if (isShowBeige.value === 1 && val.row.isAnother) return 'beige-fon'
   if (isShowBeige.value === 2 && val.row.isAnother) return 'beige-fon row-hide'
 }
@@ -214,9 +213,9 @@ function tabClick(val: any) {
 }
 
 function getWorkflowHistory() {
-  dealStore.getWorkflowHistory(dealStore.deal.dealId).then(res => {
+  dealStore.deal.dealId && globalStore.getWorkflowHistory(dealStore.deal.dealId).then(res => {
     tableDataWorkflow.value = res.data.items
-    tableDataWorkflow.value.map(el => { // выделяем в отдельную строку
+    tableDataWorkflow.value.map((el:any) => { // выделяем в отдельную строку
       if (el.comment && el.comment.includes('Автомобиль запрещен к выкупу')) {
         el.comment = el.comment.replace('Автомобиль запрещен к выкупу, только через согласование руководителя.', '')
         el.commentDanger = true
@@ -231,10 +230,10 @@ function getSimularDeals() {
   if (isShowBeige.value) isShowBeige.value = isShowBeige.value === 1 ? 2 : 1
   if (isShowBeige.value && !analogLength) ElMessage.warning('Нет данных по аналогичным автомобилям')
 
-  !isShowBeige.value && dealStore.getSimularDeals(dealStore.deal.dealId).then(res => {
+  !isShowBeige.value && dealStore.deal.dealId && dealStore.getSimularDeals(dealStore.deal.dealId).then(res => {
     isShowBeige.value = 1
     analogLength = res.data.items.length
-    res.data.items.forEach(el => {
+    res.data.items.forEach((el:any) => {
       tableDataDeal.value.push({
         createDate: el.createDate,
         locationCity: el.city,
@@ -249,26 +248,26 @@ function getSimularDeals() {
       })
     })
 
-    tableDataDeal.value.sort((a, b) => new Date(a.createDate) > new Date(b.createDate) ? 1 : -1)
+    tableDataDeal.value.sort((a:any, b:any) => new Date(a.createDate) > new Date(b.createDate) ? 1 : -1)
   })
 }
 
 function open() {
-  dealStore.getDealsByVin(dealStore.deal.dealId).then(res => {
+  dealStore.deal.dealId && dealStore.getDealsByVin(dealStore.deal.dealId).then(res => {
     tableDataDeal.value = res.data.items
-    tableDataDeal.value.sort((a, b) => new Date(a.createDate) > new Date(b.createDate) ? 1 : -1)
+    tableDataDeal.value.sort((a:any, b:any) => new Date(a.createDate) > new Date(b.createDate) ? 1 : -1)
   })
 
 }
 
 function getGrade() {
-  dealStore.getBuyEditHistory(dealStore.deal.dealId).then(res => {
+  dealStore.deal.dealId && dealStore.getBuyEditHistory(dealStore.deal.dealId).then(res => {
     tableData.value = res.items
   })
 }
 
 function getAuto() {
-  dealStore.getBuyAutoEditHistory(dealStore.deal.dealId).then(res => {
+  dealStore.deal.dealId && dealStore.getBuyAutoEditHistory(dealStore.deal.dealId).then(res => {
     tableData.value = res.items
   })
 }

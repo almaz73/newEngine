@@ -137,15 +137,15 @@ const router = createRouter({
 })
 
 router.beforeEach(res => {
-    console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
-    //setTimeout(()=>instance?.proxy?.$forceUpdate())
+    // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
     setTimeout(()=>{
         if (res.fullPath.includes("/appeal/") && document.body.textContent
           && !document.body.textContent.includes("Результаты и действия")) {
+            // Если открыли выкуп а он не открылся, перезагружаем
             console.log("%c ... force обновление страницы ", "color: blue; background: red");
-            location.reload();
+            location.reload(); // опасность бесконечного цикла
         }
-    }, 730)
+    }, 1730)
 });
 
 router.afterEach((to) => {

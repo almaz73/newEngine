@@ -76,22 +76,22 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const banksLength = ref(0)
-const activeBank = ref({})
-const filialsData = ref([])
+const activeBank = ref<any>()
+const filialsData = ref<any>()
 const modal = ref(null)
 const BankIdFilials = ref(0)
-let tableDataMemory = []
-let filialsDataMemory = []
+let tableDataMemory:any = []
+let filialsDataMemory: any = []
 const search = ref('')
 const isFilialsPage = ref(false)
 
 function find() {
     if(isFilialsPage.value){
-        filialsData.value = filialsDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
+        filialsData.value = filialsDataMemory.filter((el:any) => el.name.toUpperCase().includes(search.value.toUpperCase()))
         if (!search.value) filialsData.value = filialsDataMemory
     }
     else{
-        tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(search.value.toUpperCase()))
+        tableData.value = tableDataMemory.filter((el:any) => el.name.toUpperCase().includes(search.value.toUpperCase()))
         if (!search.value) tableData.value = tableDataMemory
     }
 
@@ -132,7 +132,7 @@ function deleteRow(row: any) {
         })
 }
 
-function deleteFilials(row){
+function deleteFilials(row: any){
     ElMessageBox.confirm('Вы действительно хотите удалить филиал?', 'Внимание', {
       confirmButtonText: 'Да',
       cancelButtonText: 'Нет'
@@ -150,7 +150,7 @@ function deleteFilials(row){
 
 function getData() {
     globalStore.isWaiting = true
-    adminStore.getBanks('upd').then(res => {
+    adminStore.getBanks(true).then(res => {
         globalStore.isWaiting = false
         tableData.value = res.items
         banksLength.value = res.count

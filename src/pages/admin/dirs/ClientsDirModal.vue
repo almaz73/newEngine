@@ -71,14 +71,14 @@
                         style="display: inline-block; width: 200px; margin: 0 !important;"
                         :rules="{required: true, message: 'Телефон', trigger: ['change']}">
             <el-input placeholder="Телефон" title="Телефон"
-                      :formatter="(value:string) =>value && formattingPhone(value, (val:any)=>client.person.phone=val)"
+                      :formatter="(value:string) =>value && formattingPhone(value, val=>client.person.phone=val)"
                       v-model="client.person.phone"/>
           </el-form-item>
 
 
           &nbsp;&nbsp;
           <el-input placeholder="Доп.телефон" title="Доп.телефон"
-                    :formatter="(value:string) =>value && formattingPhone(value, (val:any)=>client.person.phone2=val)"
+                    :formatter="(value:string) =>value && formattingPhone(value, val=>client.person.phone2=val)"
                     v-model="client.person.phone2"/>
 
 
@@ -97,7 +97,9 @@
 
               <div class="nowrap">
                 <small class="label l_100">Место рождения</small>
-                <el-input v-model="client.person.placeOfBirth"/>
+                <el-input
+                  title="client.person.placeOfBirth"
+                  v-model="client.person.placeOfBirth"/>
               </div>
 
               <small class="nowrap">
@@ -163,7 +165,7 @@
                       <div v-if="!doc.deleted">
                         <div>
                           <small class="label l_150">Тип документа </small><small>&nbsp;
-                          {{ documentTypes.find((el: any) => el.value === doc.type).title }}</small>
+                          {{ documentTypes.find(el => el.value === doc.type).title }}</small>
                         </div>
 
                         <div>
@@ -249,7 +251,7 @@
       </div>
     </el-scrollbar>
   </AppModal>
-  <ClientsDirModal_History ref="сlientsDirModal_History"/>
+  <ClientsDirModal_History ref="clientsDirModal_History"/>
   <ClientsDirDocumentsModal ref="clientsDirDocumentsModal"/>
 </template>
 
@@ -280,8 +282,8 @@ const clientInit = <any>{
 const client = ref(clientInit)
 const closeModal = () => isOpen.value = false
 const title = ref('')
-const сlientsDirModal_History = ref(null)
-const clientsDirDocumentsModal = ref(null)
+const clientsDirModal_History = ref<any>()
+const clientsDirDocumentsModal = ref<any>()
 const adminStore = useAdminStore()
 const treatmentsGroup = ref<any>()
 const departments = ref<any>()
@@ -315,7 +317,7 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
   }
 }
 
-function changeBank(id: number, index: number | null) {
+function changeBank(id: number, index: number ) {
   if (index) client.value.bills[index].bankItemId = null
   id && adminStore.getBankFilials(id).then((res: any) => banksFilials.value[id] = res.items)
 }
@@ -344,7 +346,7 @@ function open(leadId: number, cbModal: any) {
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
 
     title.value = 'Редактирование клиента'
-    if (client.value.bills) client.value.bills.forEach((bank:any) => changeBank(bank.bankId, null))
+    if (client.value.bills) client.value.bills.forEach((bank:any) => changeBank(bank.bankId, 0))
   })
 
 
@@ -377,12 +379,12 @@ function tabChosen() {
 
 function showHistory() {
   let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
-  сlientsDirModal_History.value?.open('клиента', client.value.leadId, name, 'getClientHistory')
+  clientsDirModal_History.value?.open('клиента', client.value.leadId, name, 'getClientHistory')
 }
 
 function showBanksHistory() {
   let name = client.value.person.firstName + ' ' + client.value.person.middleName + ' ' + client.value.person.lastName
-  сlientsDirModal_History.value?.open('клиента по счетам', client.value.leadId, name, 'getBanksHistory')
+  clientsDirModal_History.value?.open('клиента по счетам', client.value.leadId, name, 'getBanksHistory')
 }
 
 

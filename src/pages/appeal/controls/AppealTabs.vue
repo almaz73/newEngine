@@ -15,29 +15,38 @@
 
 
         <div v-if="!isOnlyEvents">
-          <div v-for="sth in statusHistory" :key="sth.userId"
-               style="padding: 4px 24px; background: #fff5f5; margin: 18px 20px">
-            🏠 {{ sth.lastName }} {{ sth.firstName }}. <b> Смена статуса обращения:
-            {{ statuses.find(el => el.id === sth.status).name }}</b><br>
-            {{ formatDMY_hm(sth.createDate) }} &nbsp; &nbsp; {{ sth.comment ? ' Комментарий:' + sth.comment : '' }}
+          <div class="event-field" v-for="checkAuto in workflowHistory" :key="checkAuto.id" style="background: #f5fff5">
+            🚗  <small>{{ formatDMY_hm(checkAuto.created) }}</small> :  {{ checkAuto.userTitle }}
+            <small style="margin: 12px"><b> Смена статуса оценки: </b></small>
+            {{ checkAuto.statusTitle }}
+            <div v-if="checkAuto.comment">
+              <br>
+              <small style="margin: 15px"><b>Комментарий:</b></small>
+              &nbsp; &nbsp; {{ checkAuto.comment }}
+            </div>
+          </div>
+
+          <div class="event-field" v-for="sth in statusHistory" :key="sth.userId" style="background: #fff5f5">
+            🏠 <small>{{ formatDMY_hm(sth.createDate) }}</small> : {{ sth.lastName }} {{ sth.firstName }}.
+            <small style="margin: 12px"><b>Смена статуса обращения:</b></small>
+            {{ statuses.find(el => el.id === sth.status).name }}
+            <div v-if="sth.comment">
+              <br>
+              <small style="margin: 15px"><b>Комментарий:</b></small>
+              &nbsp; &nbsp; {{ sth.comment }}
+            </div>
 
           </div>
 
-          <el-timeline style="background: #ddd; margin: 8px 50px; padding-top: 12px">
-            <el-timeline-item
-
-                v-for="(hist, index) in history"
-                :key="index"
-                :hollow="true"
-                :timestamp="hist.createDate"
-            >
-              {{ hist.action }}: <b>{{ hist.comment }}</b> <span>{{ hist.userTitle }}</span>
-            </el-timeline-item>
-          </el-timeline>
+          <div class="event-field"  v-for="hist in history" :key="hist.id" style="background: #f5f5ff">
+            ☄  <small>{{ hist.createDate }}</small> :  {{ hist.userTitle }}
+            <small style="margin: 12px"><b>  {{ hist.action }}</b></small>
+            {{ hist.comment }}
+          </div>
         </div>
 
 
-        <div v-for="ev in events" :key="ev.id" class="collapse-blocks" style="background: #ddd">
+        <div v-for="ev in events" :key="ev.id" class="collapse-blocks" style="background: #fff">
           <div><span style="font-size: large">{{ ev.title }} </span> &nbsp; &nbsp;
             <u><a @click="closeEvent(ev)" v-if="canCloseEvent(ev)">
               ❌ Закрыть
@@ -75,9 +84,8 @@
 
     <el-tab-pane :label="'История '+(countHistory?` (${countHistory})`:'')" name="historyTab">
       <el-scrollbar>
-        <el-timeline style="background: #ddd; margin: 8px 50px; padding: 12px 12px 0 12px">
+        <el-timeline style="background: #fff; margin: 8px 50px; padding: 12px 12px 0 12px">
           <el-timeline-item
-
               v-for="(hist, index) in history"
               :key="index"
               :hollow="true"
@@ -122,6 +130,13 @@
 
   <SendSmsModal ref="sendSmsModal"/>
 </template>
+<style>
+.event-field {
+  padding: 4px 24px;
+  background: #f5fff5;
+  margin: 4px 20px
+}
+</style>
 <script setup>
 import {formatDMY_hm, getPeriods} from "@/utils/globalFunctions";
 import {ref} from "vue";
@@ -151,14 +166,20 @@ const commentTxt = ref('')
 const isOnlyEvents = ref(false)
 const statusHistory = ref([])
 const lastTask = ref(null)
+const workflowHistory = ref([])
+
 
 
 function getEvents(noCach) {
+  globalStore.getWorkflowHistory(appeal.value.id).then(res=>{
+    workflowHistory.value = res.data.items
+  })
+
   appealStore.getEvents(appeal.value.id, noCach).then(res => {
     events.value = res.items
 
     events.value.forEach(value => {
-      if (value.status != 30 && lastTask.value == null) lastTask.value = value;
+      if (value.status !== 30 && lastTask.value == null) lastTask.value = value;
     })
   })
 

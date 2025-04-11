@@ -146,7 +146,7 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/damageitem/${deleteId}`).then(q => q)
             return res.data
         },
-        async getBanks(needUpd: true | null) {
+        async getBanks(needUpd: boolean) {
             if (!needUpd && cache.getBanks) return cache.getBanks
             const res = await axios.get('/api/bank/').then(q => q)
             return (cache.getBanks = res.data)
@@ -271,7 +271,7 @@ export const useAdminStore = defineStore("adminStore", {
         async getDepartmentsWithBuyLocations(orgId: number) {
             return await axios.get('/api/OrgElement/GetDepartmentsWithBuyLocations?orgId=' + orgId).then(res => res.data)
         },
-        async getBuyLocationsByOrganizations(orgIds: Array) {
+        async getBuyLocationsByOrganizations(orgIds: []) {
             let link = ''
             orgIds.forEach(it=>link+='&orgids='+it)
             if (!link) return false
