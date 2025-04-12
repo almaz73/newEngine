@@ -7,7 +7,7 @@
       <br>
     </div>
 
-    <div class="appealStatRight">
+    <div class="appealStatRight" v-if="lastTaskAndResult || prevTask">
       <div style="font-size: smaller">
         <div class="label-red ">Результаты и действия:</div>
         <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
@@ -182,7 +182,8 @@
 <style>
 .appealStat {
   width: 40%;
-  white-space: nowrap
+  white-space: nowrap;
+  min-width: 400px
 }
 
 .appealStatRight {
@@ -278,15 +279,18 @@ function openLegal() {
 function open(row) {
   if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
   isOpen.value = true;
+  globalStore.isWaiting = true
   appealStore.getAppeal(row.id).then(res => {
     appeal.value = res
     appealTabs.value.open(res)
+    globalStore.isWaiting = false
     init()
   })
 
 
 }
 
+// подготовка информации по Результвты и действия
 function getEvents() {
   lastTaskAndResult.value = ''
   prevTask.value = ''
@@ -308,11 +312,16 @@ function getEvents() {
 
     if (result) {
       lastTaskAndResult.value = '⚡' + result.typeTitle + endPhrase
-          + formatDMY_hm(last.createDate) +
-          (result.comment ? ' с результатом: <b>' + result.comment : '</b>');
+        + formatDMY_hm(last.createDate) +
+        (result.comment ? ' с результатом: <b>' + result.comment : '</b>')
     }
 
     prevTask.value = 'Следующее действие: ' + events.value[0].typeTitle + ' на ' + formatDMY_hm(events.value[0].dateStart)
+
+    if (appeal.value.archiveRequestReasons?.length) {
+      lastTaskAndResult.value = ''
+      prevTask.value = 'Причина первода в архив: ' + appeal.value.archiveRequestReasons.map(el => el)
+    }
   })
 }
 
@@ -322,6 +331,8 @@ function init() {
   appealStore.getCommunication(appeal.value.id).then(res => {
     communicationLink.value = res.description
   })
+
+  getEvents()
 }
 
 defineExpose({open})

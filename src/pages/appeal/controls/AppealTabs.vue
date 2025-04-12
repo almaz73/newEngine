@@ -175,14 +175,6 @@ function getEvents(noCach) {
     workflowHistory.value = res.data.items
   })
 
-  appealStore.getEvents(appeal.value.id, noCach).then(res => {
-    events.value = res.items
-
-    events.value.forEach(value => {
-      if (value.status !== 30 && lastTask.value == null) lastTask.value = value;
-    })
-  })
-
   appealStore.getHistory(appeal.value.id).then(res => {
     history.value = res.models
     countHistory.value = res.models.length
@@ -190,6 +182,16 @@ function getEvents(noCach) {
   appealStore.getStatusHistory(appeal.value.id).then(res => {
     statusHistory.value = res.items
   })
+
+  setTimeout(() => {
+    appealStore.getEvents(appeal.value.id, noCach).then(res => {
+      events.value = res.items
+
+      events.value.forEach(value => {
+        if (value.status !== 30 && lastTask.value == null) lastTask.value = value
+      })
+    })
+  }, 730)
 }
 
 

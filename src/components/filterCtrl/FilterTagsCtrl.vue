@@ -14,7 +14,7 @@
         class="find"
         :class="{active:true}"
         v-if="isDirty"
-        @click="getData()">Искать и запомнить</span>
+        @click="getData()">Искать и запомнить фильтр</span>
   </div>
 
 </template>
