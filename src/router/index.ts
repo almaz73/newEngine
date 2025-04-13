@@ -3,7 +3,7 @@ import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
-//import { getCurrentInstance } from 'vue'
+import {startCounter} from "@/utils/counterPageViews"
 
 //const instance = getCurrentInstance();
 const router = createRouter({
@@ -146,6 +146,7 @@ router.beforeEach(res => {
             location.reload(); // опасность бесконечного цикла
         }
     }, 1730)
+    startCounter(res.fullPath, Date.now())
 });
 
 router.afterEach((to) => {

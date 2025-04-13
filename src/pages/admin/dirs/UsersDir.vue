@@ -154,7 +154,7 @@ const statuses = [
   {name: 'Заблокированные', type: 'Blocked', value: false},
   {name: 'Удаленные', type: 'deleted', value: false}
 ]
-const roles = ref<any>()
+const roles = ref<any>([])
 
 
 globalStore.getOrganizations().then(res => organizations.value = res.items)

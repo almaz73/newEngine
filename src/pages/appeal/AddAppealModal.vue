@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 360: 500"
             :top="40"
-            :title="'Обращения - '+workflowTypes.find(el=>el.value==newWorkflow.workflowLeadType).title"
+            :title="'Обращения - '+workflowTypes.find(el=>el.value===newWorkflow.workflowLeadType).title"
             draggable>
     <el-scrollbar>
       <span class="modal-fields">
@@ -310,8 +310,6 @@ function getWorkflowTypeEnum(userRole) {
     workflowTypes.value = makeArr(WorkflowsVariants.AllUsers)
     newWorkflow.value.workflowLeadType = 2;
   }
-  console.log('newWorkflow.value', newWorkflow.value)
-
 }
 
 function makeArr(arr) {
