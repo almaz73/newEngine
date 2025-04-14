@@ -274,9 +274,6 @@ const form = ref(null)
 const brands = ref([])
 const models = ref([])
 const disablePerson = ref(false)
-
-const account = localStorage.getItem('account')
-const user = account && JSON.parse(account);
 const newLead = {source: 10, leadId: 0, leadType: 10, person: {}, legalEntity: {person: {}}}
 const newWorkflow = ref({});
 const workflowTypes = ref([])
@@ -285,10 +282,11 @@ const comissionFields = ref(null)
 
 globalStore.getBrands().then(res => brands.value = res)
 
-getWorkflowTypeEnum(user.role)
+getWorkflowTypeEnum()
 
 // В зависимости от аккаунта, позволяется создать разный подбор типов обращений
-function getWorkflowTypeEnum(userRole) {
+function getWorkflowTypeEnum() {
+  let userRole = globalStore.account.role
   console.log('userRole', userRole)
   if (userRole === 'BuyerEmployee' || userRole === 'BuyerManager') {
     workflowTypes.value = WorkflowsVariants.Buyers;
@@ -330,7 +328,7 @@ const closeModal = () => {
 
 function open(cbModal) {
   currentButton.value = {title: 'Выкуп', value: 2}
-  newWorkflow.value = {managerId: user.id, lead: newLead, type: 15, workflowLeadType: 2};
+  newWorkflow.value = {managerId: globalStore.account.id, lead: newLead, type: 15, workflowLeadType: 2};
   cb = cbModal
   isOpen.value = true
   disablePerson.value = false
@@ -339,13 +337,12 @@ function open(cbModal) {
   })
   globalStore.getenabledemployeers().then(res => {
     managers.value = res.items
-    managers.value.map(user => user.fullName = user.lastName + ' '
-        + user.firstName + ' ' + (user.middleName == null ? ' ' : user.middleName))
+    managers.value.map(user => user.fullName = globalStore.account.lastName + ' '
+        + globalStore.account.firstName + ' ' + (globalStore.account.middleName == null ? ' ' : globalStore.account.middleName))
   })
 }
 
 function changeWorkflowType(flow) {
-  console.log('flow', flow)
   if (disablePerson.value) return false
   currentButton.value = flow
   newWorkflow.value.workflowLeadType = flow.value

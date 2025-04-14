@@ -1,30 +1,32 @@
 <template>
-  <img src="@/assets/img/loading.gif"
-       alt=""
-       v-if="globalStore.isWaiting"
-       class="waiter"
-  />
-  <form class="login">
-    <img alt="" src="@/assets/icons/logo-gray.png" height="42">
-    <h1>Авторизация</h1>
-    <input type="text"
-           placeholder="Логин"
-           name="login"
-           autocomplete="off"
-           v-model="login">
-    <span class="passwors">
-      <input type="password"
-             placeholder="Пароль"
-             name="password"
-             v-model="password">
-      <img alt="" src="@/assets/icons/icon-password.png">
-    </span>
-    <input type="button"
-           value="Войти"
-           @click.prevent="signIn()">
-    <div class="danger">{{ authMessage }}</div>
+  <div>
+    <img src="@/assets/img/loading.gif"
+         alt=""
+         v-if="globalStore.isWaiting"
+         class="waiter"
+    />
+    <form class="login">
+      <img alt="" src="@/assets/icons/logo-gray.png" height="42">
+      <h1>Авторизация</h1>
+      <input type="text"
+             placeholder="Логин"
+             name="login"
+             autocomplete="off"
+             v-model="login">
+      <span class="passwors">
+        <input type="password"
+               placeholder="Пароль"
+               name="password"
+               v-model="password">
+        <img alt="" src="@/assets/icons/icon-password.png">
+      </span>
+      <input type="button"
+             value="Войти"
+             @click.prevent="signIn()">
+      <div class="danger">{{ authMessage }}</div>
 
-  </form>
+    </form>
+  </div>
 </template>
 <script setup lang="ts">
 import {ref} from "vue";
@@ -76,6 +78,7 @@ function signIn(): void {
     }
 
     globalStore.account = res.data
+    globalStore.account.dateTime = String(Date.now())
     localStorage.setItem('account', JSON.stringify(res.data))
   })
 }

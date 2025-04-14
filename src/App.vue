@@ -40,10 +40,13 @@ onMounted(() => {
   if (account && account !== 'undefined') {
     globalStore.account = JSON.parse(account)
     globalStore.isAuthorized = true
+    // @ts-ignore
+    if (new Date() - new Date(+globalStore.account.dateTime) > 43200000) {
+      // вышел срок авторизации
+      navigator.onLine && router.push('login')
+    }
   } else {
     globalStore.isAuthorized = false
-    
-    console.log('navigator.onLine = ',navigator.onLine)
     
     navigator.onLine && router.push('login')
   }

@@ -263,7 +263,7 @@ function showHistory() {
   modalHistory.value.open(user.value)
 }
 
-function signingLikeAnother() {
+function signingLikeAnother() { // для чего нужно заходить под другим паролем? нужно вспомнить, какую задачу решает
   let mk = localStorage.getItem('myKey')
   let myKey = mk && decryptPassword(mk)
 

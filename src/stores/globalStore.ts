@@ -24,7 +24,8 @@ export const useGlobalStore = defineStore('globalStore', {
             orgElementName: '',
             storage: '',
             role:'',
-            avatarUrl:''
+            avatarUrl:'',
+            dateTime: ''
         },
         steps: [
           // приходит с сервера внутри workflowsChain
