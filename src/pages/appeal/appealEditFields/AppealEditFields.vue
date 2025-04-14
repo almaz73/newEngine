@@ -55,6 +55,7 @@
               <span class="label">Вид выкупа </span>
               <div v-if="!isTypeClientEdit" style="display: inline-block">
                 <span
+                    :style="{background:appeal.lead.leadType === 20?'#ffb':''}"
                     v-if="appeal.lead"> {{
                     appeal.lead.leadType === 10 ? 'Физическое лицо' : 'Юридическое лицо'
                   }}</span>
@@ -274,6 +275,7 @@ function openClient() {
 
 function openLegal() {
   // нужно открыть на редактирование юридическое лицо
+  clientsDirLegalModal.value.open({leadId: appeal.value.lead.leadId}, null)
 }
 
 function open(row) {

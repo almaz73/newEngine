@@ -81,6 +81,7 @@
 
           <small class="label-right l_150">Адрес регистрации</small>
           <el-autocomplete
+              v-if="legal.registrationAddress.fias"
               :title="legal.registrationAddress.fias.value"
               style="width: 200px"
               v-model="legal.registrationAddress.fias.value"
@@ -91,6 +92,7 @@
           />
           <small class="label-right l_150">Почтовый адрес</small>
           <el-autocomplete
+              v-if="legal.postAddress.fias"
               :title="legal.postAddress.fias.value"
               style="width: 200px"
               v-model="legal.postAddress.fias.value"
@@ -322,7 +324,7 @@ function deleteBank(bank: any) {
   if (legal.value.bills.length === 0) addBank()
 }
 
-function open(row, cbModal) {
+function open(row: any, cbModal: any) {
   cb = cbModal
   isOpen.value = true
   title.value = 'Создание нового юр.лица'

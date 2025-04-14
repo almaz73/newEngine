@@ -37,12 +37,6 @@
             </div>
 
           </div>
-
-          <div class="event-field"  v-for="hist in history" :key="hist.id" style="background: #f5f5ff">
-            ☄  <small>{{ hist.createDate }}</small> :  {{ hist.userTitle }}
-            <small style="margin: 12px"><b>  {{ hist.action }}</b></small>
-            {{ hist.comment }}
-          </div>
         </div>
 
 
@@ -63,6 +57,14 @@
           <!--          <div><span class="label-right">Создано:</span> {{ formatDMY_hm(ev.createDate) }}</div>-->
           <div><span class="label-right">Статус:</span> {{ ev.statusTitle }}</div>
           <div>{{ ev.text }}</div>
+        </div>
+
+        <div v-if="!isOnlyEvents">
+          <div class="event-field" v-for="hist in history" :key="hist.id" style="background: #f5f5ff">
+            ☄ <small>{{ hist.createDate }}</small> : {{ hist.userTitle }}
+            <small style="margin: 12px"><b> {{ hist.action }}</b></small>
+            {{ hist.comment }}
+          </div>
         </div>
       </el-scrollbar>
     </el-tab-pane>
