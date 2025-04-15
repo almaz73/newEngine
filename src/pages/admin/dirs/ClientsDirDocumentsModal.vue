@@ -81,19 +81,19 @@ import {ElMessage} from "element-plus";
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const isOpen = ref(false)
-const subtitle = ref(null)
+const subtitle = ref<any>()
 const documentTypes = ref([])
 const clientDocuments = ref([])
 const сlientsDirModal_History = ref(null)
-let cb = null
-let clientId = null
-let leadId = null
+let cb:any = null
+let clientId:number
+let leadId: number
 const closeModal = () => {
   isOpen.value = false
   cb(clientId)
 }
 
-function open(row, docs, cbModal) {
+function open(row:any, docs:any, cbModal:any) {
   cb = cbModal
   clientId = row.person.id
   leadId = row.leadId
@@ -117,7 +117,7 @@ function deleteDocument(doc) {
 
 
 function showHistory() {
-  сlientsDirModal_History.value.open('документов клиента', leadId, subtitle.value, 'getClientDocHistory')
+  сlientsDirModal_History.value.open('документов клиента', leadId, subtitle.value, 'getBanksHistory')
 }
 
 function prepare() {

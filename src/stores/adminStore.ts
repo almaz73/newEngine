@@ -463,11 +463,11 @@ export const useAdminStore = defineStore("adminStore", {
         async getClientHistory(id: number) {
             return await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
         },
+        async getLeadHistory(id: number) {
+            return await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
+        },
         async getLegalHistory(id: number) {
             return await axios.get(`/api/legal/gethistory?id=${id}`).then(q => q)
-        },
-        async getClientDocHistory(id: number) {
-            return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)
         },
         async getBanksHistory(id: number) {
             return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)

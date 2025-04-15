@@ -29,7 +29,7 @@
     </span>
     <span class="nowrap" v-if="appeal.workflowLeadType">
       <span class="label-red ">Тип обращения: </span>
-      <span class="bigger">{{ workFlowType(appeal.workflowLeadType) }} &nbsp;</span>
+      <div style="font-size: 22px; display: inline-block; margin-top: -5px">{{ workFlowType(appeal.workflowLeadType) }} &nbsp;</div>
     </span>
     <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
           <span class="label-red"> Тип направления:</span>
@@ -81,6 +81,7 @@
               {{ appeal.lead.person.middleName }}
               {{ appeal.lead.person.lastName }}
               &nbsp;
+              <a  @click="openModalSwapHistory('client')">👁</a>
               <EditPensilCtrl @click="openClient()"/>
             </div>
 
@@ -90,24 +91,24 @@
               {{ appeal.lead.legalEntity.person.middleName }}
               {{ appeal.lead.legalEntity.person.lastName }}
               &nbsp;
+              <a  @click="openModalSwapHistory('client')">👁</a>
               <EditPensilCtrl @click="openLegal()"/>
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
-              {{ formattingPhone(appeal.leadPhone) }}
+              ☎ {{ formattingPhone(appeal.leadPhone) }}
+              <a @click="openModalSwapHistory('phone')">👁</a>
             </div>
             <div v-if="appeal.swapPhone">
-              <span class="label l_200">Подменный номер телефона ☎:</span>
-              <a title=". . . загрузка истории изменений"
-                 @click="openSwapHist(true, true)"
-                 @mouseover="openSwapHist(true)"
-                 @mouseleave="openSwapHist()">
-                {{ formattingPhone(appeal.swapPhone) }}
-              </a>
+              <span class="label">Подменный телефон</span>
+              ☎ {{ formattingPhone(appeal.swapPhone) }}
+              <a @click="openModalSwapHistory('swapPhone')">👁</a>
+
 
             </div>
             <div v-if="appeal.lead && appeal.lead.person && appeal.lead.person.phone2"><span class="label">
-              Доп. телефон: </span> {{ appeal.lead && appeal.lead.person && appeal.lead.person.phone2 }}
+              Доп. телефон: </span> ☎ {{ formattingPhone(appeal.lead.person.phone2) }}
+
             </div>
             <div v-if="appeal.email"><span class="label">Эл. почта: </span> {{ appeal.email }}</div>
             <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
@@ -129,6 +130,8 @@
               </span>
             </div>
           </div>
+          <el-button style="margin-left: 60px" @click="opanModalClientDeals()">История сделок с клиентом</el-button>
+
         </div>
         <br>
       </el-collapse-item>
@@ -141,7 +144,7 @@
             <span style="float: inline-end">
               <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
                           v-if="permit_locale() && !appeal.auto">
-                <el-button :icon="Edit" size="small">Оценивать </el-button>
+                <el-button :icon="Edit" size="small">Оценивать авто</el-button>
               </RouterLink>
 
               <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
@@ -157,7 +160,7 @@
 
           <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
           {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
-          <br>
+          <br><br>
         </div>
       </el-collapse-item>
     </el-collapse>
@@ -223,16 +226,25 @@ const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
-let timerSwap = null
-let openSwapmodal = function () {
-  swapPhoneHistoryModal.value.open(appeal.value.id)
+
+let openModalSwapHistory = function (typeHistory) {
+  // todo
+  console.log('typeHistory = ',typeHistory)
+  console.log('appeal = ',appeal)
+  console.log('appeal.lead.person.id  = ',appeal.value.leadId )
+  let clientId = appeal.value.lead.leadId || appeal.value.leadId
+
+  if (!clientId) {
+    alert()
+    clientId = appeal.value.lead.legalEntity.person.id
+  }
+
+
+  swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
 }
 
-function openSwapHist(val, fast) {
-  clearTimeout(timerSwap)
-  if (fast) openSwapmodal()
-  if (!val) return false;
-  timerSwap = setTimeout(openSwapmodal, 1500)
+function opanModalClientDeals() {
+  alert('Under construction')
 }
 
 function changeTypeClient() {
@@ -313,7 +325,7 @@ function getEvents() {
 
     if (appeal.value.archiveRequestReasons?.length) {
       lastTaskAndResult.value = ''
-      prevTask.value = 'Причина первода в архив: ' + appeal.value.archiveRequestReasons.map(el => el)
+      prevTask.value = 'Причина перевода в архив: ' + appeal.value.archiveRequestReasons.map(el => el)
     }
   })
 }

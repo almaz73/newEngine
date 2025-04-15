@@ -305,7 +305,7 @@ export function checkEmptyFields(formEl: any) {
 export function getPeriods(ev:any) {
     let startTime = new Date(ev.dateStart).getHours() + ':' + new Date(ev.dateStart).getMinutes()
     let endTime = new Date(ev.dateEnd).getHours() + ':' + new Date(ev.dateEnd).getMinutes()
-    return formatDateDDMMYYYY(ev.createDate) + '  c  <b class="label-red">' + startTime + '</b> до <b class="label-red">' + endTime + '</b>'
+    return formatDateDDMMYYYY(ev.createDate) + ' &nbsp; c  <b style="color:#d34338">' + startTime + '</b> до <b style="color:#d34338">' + endTime + '</b>'
 }
 
 export const getFiasByName = (queryString: string, cb: any) => {

@@ -69,7 +69,7 @@ const WorksModal = ref(null)
 const like = ref('')
 
 function openModal(row: any | null) {
-  WorksModal.value && WorksModal.value.open(row, getData)
+  WorksModal.value.open(row, getData)
 }
 
 
@@ -88,7 +88,7 @@ function deleteInsp(id: number) {
 
 function toSearch() {
   let word = like.value.toUpperCase()
-  tableData.value = tableDataMemory.filter(el => el.name.toUpperCase().includes(word))
+  tableData.value = tableDataMemory.filter((el:any) => el.name.toUpperCase().includes(word))
 }
 
 function getData() {
