@@ -4,8 +4,8 @@
   <small class="label-right" v-if="![1,2].includes(props.appeal.workflowLeadType)">Ответственный</small>
 
   <span v-if="!isEditManagerName">
-            <small v-if="props.appeal.managerName">{{ props.appeal.managerName }}</small>
-            <small v-if="!props.appeal.managerName">Прикрепить менеджера</small>
+            <span v-if="props.appeal.managerName">{{ props.appeal.managerName }}</span>
+            <span v-if="!props.appeal.managerName">Прикрепить менеджера</span>
             &nbsp;
             <EditPensilCtrl @click="toGetManagers()"/>
           </span>

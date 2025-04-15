@@ -10,7 +10,7 @@
         <el-button @click="isOnlyEvents=!isOnlyEvents"
                    v-if="events.length"
                    type="info" style="margin: 0 8px">
-          Cобытия ({{ events.length }})
+          Только события ({{ events.length }})
         </el-button>
 
 

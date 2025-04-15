@@ -122,15 +122,6 @@
               {{ appeal.lead.person.gender === 10 ? 'муж.' : '' }}
               {{ appeal.lead.person.gender === 20 ? 'жен.' : '' }}
             </div>
-            <div v-if="appeal.lead.person.homeAddress.fiasAddress?.value">
-              <span class="label">Место проживания:</span>
-              {{appeal.lead.person.homeAddress.fiasAddress?.value }}
-            </div>
-            <div v-if="appeal.lead.person.registrationAddress.fiasAddress?.value">
-              <span class="label">Место регистрации:</span> {{
-                appeal.lead.person.registrationAddress.fiasAddress?.value
-              }}
-            </div>
 
             <div v-if="communicationLink"><span class="label">Коммуникация:</span>
               <span  style="width: 200px; overflow: hidden;display: inline-grid">
@@ -270,7 +261,7 @@ function workFlowType(type) {
 
 
 function openClient() {
-  appeal.value && clientsDirModal.value.open(appeal.value.leadId)
+  appeal.value && clientsDirModal.value.open(appeal.value.leadId, null)
 }
 
 function openLegal() {
