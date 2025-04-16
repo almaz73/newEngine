@@ -178,7 +178,8 @@
 .appealStat {
   width: 40%;
   white-space: nowrap;
-  min-width: 400px
+  min-width: 400px;
+  padding-top: 8px
 }
 
 .appealStatRight {

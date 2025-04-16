@@ -461,13 +461,19 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data
         },
         async getClientHistory(id: number) {
-            return await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
+            if (cache['getClientHistory'+id]) return cache['getClientHistory'+id]
+            const res = await axios.get(`/api/person/get/history?id=${id}`)
+            return (cache['getClientHistory'+id] = res)
         },
         async getLeadHistory(id: number) {
-            return await axios.get(`/api/person/get/history?id=${id}`).then(q => q)
+            if (cache['getLeadHistory'+id]) return cache['getLeadHistory'+id]
+            const res = await axios.get(`/api/lead/get/history?id=${id}`)
+            return (cache['getLeadHistory'+id] = res)
         },
         async getLegalHistory(id: number) {
-            return await axios.get(`/api/legal/gethistory?id=${id}`).then(q => q)
+            if (cache['getLegalHistory'+id]) return cache['getLegalHistory'+id]
+            const res = await axios.get(`/api/legal/gethistory?id=${id}`)
+            return (cache['getLegalHistory'+id] = res)
         },
         async getBanksHistory(id: number) {
             return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)

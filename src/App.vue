@@ -4,7 +4,7 @@
 
     <div class="content" :class="globalStore.isNarrowPanel ? 'narrow' : 'wide'">
       <HeadMenu v-if="globalStore.isAuthorized"/>
-      <RouterView :style="{ padding: globalStore.isMobileView ? '' : '25px',
+      <RouterView :style="{ padding: globalStore.isMobileView ? '' : '8px 25px',
                             overflowY:heightPage>920?'':'auto' }"
                   class="router-window"/>
     </div>
@@ -43,6 +43,7 @@ onMounted(() => {
     // @ts-ignore
     if (new Date() - new Date(+globalStore.account.dateTime) > 14400000) { //43200000
       // вышел срок авторизации
+      console.log('%cвышел срок авторизации','background:red')
       navigator.onLine && router.push('login')
     }
   } else {
