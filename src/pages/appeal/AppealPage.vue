@@ -41,7 +41,9 @@
       <el-table-column label="Обращение">
         <template #default="scope">
           <ColorButtons @click="openModal(row)" :statusTitle="scope.row.statusTitle"/>
-          <div class="red-text">{{ scope.row.id }}</div>
+          <div class="red-text">
+            <a :href="'appeal/'+scope.row.id" target="_blank"> {{ scope.row.id }} </a>
+          </div>
           <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
         </template>
       </el-table-column>

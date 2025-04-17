@@ -140,12 +140,12 @@ router.beforeEach(res => {
     // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
     setTimeout(()=>{
         if (res.fullPath.includes("/appeal/") && document.body.textContent
-          && !document.body.textContent.includes("Место выкупа")) {
+          && !document.body.textContent.includes("Источник:")) {
             // Если открыли выкуп а он не открылся, перезагружаем
             console.log("%c ... force обновление страницы ", "color: blue; background: red");
             location.reload(); // опасность бесконечного цикла
         }
-    }, 2730)
+    }, 3730)
     startCounter(res.fullPath, Date.now())
 });
 
