@@ -18,7 +18,9 @@
   </div>
   <br>
 
-  <small style="display: flex; flex-wrap: wrap; gap: 8px">
+  <!--small-- style="display: flex;
+  flex-direction: column;
+  flex-wrap: wrap; gap: 8px">
     <span class="nowrap" v-if="appeal.locationName">
       <span class="label-red ">Место выкупа:</span>
       <span class="bigger">{{ appeal.locationName }} ({{ appeal.city }})</span>
@@ -37,6 +39,29 @@
     </span>
     <span class="nowrap">
           <span class="label-red ">Источник:</span>
+          <span class="bigger">{{ appeal.treatmentSourceTitle }}</span>
+    </span>
+  </small-->
+
+  <small style="display: flex; flex-direction: column; flex-wrap: wrap; gap: 8px; margin-top: -10px">
+    <span class="nowrap" v-if="appeal.locationName">
+      <span class="label-red ">Место выкупа:</span>
+      <span class="bigger">{{ appeal.locationName }} ({{ appeal.city }})</span>
+    </span>
+    <span class="nowrap" v-if="appeal.buyCategoryTitle">
+      <span class="label-red " style="margin-left: 28px">Вид выкупа:</span>
+      <span class="bigger">{{ appeal.buyCategoryTitle }}</span>
+    </span>
+    <span class="nowrap" v-if="appeal.workflowLeadType">
+      <span class="label-red" style="margin-left: 4px">Тип обращения:</span>
+       <span class="bigger">{{ workFlowType(appeal.workflowLeadType) }}</span>
+    </span>
+    <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
+          <span class="label-red" style="margin-left: -4px"> Тип направления:</span>
+          <span class="bigger">{{ appeal.tradeInDirectionTypeTitle }}</span>
+    </span>
+    <span class="nowrap">
+          <span class="label-red" style="margin-left: 44px">Источник:</span>
           <span class="bigger">{{ appeal.treatmentSourceTitle }}</span>
     </span>
   </small>
