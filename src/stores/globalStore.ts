@@ -185,6 +185,11 @@ export const useGlobalStore = defineStore('globalStore', {
         async getWorkflowHistory(id: number) { // история изменения при оценки автомобиля
             return await axios.get(`/api/workflow/getWorkflowHistory?workflowId=${id}`)
         },
+        async getLeadActivityHistory(id: number) {
+            if (cache['getLeadActivityHistory'+id]) return cache['getLeadActivityHistory'+id]
+            const res = await axios.get(`/api/Lead/GetLeadActivityHistory/${id}`)
+            return (cache['getLeadActivityHistory'+id] = res.data)
+        }
 
     }
 })

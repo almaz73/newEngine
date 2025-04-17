@@ -48,8 +48,8 @@
       <el-collapse-item
           :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
           name="1">
-        <div class="collapse" style="">
-          <div class="collapse-left">
+        <div class="collapse"  style="gap: 0 40px">
+          <div>
 
             <div>
               <span class="label">Вид выкупа </span>
@@ -114,7 +114,7 @@
             <div v-if="appeal.leadSourceTitle"><span class="label">Источник:</span> {{ appeal.leadSourceTitle }}</div>
 
           </div>
-          <div class="collapse-right" v-if="appeal.lead && appeal.lead.person">
+          <div v-if="appeal.lead && appeal.lead.person">
             <div v-if="appeal.lead.person.dateOfBirth">
               <span class="label">День рождения:</span> {{ formatDateDDMMYYYY(appeal.lead.person.dateOfBirth) }}
             </div>
@@ -122,6 +122,16 @@
               <span class="label">Пол:</span>
               {{ appeal.lead.person.gender === 10 ? 'муж.' : '' }}
               {{ appeal.lead.person.gender === 20 ? 'жен.' : '' }}
+            </div>
+
+            <div v-if="appeal.lead.person.homeAddress.fiasAddress?.value">
+              <span class="label">Место проживания:</span>
+              {{appeal.lead.person.homeAddress.fiasAddress?.value }}
+            </div>
+            <div v-if="appeal.lead.person.registrationAddress.fiasAddress?.value">
+              <span class="label">Место регистрации:</span> {{
+                appeal.lead.person.registrationAddress.fiasAddress?.value
+              }}
             </div>
 
             <div v-if="communicationLink"><span class="label">Коммуникация:</span>
@@ -172,6 +182,7 @@
   <ClientsDirModal ref="clientsDirModal"/>
   <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
   <ClientsDirLegalModal ref="clientsDirLegalModal"/>
+  <DealsHistoryModal ref="dealsHistoryModal"/>
 </template>
 
 <style>
@@ -212,6 +223,7 @@ import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import {ElMessageBox} from 'element-plus'
 import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
 import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
+import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -227,25 +239,16 @@ const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
+const dealsHistoryModal = ref(null)
 
 let openModalSwapHistory = function (typeHistory) {
-  // todo
-  console.log('typeHistory = ',typeHistory)
-  console.log('appeal = ',appeal)
-  console.log('appeal.lead.person.id  = ',appeal.value.leadId )
   let clientId = appeal.value.lead.leadId || appeal.value.leadId
-
-  if (!clientId) {
-    alert()
-    clientId = appeal.value.lead.legalEntity.person.id
-  }
-
-
   swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
 }
 
 function opanModalClientDeals() {
-  alert('Under construction')
+  let clientId = appeal.value.lead.leadId || appeal.value.leadId
+  dealsHistoryModal.value.open(clientId)
 }
 
 function changeTypeClient() {
