@@ -341,7 +341,9 @@ function openModal(row) {
 
 function openPage(row) {
   appealStore.currentRow = row
-  router.push({name: 'appealEdit', params: {id: row.id}})
+
+  if (row.workflowLeadType === 8) router.push({ path: '/appeal/commission/' + row.id })
+  else router.push({ name: 'appealEdit', params: { id: row.id } })
 }
 
 function getTimeList() {

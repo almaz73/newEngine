@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 340: 730"
             :top="40"
-            :title="'История изменений подменного телефонного номера'"
+            :title="title"
             resizable
             draggable>
     <el-table
@@ -43,6 +43,7 @@ const appealStore = useAppealStore()
 const isOpen = ref(false);
 const closeModal = () => isOpen.value = false;
 const tableData = ref([])
+const title = ref('История изменений подменного телефона')
 
 function summHistoryGeneralPhone(phone: string, changeDate: string, responsible: string) {
   tableData.value.push({phone, changeDate, responsible})
@@ -78,6 +79,10 @@ function summClientValues(data: any) {
 
 
 function open(typeHistory: string, appealId: number, clientId: number) {
+  title.value = 'История изменений подменного телефона ☎'
+  if (typeHistory === 'client') title.value = 'История изменений ФИО клиента'
+  if (typeHistory === 'phone') title.value = 'История изменений основного телефона ☎'
+
   tableData.value = []
   isOpen.value = true;
   globalStore.isWaiting = true
