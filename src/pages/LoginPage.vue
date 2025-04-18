@@ -1,10 +1,5 @@
 <template>
   <div>
-    <img src="@/assets/img/loading.gif"
-         alt=""
-         v-if="globalStore.isWaiting"
-         class="waiter"
-    />
     <form class="login">
       <img alt="" src="@/assets/icons/logo-gray.png" height="42">
       <h1>Авторизация</h1>

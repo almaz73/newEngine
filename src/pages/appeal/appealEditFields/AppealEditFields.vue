@@ -63,7 +63,9 @@
     </span>
     <span class="nowrap" v-if="appeal.workflowLeadType">
       <span class="label-red" style="margin-left: 4px">Тип обращения:</span>
-       <span class="bigger">{{ workFlowType(appeal.workflowLeadType) }}</span>
+       <span class="bigger"
+             :style="{background:appeal.workflowLeadType === 8?'#ffb':''}"
+       >{{ workFlowType(appeal.workflowLeadType) }}</span>
     </span>
     <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
           <span class="label-red" style="margin-left: -4px"> Тип направления:</span>
@@ -215,7 +217,7 @@
   <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
   <ClientsDirLegalModal ref="clientsDirLegalModal"/>
   <DealsHistoryModal ref="dealsHistoryModal"/>
-  <EditAppealModal ref="editAppealModal"/>
+  <EditAppealSimpleModal ref="editAppealSimpleModal"/>
 </template>
 
 <style>
@@ -256,7 +258,7 @@ import {ElMessageBox} from 'element-plus'
 import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
 import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
-import EditAppealModal from '@/pages/appeal/controls/EditAppealModal.vue'
+import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -273,7 +275,7 @@ const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
 const dealsHistoryModal = ref(null)
-const editAppealModal = ref(null)
+const editAppealSimpleModal = ref(null)
 
 const openModalSwapHistory = function (typeHistory) {
   let clientId = appeal.value.lead.leadId || appeal.value.leadId
@@ -281,7 +283,7 @@ const openModalSwapHistory = function (typeHistory) {
 }
 
 const openEditAppeal = function() {
-  editAppealModal.value.open(appeal.value)
+  editAppealSimpleModal.value.open(appeal.value)
 }
 
 function opanModalClientDeals() {

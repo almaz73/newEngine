@@ -57,7 +57,8 @@
     <div>
       <label class="label l_200">Ответственный</label>
       <el-select style="width: 220px" v-model="appealEditModal.responsible.id" filterable>
-        <el-option v-for="item in responsible" :key="item.id" :label="item.person.lastName +' '+ item.person.firstName"
+        <el-option v-for="item in responsible" :key="item.id"
+                   :label="item.person.lastName +' '+ item.person.firstName"
                    :value="item.id" />
       </el-select>
     </div>
@@ -124,7 +125,17 @@ function clear() {
 
 
 function save() {
-  appealStore.saveEditAppealSimple(appealEditModal.value).then(res => {
+  let params = {
+    buyCategory: appealEditModal.value.buyCategory,
+    carModel:appealEditModal.value.carModel,
+    id: appealEditModal.value.id,
+    location: appealEditModal.value.location,
+    responsible: {id: appealEditModal.value.responsible.id},
+    swapPhone: appealEditModal.value.swapPhone
+  }
+
+  console.log('params = ',params)
+  appealStore.saveEditAppealSimple(params).then(res => {
     if (res.status === 200) location.reload()
   })
 }
@@ -135,13 +146,16 @@ function open(appeal) {
   console.log('appeal', appeal)
   appealEditModal.value.id = appeal.id
 
-  appealEditModal.value.carModel.brand = appeal.auto.carBrandId
-  appealEditModal.value.carModel.id = appeal.auto.carModelId
-
+  if (appeal.auto) {
+    appealEditModal.value.carModel.brand = appeal.auto.carBrandId
+    appealEditModal.value.carModel.id = appeal.auto.carModelId
+  }
   appealEditModal.value.swapPhone = appeal.swapPhone
-  appealEditModal.value.responsible = appeal.responsibleUser.id
+  appealEditModal.value.responsible = appeal.responsibleUser
   appealEditModal.value.buyCategory = appeal.buyCategory
   appealEditModal.value.location.id = appeal.locationId
+  
+  console.log('appealEditModal.value = ',appealEditModal.value)
 
 
   globalStore.getBrands().then(res => {

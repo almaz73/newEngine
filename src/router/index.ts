@@ -151,7 +151,7 @@ router.beforeEach(res => {
         else if (res.fullPath.includes("/auto/")
           && !document.body.textContent.includes("Категория автомобиля"))return  reloadPage()
         localStorage.removeItem('isRouteGluk')
-    }, 3730)
+    }, 730)
     startCounter(res.fullPath, Date.now())
 });
 
