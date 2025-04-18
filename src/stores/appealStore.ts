@@ -117,7 +117,17 @@ export const useAppealStore = defineStore("appealStore", {
             if (cache.getCommunication) return cache.getCommunication
             const res = await axios.get(`/api/communication/appeal/get?id=${id}`)
             return (cache.getCommunication = res.data)
-        }
+        },
+        async getResponsible(location) {
+            const res = await axios.get(`/api/user/search?location=${location}&roles=20&roles=21&roles=120&roles=110&roles=111`)
+              .then(q => q)
+            return res.data
+        },
+        async saveEditAppealSimple(params: any) {
+            console.log('params = ',params)
+            const res = await axios.post('/api/appeals/save', params)
+            return res.data
+        },
     }
 })
 

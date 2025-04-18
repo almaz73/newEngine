@@ -15,6 +15,14 @@
         <div>⚡{{ prevTask }}</div>
       </div>
     </div>
+    <div>
+      <el-button
+        title="Редактирование обращения"
+        @click="openEditAppeal()"
+        style="margin-left: 40px">
+        <EditPensilCtrl style="pointer-events: none"/>
+      </el-button>
+    </div>
   </div>
   <br>
 
@@ -208,6 +216,7 @@
   <SwapPhoneHistoryModal ref="swapPhoneHistoryModal"/>
   <ClientsDirLegalModal ref="clientsDirLegalModal"/>
   <DealsHistoryModal ref="dealsHistoryModal"/>
+  <EditAppealModal ref="editAppealModal"/>
 </template>
 
 <style>
@@ -221,7 +230,6 @@
 .appealStatRight {
   border-left: 5px solid #d34338;
   padding-left: 20px;
-  width: 50%
 }
 
 @media (width < 500px) {
@@ -249,6 +257,7 @@ import {ElMessageBox} from 'element-plus'
 import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
 import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
+import EditAppealModal from '@/pages/appeal/controls/EditAppealModal.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -265,10 +274,15 @@ const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
 const dealsHistoryModal = ref(null)
+const editAppealModal = ref(null)
 
-let openModalSwapHistory = function (typeHistory) {
+const openModalSwapHistory = function (typeHistory) {
   let clientId = appeal.value.lead.leadId || appeal.value.leadId
   swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
+}
+
+const openEditAppeal = function() {
+  editAppealModal.value.open(appeal.value)
 }
 
 function opanModalClientDeals() {
