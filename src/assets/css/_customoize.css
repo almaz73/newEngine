@@ -227,6 +227,9 @@ li.el-menu-item {
 }
 /**/
 
+.el-select__wrapper, .el-input__wrapper{
+    margin-bottom: 2px;
+}
 
 .b_green_source .el-select__wrapper {
     background: #518468;

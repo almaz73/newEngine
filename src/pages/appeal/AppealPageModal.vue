@@ -8,7 +8,7 @@
             resizable
             @closeModal="closeModal()">
     <el-scrollbar :maxHeight="globalStore.isMobileView?'550px':'800px'">
-      <AppealEditFields ref="appealFields"/>
+      <AppealEditFields ref="appealEditFields"/>
 
       <span class="modal-fields">
         <span>
@@ -16,9 +16,9 @@
         <br>
         </span>
 
-        <div style="text-align: right">
+        <span style="display: block; text-align: right">
           <el-button type="info" @click="closeModal()">Закрыть</el-button>
-        </div>
+        </span>
       </span>
     </el-scrollbar>
   </AppModal>
@@ -34,7 +34,7 @@ import AppealEditFields from "@/pages/appeal/appealEditFields/AppealEditFields.v
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
-const appealFields = ref(null)
+const appealEditFields = ref(null)
 const isOpen = ref(false);
 let cb;
 const subtitle = ref('')
@@ -53,7 +53,7 @@ function open(row, cbModal) {
   cb = cbModal;
   isOpen.value = true;
 
-  setTimeout(() => appealFields.value.open(row, cbModal))
+  setTimeout(() => appealEditFields.value.open(row, cbModal))
 }
 
 

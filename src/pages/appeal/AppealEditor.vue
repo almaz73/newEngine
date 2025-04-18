@@ -1,20 +1,18 @@
 <template>
   <div style="max-width: 1200px; margin: auto">
-    <AppealEditFields ref="appealFields"/>
+    <AppealEditFields ref="appealEditFields"/>
   </div>
 </template>
 <script setup>
 
 import AppealEditFields from "@/pages/appeal/appealEditFields/AppealEditFields.vue";
-import {useGlobalStore} from "@/stores/globalStore";
 import {onMounted, ref} from "vue";
 
-const globalStore = useGlobalStore()
-const appealFields = ref(null)
+const appealEditFields = ref(null)
 const {id} = defineProps(['id'])
 
 onMounted(() => {
-  appealFields.value.open({id: id, smallPhoto: []})
+  appealEditFields.value.open({id: id, smallPhoto: []})
 })
 
 

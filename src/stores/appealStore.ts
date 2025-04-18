@@ -24,6 +24,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get('/api/workflow/' + id)
             return res.data
         },
+        // async getComissionAppeal(id: number) { // todo открыть отдеьлно  данные комиссии
+        //     const res = await axios.get('/api/workflow/' + id)
+        //     return res.data
+        // },
         async saveAppeal(params: number) {
             const res = await axios.post('/api/workflow/', params)
             return res.data

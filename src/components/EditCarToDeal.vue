@@ -95,8 +95,7 @@
                         title="Пробег" />
             </el-form-item>
           </div>
-
-          <div>
+          <div style="margin: -10px 0">
             <span class="label-right l_150">Гос номер</span>
             <el-form-item prop="auto['registrationMark']"
                           style="display: inline-block"
@@ -109,8 +108,6 @@
               />
             </el-form-item>
           </div>
-
-
           <div>
             <label class="label-right l_150">Цвет</label>
             <el-form-item prop="auto['bodyColorId']" style="display: inline-block; margin: 0 !important;"
@@ -185,7 +182,7 @@
           </div>
 
           <div>
-            <label class="label-right l_150">Категория автомобиля</label>
+            <label class="label-right l_150">Категория авто</label>
             <el-select
               style="width: 200px"
               v-model="newDeal.auto.categoryAuto"
@@ -257,7 +254,7 @@
           </div>
 
           <div>
-            <label class="label-right l_150">Кол-во хозяев по ПТС
+            <label class="label-right l_150">Кол-во хозяев ПТС
             </label>
             <el-form-item prop="auto['countHostsByVC']" style="display: inline-block; margin: 0 !important;"
                           :rules="{required: true, message: 'Количество хозяев по ПТС', trigger: ['change']}">
@@ -271,17 +268,17 @@
           </div>
 
           <div>
-            <label class="label-right l_150">Мощность л.с. по ПТС</label>
+            <label class="label-right l_150">Мощность л.с. ПТС</label>
             <el-input v-model="newDeal.auto.enginePowerVC" />
           </div>
 
           <div>
-            <label class="label-right l_150">Мощность кВт по ПТС</label>
+            <label class="label-right l_150">Мощность кВт ПТС</label>
             <el-input v-model="newDeal.auto.enginePowerInKWByVC" />
           </div>
 
           <div>
-            <label class="label-right l_150">Кол-во свободных мест в ПТС</label>
+            <label class="label-right l_150">Свобод.места ПТС</label>
             <el-input v-model="newDeal.auto.countFreeHostsByVC" />
           </div>
 
