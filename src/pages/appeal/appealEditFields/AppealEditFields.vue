@@ -326,7 +326,7 @@ function openLegal() {
 }
 
 function open(row) {
-  if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
+  if (row.fullPhotos?.length) carPhoto.value = row.fullPhotos[0]
   isOpen.value = true;
   globalStore.isWaiting = true
   appealStore.getAppeal(row.id).then(res => {

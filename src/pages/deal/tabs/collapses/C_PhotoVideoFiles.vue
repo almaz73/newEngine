@@ -54,7 +54,7 @@ function getData(upd:boolean) {
       let p = arr.find((item:any) => item.number === el)
       if (p) {
         photoOrder.value[el] ={
-          smallPhoto: p.thumbSmallUrl,
+          fullphotos: p.thumbSmallUrl,
           bigPhoto: p.fullPhotoUrl,
           id: p.id
         }

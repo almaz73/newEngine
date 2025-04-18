@@ -115,7 +115,11 @@
       </el-scrollbar>
     </el-tab-pane>
     <el-tab-pane label="Фото автомобиля" name="photoTab" v-if="carPhoto">
-      <img style="width:500px; padding-left: calc(50% - 250px)" :src="carPhoto" alt=""/>
+      <UploadPhotoViewer
+        :width="300"
+        :height="200"
+        :url="carPhoto"
+      />
     </el-tab-pane>
   </el-tabs>
   <SendEventModal
@@ -148,6 +152,7 @@ import SendEventModal from "@/controls/SendEventModal.vue";
 import SendSmsModal from "@/pages/appeal/controls/SendSmsModal.vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {EventStatusEnums, statuses} from "@/utils/globalConstants";
+import UploadPhotoViewer from '@/components/UploadPhotoViewer.vue'
 
 
 const globalStore = useGlobalStore()

@@ -75,8 +75,8 @@
 
       <el-table-column width="120">
         <template #default="scope">
-          <img :src="scope.row.smallPhoto[0]" alt=""
-               v-if="scope.row.smallPhoto && scope.row.smallPhoto[0]"
+          <img :src="scope.row.fullPhoto[0]" alt=""
+               v-if="scope.row.fullPhoto && scope.row.fullPhoto[0]"
                class="img-in-table" />
         </template>
       </el-table-column>

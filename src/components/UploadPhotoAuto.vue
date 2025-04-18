@@ -15,7 +15,7 @@
         </span>
       </span>
    </span>
-    <img alt="" v-if="props.photo" :src="props.photo.smallPhoto+isDirty" class="avatar" />
+    <img alt="" v-if="props.photo" :src="props.photo.bigPhoto+isDirty" class="avatar" />
     <el-icon v-else class="avatar-uploader-icon">
       <Plus />
     </el-icon>

@@ -12,7 +12,7 @@ const appealEditFields = ref(null)
 const {id} = defineProps(['id'])
 
 onMounted(() => {
-  appealEditFields.value.open({id: id, smallPhoto: []})
+  appealEditFields.value.open({id: id, fullphotos: []})
 })
 
 

@@ -16,7 +16,7 @@
         <br>
         </span>
 
-        <span style="display: block; text-align: right">
+        <span style="display: block; text-align: right; margin-right: 30px">
           <el-button type="info" @click="closeModal()">Закрыть</el-button>
         </span>
       </span>
@@ -39,7 +39,6 @@ const isOpen = ref(false);
 let cb;
 const subtitle = ref('')
 const isEditManagerName = ref(false)
-const carPhoto = ref(null)
 
 const closeModal = () => {
   isOpen.value = false;
@@ -49,7 +48,6 @@ const closeModal = () => {
 
 function open(row, cbModal) {
   if (!row) return false
-  if (row.smallPhoto) carPhoto.value = row.smallPhoto[0]
   cb = cbModal;
   isOpen.value = true;
 

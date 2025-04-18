@@ -16,6 +16,7 @@
                   :height="100"
                   :url="file.fullPhotoUrl"
                   :id="file.id"
+                  :delete="true"
                   @deleteAnaliticScreen="deleteAnaliticScreen"
                 />
               </span>

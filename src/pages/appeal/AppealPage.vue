@@ -123,10 +123,9 @@
               </el-button>
             </div>
           </div>
-
-          <img :src="scope.row.smallPhoto[0]" alt=""
+          <img :src="scope.row.fullPhotos[0]" alt=""
                v-if="(scope.row.workflowLeadType === 2 || scope.row.workflowLeadType === 11) &&
-               scope.row.smallPhoto && scope.row.smallPhoto[0]"
+               scope.row.fullPhotos && scope.row.fullPhotos[0]"
                class="img-in-table" />
         </template>
       </el-table-column>
@@ -169,7 +168,9 @@
         <div><small>Место: </small> {{ row.locationName }}</div>
         <div><small>Событие: </small> {{ EventType[row.workflowLeadType] }} {{ formatDMY_hm(row.lastTaskDate) }}</div>
         <div style="text-align: center">
-          <img :src="row.smallPhoto[0]" v-if="row.smallPhoto && row.smallPhoto[0]" alt=""/>
+          <img :src="row.fullPhotos[0]"
+               style="width: 360px"
+               v-if="row.fullPhotos && row.fullPhotos[0]" alt="" />
         </div>
       </div>
       <div v-if="!tableData.length" style="text-align: center">Нет данных</div>
