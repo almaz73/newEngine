@@ -478,3 +478,16 @@ a:hover {
 .file-frame img{
     margin: 0 12px;
 }
+
+.button-on-collapse{
+    position: absolute;
+    top: 10px;
+    right: 73px
+}
+@media (width < 500px) {
+    .button-on-collapse{
+        bottom: 4px;
+        top: inherit;
+        right: 10px
+    }
+}

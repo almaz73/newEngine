@@ -136,15 +136,21 @@ const router = createRouter({
     ]
 })
 
+function reloadPage() {
+    // исправление проблемы роутера - иногда не переходит на нужную страницу
+    console.log("%c ... force обновление страницы ", "color: blue; background: red");
+    if (localStorage.getItem('isRouteGluk')!=='true')  location.reload();
+    localStorage.setItem('isRouteGluk', 'true') // для выхода из бесконечного цикла
+}
+
 router.beforeEach(res => {
     // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
     setTimeout(()=>{
-        if (res.fullPath.includes("/appeal/") && document.body.textContent
-          && !document.body.textContent.includes("Источник:")) {
-            // Если открыли выкуп а он не открылся, перезагружаем
-            console.log("%c ... force обновление страницы ", "color: blue; background: red");
-            location.reload(); // опасность бесконечного цикла
-        }
+        if (res.fullPath.includes("/appeal/")
+          && !document.body.textContent.includes("Источник:")) return reloadPage()
+        else if (res.fullPath.includes("/auto/")
+          && !document.body.textContent.includes("Категория автомобиля"))return  reloadPage()
+        localStorage.removeItem('isRouteGluk')
     }, 3730)
     startCounter(res.fullPath, Date.now())
 });

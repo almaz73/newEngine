@@ -20,6 +20,7 @@
         title="Редактирование обращения"
         @click="openEditAppeal()"
         style="margin-left: 40px">
+        {{!(lastTaskAndResult || prevTask)?'Редактирование обращения':''}}
         <EditPensilCtrl style="pointer-events: none"/>
       </el-button>
     </div>
@@ -80,7 +81,7 @@
     <el-collapse>
       <el-collapse-item
           :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
-          name="1">
+          name="1"  style="position: relative">
         <div class="collapse"  style="gap: 0 40px">
           <div>
 
@@ -173,34 +174,32 @@
               </span>
             </div>
           </div>
-          <el-button style="margin-left: 60px" @click="opanModalClientDeals()">История сделок с клиентом</el-button>
 
+
+          <span class="button-on-collapse">
+            <el-button size="small" @click="opanModalClientDeals()">История сделок с клиентом</el-button>
+           </span>
         </div>
         <br>
       </el-collapse-item>
       <el-collapse-item :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
-                        name="2">
-        <div style="padding: 0 30px">
-          <span v-if="appeal.carModel"><span class="label">
-            Модель:</span>   {{ appeal.carBrandModel }} &nbsp;
+                        name="2" style="position: relative">
+        <span class="button-on-collapse" v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
+          <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`">
+            <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
+          </RouterLink>
+        </span>
+        <span class="button-on-collapse" v-else>
+          <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
+                      v-if="permit_locale()">
+            <el-button :icon="Edit" size="small">Оценивать авто</el-button>
+          </RouterLink>
+        </span>
 
-            <span style="float: inline-end">
-              <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
-                          v-if="permit_locale() && !appeal.auto">
-                <el-button :icon="Edit" size="small">Оценивать авто</el-button>
-              </RouterLink>
-
-              <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`"
-                           v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
-                <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
-              </RouterLink>
-            </span>
-          <br></span>
-
+        <div style="width: 310px">
+          <span class="label" v-if="appeal.carBrandModel">  Модель: </span>{{ appeal.carBrandModel }}
           <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
           <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
-
-
           <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
           {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
           <br><br>

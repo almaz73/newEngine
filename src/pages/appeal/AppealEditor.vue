@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 1400px; margin: auto">
+  <div style="max-width: 1200px; margin: auto">
     <AppealEditFields ref="appealFields"/>
   </div>
 </template>
