@@ -145,27 +145,39 @@ function reloadPage() {
 
 router.beforeEach(res => {
     // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
-    setTimeout(()=>{
-        if (res.fullPath.includes("/appeal/")
-          && !document.body.textContent.includes("Источник:")) return reloadPage()
-        else if (res.fullPath.includes("/auto/")
-          && !document.body.textContent.includes("Категория автомобиля"))return  reloadPage()
-        localStorage.removeItem('isRouteGluk')
+    setTimeout(() => {
+      if (res.fullPath.includes('/undercontruction')) return false
+      if (res.fullPath.includes('/appeal/')
+        && !document.body.textContent.includes('Источник:')) return reloadPage()
+      else if (res.fullPath.includes('/auto/')
+        && !document.body.textContent.includes('Категория автомобиля')) return reloadPage()
+      else if (res.fullPath.includes('/login')
+        && !document.body.textContent.includes('Авторизация')) return reloadPage()
+      localStorage.removeItem('isRouteGluk')
     }, 730)
-    startCounter(res.fullPath, Date.now())
+  startCounter(res.fullPath, Date.now())
 });
 
 router.afterEach((to) => {
-    let acceptedPaths = ['/undercontruction', '/reports', '/login', '/admin', '/desktop', '/calendar', '/appeal']
+    let acceptedPaths = [
+      '/undercontruction',
+      '/reports',
+      '/login',
+      '/admin',
+      '/desktop',
+      '/calendar',
+      '/appeal',
+      '/appeal/commission',
+      '/feedback'
+    ]
 
-    if (location.hostname === "live.autonet.pro") {
+
+    if (location.hostname === 'live.autonet.pro') {
         // if (location.hostname === "localhost") {
-        let door = acceptedPaths.includes(to.path)
-        if (!door) { // Если раздел доступен - открвыаем подразделам
-            let part = to.path.slice(0, to.path.lastIndexOf('/'))
-            door = acceptedPaths.includes(part)
-        }
+        let part = to.path
+        if (to.path.split('/').length > 2) part = to.path.slice(0, to.path.lastIndexOf('/'))
 
+        let door = acceptedPaths.includes(part)
         if (!door) router.push(`/undercontruction`)
     }
     window.scrollTo({top: 0}) // прокручиваю наверх
