@@ -65,7 +65,7 @@ const loginPhotoSrc = computed(()=>globalStore.account.avatarUrl || "/v2/src/ass
 function signOut() {
   globalStore.isWaiting = true
   localStorage.removeItem('LastReport')
-  localStorage.removeItem('LastUsedDirectories')
+  localStorage.removeItem('AdminDirectories')
   globalStore.signOut().then(() => {
     localStorage.removeItem('account')
     globalStore.isAuthorized = false

@@ -13,7 +13,7 @@
                      :value="item"/>
         </el-select>
 
-        <el-button v-for="el in lastUsedDirectories"
+        <el-button v-for="el in adminDirectories"
                    :key="el"
                    @click="found(el)"
                    :style="{width: globalStore.isMobileView?'243px':'212px'}"
@@ -61,7 +61,7 @@ import SignDocumentDir from "@/pages/admin/dirs/SignDocumentDir.vue"
 const globalStore = useGlobalStore()
 const tab = ref(null)
 
-const AdminDirectories = {
+const AdminDirectories = <any>{
   'Пользователи': UsersDir,
   'Орг. структура': OrgsDir,
   'Марки': BrendsDir,
@@ -96,17 +96,21 @@ const AdminDirectories = {
 }
 const directories = Object.keys(AdminDirectories)
 
-let lastUsedDirectories = ref(JSON.parse(localStorage.getItem('LastUsedDirectories')) || [])
-if (!lastUsedDirectories.value.length) lastUsedDirectories.value.push('Пользователи')
-const currentDirectory = ref(lastUsedDirectories.value[0])
+
+let adminDirectories = ref(JSON.parse(String(localStorage.getItem('AdminDirectories'))) || [])
+if (!adminDirectories.value.length) {
+
+  adminDirectories.value.push(...["Пользователи", "Орг. структура","Клиенты"])
+}
+const currentDirectory = ref(adminDirectories.value[0])
 selectDir(currentDirectory.value)
 
 function found(val: string) {
   let count = !globalStore.isMobileView ? 7 : 3;
-  lastUsedDirectories.value = lastUsedDirectories.value && lastUsedDirectories.value.filter(el => el != val)
-  lastUsedDirectories.value.unshift(val)
-  if (lastUsedDirectories.value.length > count) lastUsedDirectories.value.length = count
-  localStorage.setItem('LastUsedDirectories', JSON.stringify(lastUsedDirectories.value))
+  adminDirectories.value = adminDirectories.value && adminDirectories.value.filter((el:any) => el != val)
+  adminDirectories.value.unshift(val)
+  if (adminDirectories.value.length > count) adminDirectories.value.length = count
+  localStorage.setItem('AdminDirectories', JSON.stringify(adminDirectories.value))
   selectDir(val)
 }
 

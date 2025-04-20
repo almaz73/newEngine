@@ -210,7 +210,7 @@
                           </el-select>
                         </div>
 
-                        <div>
+                        <div v-if="banksFilials && banksFilials.length">
                           <small class="label" style="min-width: 150px">Филиал</small>
                           <el-select
                               placeholder="Выберите филиал"
@@ -274,12 +274,14 @@ const clientInit = {
     firstName: '',
     middleName: '',
     lastName: '',
-    registrationAddress: {fias: {}},
-    homeAddress: {fias: {}}
+    registrationAddress: {fias: {}, fiasAddress:{}},
+    homeAddress: {fias: {}, fiasAddress:{}},
+    phone:'',
+    phone2:'',
   }
 }
 
-const client = ref(clientInit)
+const client = ref<any>(clientInit)
 const closeModal = () => isOpen.value = false
 const title = ref('')
 const clientsDirModal_History = ref<any>()
@@ -319,7 +321,7 @@ function addressSelect2(adr: { value: string, fias_id: number }) {
 
 function changeBank(id: number, index: number ) {
   if (index) client.value.bills[index].bankItemId = null
-  id && adminStore.getBankFilials(id).then((res: any) => banksFilials.value[id] = res.items)
+  id && adminStore.getBankFilials(id).then((res: any) => banksFilials.value = { id: res.items })
 }
 
 
@@ -374,7 +376,7 @@ function openClientDocs() {
 }
 
 function tabChosen() {
-  adminStore.getBanks(null).then(res => banks.value = res.items)
+  adminStore.getBanks(false).then(res => banks.value = res.items)
 }
 
 function showHistory() {

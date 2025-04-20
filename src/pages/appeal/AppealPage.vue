@@ -85,6 +85,7 @@
         <template #default="scope">
           <div>{{ scope.row.treatmentSourceTitle }}</div>
           <span class="red-text" :title="scope.row.lastTaskTitle "> {{ scope.row.appealTitle }}</span>
+          <div v-if="scope.row.callCount">Звонков: {{ scope.row.callCount }}</div>
         </template>
       </el-table-column>
 
