@@ -30,6 +30,18 @@ export const useDealStore = defineStore('dealStore', {
             const res = await axios.get(`/api/deal/${id}/getStatuses`)
             return res.data
         },
+        async getComission(id: number) {
+            const res = await axios.get(`/api/commission/get?id=${id}`)
+            console.log('res = ',res)
+            return this.getComissionStatuses(res.data.view.id)
+            // todo getComission + getComissionStatuses нужно поменять на один вызов, который возвращает статус для комиисии
+        },
+        async getComissionStatuses(id: number) {
+
+            //https://dev.autonet.pro/api/commission/get/status/available?id=1902
+            const res = await axios.get(`/api/commission/get/status/available?id=${id}`)
+            return res.data
+        },
         async setConfirmation(params: { comment: string; buyId: number; newStatus: number, priceDemanded: number }) {
             return await axios.post('/api/buy/status/set', params).then(q => q)
         },

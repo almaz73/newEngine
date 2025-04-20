@@ -1,7 +1,8 @@
 ﻿<template>
   <div style="display: flex; align-items: center; flex-wrap: wrap">
     <div class="appealStat">
-      <MStatus :appeal="appeal"/>
+      <MStatus :appeal="appeal" v-if="appeal.workflowLeadType!==8"/>
+      <MComissionStatus v-else :appeal="appeal"/>
 
       <mResponsible :appeal="appeal"/>
       <br>
@@ -259,6 +260,7 @@ import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal
 import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
+import MComissionStatus from '@/pages/appeal/appealEditFields/status/MComissionStatus.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
