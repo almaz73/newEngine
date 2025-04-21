@@ -68,14 +68,14 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/treatmentsource/get/list`).then(q => q)
             return (cache.getTreatments = res.data)
         },
-        async getRoles(roles: any) {
+        async getRoles(params:{roles:numbers[], filterType:number}) {
+            if (cache['getModels' + params.roles.join('-')]) return cache['getModels' + params.roles.join('-')] // список статичный - кэшируем
             // @ts-ignore
-            if (cache['getModels' + roles.join('-')]) return cache['getModels' + roles.join('-')] // список статичный - кэшируем
-
-            const params = roles.reduce((acc: string, el: string) => (acc + 'roles=' + el + '&'), '?')
-            const res = await axios.get(`/api/user/list/policy${params}`).then(q => q)
+            let link = String(params.roles.reduce((acc: string, el: string) => (acc + 'roles=' + el + '&'), '?'))
+            if (params.filterType) link += '&filterType=' + String(params.filterType)
+            const res = await axios.get(`/api/user/list/policy${link}`).then(q => q)
             // @ts-ignore
-            return (cache['getModels' + roles.join('-')] = res.data)
+            return (cache['getModels' + params.roles.join('-')] = res.data)
         },
         async getTeatments() {
             if (cache.getTeatments) return cache.getTeatments // список статичный - кэшируем
@@ -189,7 +189,12 @@ export const useGlobalStore = defineStore('globalStore', {
             if (cache['getLeadActivityHistory'+id]) return cache['getLeadActivityHistory'+id]
             const res = await axios.get(`/api/Lead/GetLeadActivityHistory/${id}`)
             return (cache['getLeadActivityHistory'+id] = res.data)
-        }
+        },
+        async getBuyCategories() {
+            if (cache.getBuyCategories) return cache.getBuyCategories // список статичный - кэшируем
+            const res = await axios.get(`/api/Buy/GetBuyCategories`).then(q => q)
+            return (cache.getBuyCategories = res.data)
+        },
 
     }
 })

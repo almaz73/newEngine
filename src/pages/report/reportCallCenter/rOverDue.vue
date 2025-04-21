@@ -155,7 +155,7 @@ init();
 
 
 
-globalStore.getRoles([110, 111, 112, 113]).then(res => {
+globalStore.getRoles({roles:[110, 111, 112, 113]}).then(res => {
   allEmployees.value = res.items
   myEmployees.value = JSON.parse(JSON.stringify(allEmployees.value))
 })

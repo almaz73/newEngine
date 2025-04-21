@@ -54,7 +54,7 @@ function open(val, appeal) {
   mod.value.appealId = appeal.id
   isOpen.value = true;
 
-  globalStore.getRoles([10, 20]).then(res => {
+  globalStore.getRoles({roles:[10, 20]}).then(res => {
     types.value = res.items
   })
 

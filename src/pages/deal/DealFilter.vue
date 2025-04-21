@@ -173,7 +173,7 @@ function open() {
     res.items.map(el => el.name = el.colorName)
     colors.value = lists.value.colors = res.items
   })
-  globalStore.getRoles([20, 120]).then((res) => {
+  globalStore.getRoles({roles:[20, 120]}).then((res) => {
     res.items.map(el => el.name = el.title)
     managers.value = lists.value.managers = res.items
   })

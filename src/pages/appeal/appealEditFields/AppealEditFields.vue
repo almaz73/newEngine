@@ -21,7 +21,7 @@
         title="Редактирование обращения"
         @click="openEditAppeal()"
         style="margin-left: 40px">
-        {{!(lastTaskAndResult || prevTask)?'Редактирование обращения':''}}
+        {{!(lastTaskAndResult || prevTask) || globalStore.isMobileView ?'Редактирование обращения':''}}
         <EditPensilCtrl style="pointer-events: none"/>
       </el-button>
     </div>
@@ -260,7 +260,7 @@ import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal
 import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
-import MComissionStatus from '@/pages/appeal/appealEditFields/status/MComissionStatus.vue'
+import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()

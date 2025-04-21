@@ -96,7 +96,7 @@ const tableRowClassName = ({row}) => {
   return styles
 }
 
-globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
+globalStore.getRoles({roles:[110, 111]}).then(res => myEmployees.value = res.items)
 
 function rowClick(row) {
   if (row.level === 1) { // по нажатию родителя скрываем/показываем строку

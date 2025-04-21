@@ -568,6 +568,7 @@ import {ref} from 'vue'
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
 const dossier = ref([])
+const isWaiter = ref(false)
 const closeModal = () => isOpen.value = false
 const title = ref('')
 const subtitle = ref('')

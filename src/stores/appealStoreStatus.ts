@@ -37,9 +37,27 @@ export const useAppealStoreStatus = defineStore("appealStoreStatus", {
             reasons.forEach(el => link += '&reasons=' + el)
             return await axios.post('/api/deal/appealToArchiveRequest' + link).then(q => q)
         },
-        async getUsersSearch(roles: Array) {
+        async getUsersSearch(roles: any) {
             let link= roles.join('&roles=')
             return await axios.get('/api/user/search?byOrganization=true&roles=' + link).then(q => q)
         },
+
+        // комиссионные
+        async setComissionStatus(params: { id: number, status: number, title: string }) {
+            return await axios.post('/api/commission/set/status', params).then(q => q)
+        },
+        async getComission(id: number) {
+            const res = await axios.get(`/api/commission/get?id=${id}`)
+            return res.data
+        },
+        async getComissionStatuses(id: number) {
+            const res = await axios.get(`/api/commission/get/status/available?id=${id}`)
+            return res.data
+        },
+        async getArchiveRequestReasons(){
+            const res = await axios.get(`/api/Enum/GetArchiveRequestReasons`)
+            return res.data
+        }
+
     }
 })

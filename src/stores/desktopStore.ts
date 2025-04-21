@@ -28,9 +28,6 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getLocation() {
             return await axios.get(`/api/location`).then((res) => res.data)
         },
-        async getByPolicy(roles: []) {
-            return axios.get(`/api/user/list/policy`, {params: roles}).then((res) => res.data)
-        },
         async getHostess(params: any) {
             let filters = ''
             if (params.date) filters = '&date=' + params.date

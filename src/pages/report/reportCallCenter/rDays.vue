@@ -110,7 +110,7 @@ const columns = computed(() => { // получить массив дней в м
   return Array.from({length: days}, (_, i) => i + 1)
 })
 
-globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
+globalStore.getRoles({roles:[110, 111]}).then(res => myEmployees.value = res.items)
 
 function rowClick(row) {
   if (row.level === 1) { // по нажатию родителя скрываем/показываем строку

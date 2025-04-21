@@ -80,7 +80,7 @@ const tableData = ref([])
 let oldData = []
 
 
-globalStore.getRoles([110, 111]).then(res => myEmployees.value = res.items)
+globalStore.getRoles({roles:[110, 111]}).then(res => myEmployees.value = res.items)
 
 
 const tableRowClassName = ({row}) => {

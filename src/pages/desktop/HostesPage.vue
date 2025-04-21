@@ -494,7 +494,7 @@ desktopStore.getHostessUser().then(res => {
       getDefaultLocationTitle();
     }
 
-    desktopStore.getByPolicy({roles: [50, 51, 52, 20, 21, 120, 150]}).then(data => allmanagers = data.items)
+    globalStore.getRoles({roles: [50, 51, 52, 20, 21, 120, 150]}).then(data => allmanagers = data.items)
   })
 })
 
