@@ -1,6 +1,19 @@
 <template>
   <img alt=""
-       style="cursor: pointer;padding: 0 8px"
+       class="img-hover-border"
        title="Удалить"
-       src="@/assets/icons/icon-cross-gray.png">
+       src="@/assets/icons/icon-cross-red.png">
 </template>
+
+<style scoped>
+.img-hover-border {
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom;
+}
+
+.img-hover-border:hover {
+  padding-bottom:1px;
+  border-bottom: 2px solid var(--main-color); /* или любой цвет подчёркивания */
+}
+</style>

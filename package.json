@@ -15,7 +15,7 @@
     "format": "st"
   },
   "dependencies": {
-    "apexcharts": "^3.54.0",
+    "apexcharts": "^4.5.0",
     "axios": "^1.8.4",
     "element-plus": "^2.9.7",
     "leaflet": "1.9.4",
