@@ -118,8 +118,8 @@
               {{ appeal.lead.person.middleName }}
               {{ appeal.lead.person.lastName }}
               &nbsp;
-              <a  @click="openModalSwapHistory('client')">👁</a>
-              <EditPensilCtrl @click="openClient()"/>
+              <a title="история изменений" @click="openModalSwapHistory('client')">👁</a>
+              &nbsp; <EditPensilCtrl @click="openClient()"/>
             </div>
 
             <div v-if="appeal.leadName && appeal.lead.legalEntity"><span class="label">ФИО:</span>
@@ -128,18 +128,18 @@
               {{ appeal.lead.legalEntity.person.middleName }}
               {{ appeal.lead.legalEntity.person.lastName }}
               &nbsp;
-              <a  @click="openModalSwapHistory('client')">👁</a>
-              <EditPensilCtrl @click="openLegal()"/>
+              <a title="история изменений" @click="openModalSwapHistory('client')">👁</a>
+              &nbsp; <EditPensilCtrl @click="openLegal()"/>
             </div>
 
             <div v-if="appeal.leadPhone"><span class="label">Номер телефона: </span>
               ☎ {{ formattingPhone(appeal.leadPhone) }}
-              <a @click="openModalSwapHistory('phone')">👁</a>
+              <a title="история изменений" @click="openModalSwapHistory('phone')">👁</a>
             </div>
             <div v-if="appeal.swapPhone">
               <span class="label">Подменный телефон</span>
               ☎ {{ formattingPhone(appeal.swapPhone) }}
-              <a @click="openModalSwapHistory('swapPhone')">👁</a>
+              <a title="история изменений" @click="openModalSwapHistory('swapPhone')">👁</a>
 
 
             </div>

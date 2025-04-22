@@ -478,7 +478,25 @@ export const useAdminStore = defineStore("adminStore", {
         async getBanksHistory(id: number) {
             return await axios.get(`/api/client-documents/get/history?id=${id}`).then(q => q)
         },
-
+        // start фидбек
+        async getAllFeedback(skip: number=0, take:number=30){
+            let link = '?take=' + take + '&skip=' + skip
+            const res = await axios.get(`/api/Comment/GetAllFeedback`+link).then(q => q)
+            return res.data
+        },
+        async postFeedback(params:any){
+            const res = await axios.post(`/api/Comment/PostFeedback`, params).then(q => q)
+            return res.data
+        },
+        async deleteFeedback(id:number){
+            const res = await axios.delete(`/api/Comment/DeleteFeedback?id=${id}`).then(q => q)
+            return res.data
+        },
+        async getFeedbackStatusTypes(){
+            const res = await axios.get(`/api/Enum/GetFeedbackStatusTypes`).then(q => q)
+            return res.data
+        },
+        // end фидбек
     }
     
 })

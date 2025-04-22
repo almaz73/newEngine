@@ -15,7 +15,9 @@
 
         <div>{{ globalStore.account.roleTitle }}</div>
         <div>{{ globalStore.account.orgElementName }}</div>
-        <button style="position: absolute; right: 15px" @click="openCounterPage()">☈</button>
+        <button
+            v-if="globalStore.account.lastName==='Файзрахманов'"
+            style="position: absolute; right: 15px" @click="openCounterPage()">☈</button>
         <div>{{ globalStore.account.storage }}</div>
       </div>
     </div>

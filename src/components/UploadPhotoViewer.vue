@@ -8,7 +8,7 @@
   </div>
 
   <Teleport to="body">
-    <el-dialog v-model="isDialogVisible" top="50px">
+    <el-dialog v-model="isDialogVisible" top="10px">
       <ForFullSceen>
       <a :href="props.url" target="_blank"
          style="position: absolute; right: 40px; top: 14px; color: #bbb"> Открыть в отдельной вкладке</a>

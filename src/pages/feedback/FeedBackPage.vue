@@ -1,67 +1,76 @@
 <template>
   <div>
     <main class="feedback">
-      <el-input v-model="autor" placeholder="Ваше имя" />
-      <small style="color: #999"> &nbsp; &nbsp; &nbsp; * необязательно</small>
       <br>
+      <small>* тут принимаются жалобы и предложения только по интерфейсу программы.</small><br>
+      <br>
+      Пишите пожалуйста! Вместе сделаем программу дружелюбнее!
+      <br><br>
       <el-input placeholder="Ваши замечания"
                 v-model="text"
                 class="textarea"
-                type="textarea" />
+                type="textarea"/>
       <el-collapse>
         <el-collapse-item
-          v-if="!globalStore.isMobileView"
-          title="&nbsp; При необходимости добавить рисунок из буфера обмена Ctrl + V"
-          class="collapse">
+            v-if="!globalStore.isMobileView"
+            title="&nbsp; При необходимости добавьте скрин из буфера обмена по Ctrl + V"
+            class="collapse">
           <div class="div">
             Создать скрин можно программой Ножницы от Windows ✂ <br>
-            Или чеерз горячие клавиши Win + Shift + S. <br>
-            Отметьте карандашом участки о чем пишете. <br>
+            Или через горячие клавиши Win + Shift + S. <br>
+            Отметьте карандашом элементы скрина. <br>
           </div>
         </el-collapse-item>
       </el-collapse>
 
       <p v-show="imgBase64">
-
-        <img src="" id="image" style="border: 10px solid #999; border-radius: 4px" alt="" />
-
-        <DeleteCtrl @click="imgBase64=null" />
+        <img src="" id="image" style="border: 10px solid #999; border-radius: 4px" alt=""/>
+        <DeleteCtrl @click="imgBase64=null"/>
       </p>
 
       <br><br>
-      <el-button type="info" @click="save()">Отправить сообщение разработчикам</el-button>
+      <el-button type="success" @click="save()">Отправить сообщение</el-button>
 
       <br><br>
       <el-table
-        :data="tableData"
-        empty-text="Нет данных"
-        @row-dblclick="openModal"
-        highlight-current-row
+          style="width: 100%"
+          :data="tableData"
+          empty-text="Нет данных"
+          @row-dblclick="openModal"
+          highlight-current-row
       >
-        <el-table-column label="Автор" prop="fio" width="100" />
-        <el-table-column label="Сообщение" prop="message" />
-        <el-table-column label="Фото" width="100">
+        <el-table-column label="Статус" prop="status.title" width="120"/>
+        <el-table-column label="Сообщение" prop="message"/>
+        <el-table-column width="100">
+
           <template #default="scope">
-            <img :src="scope.row.imgBlob" style="width: 100px" alt="" />
+            <UploadPhotoViewer
+                v-if="scope.row.imgBlob && scope.row.imgBlob.length>100"
+                :width="100"
+                :height="60"
+                :url="scope.row.imgBlob"
+            />
           </template>
         </el-table-column>
 
         <el-table-column label="Дата" width="100">
           <template #default="scope">
-            {{ formatDMY_hm(scope.row.createDate) }}
+            {{ formatDateDDMMYYYY(scope.row.createDate) }}
           </template>
         </el-table-column>
 
-        <el-table-column width="40">
+        <el-table-column width="100">
           <template #default="scope">
-            <span class="edit-table-row" style="top:10px" @click="openModal(scope.row)" />
-            <span class="edit-table-page" style="top:30px" @click="sound(scope.row)">🔱</span>
+            <a title="смотреть" @click="openModal(scope.row)">👁</a>&nbsp;
+            <a title="прочитать вслух" @click="sound(scope.row)">📢</a>&nbsp;
+            <DeleteCtrl v-if="globalStore.account.id===scope.row.createdUser.id || globalStore.account.role==='Admin'"
+                        @click="deleteFeedBack(scope.row.id)"/>
           </template>
         </el-table-column>
       </el-table>
 
     </main>
-    <FeedBackModal ref="feedBackModal" />
+    <FeedBackModal ref="feedBackModal"/>
   </div>
 </template>
 
@@ -99,16 +108,16 @@
 </style>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useGlobalStore } from '@/stores/globalStore'
-import { formatDMY_hm } from '@/utils/globalFunctions'
+import {onMounted, ref} from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
+import {formatDateDDMMYYYY} from '@/utils/globalFunctions'
 import FeedBackModal from '@/pages/feedback/FeedBackModal.vue'
-import { ElMessage } from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import DeleteCtrl from '@/controls/DeleteCtrl.vue'
+import {useAdminStore} from "@/stores/adminStore";
+import UploadPhotoViewer from "@/components/UploadPhotoViewer.vue";
 
-const EntityId = 392110;
-// const EntityId = 392116
-
+const adminStore = useAdminStore()
 const globalStore = useGlobalStore()
 const autor = ref('')
 const text = ref('')
@@ -116,6 +125,9 @@ const tableData = ref([])
 const feedBackModal = ref(null)
 let imageFiled = null
 let imgBase64 = ref(null)
+const localPermit = ref(false)
+
+localPermit.value = globalStore.account.role == 'Admin'
 
 window.addEventListener('paste', e => {
   if (e.clipboardData) {
@@ -138,7 +150,7 @@ window.addEventListener('paste', e => {
 })
 
 function sound(row) {
-  const utterance2 = new SpeechSynthesisUtterance('Автор: ' + row.fio + ' Пишет : ' + row.message)
+  const utterance2 = new SpeechSynthesisUtterance(' Сообщение : ' + row.message)
   window.speechSynthesis.speak(utterance2)
 }
 
@@ -150,17 +162,16 @@ function toBase64(file) {
 
 function save() {
   if (!text.value) return ElMessage.error('Напишите ваши замечания')
-  console.log(imgBase64.value)
-  globalStore.sendComment({
-    text: autor.value + ':::' + text.value + ':::' + imgBase64.value,
-    EntityId: EntityId,
-    entityType: 20
+  adminStore.postFeedback({
+    content: text.value + ':::' + imgBase64.value,
+    id: 0,
+    status: 10
   })
-    .then(() => {
-      clearFields()
-      getdMessagesToDevelop()
-      ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
-    })
+      .then(() => {
+        clearFields()
+        getAllFeedBack()
+        ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
+      })
 }
 
 function clearFields() {
@@ -169,31 +180,39 @@ function clearFields() {
   imgBase64.value = null
 }
 
-function getdMessagesToDevelop() {
-  console.log(imgBase64.value)
-  globalStore.isWaiting = true
-  globalStore.getComments(20, EntityId).then(res => {
-    res.items.map(el => {
-      let part = el.text.split(':::')
-      el.fio = part[0]
-      el.message = part[1]
-      el.imgBlob = part[2]
-      return el
-    })
-    tableData.value = res.items.sort((a, b) => new Date(b.createDate) > new Date(a.createDate) ? 1 : -1)
-    globalStore.isWaiting = false
-  })
-}
-
-getdMessagesToDevelop()
 
 function openModal(row) {
   feedBackModal.value.open(row)
 }
 
+function deleteFeedBack(id) {
+  ElMessageBox.confirm('Вы действительно хотите удалить сообщение?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+      .then(() => adminStore.deleteFeedback(id).then(res => getAllFeedBack()))
+      .catch(() => {
+      })
+}
+
+function getAllFeedBack() {
+  adminStore.getAllFeedback(0, 12).then(res => {
+    res.items.map(el => {
+      let part = el.content.split(':::')
+      el.message = part[0]
+      if (part[1]) el.imgBlob = part[1]
+      return el
+    })
+    tableData.value = res.items.reverse()
+  })
+}
+
+
 onMounted(() => {
   globalStore.setTitle('Страница обратной связи')
+  globalStore.steps = []
   imageFiled = document.getElementById('image')
+  getAllFeedBack()
 })
 
 </script>
