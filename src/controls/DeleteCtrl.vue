@@ -13,6 +13,7 @@
 }
 
 .img-hover-border:hover {
+  margin-top: -1px; /* чтобы строка не прыгала */
   padding-bottom:1px;
   border-bottom: 2px solid var(--main-color); /* или любой цвет подчёркивания */
 }
