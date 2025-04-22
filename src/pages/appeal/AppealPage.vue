@@ -132,7 +132,6 @@
           />
         </template>
       </el-table-column>
-
       <el-table-column label="Событие">
         <template #default="scope">
           <div :style="highlightCell(scope.row)" style="padding: 4px">

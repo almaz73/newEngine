@@ -32,10 +32,6 @@
 
             <EditPensilCtrl  @click="openUrgsModal(scope.row)"/>
             <DeleteCtrl v-if="scope.row.id!==1" @click="deleteUser(scope.row.id)"/>
-            <!-- <img v-if="scope.row.id!==1"
-                 @click="deleteUser(scope.row.id)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>

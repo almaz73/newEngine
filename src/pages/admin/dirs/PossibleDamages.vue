@@ -40,9 +40,6 @@
                  src="@/assets/icons/icon-blocked-red.png">
             <EditPensilCtrl @click="openModal(scope.row)" />
             <DeleteCtrl @click="deleteIRow(scope.row.id)"/>
-            <!-- <img @click="deleteIRow(scope.row.id)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>

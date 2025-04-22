@@ -41,9 +41,6 @@
             <div style="" class="admin-table-editors">
               <EditPensilCtrl @click="openModal(scope.row)" />
               <DeleteCtrl @click="deleteRow(scope.row)" />
-            <!-- <img @click="deleteRow(scope.row)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить"> -->
                  </div>
           </template>
         </el-table-column>

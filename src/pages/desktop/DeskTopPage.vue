@@ -13,9 +13,6 @@
               <span v-if="isShowEditClient && appeal.lead.leadType===10">
                 <EditPensilCtrl @click="editClient()" />
                 <DeleteCtrl @click="resetForm()" />
-                 <!-- <img @click="resetForm()" alt=""
-                      src="@/assets/icons/icon-cross-gray.png"
-                      title="Удалить"> -->
               </span>
               <small v-if="appeal.lead.leadType===10 && !isShowEditClient"
                      @click="noTelephon()"
@@ -665,7 +662,7 @@ function prepareAndSave() {
   if (!appeal.workflow.bodyColorId) delete appeal.workflow.bodyColorId
   if (!appeal.workflow.locationId) delete appeal.workflow.locationId
 
-  if (appeal.lead.leadType == 20) {
+  if (appeal.lead.leadType === 20) {
     appeal.lead.legalEntity.person = appeal.lead.person;
     appeal.lead.legalEntity.treatmentSourceId = 2
     delete appeal.lead.person;

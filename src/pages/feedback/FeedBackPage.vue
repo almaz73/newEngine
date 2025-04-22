@@ -67,7 +67,7 @@
         <el-table-column width="100">
           <template #default="scope">
             <a title="смотреть" @click="openModal(scope.row)">👁</a>&nbsp;
-            <a title="прочитать вслух" @click="sound(scope.row)">📢</a>&nbsp;
+            <a title="прочитать вслух" @click="sound(scope.row)">📣</a>&nbsp;
             <DeleteCtrl v-if="globalStore.account.id===scope.row.createdUser.id || globalStore.account.role==='Admin'"
                         @click="deleteFeedBack(scope.row.id)"/>
           </template>
@@ -130,9 +130,6 @@ const tableData = ref([])
 const feedBackModal = ref(null)
 let imageFiled = null
 let imgBase64 = ref(null)
-const localPermit = ref(false)
-
-localPermit.value = globalStore.account.role == 'Admin'
 
 window.addEventListener('paste', e => {
   if (e.clipboardData) {
@@ -195,7 +192,7 @@ function deleteFeedBack(id) {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
-      .then(() => adminStore.deleteFeedback(id).then(res => getData()))
+      .then(() => adminStore.deleteFeedback(id).then(() => getData()))
       .catch(() => {
       })
 }

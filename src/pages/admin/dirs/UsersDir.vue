@@ -82,9 +82,6 @@
             >
             <EditPensilCtrl @click="openModalUserDir(scope.row, null)"/>
             <DeleteCtrl @click="deleteUser(scope.row.id)"/>
-            <!-- <img @click="deleteUser(scope.row.id)" alt=""
-                 src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>
