@@ -44,9 +44,10 @@
           <template #default="scope">
             <div style="" class="admin-table-editors">
               <EditPensilCtrl @click="openModal(scope.row)" />
-              <img @click="deleteRow(scope.row)" alt=""
+              <DeleteCtrl @click="deleteRow(scope.row)" />
+              <!-- <img @click="deleteRow(scope.row)" alt=""
                    src="@/assets/icons/icon-cross-gray.png"
-                   title="Удалить">
+                   title="Удалить"> -->
             </div>
           </template>
         </el-table-column>
@@ -74,7 +75,7 @@
   import {Search,ArrowLeft,Plus} from "@element-plus/icons-vue";
   import BrendsPTSDirModal from "@/pages/admin/dirs/BrendsPTSDirModal.vue"
   import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-  
+  import DeleteCtrl from '@/controls/DeleteCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

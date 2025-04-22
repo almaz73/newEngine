@@ -24,9 +24,10 @@
           <template #default="scope">
             <div style="" class="admin-table-editors">
               <EditPensilCtrl @click="openModal(scope.row)"/>
-              <img @click="deleteCategory(scope.row.id)" alt=""
+              <DeleteCtrl @click="deleteCategory(scope.row.id)"/>
+              <!-- <img @click="deleteCategory(scope.row.id)" alt=""
                    src="@/assets/icons/icon-cross-gray.png"
-                   title="Удалить">
+                   title="Удалить"> -->
             </div>
           </template>
         </el-table-column>
@@ -70,6 +71,7 @@
   import {Plus, Search} from "@element-plus/icons-vue";
   import {gotoTop} from "@/utils/globalFunctions";
   import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+  import DeleteCtrl from '@/controls/DeleteCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

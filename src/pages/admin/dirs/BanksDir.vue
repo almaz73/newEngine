@@ -33,9 +33,10 @@
                 <template #default="scope">
                     <div style="" class="admin-table-editors">
                       <EditPensilCtrl @click="openModal(scope.row)" />
-                      <img @click="deleteRow(scope.row.id)" alt=""
+                      <DeleteCtrl @click="deleteRow(scope.row.id)" />
+                      <!-- <img @click="deleteRow(scope.row.id)" alt=""
                            src="@/assets/icons/icon-cross-gray.png"
-                           title="Удалить">
+                           title="Удалить"> -->
                     </div>
 
                 </template>
@@ -52,9 +53,10 @@
                 <template #default="scope">
                     <div style="" class="admin-table-editors">
                       <EditPensilCtrl @click="openModal(scope.row)" />
-                      <img @click="deleteFilials(scope.row)" alt=""
+                      <DeleteCtrl @click="deleteFilials(scope.row)" />
+                      <!-- <img @click="deleteFilials(scope.row)" alt=""
                            src="@/assets/icons/icon-cross-gray.png"
-                           title="Удалить">
+                           title="Удалить"> -->
                     </div>
 
                 </template>
@@ -72,6 +74,7 @@ import { useGlobalStore } from "@/stores/globalStore";
 import {ArrowLeft, Search, Plus } from '@element-plus/icons-vue'
 import BanksDirModal from "@/pages/admin/dirs/BanksDirModal.vue"
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])

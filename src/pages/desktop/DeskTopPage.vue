@@ -12,9 +12,10 @@
               <div v-if="appeal.lead.leadType===20">Юридическое лицо</div>
               <span v-if="isShowEditClient && appeal.lead.leadType===10">
                 <EditPensilCtrl @click="editClient()" />
-                 <img @click="resetForm()" alt=""
+                <DeleteCtrl @click="resetForm()" />
+                 <!-- <img @click="resetForm()" alt=""
                       src="@/assets/icons/icon-cross-gray.png"
-                      title="Удалить">
+                      title="Удалить"> -->
               </span>
               <small v-if="appeal.lead.leadType===10 && !isShowEditClient"
                      @click="noTelephon()"
@@ -408,6 +409,7 @@ import { useDealStore } from '@/stores/dealStore'
 import router from '@/router'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 
 const appealStore = useAppealStore()
 const dealStore = useDealStore()

@@ -24,9 +24,10 @@
         <template #default="scope">
           <div style="" class="admin-table-editors">
             <EditPensilCtrl @click="openModal(scope.row)" />
-          <img @click="deleteRow(scope.row)" alt=""
+            <DeleteCtrl @click="deleteRow(scope.row)"/>
+          <!-- <img @click="deleteRow(scope.row)" alt=""
                src="@/assets/icons/icon-cross-gray.png"
-               title="Удалить">
+               title="Удалить"> -->
                </div>
         </template>
       </el-table-column>
@@ -43,6 +44,8 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {Search, Plus} from '@element-plus/icons-vue'
 import SMSTemplatesDirModal from '@/pages/admin/dirs/SMSTemplatesDirModal.vue'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
+
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])

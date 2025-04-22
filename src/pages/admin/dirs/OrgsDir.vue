@@ -31,10 +31,11 @@
                  src="@/assets/icons/icon-plus-gray-row.png">
 
             <EditPensilCtrl  @click="openUrgsModal(scope.row)"/>
-            <img v-if="scope.row.id!==1"
+            <DeleteCtrl v-if="scope.row.id!==1" @click="deleteUser(scope.row.id)"/>
+            <!-- <img v-if="scope.row.id!==1"
                  @click="deleteUser(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
+                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>
@@ -50,7 +51,7 @@ import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import OrgsDirModal from "@/pages/admin/dirs/OrgsDirModal.vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
