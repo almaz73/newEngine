@@ -25,9 +25,10 @@
             <img @click="openModal(scope.row)" alt=""
                  title="Редактировать"
                  src="@/assets/icons/icon-pencil-gray.png">
-            <img @click="deleteRow(scope.row)" alt=""
+            <DeleteCtrl @click="deleteRow(scope.row)"/>
+            <!-- <img @click="deleteRow(scope.row)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
+                 title="Удалить"> -->
                  </div>
           </template>
         </el-table-column>
@@ -57,6 +58,7 @@
   import {useGlobalStore} from "@/stores/globalStore";
   import {Search, Plus} from '@element-plus/icons-vue'
   import ReasonTemplatesDirModal from '@/pages/admin/dirs/ReasonTemplatesDirModal.vue'
+  import DeleteCtrl from '@/controls/DeleteCtrl.vue'
   const globalStore = useGlobalStore()
   const adminStore = useAdminStore()
   const tableData = ref([])

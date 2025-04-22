@@ -27,9 +27,10 @@
         <template #default="scope">
           <div style="" class="admin-table-editors">
             <EditPensilCtrl @click="openModal(scope.row)"/>
-            <img @click="deleteInsp(scope.row.id)" alt=""
+            <DeleteCtrl @click="deleteInsp(scope.row.id)"/>
+            <!-- <img @click="deleteInsp(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
+                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>
@@ -56,6 +57,7 @@ import InspectionViewModal from "@/pages/admin/dirs/inspection/InspectionViewMod
 import {Plus, Search} from "@element-plus/icons-vue";
 import {inspectionItemCategories} from "@/utils/globalConstants"
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])

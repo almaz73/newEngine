@@ -45,9 +45,10 @@
         <template #default="scope">
           <div style="" class="admin-table-editors">
             <EditPensilCtrl @click="openModal(scope.row, $event)"/>
-            <img @click="deleteTire(scope.row.id, $event)" alt=""
+            <DeleteCtrl @click="deleteTire(scope.row.id, $event)"/>
+            <!-- <img @click="deleteTire(scope.row.id, $event)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
+                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>
@@ -75,7 +76,7 @@ import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {Plus, Search} from "@element-plus/icons-vue";
 import TiresDirModal from "@/pages/admin/dirs/TiresDirModal.vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])

@@ -39,9 +39,10 @@
                  title="Нeактивный"
                  src="@/assets/icons/icon-blocked-red.png">
             <EditPensilCtrl @click="openModal(scope.row)" />
-            <img @click="deleteIRow(scope.row.id)" alt=""
+            <DeleteCtrl @click="deleteIRow(scope.row.id)"/>
+            <!-- <img @click="deleteIRow(scope.row.id)" alt=""
                  src="@/assets/icons/icon-cross-gray.png"
-                 title="Удалить">
+                 title="Удалить"> -->
           </div>
         </template>
       </el-table-column>
@@ -88,7 +89,7 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {Plus} from "@element-plus/icons-vue";
 import PossibleDamagesModal from "@/pages/admin/dirs/PossibleDamagesModal.vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
-
+import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref<any>()
