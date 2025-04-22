@@ -39,8 +39,13 @@
           @row-dblclick="openModal"
           highlight-current-row
       >
-        <el-table-column label="Статус" prop="status.title" width="120"/>
-        <el-table-column label="Сообщение" prop="message"/>
+        <el-table-column label="Статус" prop="status.title" width="140"/>
+        <el-table-column label="Сообщение">
+          <template #default="scope">
+            {{scope.row.message}}
+            <small v-if="scope.row.comment"> <br><span class="label ">Комментарий:</span>{{scope.row.comment}}</small>
+          </template>
+        </el-table-column>
         <el-table-column width="100">
 
           <template #default="scope">
@@ -169,7 +174,7 @@ function save() {
   })
       .then(() => {
         clearFields()
-        getAllFeedBack()
+        getData()
         ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
       })
 }
@@ -182,7 +187,7 @@ function clearFields() {
 
 
 function openModal(row) {
-  feedBackModal.value.open(row)
+  feedBackModal.value.open(row, getData)
 }
 
 function deleteFeedBack(id) {
@@ -190,17 +195,18 @@ function deleteFeedBack(id) {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
-      .then(() => adminStore.deleteFeedback(id).then(res => getAllFeedBack()))
+      .then(() => adminStore.deleteFeedback(id).then(res => getData()))
       .catch(() => {
       })
 }
 
-function getAllFeedBack() {
+function getData() {
   adminStore.getAllFeedback(0, 12).then(res => {
     res.items.map(el => {
       let part = el.content.split(':::')
       el.message = part[0]
       if (part[1]) el.imgBlob = part[1]
+      if (part[2]) el.comment = part[2]
       return el
     })
     tableData.value = res.items.reverse()
@@ -212,7 +218,7 @@ onMounted(() => {
   globalStore.setTitle('Страница обратной связи')
   globalStore.steps = []
   imageFiled = document.getElementById('image')
-  getAllFeedBack()
+  getData()
 })
 
 </script>

@@ -75,9 +75,12 @@
 
       <el-table-column width="120">
         <template #default="scope">
-          <img :src="scope.row.fullPhoto[0]" alt=""
-               v-if="scope.row.fullPhoto && scope.row.fullPhoto[0]"
-               class="img-in-table" />
+          <UploadPhotoViewer
+              v-if="scope.row?.fullPhoto && scope.row.fullPhoto[0]"
+              :width="100"
+              :height="60"
+              :url="scope.row.fullPhoto[0]"
+          />
         </template>
       </el-table-column>
 
@@ -147,6 +150,7 @@ import FilterTagsCtrl from '@/components/filterCtrl/FilterTagsCtrl.vue'
 import { globalRef } from '@/components/filterCtrl/FilterGlobalRef'
 import router from '@/router'
 import CircleCateforyAvtoCtrl from '@/controls/CircleCateforyAvtoCtrl.vue'
+import UploadPhotoViewer from "@/components/UploadPhotoViewer.vue";
 
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()

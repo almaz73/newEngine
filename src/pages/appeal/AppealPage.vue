@@ -124,10 +124,12 @@
               </el-button>
             </div>
           </div>
-          <img :src="scope.row.fullPhotos[0]" alt=""
-               v-if="(scope.row.workflowLeadType === 2 || scope.row.workflowLeadType === 11) &&
-               scope.row.fullPhotos && scope.row.fullPhotos[0]"
-               class="img-in-table" />
+          <UploadPhotoViewer
+              v-if="scope.row.fullPhotos && scope.row?.fullPhotos[0]"
+              :width="100"
+              :height="60"
+              :url="scope.row.fullPhotos[0]"
+          />
         </template>
       </el-table-column>
 
@@ -207,6 +209,7 @@ import router from "@/router";
 import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import ColorButtons from "@/controls/ColorButtons.vue";
+import UploadPhotoViewer from "@/components/UploadPhotoViewer.vue";
 
 
 const tableData = ref([])
