@@ -25,8 +25,12 @@ import ComissStatusModal from "@/pages/appeal/appealEditFields/statusComission/C
 const appealStoreStatus = useAppealStoreStatus()
 const props = defineProps(['appeal'])
 const ComissionStatusTypes = ref([])
-let comissId = null
+let comissId:any = null
+let archiveReasons:any = null
 const comissStatusModal = ref()
+
+console.log('props.appeal = ',props.appeal)
+console.log('props.appeal.archiveRequestReasons = ',props.appeal.archiveRequestReasons )
 
 watchEffect(() => {
   props.appeal.id && getStatuses(props.appeal.id)
@@ -34,17 +38,19 @@ watchEffect(() => {
 
 function getStatuses(appealId: number) {
   appealStoreStatus.getComission(appealId).then(res => {
-    console.log('res = ',res)
+    // этот метод вызывается только дяя того, чтобы забрать comissId и archiveReasons
     comissId = res.view.id
+    archiveReasons = res.view.archiveReasons
+
 
     appealStoreStatus.getComissionStatuses(comissId).then(res => {
-      console.log('22res = ',res)
       ComissionStatusTypes.value = res.statuses
     })
   })
 }
 
 function makeChoice(val: any) {
+  if (archiveReasons) val.archiveRequestReasons = archiveReasons
   comissStatusModal.value.open(val, comissId)
 }
 

@@ -85,11 +85,14 @@ const buyUsers = ref(null)
 const buyCategories = ref(null)
 
 function open(val, comissId) {
+  
+  console.log('val = ',val)
+  //mod.archiveRequestReasons
+  
   mod.value.id = comissId;
   mod.value.title = val.title;
   mod.value.status = val.value;
-  
-  console.log('mod.value.status = ',mod.value.status)
+  if (val.archiveRequestReasons) mod.value.archiveRequestReasons = val.archiveRequestReasons.map(it => it.value)
 
   switch (mod.value.status) {
     case 90:
@@ -128,7 +131,7 @@ function save() {
     mod.value.comment = mod.value.comment || ''
     mod.value.comment += ' 👇Причины запроса в архив '
     mod.value.archiveRequestReasons.forEach(it => {
-      if (archiveReasons.value) {
+      if (archiveReasons.value.length) {
         let reason = archiveReasons.value.find(el => el.value === it)
         mod.value.comment += '  ➨' + reason.title
       }

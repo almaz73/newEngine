@@ -332,6 +332,9 @@ function open(row) {
   isOpen.value = true;
   globalStore.isWaiting = true
   appealStore.getAppeal(row.id).then(res => {
+
+    console.log('9999 res = ',res)
+
     globalStore.isWaiting = false
     appeal.value = res
     appealTabs.value.open(res)
