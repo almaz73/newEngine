@@ -1,7 +1,7 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 600"
+            :width="globalStore.isMobileView? 360: 600"
             :top="73"
             :title="'Отправить СМС на номер: '+appeal.leadPhone"
             :subtitle="' Клиент: '+ appeal.leadName "

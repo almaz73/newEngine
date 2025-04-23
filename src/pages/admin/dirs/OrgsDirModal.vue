@@ -1,7 +1,7 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 930"
+            :width="globalStore.isMobileView? 360: 930"
             :top="40"
             :title="title"
             :subtitle="org.name"
@@ -9,7 +9,7 @@
             resizable>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
 
-      <span class="modal-fields">
+      <div class="modal-fields">
         <el-form ref="form" :model="org" @change="isDirty=true">
           <el-tabs v-model="activeName" @tab-change="tabChange">
               <el-tab-pane label="Организация" name="first">
@@ -98,7 +98,7 @@
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отмена</el-button>
       </div>
-      </span>
+      </div>
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>

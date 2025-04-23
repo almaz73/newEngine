@@ -1,14 +1,14 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="globalStore.isMobileView? 330: 480"
+              :width="globalStore.isMobileView? 360: 480"
               :top="40"
               :title="'Повреждения'"
               draggable
               resizable>
       <el-scrollbar maxHeight="480px">
 
-        <span class="modal-fields">
+        <div class="modal-fields">
            <el-form ref="form" :model="insp" class="error-to-message">
             <el-form-item prop="damageName" :rules="{required: true, message: 'Название повреждения', trigger: ['change']}">
               <label class="label l_200">Название повреждения</label>
@@ -20,7 +20,7 @@
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </div>
-        </span>
+        </div>
       </el-scrollbar>
     </AppModal>
   </template>

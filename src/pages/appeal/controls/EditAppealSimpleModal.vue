@@ -140,10 +140,10 @@ function save() {
   })
 }
 
-function open(appeal) {
+function open(appeal: any) {
   isOpen.value = true
 
-  console.log('appeal', appeal)
+  // console.log('appeal', appeal)
   appealEditModal.value.id = appeal.id
 
   if (appeal.auto) {
@@ -155,7 +155,7 @@ function open(appeal) {
   appealEditModal.value.buyCategory = appeal.buyCategory
   appealEditModal.value.location.id = appeal.locationId
   
-  console.log('appealEditModal.value = ',appealEditModal.value)
+  // console.log('appealEditModal.value = ',appealEditModal.value)
 
 
   globalStore.getBrands().then(res => {

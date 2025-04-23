@@ -6,7 +6,7 @@
             :title="'Модалка'"
             draggable>
     <el-scrollbar>
-      <span class="modal-fields">
+      <div class="modal-fields">
         <el-form ref="form" :model="entity" class="error-to-message">
 
 
@@ -14,7 +14,7 @@
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
 
         </el-form>
-      </span>
+      </div>
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory" />

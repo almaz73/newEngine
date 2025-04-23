@@ -105,6 +105,11 @@
 .modal__info {
   padding: 10px;
 }
+@media (width < 500px) {
+  .modal__info {
+    padding: 0;
+  }
+}
 </style>
 
 <script setup lang="ts">

@@ -2,7 +2,7 @@
 
   <AppModal v-if="isOpen"
             @closeModal="emits('closeModal')"
-            :width="globalStore.isMobileView? 330: 1000"
+            :width="globalStore.isMobileView? 360: 1000"
             :title="'Переход на незавершенные обращения по телефону'"
             :subtitle="`Тел.: ${tel}`"
             draggable
