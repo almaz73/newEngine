@@ -10,6 +10,7 @@
 
                 @keydown.enter="getData()"/>
       <el-button @click="openModalUserDir(null, null)" type="danger" :icon="Plus"> Добавить</el-button>
+      <el-button @click="reportPrint()" type="danger">Печать</el-button>
       <el-input v-model="myKey"
                 :style="{opacity:isMyKey?1:0}"
                 @click="isMyKey = true"
@@ -214,8 +215,13 @@ function deleteUser(id: number) {
         })
       })
 }
+function reportPrint() {
+  ElMessage.info('Готово! Файл можно забрать из загрузок браузера.');
 
 
+  let link =  '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
+  location.href = link
+}
 
 globalStore.setTitle('Админка - Пользователи')
 globalStore.steps = []
