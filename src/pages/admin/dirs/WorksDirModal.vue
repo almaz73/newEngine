@@ -1,14 +1,14 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 480"
+            :width="globalStore.isMobileView? 360: 480"
             :top="40"
             :title="'Вид работ'"
             draggable
             resizable>
     <el-scrollbar maxHeight="480px">
 
-      <span class="modal-fields">
+      <div class="modal-fields">
         <el-form ref="form" :model="work" class="error-to-message">
           <el-form-item prop="name" :rules="{required: true, message: 'Название', trigger: ['change']}">
             <el-input placeholder="Название" title="Название" v-model="work.name"/>
@@ -52,7 +52,7 @@
         <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
         <el-button type="info" @click="isOpen = false">Отмена</el-button>
       </div>
-      </span>
+      </div>
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>

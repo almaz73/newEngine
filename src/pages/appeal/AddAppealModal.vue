@@ -6,7 +6,7 @@
             :title="'Обращения - '+workflowTypes.find(el=>el.value===newWorkflow.workflowLeadType).title"
             draggable>
     <el-scrollbar>
-      <span class="modal-fields">
+      <div class="modal-fields">
         <el-form ref="form" :model="newWorkflow" class="error-to-message">
           <el-button-group style="vertical-align: center">
             <template v-for="flow in workflowTypes" :key="flow.value">
@@ -242,7 +242,7 @@
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </span>
         </el-form>
-      </span>
+      </div>
     </el-scrollbar>
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>

@@ -3,14 +3,14 @@
             :subtitle="subtitle"
             :title="'Обращение '+appealStore.currentRow.id+'. '+appealStore.currentRow.appealTitle"
             :top="8"
-            :width="globalStore.isMobileView? 330: 1100"
+            :width="globalStore.isMobileView? 360: 1100"
             draggable
             resizable
             @closeModal="closeModal()">
     <el-scrollbar :maxHeight="globalStore.isMobileView?'550px':'800px'">
       <AppealEditFields ref="appealEditFields"/>
 
-      <span class="modal-fields">
+      <div class="modal-fields">
         <span>
 
         <br>
@@ -19,7 +19,7 @@
         <span style="display: block; text-align: right; margin-right: 30px">
           <el-button type="info" @click="closeModal()">Закрыть</el-button>
         </span>
-      </span>
+      </div>
     </el-scrollbar>
   </AppModal>
 </template>

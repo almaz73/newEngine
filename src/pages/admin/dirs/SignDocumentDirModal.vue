@@ -7,7 +7,7 @@
               draggable>
       <el-scrollbar maxHeight="480px">
         <el-form ref="form" :model="model" class="error-to-message">
-        <span class="modal-fields">
+        <div class="modal-fields">
           <el-form-item prop="userId" :rules="{required: true, message: 'Пользователь', trigger: ['change']}">
               <label class="label-right l_100">Пользователь</label>
               <el-select
@@ -62,7 +62,7 @@
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </span>
-        </span>
+        </div>
       </el-form>
       </el-scrollbar>
     </AppModal>

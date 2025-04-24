@@ -8,7 +8,7 @@
               resizable>
       <el-scrollbar maxHeight="520px">
         <el-form ref="form" :model="model" class="error-to-message">
-        <span class="modal-fields modal-fields-2">
+        <div class="modal-fields modal-fields-2">
           <el-form-item prop="title" :rules="{required: true, message: 'Название', trigger: ['change']}">
               <label class="label-right l_100">Название</label>
               <el-input
@@ -114,7 +114,7 @@
             <label class="label-right l_100">Кладовщики</label>
             <el-button @click="openModal()" type="danger" :icon="Plus"> Добавить</el-button>
           </span>
-        </span>
+        </div>
         <span class="modal-buttons-bottom">
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>

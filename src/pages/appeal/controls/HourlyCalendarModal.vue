@@ -1,7 +1,7 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 500"
+            :width="globalStore.isMobileView? 360: 500"
             :top="5"
             :title="'События : '+days[currentTime.getDay()]"
             draggable>

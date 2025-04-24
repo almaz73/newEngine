@@ -300,3 +300,9 @@ li.el-menu-item {
     right: 15px;
     z-index: 3;
 }
+
+.el-message-box__btns{
+    direction: rtl;
+    gap: 8px;
+    justify-content: flex-start !important;
+}

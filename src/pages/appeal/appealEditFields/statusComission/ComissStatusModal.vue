@@ -6,7 +6,7 @@
             :title="mod.title"
             draggable>
     <div>
-        <span class="modal-field">
+        <div class="modal-field">
           <div v-if="[40, 70].includes(mod.status)">
             <label class="label l_300">Причина архивирования</label>
             <el-select
@@ -59,7 +59,7 @@
           <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
           <el-button type="info" @click="isOpen = false">Отмена</el-button>
         </span>
-        </span>
+        </div>
     </div>
   </AppModal>
 </template>
@@ -85,14 +85,10 @@ const buyUsers = ref(null)
 const buyCategories = ref(null)
 
 function open(val, comissId) {
-  
-  console.log('val = ',val)
-  //mod.archiveRequestReasons
-  
   mod.value.id = comissId;
   mod.value.title = val.title;
   mod.value.status = val.value;
-  if (val.archiveRequestReasons) mod.value.archiveRequestReasons = val.archiveRequestReasons.map(it => it.value)
+  if (val.archiveReasons && [40, 70].includes(mod.value.status)) mod.value.archiveRequestReasons = val.archiveReasons.map(el => el.value)
 
   switch (mod.value.status) {
     case 90:
@@ -131,21 +127,12 @@ function save() {
     mod.value.comment = mod.value.comment || ''
     mod.value.comment += ' 👇Причины запроса в архив '
     mod.value.archiveRequestReasons.forEach(it => {
-      if (archiveReasons.value.length) {
+      if (archiveReasons.value) {
         let reason = archiveReasons.value.find(el => el.value === it)
         mod.value.comment += '  ➨' + reason.title
       }
     })
   }
-
-
-  // let params = {
-  //   archiveRequestReasons: [10],
-  //   comment: "111111111111 👇Причины запроса в архив   ➨Передвигается",
-  //   id: 2178,
-  //   status: 40,
-  //   title: "Запрос в архив"
-  // }
 
   let params = {
     id: mod.value.id,
@@ -153,11 +140,10 @@ function save() {
     status: mod.value.status,
     comment:mod.value.comment,
     archiveRequestReasons: mod.value.archiveRequestReasons,
-    BuyCategory: mod.value.BuyCategory,
-    responsible: {id:mod.value.responsibleId}
+    BuyCategory: mod.value.BuyCategory
   }
-  
-  console.log('params = ',params)
+
+  if (mod.value.responsibleId) params.responsible = {id: mod.value.responsibleId}
 
   globalStore.isWaiting = true
 

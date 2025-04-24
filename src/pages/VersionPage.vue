@@ -1,7 +1,7 @@
 <template>
   <main>
     <div v-for="(entry, index) in versions" :key="index">
-      <h4 @click="toggle(index)">{{ entry.title }}</h4>
+      <h5 @click="toggle(index)">{{ entry.title }}</h5>
       <p v-if="entry.open" v-html="entry.text"></p>
     </div>
   </main>

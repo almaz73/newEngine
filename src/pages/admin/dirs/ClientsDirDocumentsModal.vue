@@ -1,7 +1,7 @@
 <template>
   <AppModal v-if="isOpen"
             @closeModal="closeModal()"
-            :width="globalStore.isMobileView? 330: 530"
+            :width="globalStore.isMobileView? 360: 530"
             :top="50"
             :title="'Документы клиента'"
             :subtitle="subtitle"

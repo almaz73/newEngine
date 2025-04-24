@@ -7,7 +7,7 @@
               draggable>
       <el-scrollbar maxHeight="480px">
         <el-form ref="form" :model="model" class="error-to-message">
-        <span class="modal-fields">
+        <div class="modal-fields">
             <el-form-item prop="typeTitle" :rules="{required: true, message: 'Тип', trigger: ['change']}">
                <label class="label-right l_100">Тип</label>
                <el-input disabled v-model="model.typeTitle"/>
@@ -33,7 +33,7 @@
             <el-button type="danger" @click="save()" :icon="Plus">Сохранить</el-button>
             <el-button type="info" @click="isOpen = false">Отмена</el-button>
           </span>
-        </span>
+        </div>
       </el-form>
       </el-scrollbar>
     </AppModal>
@@ -41,7 +41,6 @@
   
   <script setup>
   import AppModal from "@/components/AppModal.vue";
-  import {useGlobalStore} from "@/stores/globalStore";
   import {useAdminStore} from "@/stores/adminStore";
   import {ref} from "vue";
   import {Plus} from "@element-plus/icons-vue";

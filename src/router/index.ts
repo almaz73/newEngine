@@ -168,7 +168,8 @@ router.afterEach((to) => {
       '/calendar',
       '/appeal',
       '/appeal/commission',
-      '/feedback'
+      '/feedback',
+      '/version'
     ]
 
 

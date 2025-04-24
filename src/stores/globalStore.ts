@@ -15,7 +15,7 @@ export const useGlobalStore = defineStore('globalStore', {
         isWaiting: false, // для ромашки ожидания
         isNeedTop: false, // показ кнопки прокрутки наверх
         listOpenModals: [], // для закрытия по esc
-        appealIdForShowCounter : 392818, // посещаемость
+        appealIdForShowCounter : 392817, // посещаемость
         account: {
             // настройки аккаунта
             lastName: '',
