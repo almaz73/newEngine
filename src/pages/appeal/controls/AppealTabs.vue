@@ -178,6 +178,7 @@ const workflowHistory = ref([])
 
 
 function getEvents(noCach) {
+  if( !appeal.value ) return false
   globalStore.getWorkflowHistory(appeal.value.id).then(res=>{
     workflowHistory.value = res.data.items
   })

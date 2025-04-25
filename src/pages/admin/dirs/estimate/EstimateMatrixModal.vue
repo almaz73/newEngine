@@ -82,14 +82,7 @@
       </el-scrollbar>
     </AppModal>
   </template>
-  <style>
-  .input-width {
-    width: 100px;
-    overflow-x: hidden;
-  }
-  
-  </style>
-  
+
   <script setup>
   import AppModal from "@/components/AppModal.vue";
   import {useGlobalStore} from "@/stores/globalStore";

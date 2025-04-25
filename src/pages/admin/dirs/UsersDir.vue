@@ -11,11 +11,6 @@
                 @keydown.enter="getData()"/>
       <el-button @click="openModalUserDir(null, null)" type="danger" :icon="Plus"> Добавить</el-button>
       <el-button @click="reportPrint()" type="danger">Печать</el-button>
-      <el-input v-model="myKey"
-                :style="{opacity:isMyKey?1:0}"
-                @click="isMyKey = true"
-                @blur="saveHashMyKey(); isMyKey = false"
-                class="myKey"/>
     </div>
 
     <div class="admin-filter-field">
@@ -137,7 +132,6 @@ import {ElMessage, ElMessageBox, ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {Plus, Search} from '@element-plus/icons-vue'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
-import {encryptPassword} from "@/utils/globalFunctions";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import DeleteCtrl from '@/controls/DeleteCtrl.vue'
 
@@ -149,8 +143,6 @@ const total = ref(0)
 const rowsPerPage = ref(5)
 const pageDescription = ref('')
 const search = ref('')
-const myKey = ref(null)
-const isMyKey = ref(false)
 const filter = {offset: 0, limit: 5, search: '', Organizations: [], role: null}
 const organizations = ref<any>()
 const filterStatus = ref([])
@@ -165,11 +157,6 @@ const roles = ref<any>([])
 
 globalStore.getOrganizations().then(res => organizations.value = res.items)
 adminStore.getUserRoles().then(res => res.items.forEach((item:any) => roles.value.push(...item.roles)))
-
-function saveHashMyKey() {
-  let hash: null | string = myKey.value && encryptPassword(myKey.value)
-  hash && localStorage.setItem('myKey', hash)
-}
 
 
 function changePageSize() {
@@ -223,9 +210,15 @@ function deleteUser(id: number) {
       })
 }
 function reportPrint() {
+<<<<<<< HEAD
   ElMessage.info('Готово! Файл можно забрать из загрузок браузера.');
   let link =  '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
   location.href = link
+=======
+  ElMessage.info('Готово! Файл можно забрать из загрузок браузера.')
+
+  location.href = '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
+>>>>>>> c1fed779603ee382c3c352ad088ae43fd47a3220
 }
 
 function updateOrganizations() {
