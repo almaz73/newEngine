@@ -42,6 +42,12 @@
                    :key="ind" :label="item.name"
                    :value="item.id"/>
       </el-select>
+      <div class="checkbox-block">
+          <el-checkbox v-model="isActiveOrganizations" @change="updateOrganizations">
+          <p>Только активные</p>
+        </el-checkbox>
+      </div>
+
       <el-select
           placeholder="Роль"
           v-model="filter.role"
@@ -148,6 +154,7 @@ const isMyKey = ref(false)
 const filter = {offset: 0, limit: 5, search: '', Organizations: [], role: null}
 const organizations = ref<any>()
 const filterStatus = ref([])
+const isActiveOrganizations = ref(true)
 const statuses = [
   {name: 'Активные', type: 'IsActive', value: false},
   {name: 'Заблокированные', type: 'Blocked', value: false},
@@ -217,13 +224,31 @@ function deleteUser(id: number) {
 }
 function reportPrint() {
   ElMessage.info('Готово! Файл можно забрать из загрузок браузера.');
-
-
   let link =  '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
   location.href = link
+}
+
+function updateOrganizations() {
+  globalStore.getOrganizations(isActiveOrganizations.value).then(res => {
+    organizations.value = res.items
+    getData()
+  })
 }
 
 globalStore.setTitle('Админка - Пользователи')
 globalStore.steps = []
 getData()
 </script>
+
+<style  scoped>
+.checkbox-block{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.checkbox-block p{
+  margin: 0 10px 0 0;
+  font-size: 14px;
+  color: #333333;
+}
+</style>
