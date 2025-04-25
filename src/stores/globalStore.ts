@@ -58,9 +58,13 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/location/get/list`).then(q => q)
             return (cache.getPlaces = res.data)
         },
-        async getOrganizations() {
-            if (cache.getOrganizations) return cache.getOrganizations // список статичный - кэшируем
-            const res = await axios.get(`/api/orgelement/get/organizations`).then(q => q)
+        async getOrganizations(isActive?: boolean){
+            if (cache.getOrganizations && isActive === undefined) return cache.getOrganizations // список статичный — кэшируем
+          
+            const res = await axios.get('/api/orgelement/get/organizations', {
+              params: isActive !== undefined ? { IsActive: isActive } : undefined
+            }).then(q => q)
+          
             return (cache.getOrganizations = res.data)
         },
         async getTreatments() {
