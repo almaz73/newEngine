@@ -210,15 +210,9 @@ function deleteUser(id: number) {
       })
 }
 function reportPrint() {
-<<<<<<< HEAD
-  ElMessage.info('Готово! Файл можно забрать из загрузок браузера.');
-  let link =  '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
-  location.href = link
-=======
   ElMessage.info('Готово! Файл можно забрать из загрузок браузера.')
 
   location.href = '/api/Report/GetSelectedUserListReport?filter={%22deleted%22:false,%22offset%22:0,%22Organizations%22:[],%22IsActive%22:false,%22Blocked%22:false}'
->>>>>>> c1fed779603ee382c3c352ad088ae43fd47a3220
 }
 
 function updateOrganizations() {
