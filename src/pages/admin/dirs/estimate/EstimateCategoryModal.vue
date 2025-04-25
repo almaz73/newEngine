@@ -79,13 +79,6 @@
   </AppModal>
   <UsersDirModal_History ref="modalHistory"/>
 </template>
-<style>
-.input-width {
-  width: 100px;
-  overflow-x: hidden;
-}
-
-</style>
 
 <script setup>
 import AppModal from "@/components/AppModal.vue";

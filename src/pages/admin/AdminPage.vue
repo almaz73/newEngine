@@ -110,7 +110,6 @@ function selectDir(val: string) {
 function remove(val: string) {
   const index = adminDirectories.value.indexOf(val);
   if (index !== -1) {
-    console.log("Удаляем элемент", adminDirectories);
     adminDirectories.value.splice(index, 1);
     if (val === currentDirectory.value) {
       const fallback = adminDirectories.value[0] || null;

@@ -119,8 +119,8 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.post(`/api/policy/`,params).then(q => q)
             return res.data
         },
-        async getInspection(id: number | null) {
-            const res = await axios.get('/api/inspectionitemtype/'+id).then(q => q)
+        async getInspection(id: number) {
+            const res = await axios.get('/api/inspectionitemtype/'+(id||'')).then(q => q)
             return res.data
         },
         async saveInspection(obj: any) {
@@ -163,11 +163,11 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.post('/api/bankitem/', obj).then(q => q)
             return res.data
         },
-        async getBankFilials(id: number | null) {
+        async getBankFilials(id: number) {
             const res = await axios.get(`/api/bankitem/get/list?bankId=${id}`).then(q => q)
             return res.data
         },
-        async deleteBankFilials(id: number | null) {
+        async deleteBankFilials(id: number) {
             const res = await axios.delete(`/api/bankitem/deletebyid/${id}?bankId=`).then(q => q)
             return res.data
         },
@@ -179,7 +179,7 @@ export const useAdminStore = defineStore("adminStore", {
             return res.data 
         },
 
-        async getWork(id: number | null) {
+        async getWork(id: number) {
             let url = '/api/work'
             if (id) url += '/' + id
             const res = await axios.get(url).then(q => q)
@@ -377,7 +377,7 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete(`/api/creditprogram/${id}`).then(q => q)
             return res.data 
         },
-        async getBankFilials2(id: number | null) {
+        async getBankFilials2(id: number) {
             const res = await axios.get(`/api/bankitem/${id}`).then(q => q)
             return res.data
         },

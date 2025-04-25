@@ -12,6 +12,7 @@
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: border-bottom;
+  margin: 0 4px;
 }
 
 .img-hover-border:hover {

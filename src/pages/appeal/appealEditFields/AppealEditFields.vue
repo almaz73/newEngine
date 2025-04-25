@@ -93,7 +93,7 @@
               <div v-if="!isTypeClientEdit" style="display: inline-block">
                 <span
                     :style="{background:appeal.lead.leadType === 20?'#ffb':''}"
-                    v-if="appeal.lead"> {{
+                    v-if="appeal && appeal.lead"> {{
                     appeal.lead.leadType === 10 ? 'Физическое лицо' : 'Юридическое лицо'
                   }}</span>
                 &nbsp;

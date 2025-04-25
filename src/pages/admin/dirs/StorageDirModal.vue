@@ -1,7 +1,7 @@
 <template>
     <AppModal v-if="isOpen"
               @closeModal="closeModal()"
-              :width="globalStore.isMobileView ? '360' : '680'"
+              :width="globalStore.isMobileView ? 360 : 680"
               :top="40"
               :title="'Место хранения'"
               draggable
@@ -124,10 +124,7 @@
     </AppModal>
   </template>
   <style>
-  .input-width {
-    width: 100px;
-    overflow-x: hidden;
-  }
+
   .modal-fields-2{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

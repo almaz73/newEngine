@@ -26,7 +26,7 @@
             <el-table-column label="Краткое наименование" prop="shortName" />
             <el-table-column>
                 <template #default="scope">
-                    <el-button @click.stop="showFilials(scope.row.bankId,scope.row.name)" style="float: right">Филиалы</el-button>
+                  <el-button @click.stop="showFilials(scope.row.id,scope.row.name)" style="float: right">Филиалы</el-button>
                 </template>
             </el-table-column>
             <el-table-column width="73">
@@ -73,8 +73,8 @@ const globalStore = useGlobalStore()
 const adminStore = useAdminStore()
 const tableData = ref([])
 const banksLength = ref(0)
-const activeBank = ref<any>()
-const filialsData = ref<any>()
+const activeBank = ref<any>({})
+const filialsData = ref<any>([])
 const modal = ref(null)
 const BankIdFilials = ref(0)
 let tableDataMemory:any = []
