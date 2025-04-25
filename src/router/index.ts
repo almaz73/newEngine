@@ -128,6 +128,9 @@ const router = createRouter({
             path: '/deal/:dealId/servicework',
             name: 'editServiceWorks',
             component: () => import('@/pages/deal/tabs/collapses/inspectionList/ServiceWorks.vue').catch(val => fail(val))
+        }, { path: '/showcase',
+            name: 'showcase',
+            component: () => import('@/pages/showcase/ShowCasePage.vue').catch(val => fail(val))
         }, {
             path: "/:catchAll(.*)",
             component: () => import('@/components/NoPage.vue')

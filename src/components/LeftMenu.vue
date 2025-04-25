@@ -81,6 +81,15 @@
         </el-menu-item>
       </RouterLink>
 
+      <RouterLink to="showcase" v-if="permit('menu','showcase')">
+        <el-menu-item index="4">
+          <el-icon>
+            <img alt="Склад" src="@/assets/icons/ic-vitrina-black-18-px.png" height="34" width="34"/>
+          </el-icon>
+          <template #title>Витрина</template>
+        </el-menu-item>
+      </RouterLink>
+
       <RouterLink to="calls" v-if="permit('menu','calls')">
         <el-menu-item index="5">
           <el-icon>
