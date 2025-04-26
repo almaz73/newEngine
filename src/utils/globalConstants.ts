@@ -9,6 +9,8 @@ export const driveTypies = [
     {id: 20, name: 'Задний привод'},
     {id: 30, name: 'Полный привод'}
 ]
+export const driveTypiesEnum = { 10: 'Передний привод', 20: 'Задний привод', 30: 'Полный привод' }
+
 export const kpp = [
     {id: 10, name: 'Механическая'},
     {id: 20, name: 'Автоматическая'},
@@ -332,6 +334,9 @@ export const GearboxType = [
     {id: 30, name: 'Вариатор'},
     {id: 40, name: 'Роботизированная'}
 ]
+
+export const GearboxTypeEnum = { 10: 'Механическая', 20: 'Автоматическая', 30: 'Вариатор', 40: 'Роботизированная' }
+
 export const EngineType = [
     {id: 10, name: 'Бензин'},
     {id: 20, name: 'Дизель'},

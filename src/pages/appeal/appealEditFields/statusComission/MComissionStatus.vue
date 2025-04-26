@@ -35,6 +35,9 @@ watchEffect(() => {
 
 function getStatuses(appealId: number) {
   appealStoreStatus.getComission(appealId).then(res => {
+
+    console.log('comiss res = ',res)
+
     comissId = res.view.id
     archiveReasons = res.view.archiveReasons
 

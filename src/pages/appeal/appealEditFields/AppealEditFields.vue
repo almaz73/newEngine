@@ -185,8 +185,10 @@
         </div>
         <br>
       </el-collapse-item>
-      <el-collapse-item :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
-                        name="2" style="position: relative">
+      <el-collapse-item
+        v-if="appeal && !appeal.auto"
+        :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
+        name="2" style="position: relative">
         <span class="button-on-collapse" v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
           <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`">
             <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
@@ -209,6 +211,8 @@
         </div>
       </el-collapse-item>
     </el-collapse>
+    <!--    Развернутый раздел авто-->
+    <AutoCollapse :appeal />
   </div>
 
   <el-divider/>
@@ -247,7 +251,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
-import {statuses, Workflows} from "@/utils/globalConstants";
+import {Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/pages/appeal/controls/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
@@ -261,6 +265,7 @@ import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
+import AutoCollapse from '@/pages/appeal/appealEditFields/AutoCollapse.vue'
 
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
@@ -278,6 +283,7 @@ const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
 const dealsHistoryModal = ref(null)
 const editAppealSimpleModal = ref(null)
+const activeNames = ref(['2'])
 
 const openModalSwapHistory = function (typeHistory) {
   let clientId = appeal.value.lead.leadId || appeal.value.leadId
@@ -334,7 +340,7 @@ function open(row) {
   globalStore.isWaiting = true
   appealStore.getAppeal(row.id).then(res => {
 
-    console.log('9999 res = ',res)
+    console.log('9999 Основной res = ',res)
 
     globalStore.isWaiting = false
     appeal.value = res

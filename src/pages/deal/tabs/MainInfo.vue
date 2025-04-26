@@ -60,13 +60,13 @@
 
 
       <div class="info-filed" v-if="dealStore.deal.auto.driveType">
-        <label class="label l_200"> Тип коробки передач </label>
-        {{ GearboxType.find(el => el.id === dealStore.deal.auto.gearboxType).name }}
+        <label class="label l_200">Тип коробки передач </label>
+        {{ GearboxTypeEnum[dealStore.deal.auto.gearboxType] }}
       </div>
 
       <div class="info-filed" v-if="dealStore.deal.auto.driveType">
         <label class="label l_200">Привод</label>
-        {{ driveTypies.find(el => el.id === dealStore.deal.auto.driveType).name }}
+        {{ driveTypiesEnum[dealStore.deal.auto.driveType] }}
       </div>
 
       <div class="info-filed">
@@ -120,7 +120,7 @@
         <StorageEditCtrl :deal="dealStore.deal"/>
       </div>
 
-      <div class="info-filed" v-if="dealStore.deal.locationName && dealStore.deal.locationName != ' '">
+      <div class="info-filed" v-if="dealStore.deal && dealStore.deal.locationName && dealStore.deal.locationName !== ' '">
         <label class="label l_200">Место хранения</label>
         {{ dealStore.deal.locationName }}
       </div>
@@ -227,7 +227,7 @@
 
 
 import MStatus from '@/pages/deal/tabs/status/MStatus.vue'
-import {bodyTypesEnum, driveTypies, EngineTypeEnum, GearboxType} from '@/utils/globalConstants'
+import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import {ref} from 'vue'
 import C_InspectionList from '@/pages/deal/tabs/collapses/C_InspectionList.vue'
 import MainInfoEvents from '@/pages/deal/tabs/MainInfoEvents.vue'

@@ -3,7 +3,7 @@
        :style="{minWidth: categoryId==='110'?'100%':'', 'max-width':globalStore.isMobileView?'380px':'100%'}"
   >
     <div style="font-size: 25px">Осмотр а/м</div>
-    <p style="font-size: larger">
+    <p style="font-size: larger" v-if="auto">
       {{ auto.brandTitle }}
       {{ auto.modelTitle }}
       {{ auto.year }} г.в.
