@@ -125,20 +125,6 @@
     outline: 1px solid #aaa;
 }
 
-.open-filter {
-    clear: both;
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows .73s ease-in-out;
-}
-
-.open-filter .el-select {
-    max-width: 217px;
-}
-
-.open-filter.open {
-    grid-template-rows: 1fr;
-}
 
 .deal-filters .label {
     width: 170px;

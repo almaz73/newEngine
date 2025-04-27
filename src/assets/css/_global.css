@@ -120,18 +120,30 @@ a:hover {
     text-decoration: underline;
 }
 
+
+.open-filter {
+    clear: both;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s ease-in-out;
+}
+
+.open-filter .el-select {
+    max-width: 217px;
+}
+
+.open-filter.open {
+    grid-template-rows: 1fr;
+}
+
 .more-filter {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows .73s ease-in-out;
+    transition: grid-template-rows .3s ease-in-out;
 }
 
 .more-filter.open {
     grid-template-rows: 1fr;
-}
-
-.filter__row {
-    margin: 2px 0
 }
 
 .filter__row-select .el-input__inner {
@@ -139,10 +151,6 @@ a:hover {
 }
 
 @media (width < 500px) {
-    .filter__row {
-        margin: 0;
-    }
-
     .filter__row-select .el-input__inner {
         width: 171px !important;
     }

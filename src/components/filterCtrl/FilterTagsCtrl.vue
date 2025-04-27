@@ -14,7 +14,7 @@
         class="find"
         :class="{active:true}"
         v-if="isDirty"
-        @click="getData()">Искать и запомнить фильтр</span>
+        @click="getData(); emits('openFilter')">Искать и запомнить фильтр</span>
   </div>
 
 </template>
@@ -36,6 +36,6 @@ function getData() {
 
 }
 
-const emits = defineEmits(['getData'])
+const emits = defineEmits(['getData', 'openFilter'])
 const isDirty = ref(false)
 </script>

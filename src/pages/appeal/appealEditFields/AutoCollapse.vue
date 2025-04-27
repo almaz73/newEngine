@@ -10,6 +10,16 @@
 
           <div>
             <el-button type="danger">Принять автомобиль</el-button>
+            <div style="display: inline-block; float: right; margin-right: 40px">
+              Цвет автомобиля:
+              <div
+                style="display: inline-block;text-align: center;
+                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;"
+                :style="{'background': appeal.auto.bodyColorCode}">
+                {{ appeal.auto.bodyColorName }}
+              </div>
+            </div>
+            <div style="clear: both"></div>
 
             <div style="max-width: 500px; display: flex; flex-wrap: wrap">
               <div v-for="a in [1,2,3,4,5,6]"
@@ -22,16 +32,7 @@
           <!--        Параметры-->
           <div style="width: 600px; ">
             <el-collapse accordion v-model="activeCollapseSub">
-              <el-collapse-item>
-                <template #title>
-                  <div style="display: flex; justify-content: space-between; width: 80%;">
-                    <div>Категория</div>
-                    <div
-                      style="border:1px solid gray; width: 20px; height: 20px; border-radius: 50%"
-                      :style="{'background': appeal.auto.bodyColorCode}">
-                    </div>
-                  </div>
-                </template>
+              <el-collapse-item title="Категория">
                 <div style="display: flex; flex-wrap: wrap">
                   <div>
                     <span class="label">Объем двигателя:</span> {{ appeal.auto.engineCapacity }}<br>

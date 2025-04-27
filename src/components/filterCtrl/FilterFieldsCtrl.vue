@@ -1,5 +1,5 @@
 <template>
-  <div v-for="(f, ind) in fields" :key="ind" class="filter__row">
+  <div v-for="(f, ind) in fields" :key="ind">
     <div v-if="f.type==='1.Дата'">
       <span class="label">{{ f.label }}</span>
       <el-date-picker :placeholder="f.placeholder"

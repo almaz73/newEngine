@@ -23,7 +23,7 @@
     </div>
 
     <div style="position: relative">
-      <FilterTagsCtrl @getData="getData" />
+      <FilterTagsCtrl @getData="getData"  @openFilter="openFilter" />
       <el-button v-if="timeAgo" size="small" class="timer-list-upd" @click="getData()"
                  title="Обновить таблицу">{{timeAgo}}</el-button>
     </div>
