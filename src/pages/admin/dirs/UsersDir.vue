@@ -68,6 +68,16 @@
       <el-table-column label="Место выкупа" prop="locationTitle"/>
       <el-table-column label="Логин" prop="login"/>
       <el-table-column label="Роль" prop="roleTitle"/>
+      <el-table-column label="Группа" prop="groups"/>
+      <el-table-column label="Обновить пароль">
+      <template #default="scope">
+        <el-checkbox 
+          :model-value="scope.row.needChangePass"
+          @change="(val) => changePasswordNeed(scope.row, val)"
+        />
+      </template>
+    </el-table-column>
+      <el-table-column label="Дата изменения пароля" prop="changePassDate"/>
       <el-table-column prop="roleTitle" width="120px">
 
         <template #default="scope">
@@ -220,6 +230,16 @@ function updateOrganizations() {
     organizations.value = res.items
     getData()
   })
+}
+
+async function changePasswordNeed(row: any, val: boolean) {
+  try {
+    await adminStore.changeNeedUserPassword({ id: row.id, needChangePass: val })
+    ElMessage.success('Поле "Обновить пароль" успешно обновлен')
+    row.needChangePass = val // Локально тоже меняем, чтобы не перезагружать всю таблицу
+  } catch (error) {
+    ElMessage.error('Ошибка при обновлении поля "Обновить пароль"')
+  }
 }
 
 globalStore.setTitle('Админка - Пользователи')

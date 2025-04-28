@@ -465,6 +465,10 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.get(`/api/person/get/history?id=${id}`)
             return (cache['getClientHistory'+id] = res)
         },
+        async changeNeedUserPassword(params: any) {
+            const res = await axios.post(`/api/user/password/change/need`, params).then(q => q)
+            return res.data
+        },
         async getLeadHistory(id: number) {
             if (cache['getLeadHistory'+id]) return cache['getLeadHistory'+id]
             const res = await axios.get(`/api/lead/get/history?id=${id}`)
