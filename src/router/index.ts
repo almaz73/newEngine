@@ -14,6 +14,10 @@ const router = createRouter({
             name: 'home',
             component: IntrodusionPage
         }, {
+            path: '/sets',
+            name: 'sets',
+            component: IntrodusionPage
+        },{
             path: '/login',
             name: 'login',
             component: LoginPage
@@ -172,7 +176,8 @@ router.afterEach((to) => {
       '/appeal',
       '/appeal/commission',
       '/feedback',
-      '/version'
+      '/version',
+      '/sets'
     ]
 
 
