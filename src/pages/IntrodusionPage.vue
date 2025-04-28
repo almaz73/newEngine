@@ -8,9 +8,12 @@
         <el-radio-button value="Светлая тема">Темная тема</el-radio-button>
         <el-radio-button value="Темная тема">Светлая тема</el-radio-button>
       </el-radio-group>
+      <span> &nbsp; &nbsp; &nbsp; &nbsp; Для темной темы удобнее использвоать расширение браузера
+        <a href="https://chromewebstore.google.com/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh?hl=ru&pli=1">Dark Reader</a>
+      </span>
 
       <br><br>
-      <el-button @click="clearCash()">Очистить кэш</el-button>
+      <el-button @click="clearCash()">Очистить кэш</el-button> Удаляет все cookies, localStorage, sessionStorage
     </div>
     <br>
 
@@ -48,6 +51,25 @@ function themeChanged() {
 
 function clearCash() {
   localStorage.clear()
+  sessionStorage.clear()
+
+
+  // удаление всеx cookie
+  var cookies = document.cookie.split("; ");
+  for (var c = 0; c < cookies.length; c++) {
+    var d = window.location.hostname.split(".");
+    while (d.length > 0) {
+      var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+      var p = location.pathname.split('/');
+      document.cookie = cookieBase + '/';
+      while (p.length > 0) {
+        document.cookie = cookieBase + p.join('/');
+        p.pop();
+      }
+      d.shift();
+    }
+  }
+
 }
 
 themeChanged()
