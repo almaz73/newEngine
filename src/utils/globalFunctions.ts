@@ -271,7 +271,7 @@ function translitRu2En(value: string, short: boolean) {
     return value;
 }
 
-// start проостое хеширование
+// start проостое хеширование чтобы сделать текст нечитаемым
 export function encryptPassword(password: string): string {
     let encryptedPassword: string = "";
     const alphabet: string = "abcdefghijklmnopqrstuvwxyz";
@@ -289,8 +289,7 @@ export function decryptPassword(encryptedPassword: string): string {
     }
     return decryptedPassword;
 }
-
-// end проостое хкширование
+// end простое хеширование
 
 
 // Функция для проверки полей на заполненность

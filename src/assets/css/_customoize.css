@@ -306,3 +306,8 @@ li.el-menu-item {
     gap: 8px;
     justify-content: flex-start !important;
 }
+
+.right-tabs .el-tabs__nav-scroll{
+    float: right;
+    margin-right: 30px;
+}

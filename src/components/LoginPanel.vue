@@ -5,7 +5,7 @@
       <div class="account_window__text">
         <img class="settings"
              alt=""
-             @click="router.push('/'); emits('closeLoginPanel')"
+             @click="router.push('/sets'); emits('closeLoginPanel')"
              src="@/assets/icons/icon-management-active.png">
 
 

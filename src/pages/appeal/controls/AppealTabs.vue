@@ -86,7 +86,7 @@
 
     <el-tab-pane :label="'История '+(countHistory?` (${countHistory})`:'')" name="historyTab">
       <el-scrollbar>
-        <el-timeline style="background: #fff; margin: 8px 50px; padding: 12px 12px 0 12px">
+        <el-timeline style="margin: 8px 50px; padding: 12px 12px 0 12px">
           <el-timeline-item
               v-for="(hist, index) in history"
               :key="index"
@@ -141,6 +141,9 @@
   padding: 4px 24px;
   background: #f5fff5;
   margin: 4px 20px
+}
+.dark .event-field  {
+  background: black !important;
 }
 </style>
 <script setup>
