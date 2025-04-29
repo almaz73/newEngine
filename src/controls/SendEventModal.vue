@@ -19,7 +19,7 @@
     <!--    в старом коде не работает, отключил-->
     <!--    <small v-if="!closeEnums.length">-->
     <!--      <label class="label-right l_150">Результат события</label>-->
-    <!--      <el-input ng-model="event.comment" type="text"/>-->
+    <!--      <el-input v-model="event.comment" type="text"/>-->
     <!--    </small>-->
 
 
@@ -47,7 +47,7 @@
       ></el-input>
     </small><br>
 
-    <small>
+    <div style="font-size: small">
       <label class="label-right l_150">Дата:</label>
 
       <el-button @click="openHourly()">{{ eventTime ? formatDMY_hm(eventTime) : 'Календарь' }}</el-button>
@@ -57,7 +57,7 @@
           <el-checkbox :checked="responsible"/>&nbsp; Поставить себя ответственным на событие
         </label>
       </div>
-    </small>
+    </div>
     <div style="text-align: right">
       <el-button type="danger" @click="save()" :disabled="!isReady" :icon="Plus">Добавить</el-button>
       <el-button type="info" @click="isOpen = false">Отмена</el-button>
@@ -385,12 +385,12 @@ function open(cbModal) {
   getSelects(props.lastTaskType)
 }
 
-if ((props.dealStatus == 262 || props.dealStatus == 75) && props.dealType != 10) {
+if ((props.dealStatus === 262 || props.dealStatus === 75) && props.dealType !== 10) {
   let events = [];
   // для оценок  уменьшаем список
 
   EventTypes.value.forEach(item => {
-    if (item.id == 1 || item.id == 2) events.push(item);
+    if (item.id === 1 || item.id === 2) events.push(item);
   })
 
   EventTypes.value = events;

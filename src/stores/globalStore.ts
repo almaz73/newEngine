@@ -72,7 +72,7 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/treatmentsource/get/list`).then(q => q)
             return (cache.getTreatments = res.data)
         },
-        async getRoles(params:{roles:numbers[], filterType:number}) {
+        async getRoles(params:{roles:any, filterType:number}) {
             if (cache['getModels' + params.roles.join('-')]) return cache['getModels' + params.roles.join('-')] // список статичный - кэшируем
             // @ts-ignore
             let link = String(params.roles.reduce((acc: string, el: string) => (acc + 'roles=' + el + '&'), '?'))
@@ -199,6 +199,10 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/Buy/GetBuyCategories`).then(q => q)
             return (cache.getBuyCategories = res.data)
         },
-
+        async getRoleCategories() {
+            if (cache.getRoleCategories) return cache.getRoleCategories // список статичный - кэшируем
+            const res = await axios.get(`/api/Enum/GetRoleCategories`).then(q => q)
+            return (cache.getRoleCategories = res.data)
+        },
     }
 })

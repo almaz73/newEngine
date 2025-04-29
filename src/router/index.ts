@@ -152,6 +152,7 @@ function reloadPage() {
 
 router.beforeEach(res => {
     // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
+    // нужно переписать на универсальный исправитель глюка.. который будет смотреть изменилась ли страница, любая
     setTimeout(() => {
       if (res.fullPath.includes('/undercontruction')) return false
       if (res.fullPath.includes('/appeal/')
@@ -177,7 +178,8 @@ router.afterEach((to) => {
       '/appeal/commission',
       '/feedback',
       '/version',
-      '/sets'
+      '/sets',
+      '/showcase'
     ]
 
 
