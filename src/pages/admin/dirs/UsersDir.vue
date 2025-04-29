@@ -235,10 +235,9 @@ function updateOrganizations() {
 async function changePasswordNeed(row: any, val: boolean) {
   try {
     await adminStore.changeNeedUserPassword({ id: row.id, needChangePass: val })
-    ElMessage.success('Поле "Обновить пароль" успешно обновлен')
-    row.needChangePass = val 
+    row.needChangePass = val
   } catch (error) {
-    ElMessage.error('Ошибка при обновлении поля "Обновить пароль"')
+    console.log('Ошибка при обновлении поля "Обновить пароль"')
   }
 }
 
