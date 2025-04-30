@@ -146,5 +146,6 @@ onMounted(() => {
     roleCategories.value = res.filter((el: any) => [60, 61].includes(el.value))
   })
   getManagers()
+  emits('getRecord', filter.value)
 })
 </script>

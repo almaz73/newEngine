@@ -67,23 +67,37 @@
   </div>
 </template>
 
+<style>
+.place-table-vitrina {
+  /*width: 420px;*/
+  position: relative;
+  background: white;
+  /*top: 20px;*/
+  /*padding-top: 20px;*/
+  /*margin-bottom: 20px;*/
+}
+</style>
+
 <script setup lang="ts">
 
 import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 
 const globalStore = useGlobalStore()
-const { data, rootTitle, lenRoot } = defineProps(['data', 'rootTitle', 'lenRoot'])
+const rootTitle = ref('Обращения')
+const lenRoot = ref(0)
+const isShort = ref(false)
 const items = ref<any>([])
 const lenUsers = ref(0)
 const lenOrgs = ref(0)
 const show = ref({})
 
 
-function showData(val: any) {
-  console.log('val = ', val)
-  console.log('!!!! data = ', data)
-  items.value = data
+function showData(val: any, node) {
+  console.log('::::ДАННЫЕ :::::  val = ', val)
+  console.log('.....node ......= ', node)
+  // console.log('!!!! data = ', data)
+  // items.value = data
 }
 
 defineExpose({ showData })

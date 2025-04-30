@@ -7,13 +7,13 @@
 
       <div class="vitrina_root_bts" :class="{'active':showName==='overdueTotalByUser1'}"
            @click="toShow('appealData|overdueTotalByUser1', 'Общее. Просроченные события')">
-        <span>Просроченные события</span>
+        <span style="width: 250px">Просроченные события</span>
         <span>{{ show.appealData.overdueTotal }}</span>
       </div>
 
       <div class="vitrina_root_bts" :class="{'active':showName==='archiveRequestTotalByUser1'}"
            @click="toShow('appealData|archiveRequestTotalByUser1', 'Общее. Запрос в архив')">
-        <span>Запрос в архив</span>
+        <span style="width: 250px">Запрос в архив</span>
         <span>{{ show.appealData.archiveRequestTotal }}</span>
       </div>
     </div>
@@ -181,35 +181,76 @@
   </div>
 </template>
 
+<style>
+
+.vitrina-block {
+  max-width: 500px;
+  background: white;
+  padding: 10px;
+}
+
+.vitrina-block.little {
+  width: 320px;
+}
+
+.vitrina_l_frame {
+  border: 1px solid #999;
+  border-radius: 5px;
+  max-width: 300px;
+  padding: 16px;
+  position: relative;
+  height: 90px
+}
+
+.vitrins_l_frame-title {
+  position: absolute;
+  top: -10px;
+  background: #f1f2f4;
+  padding: 0 8px
+}
+
+
+.vitrina_root_bts {
+  cursor: pointer;
+}
+
+.vitrina_root_bts:hover, .vitrina_root_bts.active span {
+  color: #d34439
+}
+
+.vitrina_root_bts span:nth-child(3) {
+  display: none;
+}
+
+.vitrina_root_bts.active span:nth-child(2):after {
+  content: "+  👈";
+  position: absolute;
+}
+
+</style>
+
 
 <script setup lang="ts">
 import { useGlobalStore } from '@/stores/globalStore.ts'
 import { ref } from 'vue'
 
 const globalStore = useGlobalStore()
-const filter2 = ref({})
 const show = ref<any>({ appealData: {}, buyCallCenterData: {}, commissionCallCenterData: {} })
-const showName = ref('')
+const showName = ref('total')
 const rootTitle = ref('')
 
-const props = defineProps(['filter2'])
+const props = defineProps(['filter2', 'data'])
+const emits = defineEmits(['lookElement'])
 
 function toShow(val, name) {
-  let path = val.split('|')
-  console.log('path = ', path)
-
-  showName.value = path[1]
-  rootTitle.value = name
-  let node = show.value[path[0]]
-  let users = node[path[1].slice(0, -1)]
-  // if (users) $scope.lenUsers = ' : ' + users.length
-  makeTable(users)
-  // $scope.isShort = true
-  // $scope.gotAlready = false
+  showName.value = val.split('|')[1]
+  emits('lookElement', val+'|'+ name)
 }
 
-function makeTable() {
-
+function showData(val:any) {
+  show.value = val
 }
+
+defineExpose({ showData })
 </script>
 
