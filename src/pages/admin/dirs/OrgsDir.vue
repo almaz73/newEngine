@@ -134,7 +134,7 @@ function getData() {
   selectedRow.value = false
 
   adminStore.getAllOrganizations(filterParams).then(res => {
-    tableData.value = res.items
+    tableData.value = res.nodes
   })
 }
 
