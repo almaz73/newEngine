@@ -95,10 +95,10 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/appeals/get/types`).then(q => q)
             return (cache.getAppeals = res.data)
         },
-        async getUsers() {
-            if (cache.getUsers) return cache.getUsers // список статичный - кэшируем
-            const res = await axios.get(`/api/appeals/get/filter/users`).then(q => q)
-            return (cache.getUsers = res.data)
+        async getUsers(link: string = '') {
+            if (cache['getUsers' + link]) return cache['getUsers' + link] // список статичный - кэшируем
+            const res = await axios.get(`/api/appeals/get/filter/users?${link}`).then(q => q)
+            return (cache['getUsers' + link] = res.data)
         },
         async getenabledemployeers() {
             if (cache.getenabledemployeers) return cache.getenabledemployeers // список статичный - кэшируем
@@ -204,5 +204,19 @@ export const useGlobalStore = defineStore('globalStore', {
             const res = await axios.get(`/api/Enum/GetRoleCategories`).then(q => q)
             return (cache.getRoleCategories = res.data)
         },
+        async getWorkflowLeadTypesForDataMart() {
+            if (cache.GetWorkflowLeadTypesForDataMart) return cache.GetWorkflowLeadTypesForDataMart
+            const res = await axios.get(`/api/Enum/GetWorkflowLeadTypesForDataMart`).then(q => q)
+            return (cache.GetWorkflowLeadTypesForDataMart = res.data)
+        },
+
+        async getDataMart(params: any, Categories: number[]) {
+            let link = ''
+            if (Categories) Categories.forEach((el: number) => link += '&Categories=' + el)
+            const res = await axios.get(`/api/Dashboard/GetDataMart?${link}`, { params }).then(q => q)
+            return res.data
+        },
+
+
     }
 })
