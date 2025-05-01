@@ -141,7 +141,7 @@ function getManagers() {
 }
 
 function goGetRecord(){
-  emits('getRecord', filter.value, 'aaaaaaaaaa')
+  emits('getRecord', filter.value)
 }
 
 function getDepartments() {

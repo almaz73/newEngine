@@ -41,8 +41,8 @@ import ShowCase_Viewer from '@/pages/showcase/ShowCase_Viewer.vue'
 let bigData: any = []
 const filter2 = ref({ SecondDateFrom: null, highCreateDatePeriod: null })
 const globalStore = useGlobalStore()
-const showCase_Viewer = ref(null)
-const showCaseMenu = ref(null)
+const showCase_Viewer = ref<any>(null)
+const showCaseMenu = ref<any>(null)
 const gotAlready = ref(false)
 
 function toDirty() {
@@ -53,29 +53,20 @@ function lookElement(link: string) {
   showCase_Viewer.value.showData(bigData, link)
 }
 
-function getRecord(val: any, a) {
-
-  console.log('!!!!!!!! a = ', a)
-  console.log('? ? ? ? val = ',val)
-
+function getRecord(val: any) {
   let params = {
     OrganizationIds: val.OrganizationIds,
     DepartmentIds: val.DepartmentIds,
     UserIds: val.UserIds,
     WorkflowLeadTypes: val.leadTypes,
-    DateFrom: new Date('01.03.2025'),//formatDateDDMMYYYY(val.lowCreateDatePeriod),
+    DateFrom: formatDateDDMMYYYY(val.lowCreateDatePeriod),
     DateTo: formatDateDDMMYYYY(val.highCreateDatePeriod),
     Users: true,
     SecondDateFrom: formatDateDDMMYYYY(filter2.value.SecondDateFrom || ''),
     highCreateDatePeriod: formatDateDDMMYYYY(filter2.value.highCreateDatePeriod || '')
   }
-  
-  console.log('gotAlready.value = ',gotAlready.value)
 
-  if(gotAlready.value){
-    console.log('999999 = ',999999)
-    return showCase_Viewer.value.showData(bigData)
-  }
+  if(gotAlready.value) return showCase_Viewer.value.showData(bigData)
 
   globalStore.isWaiting = true
   globalStore.getDataMart(params, val.categories).then(res => {

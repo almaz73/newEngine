@@ -9,8 +9,8 @@
           <el-input clearable v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
         </span>
 
-        <span style="float: right">
-          <el-button title="Вложенности" @click="levels()">⭱</el-button>
+        <span style="float: right" v-if="!isShort">
+          <el-button title="Вложенности" @click="levels()">≣</el-button>
         </span>
 
         <div class="vitrina_b_org_us" v-if="!isShort">
@@ -30,7 +30,7 @@
         </div>
       </div>
       <br>
-      <div style="padding:0 8px;">
+      <div style="padding:0 8px; height: 650px; overflow-y: auto">
         <table style="color: #494848;">
           <tbody>
           <tr
@@ -81,6 +81,7 @@
   .place-table-vitrina {
     width: 360px;
   }
+
   .vitrina_row {
     width: 270px;
   }
@@ -106,16 +107,13 @@ const globalStore = useGlobalStore()
 const rootTitle = ref('')
 const lenRoot = ref<number | null>(null)
 const isShort = ref(false)
-const items = ref([])
+const items = ref<any>([])
 const lenUsers = ref<string>()
 const lenOrgs = ref<string>('')
-const show = ref({})
+const show = ref<any>({})
 
 
 function toUser() {
-  console.log('toUser --- ')
-  console.log('show.value = ', show.value)
-
   makeTable(show.value.usersData)
   lenOrgs.value = ''
   lenUsers.value = ' : ' + show.value.usersData.length
@@ -127,11 +125,11 @@ function toOrg() {
   toSearch()
 }
 
-function makeTableWitnOrg(data) {
-  let listOrgs = {}
+function makeTableWitnOrg(data: any) {
+  let listOrgs: any = {}
   // создаем список организаций, с вложенными пользователями с их салонами
-  data.forEach(el => {
-    el.organizations.forEach(item => {
+  data.forEach((el: any) => {
+    el.organizations.forEach((item: any) => {
       if (!listOrgs[item.title]) {
         listOrgs[item.title] = {
           name: item.title,
@@ -153,7 +151,7 @@ function makeTableWitnOrg(data) {
       }
     })
   })
-  let arr = []
+  let arr: any = []
   Object.entries(listOrgs).forEach(z => arr.push(z[1]))
   lenOrgs.value = ' : ' + arr.length
   lenUsers.value = ''
@@ -161,8 +159,7 @@ function makeTableWitnOrg(data) {
 }
 
 
-
-let level = 3
+let level = 1
 
 function levels() {
   if (level < 3) level++
@@ -174,7 +171,7 @@ function levels() {
 }
 
 function level1() {
-  items.value.forEach(row => {
+  items.value.forEach((row: any) => {
     if (row.level != 1) row.show = false
     row.isDeployed = false
   })
@@ -182,7 +179,7 @@ function level1() {
 }
 
 function level2() {
-  items.value.forEach(row => {
+  items.value.forEach((row: any) => {
     row.isDeployed = true
     if (row.level === 2) {
       row.show = true
@@ -197,7 +194,7 @@ function level2() {
 }
 
 function level3() {
-  items.value.forEach(row => {
+  items.value.forEach((row: any) => {
     row.isDeployed = true
     row.show = true
   })
@@ -208,8 +205,8 @@ function level3() {
 function toSearch() {
   let val = show.value.searchText
   if (val) val = val.toLowerCase()
-  if (val) items.value.map(el => el.hide = !el.alltxt.includes(val))
-  else items.value.map(el => el.hide = false)
+  if (val) items.value.map((el: any) => el.hide = !el.alltxt.includes(val))
+  else items.value.map((el: any) => el.hide = false)
 }
 
 function rowClick(row: any) {
@@ -219,16 +216,16 @@ function rowClick(row: any) {
     row.isDeployed = !row.isDeployed
 
     if (row.isDeployed) {
-      items.value.forEach(item => {
+      items.value.forEach((item: any) => {
         if (item.level === 2 && item.parentId == row.id) item.show = true
       })
     } else {
       // закрываем все подподузлы, после закрытия подузла
-      items.value.forEach(item => {
+      items.value.forEach((item: any) => {
         if (item.level == 2 && item.parentId == row.id) {
           item.show = false
           item.isDeployed = false
-          items.value.forEach(elem => {
+          items.value.forEach((elem: any) => {
             if (elem.level == 3 && item.id == elem.parentId) {
               elem.show = false
               elem.isDeployed = false
@@ -241,7 +238,7 @@ function rowClick(row: any) {
 
   if (row.level == 2) {
     row.isDeployed = !row.isDeployed
-    items.value.forEach(item => {
+    items.value.forEach((item: any) => {
       if (item.level == 3 && item.parentId == row.id) {
         item.show = row.isDeployed
       }
@@ -262,21 +259,21 @@ function makeTable(data: any) {
   if (!data) return false
 
   if (data[0] && data[0].count != undefined) {
-    data = data.sort((a, b) => {
+    data = data.sort((a: any, b: any) => {
       if (a.count < b.count) return 1
       else if (a.count > b.count) return -1
       else 0
     })
   } else {
-    data = data.sort((a, b) => {
+    data = data.sort((a: any, b: any) => {
       if (a.appealCountByUser < b.appealCountByUser) return 1
       else if (a.appealCountByUser > b.appealCountByUser) return -1
       else 0
     })
   }
 
-  data.forEach(item_0 => {
-    let row = {}
+  data.forEach((item_0: any) => {
+    let row: any = {}
     let alltxt = ''
     row.id = rowLevel1Id
     row.name = item_0.name
@@ -290,8 +287,8 @@ function makeTable(data: any) {
 
     let rootCount = 0
     items.value.push(row)
-    item_0.organizations && item_0.organizations.forEach(item_1 => {
-      let row = {}
+    item_0.organizations && item_0.organizations.forEach((item_1: any) => {
+      let row: any = {}
       row.id = rowLevel2Id
       row.name = item_1.title
       alltxt += row.name.toLowerCase()
@@ -307,8 +304,8 @@ function makeTable(data: any) {
       row.parentId = rowLevel1Id
       items.value.push(row)
 
-      item_1.departments.forEach(item_2 => {
-        let row = {}
+      item_1.departments.forEach((item_2: any) => {
+        let row: any = {}
         row.id = rowLevel3Id
         row.name = item_2.title
         alltxt += row.name.toLowerCase()
@@ -333,8 +330,8 @@ function makeTable(data: any) {
     })
 
 
-    item_0.appeals && item_0.appeals.forEach(reject => {
-      let row = {}
+    item_0.appeals && item_0.appeals.forEach((reject: any) => {
+      let row: any = {}
       row.id = rowLevel2Id
       row.name = reject
       // rootCount += row.count
@@ -361,8 +358,6 @@ function makeTable(data: any) {
 }
 
 function showData(data: any, node: string) {
-  console.log('::::ДАННЫЕ :::::  data = ', data)
-
   if (node) {
     let path = node.split('|')
     rootTitle.value = path[2]
@@ -370,19 +365,12 @@ function showData(data: any, node: string) {
     isShort.value = true
   } else {
     makeTable(data.usersData)
-    rootTitle.value ='Обращения в работе'
+    rootTitle.value = 'Обращения в работе'
     isShort.value = false
+    setTimeout(toUser)
   }
 
-  show.value = data;
-  // cach[JSON.stringify(params)] = res
-  // level = 1
-  // makeTable(res.usersData)
-  // $scope.isWaiter = false
-  // $scope.lenOrgs = ''
-  // $scope.lenUsers = ' : ' + $scope.show.usersData.length
-  // $scope.searchText = ''
-  // $scope.isShort = false
+  show.value = data
 }
 
 defineExpose({ showData })

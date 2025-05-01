@@ -214,7 +214,6 @@
   padding: 0 8px
 }
 
-
 .vitrina_root_bts {
   cursor: pointer;
 }
@@ -246,12 +245,12 @@ const showName = ref('total')
 const props = defineProps(['filter2'])
 const emits = defineEmits(['lookElement', 'toDirty'])
 
-function toShow(val:string, name:string) {
+function toShow(val: string, name: string) {
   showName.value = val.split('|')[1]
-  emits('lookElement', val+'|'+ name)
+  emits('lookElement', val + '|' + name)
 }
 
-function showData(val:any) {
+function showData(val: any) {
   show.value = val
 }
 
