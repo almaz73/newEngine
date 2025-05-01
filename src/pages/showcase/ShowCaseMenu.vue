@@ -1,5 +1,7 @@
 <template>
+
   <div class="vitrina-block little">
+    <br>
     <div class="vitrina_l_frame" style="height: 100px">
       <div class="vitrins_l_frame-title">
         <small>Оперативная информация</small>
@@ -24,6 +26,7 @@
         <el-date-picker
           v-model="props.filter2.SecondDateFrom"
           type="date"
+          @change="emits('toDirty')"
           format="DD.MM.YYYY"
           placeholder="От"
         />
@@ -31,6 +34,7 @@
         <el-date-picker
           v-model="props.filter2.highCreateDatePeriod"
           type="date"
+          @change="emits('toDirty')"
           format="DD.MM.YYYY"
           placeholder="До"
         />
@@ -184,22 +188,23 @@
 <style>
 
 .vitrina-block {
-  max-width: 500px;
+  width: 500px;
   background: white;
   padding: 10px;
 }
 
 .vitrina-block.little {
   width: 320px;
+  background: inherit;
 }
 
 .vitrina_l_frame {
   border: 1px solid #999;
   border-radius: 5px;
-  max-width: 300px;
+  width: 310px;
   padding: 16px;
   position: relative;
-  height: 90px
+  height: 90px;
 }
 
 .vitrins_l_frame-title {
@@ -223,7 +228,7 @@
 }
 
 .vitrina_root_bts.active span:nth-child(2):after {
-  content: "+  👈";
+  content: "👈";
   position: absolute;
 }
 
@@ -237,12 +242,11 @@ import { ref } from 'vue'
 const globalStore = useGlobalStore()
 const show = ref<any>({ appealData: {}, buyCallCenterData: {}, commissionCallCenterData: {} })
 const showName = ref('total')
-const rootTitle = ref('')
 
-const props = defineProps(['filter2', 'data'])
-const emits = defineEmits(['lookElement'])
+const props = defineProps(['filter2'])
+const emits = defineEmits(['lookElement', 'toDirty'])
 
-function toShow(val, name) {
+function toShow(val:string, name:string) {
   showName.value = val.split('|')[1]
   emits('lookElement', val+'|'+ name)
 }

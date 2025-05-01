@@ -1,42 +1,37 @@
 <template>
   <div class="place-table-vitrina">
-    <h3 style="position: absolute; top: -30px; width: 100%; text-align: center">{{ rootTitle }} : {{ lenRoot }}</h3>
+    <h3 style="text-align: center" v-if="rootTitle || lenRoot">{{ rootTitle }} : {{ lenRoot }}</h3>
     <span v-show="globalStore.isWaiting"
-          style="font-size: 32px; opacity: 0.6; position: absolute; left: 47%; top: 50px"> ⧖ </span>
+          style="font-size: 32px; opacity: 0.6; position: absolute; left: 47%; top: 150px"> ⧖ </span>
     <div v-show="!globalStore.isWaiting">
-      <div class="uk-table-container" style="margin-top: 8px;padding: 8px;">
-                <span>
-                    <input v-model="show.searchText" @change="toSearch()" placeholder="поиск..." />
-                    <a
-                      @click="clearSearch()"
-                      class="uk-text-danger"
-                    ><i class="uk-icon-close"></i>
-                    </a>
-                </span>
-        <span style="float: right" v-if="!isShort">
-                        <button @click="level1()" title="Скрыть уровни"> ⭱</button>
-                        <button @click="level2()" title="Показать зависимость"> ⭶</button>
-                    <button @click="level3()" title="Показать все"> ⭳</button>
+      <div style="margin-top: 8px;padding: 8px;">
+        <span>
+          <el-input clearable v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
+        </span>
 
-                </span>
-        <div class="b_org_us" v-if="!isShort">
-          <button @click="toUser()" :style="!!lenUsers?{background:'white', borderRadius: '4px'}:''">
+        <span style="float: right">
+          <el-button title="Вложенности" @click="levels()">⭱</el-button>
+        </span>
+
+        <div class="vitrina_b_org_us" v-if="!isShort">
+          <el-button
+            plain
+            type="primary"
+            @click="toUser()"
+            :style="!!lenUsers?{background:'white', borderRadius: '4px'}:''">
             Сотрудники {{ lenUsers }}
-          </button>
-          <button @click="toOrg()"
-
-                  :style="lenOrgs?{background:'white', borderRadius: '4px'}:''">
+          </el-button>
+          <el-button
+            plain
+            @click="toOrg()"
+            :style="lenOrgs?{background:'white', borderRadius: '4px'}:''">
             Организации {{ lenOrgs }}
-          </button>
+          </el-button>
         </div>
       </div>
       <br>
-      <div class="uk-table-container"
-           style="height: 430px;overflow-y: auto;overflow-x: hidden; padding:0 8px;">
-
-        <table class="uk-table a-table-credits"
-
-               style="color: #494848; width: 100%">
+      <div style="padding:0 8px;">
+        <table style="color: #494848;">
           <tbody>
           <tr
             v-for="item in items"
@@ -49,8 +44,7 @@
               :title="item.name"
               :style="(item.level === 2) ? {'padding-left' : '15px'}:(item.level === 3) ? {'padding-left' : '30px'}:null">
 
-              <div
-                style="width: 310px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+              <div class="vitrina_row">
                 {{ item.name }}
               </div>
             </td>
@@ -61,20 +55,45 @@
           </tr>
           </tbody>
         </table>
+        <br><br>
       </div>
-
     </div>
   </div>
 </template>
 
 <style>
 .place-table-vitrina {
-  /*width: 420px;*/
   position: relative;
   background: white;
-  /*top: 20px;*/
-  /*padding-top: 20px;*/
-  /*margin-bottom: 20px;*/
+  width: 500px;
+}
+
+
+.vitrina_row {
+  cursor: pointer;
+  width: 420px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (width < 500px) {
+  .place-table-vitrina {
+    width: 360px;
+  }
+  .vitrina_row {
+    width: 270px;
+  }
+}
+
+.vitrina_b_org_us {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px
+}
+
+.vitrina_b_org_us button {
+  padding: 0 30px;
 }
 </style>
 
@@ -84,20 +103,286 @@ import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 
 const globalStore = useGlobalStore()
-const rootTitle = ref('Обращения')
-const lenRoot = ref(0)
+const rootTitle = ref('')
+const lenRoot = ref<number | null>(null)
 const isShort = ref(false)
-const items = ref<any>([])
-const lenUsers = ref(0)
-const lenOrgs = ref(0)
+const items = ref([])
+const lenUsers = ref<string>()
+const lenOrgs = ref<string>('')
 const show = ref({})
 
 
-function showData(val: any, node) {
-  console.log('::::ДАННЫЕ :::::  val = ', val)
-  console.log('.....node ......= ', node)
-  // console.log('!!!! data = ', data)
-  // items.value = data
+function toUser() {
+  console.log('toUser --- ')
+  console.log('show.value = ', show.value)
+
+  makeTable(show.value.usersData)
+  lenOrgs.value = ''
+  lenUsers.value = ' : ' + show.value.usersData.length
+  toSearch()
+}
+
+function toOrg() {
+  makeTableWitnOrg(show.value.usersData)
+  toSearch()
+}
+
+function makeTableWitnOrg(data) {
+  let listOrgs = {}
+  // создаем список организаций, с вложенными пользователями с их салонами
+  data.forEach(el => {
+    el.organizations.forEach(item => {
+      if (!listOrgs[item.title]) {
+        listOrgs[item.title] = {
+          name: item.title,
+          appealCountByUser: item.appealCountByOrg,
+          organizations: [{
+            title: el.name,
+            appealCountByOrg: item.appealCountByOrg,
+            departments: item.departments
+          }]
+        }
+      } else {
+        listOrgs[item.title].appealCountByUser += item.appealCountByOrg
+        listOrgs[item.title].organizations.push({
+          title: el.name,
+          appealCountByOrg: item.appealCountByOrg,
+          departments: item.departments
+        })
+
+      }
+    })
+  })
+  let arr = []
+  Object.entries(listOrgs).forEach(z => arr.push(z[1]))
+  lenOrgs.value = ' : ' + arr.length
+  lenUsers.value = ''
+  makeTable(arr)
+}
+
+
+
+let level = 3
+
+function levels() {
+  if (level < 3) level++
+  else level = 1
+
+  if (level === 1) level1()
+  if (level === 2) level2()
+  if (level === 3) level3()
+}
+
+function level1() {
+  items.value.forEach(row => {
+    if (row.level != 1) row.show = false
+    row.isDeployed = false
+  })
+  level = 1
+}
+
+function level2() {
+  items.value.forEach(row => {
+    row.isDeployed = true
+    if (row.level === 2) {
+      row.show = true
+      row.isDeployed = false
+    }
+    if (row.level === 3) {
+      row.show = false
+      row.isDeployed = false
+    }
+  })
+  level = 2
+}
+
+function level3() {
+  items.value.forEach(row => {
+    row.isDeployed = true
+    row.show = true
+  })
+  level = 3
+}
+
+
+function toSearch() {
+  let val = show.value.searchText
+  if (val) val = val.toLowerCase()
+  if (val) items.value.map(el => el.hide = !el.alltxt.includes(val))
+  else items.value.map(el => el.hide = false)
+}
+
+function rowClick(row: any) {
+  console.log('row = ', row)
+
+  if (row.level === 1) {
+    row.isDeployed = !row.isDeployed
+
+    if (row.isDeployed) {
+      items.value.forEach(item => {
+        if (item.level === 2 && item.parentId == row.id) item.show = true
+      })
+    } else {
+      // закрываем все подподузлы, после закрытия подузла
+      items.value.forEach(item => {
+        if (item.level == 2 && item.parentId == row.id) {
+          item.show = false
+          item.isDeployed = false
+          items.value.forEach(elem => {
+            if (elem.level == 3 && item.id == elem.parentId) {
+              elem.show = false
+              elem.isDeployed = false
+            }
+          })
+        }
+      })
+    }
+  }
+
+  if (row.level == 2) {
+    row.isDeployed = !row.isDeployed
+    items.value.forEach(item => {
+      if (item.level == 3 && item.parentId == row.id) {
+        item.show = row.isDeployed
+      }
+    })
+    if (row.alltxt === 'Отказались') window.open('#/appeal/' + row.name)
+  }
+}
+
+function makeTable(data: any) {
+  console.log('d__ata = ', data)
+
+
+  let rowLevel1Id = 1
+  let rowLevel2Id = 1
+  let rowLevel3Id = 1
+  lenRoot.value = 0
+  items.value = []
+  if (!data) return false
+
+  if (data[0] && data[0].count != undefined) {
+    data = data.sort((a, b) => {
+      if (a.count < b.count) return 1
+      else if (a.count > b.count) return -1
+      else 0
+    })
+  } else {
+    data = data.sort((a, b) => {
+      if (a.appealCountByUser < b.appealCountByUser) return 1
+      else if (a.appealCountByUser > b.appealCountByUser) return -1
+      else 0
+    })
+  }
+
+  data.forEach(item_0 => {
+    let row = {}
+    let alltxt = ''
+    row.id = rowLevel1Id
+    row.name = item_0.name
+    alltxt = row.name.toLowerCase()
+    row.level = 1
+    row.show = true
+    row.isDeployed = true
+    if (level === 1) row.isDeployed = false
+    row.appealsCount = item_0.appealCount
+    row.dealsCount = item_0.buyCount
+
+    let rootCount = 0
+    items.value.push(row)
+    item_0.organizations && item_0.organizations.forEach(item_1 => {
+      let row = {}
+      row.id = rowLevel2Id
+      row.name = item_1.title
+      alltxt += row.name.toLowerCase()
+      row.count = item_1.appealCountByOrg
+      rootCount += row.count
+      row.show = true
+      row.isDeployed = true
+      if (level === 1) {
+        row.show = false
+        row.isDeployed = false
+      }
+      row.level = 2
+      row.parentId = rowLevel1Id
+      items.value.push(row)
+
+      item_1.departments.forEach(item_2 => {
+        let row = {}
+        row.id = rowLevel3Id
+        row.name = item_2.title
+        alltxt += row.name.toLowerCase()
+        row.count = item_2.appealCountByDepartment
+        row.show = true
+        row.isDeployed = true
+        if (level === 2 || level === 1) {
+          row.show = false
+          row.isDeployed = false
+        }
+        row.level = 3
+        row.parentId = rowLevel2Id
+        row.number = null
+        row.type = 10
+        row.alltxt = alltxt
+        items.value.push(row)
+        rowLevel3Id++
+      })
+      row.alltxt = alltxt
+
+      rowLevel2Id++
+    })
+
+
+    item_0.appeals && item_0.appeals.forEach(reject => {
+      let row = {}
+      row.id = rowLevel2Id
+      row.name = reject
+      // rootCount += row.count
+      row.show = true
+      row.isDeployed = true
+      if (level === 1) {
+        row.show = false
+        row.isDeployed = false
+      }
+      row.level = 2
+      row.parentId = rowLevel1Id
+      items.value.push(row)
+      row.alltxt = 'Отказались'
+      rowLevel2Id++
+    })
+
+    row.alltxt = alltxt
+    row.count = rootCount
+    if (item_0.count) row.count = item_0.count
+    lenRoot.value += row.count
+
+    rowLevel1Id++
+  })
+}
+
+function showData(data: any, node: string) {
+  console.log('::::ДАННЫЕ :::::  data = ', data)
+
+  if (node) {
+    let path = node.split('|')
+    rootTitle.value = path[2]
+    makeTable(data[path[0]][path[1].slice(0, -1)])
+    isShort.value = true
+  } else {
+    makeTable(data.usersData)
+    rootTitle.value ='Обращения в работе'
+    isShort.value = false
+  }
+
+  show.value = data;
+  // cach[JSON.stringify(params)] = res
+  // level = 1
+  // makeTable(res.usersData)
+  // $scope.isWaiter = false
+  // $scope.lenOrgs = ''
+  // $scope.lenUsers = ' : ' + $scope.show.usersData.length
+  // $scope.searchText = ''
+  // $scope.isShort = false
 }
 
 defineExpose({ showData })

@@ -1,8 +1,8 @@
 <template>
   <div class="vitrina">
-    <ShowCaseFilters @getRecord="getRecord" :gotAlready="false" />
+    <ShowCaseFilters @getRecord="getRecord" @toDirty="toDirty"/>
     <ShowCase_Viewer ref="showCase_Viewer" />
-    <ShowCaseMenu @lookElement="lookElement" ref="showCaseMenu" :filter2 />
+    <ShowCaseMenu @lookElement="lookElement" ref="showCaseMenu" :filter2 @toDirty="toDirty" />
   </div>
 </template>
 <style>
@@ -43,25 +43,41 @@ const filter2 = ref({ SecondDateFrom: null, highCreateDatePeriod: null })
 const globalStore = useGlobalStore()
 const showCase_Viewer = ref(null)
 const showCaseMenu = ref(null)
+const gotAlready = ref(false)
+
+function toDirty() {
+  gotAlready.value = false
+}
 
 function lookElement(link: string) {
   showCase_Viewer.value.showData(bigData, link)
 }
 
-function getRecord(val: any) {
-  globalStore.isWaiting = true
+function getRecord(val: any, a) {
+
+  console.log('!!!!!!!! a = ', a)
+  console.log('? ? ? ? val = ',val)
+
   let params = {
     OrganizationIds: val.OrganizationIds,
     DepartmentIds: val.DepartmentIds,
     UserIds: val.UserIds,
     WorkflowLeadTypes: val.leadTypes,
-    DateFrom: formatDateDDMMYYYY(val.lowCreateDatePeriod),
+    DateFrom: new Date('01.03.2025'),//formatDateDDMMYYYY(val.lowCreateDatePeriod),
     DateTo: formatDateDDMMYYYY(val.highCreateDatePeriod),
     Users: true,
     SecondDateFrom: formatDateDDMMYYYY(filter2.value.SecondDateFrom || ''),
     highCreateDatePeriod: formatDateDDMMYYYY(filter2.value.highCreateDatePeriod || '')
   }
+  
+  console.log('gotAlready.value = ',gotAlready.value)
 
+  if(gotAlready.value){
+    console.log('999999 = ',999999)
+    return showCase_Viewer.value.showData(bigData)
+  }
+
+  globalStore.isWaiting = true
   globalStore.getDataMart(params, val.categories).then(res => {
     globalStore.isWaiting = false
     if (res.commissionCallCenterData) res.commissionCallCenterData.conversionByUser.map((el: any) => el.count = el.conversion)
@@ -71,6 +87,7 @@ function getRecord(val: any) {
     }
 
     bigData = res
+    gotAlready.value = true
 
     showCase_Viewer.value.showData(bigData)
     showCaseMenu.value.showData(bigData)

@@ -1,12 +1,13 @@
 <template>
   <div class="vitrina-block little">
+    <br>
     <div v-if="globalStore.account.role!=='CallManager'">
       <label class="label-red">Организация</label><br>
       <el-select
         v-model="filter.OrganizationIds"
         multiple
         clearable
-        @change="getDepartments()"
+        @change="emits('toDirty'); getDepartments()"
       >
         <el-option
           v-for="item in organizations"
@@ -22,7 +23,7 @@
       <el-select
         v-model="filter.DepartmentIds"
         multiple
-        @change="getManagers()"
+        @change="emits('toDirty');getManagers()"
         clearable
       >
         <el-option
@@ -42,7 +43,7 @@
       v-model="filter.categories"
       multiple
       clearable
-      @change="getManagers()"
+      @change="emits('toDirty'); getManagers()"
     >
       <el-option
         v-for="item in roleCategories"
@@ -56,6 +57,7 @@
     <el-select
       v-model="filter.UserIds"
       multiple
+      @change="emits('toDirty')"
       clearable
     >
       <el-option
@@ -71,6 +73,7 @@
     <el-select
       v-model="filter.leadTypes"
       multiple
+      @change="emits('toDirty')"
       clearable
     >
       <el-option
@@ -88,6 +91,7 @@
         <el-date-picker
           v-model="filter.lowCreateDatePeriod"
           type="date"
+          @change="emits('toDirty')"
           format="DD.MM.YYYY"
           placeholder="От"
         />
@@ -101,8 +105,8 @@
       </div>
     </div>
     <br>
-    <el-button type="success" style="float: right" @click="emits('getRecord', filter)">
-      Сформировать
+    <el-button type="success" style="float: right" @click="goGetRecord()">
+       Сформировать
     </el-button>
   </div>
 </template>
@@ -128,12 +132,20 @@ const filter = ref<any>({
   highCreateDatePeriod: new Date()
 })
 const workflowLeadTypes = ref([])
-const emits = defineEmits(['getRecord'])
+const emits = defineEmits(['getRecord', 'toDirty'])
 
 function getManagers() {
   let link = ''
   filter.value && filter.value.categories.forEach((el: number) => link += '&categories=' + el)
   globalStore.getUsers(link).then((res) => managers.value = res.items)
+}
+
+function goGetRecord(){
+  emits('getRecord', filter.value, 'aaaaaaaaaa')
+}
+
+function getDepartments() {
+  console.log(' = ',)
 }
 
 onMounted(() => {
