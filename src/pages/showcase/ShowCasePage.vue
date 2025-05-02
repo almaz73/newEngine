@@ -66,7 +66,11 @@ function getRecord(val: any) {
     highCreateDatePeriod: formatDateDDMMYYYY(filter2.value.highCreateDatePeriod || '')
   }
 
-  if(gotAlready.value) return showCase_Viewer.value.showData(bigData)
+  if(gotAlready.value) {
+    showCaseMenu.value.showData(bigData)
+    showCase_Viewer.value.showData(bigData)
+    return false
+  }
 
   globalStore.isWaiting = true
   globalStore.getDataMart(params, val.categories).then(res => {

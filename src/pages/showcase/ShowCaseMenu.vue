@@ -138,7 +138,7 @@
 
     </div>
     <br>
-    <div class="vitrina_l_frame" style="height: 120px">
+    <div class="vitrina_l_frame" style="height: 130px">
       <div class="vitrins_l_frame-title">
         <small>Воронка КЦ (комиссия)</small>
       </div>
@@ -229,6 +229,7 @@
 .vitrina_root_bts.active span:nth-child(2):after {
   content: "👈";
   position: absolute;
+  padding-left: 12px;
 }
 
 </style>
@@ -240,7 +241,7 @@ import { ref } from 'vue'
 
 const globalStore = useGlobalStore()
 const show = ref<any>({ appealData: {}, buyCallCenterData: {}, commissionCallCenterData: {} })
-const showName = ref('total')
+const showName = ref('totalByUser1')
 
 const props = defineProps(['filter2'])
 const emits = defineEmits(['lookElement', 'toDirty'])
@@ -251,6 +252,7 @@ function toShow(val: string, name: string) {
 }
 
 function showData(val: any) {
+  showName.value = 'totalByUser1'
   show.value = val
 }
 

@@ -66,6 +66,7 @@
   position: relative;
   background: white;
   width: 500px;
+  padding: 0 24px;
 }
 
 
@@ -79,7 +80,7 @@
 
 @media (width < 500px) {
   .place-table-vitrina {
-    width: 360px;
+    width: 330px;
   }
 
   .vitrina_row {
@@ -210,8 +211,6 @@ function toSearch() {
 }
 
 function rowClick(row: any) {
-  console.log('row = ', row)
-
   if (row.level === 1) {
     row.isDeployed = !row.isDeployed
 
@@ -243,7 +242,11 @@ function rowClick(row: any) {
         item.show = row.isDeployed
       }
     })
-    if (row.alltxt === 'Отказались') window.open('#/appeal/' + row.name)
+    if (row.alltxt === 'Отказались') {
+      let link = location.origin
+      link += '/v2/appeal/' + row.name
+      window.open(link)
+    }
   }
 }
 
@@ -360,6 +363,7 @@ function showData(data: any, node: string) {
     rootTitle.value = path[2]
     makeTable(data[path[0]][path[1].slice(0, -1)])
     isShort.value = true
+    level3()
   } else {
     makeTable(data.usersData)
     rootTitle.value = 'Обращения в работе'

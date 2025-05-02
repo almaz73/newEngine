@@ -197,7 +197,7 @@
         <span class="button-on-collapse" v-else>
           <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
                       v-if="permit_locale()">
-            <el-button :icon="Edit" size="small">Оценивать авто</el-button>
+            <el-button type="success" :icon="Edit" size="small">Оценивать авто</el-button>
           </RouterLink>
         </span>
 
