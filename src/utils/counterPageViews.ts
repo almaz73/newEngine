@@ -24,7 +24,7 @@ export const startCounter = function(path: string, time: number) {
 window.addEventListener('beforeunload', function(event) {
   // сохраняем только для dev и localhost
   if (location.href.includes('localhost') || location.href.includes('dev.')) {
-    if (account.lastName != 'Файзрахманов') {
+    if (account.lastName !== 'Файзрахманов' && pathHistory.length>60) {
       useGlobalStore().sendComment({ text: pathHistory, EntityId: account.appealIdForShowCounter, entityType: 20 })
     }
   }
