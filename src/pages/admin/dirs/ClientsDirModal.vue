@@ -349,18 +349,12 @@ function deleteBank(bank: any) {
 
 
 function open(leadId: number, cbModal: any) {
-
-  console.log('leadId = ',leadId)
-
   cb = cbModal
   isOpen.value = true
   isBankIsAdded.value = false
   title.value = 'Создание нового клиента'
   if (!leadId) client.value = clientInit
   else adminStore.getClientForModal(leadId).then(res => {
-
-    console.log('res = ',res)
-
     client.value = res.item
     client.value.person.homeAddress.fias = client.value.person.homeAddress.fias || {}
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
