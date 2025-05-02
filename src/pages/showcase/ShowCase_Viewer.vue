@@ -30,7 +30,7 @@
         </div>
       </div>
       <br>
-      <div style="padding:0 8px; height: 650px; overflow-y: auto">
+      <div style="padding:0 8px; max-height: 650px; overflow-y: auto">
         <table style="color: #494848;">
           <tbody>
           <tr
@@ -248,9 +248,6 @@ function rowClick(row: any) {
 }
 
 function makeTable(data: any) {
-  console.log('d__ata = ', data)
-
-
   let rowLevel1Id = 1
   let rowLevel2Id = 1
   let rowLevel3Id = 1
@@ -281,7 +278,7 @@ function makeTable(data: any) {
     row.level = 1
     row.show = true
     row.isDeployed = true
-    if (level === 1) row.isDeployed = false
+    row.isDeployed = (level === 1)
     row.appealsCount = item_0.appealCount
     row.dealsCount = item_0.buyCount
 
