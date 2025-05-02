@@ -184,9 +184,11 @@ router.afterEach((to) => {
     if (location.hostname === 'live.autonet.pro') {
         // if (location.hostname === "localhost") {
         let part = to.path
+        console.log('part Path = ',part)
         if (to.path.split('/').length > 2) part = to.path.slice(0, to.path.lastIndexOf('/'))
 
         let door = acceptedPaths.includes(part)
+        console.log('door = ',door)
         if (!door) router.push(`/undercontruction`)
     }
     window.scrollTo({top: 0}) // прокручиваю наверх

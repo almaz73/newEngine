@@ -10,7 +10,7 @@
 
       <div class="modal-fields">
         <el-form ref="form" :model="client" class="error-to-message">
-          <small class="line">
+          <small class="line" style="justify-content: space-around">
             <span class="label l_150">Источник</span>
 
             <el-form-item prop="treatmentSourceId"
@@ -31,6 +31,8 @@
                 </el-option-group>
               </el-select>
             </el-form-item>
+
+            <el-button @click="opanModalClientDeals()" style="outline: none">История сделок с клиентом</el-button>
           </small>
 
           <hr>
@@ -253,6 +255,7 @@
   </AppModal>
   <ClientsDirModal_History ref="clientsDirModal_History"/>
   <ClientsDirDocumentsModal ref="clientsDirDocumentsModal"/>
+  <DealsHistoryModal ref="dealsHistoryModal"/>
 </template>
 
 <script setup lang="ts">
@@ -265,6 +268,7 @@ import {ElMessage} from "element-plus";
 import {checkEmptyFields, emailValidate, formattingPhone, getFiasByName, simplePhone} from '@/utils/globalFunctions'
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 import ClientsDirDocumentsModal from "@/pages/admin/dirs/ClientsDirDocumentsModal.vue";
+import DealsHistoryModal from '@/pages/appeal/DealsHistoryModal.vue'
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)
@@ -296,6 +300,7 @@ const isBankIsAdded = ref(false)
 const clientDocuments = ref<any>()
 const documentTypes = ref<any>()
 const activeName = ref('first')
+const dealsHistoryModal = ref<any>()
 let cb: any;
 const subtitle = computed(() => {
   let fio = ''
@@ -304,6 +309,13 @@ const subtitle = computed(() => {
   if (client.value.person.lastName) fio += client.value.person.lastName + ' '
   return fio || 'Новый клиент'
 })
+
+
+function opanModalClientDeals() {
+  let clientId: number = client.value.leadId
+  let fio: string = client.value.person?.lastName + ' ' + client.value.person?.firstName
+  dealsHistoryModal.value?.open(clientId, fio)
+}
 
 function addressSelect(adr: { value: string, fias_id: number }) {
   client.value.person.registrationAddress.fiasAddress = {
@@ -337,12 +349,18 @@ function deleteBank(bank: any) {
 
 
 function open(leadId: number, cbModal: any) {
+
+  console.log('leadId = ',leadId)
+
   cb = cbModal
   isOpen.value = true
   isBankIsAdded.value = false
   title.value = 'Создание нового клиента'
   if (!leadId) client.value = clientInit
   else adminStore.getClientForModal(leadId).then(res => {
+
+    console.log('res = ',res)
+
     client.value = res.item
     client.value.person.homeAddress.fias = client.value.person.homeAddress.fias || {}
     client.value.person.registrationAddress.fias = client.value.person.registrationAddress.fias || {}
