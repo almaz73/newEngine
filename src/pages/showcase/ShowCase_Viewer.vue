@@ -72,7 +72,7 @@
 
 .vitrina_row {
   cursor: pointer;
-  width: 420px;
+  width: 400px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

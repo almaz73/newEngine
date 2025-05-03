@@ -7,6 +7,13 @@
                       (appeal.auto.vin?'  &nbsp; &nbsp; &nbsp;  vin: '+appeal.auto.vin:'')"
                         name="1" style="position: relative">
         <div style="display: flex; flex-wrap: wrap">
+          <span class="button-on-collapse">
+            <el-button type="success" size="small" @click="openEditCar()"> Редактировать авто</el-button>
+<!--            &nbsp;-->
+<!--&lt;!&ndash;            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`">&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-button type="success" :icon="Edit" size="small">Оценивать авто</el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </RouterLink>&ndash;&gt;-->
+          </span>
 
           <div>
             <el-button type="danger">Принять автомобиль</el-button>
@@ -14,7 +21,7 @@
               Цвет автомобиля:
               <div
                 style="display: inline-block;text-align: center;
-                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;"
+                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;text-shadow: 1px 1px 1px white"
                 :style="{'background': appeal.auto.bodyColorCode}">
                 {{ appeal.auto.bodyColorName }}
               </div>
@@ -90,6 +97,7 @@
       </el-collapse-item>
     </el-collapse>
   </div>
+<EdiitCarModal ref="ediitCarModal"/>
 </template>
 
 <script setup lang="ts">
@@ -97,12 +105,22 @@ import { useGlobalStore } from '@/stores/globalStore'
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import { useAppealStore } from '@/stores/appealStore'
+import EdiitCarModal from '@/pages/appeal/appealEditFields/EdiitCarModal.vue'
 
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])
+const ediitCarModal = ref(null)
+
+
+function openEditCar() {
+
+  console.log('appeal = ',appeal)
+  ediitCarModal.value.open(appeal)
+}
+
 
 
 // const PhotoNumberBuyer = {
