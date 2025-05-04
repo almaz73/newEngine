@@ -78,7 +78,7 @@
               <label class="label-right l_150">Год выпуска</label>
               <el-date-picker
                 class="auto-panel"
-                v-model="newDeal.auto.yearReleased"
+                v-model="newDeal.auto.year"
                 placeholder="Выберите год"
                 type="year"
                 :clearable="false"
@@ -384,7 +384,7 @@ const newDeal = ref<any>({
   dealStatus: 0,
   type: 0,
   lead: { leadType: 10 },
-  auto: { vinNotExist: false, yearReleased: null, autoType: 10 },
+  auto: { vinNotExist: false, year: null, autoType: 10 },
   arrest: false
 })
 const brands = ref([])
@@ -443,7 +443,7 @@ function prepareBeforeSave() {
     'model': newDeal.value.auto.carModelId,
     'brandTitle': newDeal.value.auto.carBrand, //"ВАЗ (LADA)",
     'modelTitle': newDeal.value.auto.carModel, //"Largus",
-    'year': formatDateOnlyYear(newDeal.value.auto.yearReleased), //1980,
+    'year': formatDateOnlyYear(newDeal.value.auto.year), //1980,
     'bodyType': newDeal.value.auto.bodyType, //5,
     'doorsCount': newDeal.value.auto.doorsCount, //3,
     'driveType': newDeal.value.auto.driveType, //20,
@@ -480,7 +480,7 @@ function prepareBeforeSave() {
       'modelVC': newDeal.value.auto.modelByVCId,//4820,
       'brandVCTitle': 'ывы',
       'modelVCTitle': newDeal.value.auto.modelByVC,//"ВАЗ",
-      'colorVC': newDeal.value.auto.bodyColorByVCid,
+      'colorVC': newDeal.value.auto.bodyColorByVCId,
       'colorVCTitle': newDeal.value.auto.bodyColorByVC,//'12121',
       'isOriginalVC': newDeal.value.auto.isOriginalVC,//false,
       'countOfHosts': newDeal.value.auto.countHostsByVC,//1,
@@ -503,13 +503,13 @@ function getBodyColorAuto(color: string, cb: any) {
 
 function choseColorVC() {
   let colorVC = colorsVc.find((el: any) => el.value === newDeal.value.auto.bodyColorByVC)
-  if (colorVC) newDeal.value.auto.bodyColorByVCid = colorVC.id
+  if (colorVC) newDeal.value.auto.bodyColorByVCId = colorVC.id
 }
 
 function saveBodycolor(color: string) {
   appealStore.addBodycolor(color).then(res => {
     if (res.status === 200) {
-      newDeal.value.auto.bodyColorByVCid = res.data.data.id
+      newDeal.value.auto.bodyColorByVCId = res.data.data.id
       ElMessage.info('Цвет выбран')
     }
   })
@@ -560,7 +560,7 @@ function open(appeal: any) {
 
   if (newDeal.value.auto) {
     newDeal.value.auto.mileageAuto = appeal.mileageAuto
-    newDeal.value.auto.yearReleased = new Date(String(newDeal.value.auto.yearReleased))
+    newDeal.value.auto.year = new Date(String(newDeal.value.auto.yearReleased))
     if (newDeal.value.auto.vinNotExist) newDeal.value.auto.vin = newDeal.value.auto.vin.slice(6)
     newDeal.value.auto.isOriginalVC = '' + newDeal.value.auto.isOriginalVC
     svgColor.value = newDeal.value.auto.bodyColorCode

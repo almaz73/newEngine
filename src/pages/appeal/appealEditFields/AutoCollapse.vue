@@ -18,10 +18,10 @@
           <div>
             <el-button type="danger">Принять автомобиль</el-button>
             <div style="display: inline-block; float: right; margin-right: 40px">
-              Цвет автомобиля:
+              Цвет авто:
               <div
-                style="display: inline-block;text-align: center; color: white;
-                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;text-shadow: 1px 1px 2px black"
+                style="display: inline-block;text-align: center; color: white; padding: 3px 20px;
+                border: 1px solid #ddd;border-radius: 4px;text-shadow: 1px 1px 2px black"
                 :style="{'background': appeal.auto.bodyColorCode}">
                 {{ appeal.auto.bodyColorName }}
               </div>
