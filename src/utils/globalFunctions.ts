@@ -21,6 +21,12 @@ export const formatDateDDMMYYYY = (val: string | Date) => {
     })
 }
 
+export const formatDateOnlyYear = (val: string | Date) => {
+    // формат: 1981
+    if (!val) return ''
+    return new Date(val).toLocaleString('ru-Ru', {year: 'numeric'})
+}
+
 export const formatDMY_hm = (val: Date) => {
     // формат: 17.01.2022, 15:12
     if (!val) return ''

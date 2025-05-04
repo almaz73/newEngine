@@ -9,7 +9,7 @@
           <el-input clearable v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
         </span>
 
-        <span style="float: right" v-if="!isShort">
+        <span style="float: right">
           <el-button title="Вложенности" @click="levels()">≣</el-button>
         </span>
 
@@ -363,7 +363,7 @@ function showData(data: any, node: string) {
     rootTitle.value = path[2]
     makeTable(data[path[0]][path[1].slice(0, -1)])
     isShort.value = true
-    level3()
+    level1()
   } else {
     makeTable(data.usersData)
     rootTitle.value = 'Обращения в работе'

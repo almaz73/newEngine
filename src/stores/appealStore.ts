@@ -16,7 +16,6 @@ export const useAppealStore = defineStore("appealStore", {
 
             if (!noCach && cache['getAppeals' + newUrl]) return cache['getAppeals' + newUrl]
             localStorage.setItem('appealListTime', String(Date.now()))
-
             const res = await axios.get(newUrl).then(res => res)
             return (cache['getAppeals' + newUrl] = res.data)
         },
@@ -132,6 +131,26 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.post('/api/appeals/save', params)
             return res.data
         },
+        async saveComissionAuto(params: any) {
+            return await axios.post('/api/commission/add/auto', params)
+        },
+        async getBodyColorAuto(color: string) {
+            const res = await axios.get(`/api/bodycolor/find?color=${color}`).then(q => q)
+            return res.data
+        },
+        async addBodycolor(color: string) {
+            return await axios.post(`/api/bodycolor/add/${color}`)
+        },
+        async getCarModel(model: string) {
+            const res = await axios.get(`/api/carmodel/find${model}`).then(q => q)
+            return res.data
+        },
+        async getCarBrand(model: string) {
+            const res = await axios.get(`/api/brand/find?search=${model}`).then(q => q)
+            return res.data
+        },
+
+        // api/carmodel/add
     }
 })
 

@@ -20,8 +20,8 @@
             <div style="display: inline-block; float: right; margin-right: 40px">
               Цвет автомобиля:
               <div
-                style="display: inline-block;text-align: center;
-                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;text-shadow: 1px 1px 1px white"
+                style="display: inline-block;text-align: center; color: white;
+                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;text-shadow: 1px 1px 2px black"
                 :style="{'background': appeal.auto.bodyColorCode}">
                 {{ appeal.auto.bodyColorName }}
               </div>
@@ -31,7 +31,7 @@
             <div style="max-width: 500px; display: flex; flex-wrap: wrap">
               <div v-for="a in [1,2,3,4,5,6]"
                    style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">
-                Салон - проборня доска
+                Салон - приборня доска
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@
       </el-collapse-item>
     </el-collapse>
   </div>
-<EdiitCarModal ref="ediitCarModal"/>
+<EditCarModal ref="editCarModal"/>
 </template>
 
 <script setup lang="ts">
@@ -105,31 +105,19 @@ import { useGlobalStore } from '@/stores/globalStore'
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import { useAppealStore } from '@/stores/appealStore'
-import EdiitCarModal from '@/pages/appeal/appealEditFields/EdiitCarModal.vue'
+import EditCarModal from '@/pages/appeal/appealEditFields/EditCarModal.vue'
 
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])
-const ediitCarModal = ref(null)
+const editCarModal = ref(null)
 
 
 function openEditCar() {
-
-  console.log('appeal = ',appeal)
-  ediitCarModal.value.open(appeal)
+  editCarModal.value.open(appeal)
 }
-
-
-
-// const PhotoNumberBuyer = {
-//   19: '45 спереди-справа',
-//   10: '45 спереди-слева',
-//   22: 'Cалон-приборная панель',
-//   24: 'VIN',
-//   290: 'Щиток приборов'
-// }
 
 
 </script>
