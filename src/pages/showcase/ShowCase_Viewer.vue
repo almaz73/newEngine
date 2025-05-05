@@ -117,7 +117,7 @@ const show = ref<any>({})
 function toUser() {
   makeTable(show.value.usersData)
   lenOrgs.value = ''
-  lenUsers.value = ' : ' + show.value.usersData.length
+  lenUsers.value = ' : ' + show.value.usersData?.length
   toSearch()
 }
 

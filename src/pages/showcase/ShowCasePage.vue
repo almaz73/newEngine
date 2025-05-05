@@ -39,7 +39,7 @@ import { formatDateDDMMYYYY } from '@/utils/globalFunctions'
 import ShowCase_Viewer from '@/pages/showcase/ShowCase_Viewer.vue'
 
 let bigData: any = []
-const filter2 = ref({ SecondDateFrom: null, highCreateDatePeriod: null })
+const filter2 = ref({ SecondDateFrom: null, SecondDateTo: null })
 const globalStore = useGlobalStore()
 const showCase_Viewer = ref<any>(null)
 const showCaseMenu = ref<any>(null)
@@ -63,7 +63,8 @@ function getRecord(val: any) {
     DateTo: formatDateDDMMYYYY(val.highCreateDatePeriod),
     Users: true,
     SecondDateFrom: formatDateDDMMYYYY(filter2.value.SecondDateFrom || ''),
-    highCreateDatePeriod: formatDateDDMMYYYY(filter2.value.highCreateDatePeriod || '')
+    SecondDateTo: formatDateDDMMYYYY(filter2.value.SecondDateTo || ''),
+    Categories:val.categories
   }
 
   if(gotAlready.value) {
@@ -73,7 +74,7 @@ function getRecord(val: any) {
   }
 
   globalStore.isWaiting = true
-  globalStore.getDataMart(params, val.categories).then(res => {
+  globalStore.getDataMart(params).then(res => {
     globalStore.isWaiting = false
     if (res.commissionCallCenterData) res.commissionCallCenterData.conversionByUser.map((el: any) => el.count = el.conversion)
     if (res.buyCallCenterData) {

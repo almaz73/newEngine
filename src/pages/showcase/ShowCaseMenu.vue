@@ -32,7 +32,7 @@
         />
         <br>
         <el-date-picker
-          v-model="props.filter2.highCreateDatePeriod"
+          v-model="props.filter2.SecondDateTo"
           type="date"
           @change="emits('toDirty')"
           format="DD.MM.YYYY"
