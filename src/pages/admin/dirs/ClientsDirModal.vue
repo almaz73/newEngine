@@ -32,7 +32,9 @@
               </el-select>
             </el-form-item>
 
-            <el-button @click="opanModalClientDeals()" style="outline: none">История сделок с клиентом</el-button>
+            <el-button v-if="permit()" @click="opanModalClientDeals()" style="outline: none">
+              История сделок с клиентом
+            </el-button>
           </small>
 
           <hr>
@@ -269,6 +271,7 @@ import {checkEmptyFields, emailValidate, formattingPhone, getFiasByName, simpleP
 import ClientsDirModal_History from "@/pages/admin/dirs/ClientsDirModal_History.vue";
 import ClientsDirDocumentsModal from "@/pages/admin/dirs/ClientsDirDocumentsModal.vue";
 import DealsHistoryModal from '@/pages/appeal/DealsHistoryModal.vue'
+import {permit} from "@/utils/permit.js";
 
 const globalStore = useGlobalStore()
 const isOpen = ref(false)

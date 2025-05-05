@@ -26,7 +26,7 @@
 
 
             <details v-show="buy.buyAppealChainModel">
-              <summary style="display: block">
+              <div style="display: block">
                 <table style="width: 100%; color: grey">
                   <tr>
                     <td style="width: 220px">
@@ -62,7 +62,7 @@
                   Комментарий:
                   {{ buy.buyAppealChainModel.appealComment }}
                 </div>
-              </summary>
+              </div>
               <div style="margin: 19px 0 0 52px">
                 <div v-if="buy.buyAppealChainModel.responsible">
                   <div class="label" style="margin-left: -33px; display: inline-block">Ответственный:</div>
@@ -101,7 +101,7 @@
             </details>
 
             <details v-show="buy.buyWorkflowChainModel">
-              <summary style="display: block">
+              <div style="display: block">
                 <table style="width: 100%; color: grey">
                   <tr>
                     <td style="width: 220px">
@@ -138,7 +138,7 @@
                   Комментарий:
                   {{ buy.buyWorkflowChainModel?.appealComment }}
                 </div>
-              </summary>
+              </div>
 
               <div style="margin: 19px 0 0 52px">
                 <div v-if="buy.buyWorkflowChainModel?.responsible">
@@ -187,7 +187,7 @@
         <div v-for="(comiss, ind) in dossier.commissionChains" :key="ind">
 
           <details v-if="!isComiss" v-show="comiss.commissionAppealChainModel">
-            <summary style="display: block">
+            <div style="display: block">
               <table style="width: 100%; color: grey">
                 <tr>
                   <td style="width: 220px">
@@ -223,7 +223,7 @@
                 Комментарий:
                 {{ comiss.commissionAppealChainModel.appealComment }}
               </div>
-            </summary>
+            </div>
 
             <div style="margin: 19px 0 0 52px">
               <div v-if="comiss.commissionAppealChainModel.responsible">
@@ -271,7 +271,7 @@
           <div v-if="!isSell" style="border: 1px solid #ddd; border-radius: 5px; padding: 8px; margin: 4px 0">
 
             <details v-show="sell.sellAppealChainModel">
-              <summary style="display: block">
+              <div style="display: block">
                 <table style="width: 100%; color: grey">
                   <tr>
                     <td style="width: 220px">
@@ -309,7 +309,7 @@
                   Комментарий:
                   {{ sell.sellAppealChainModel.appealComment }}
                 </div>
-              </summary>
+              </div>
 
               <div v-if="isShowSell" style="margin: 19px 0 0 52px">
                 <div v-if="sell.sellAppealChainModel.responsible">
@@ -350,7 +350,7 @@
             <!--      /////////////1/////////////////      -->
 
             <details v-show="sell.sellCreditChainModel">
-              <summary style="display: block">
+              <div style="display: block">
                 <table style="width: 100%; color: grey">
                   <tr>
                     <td style="width: 220px">
@@ -388,7 +388,7 @@
                   Комментарий:
                   {{ sell.sellCreditChainModel.appealComment }}
                 </div>
-              </summary>
+              </div>
 
               <div v-if="isShowCredit" style="margin: 19px 0 0 52px">
                 <div v-if="sell.sellCreditChainModel.responsible">
@@ -435,7 +435,7 @@
 
 
             <details v-show="sell.sellRealizationChainModel">
-              <summary style="display: block">
+              <div style="display: block">
                 <table style="width: 100%; color: grey">
                   <tr>
                     <td style="width: 220px">
@@ -474,7 +474,7 @@
                   Комментарий:
                   {{ sell.sellRealizationChainModel.appealComment }}
                 </div>
-              </summary>
+              </div>
 
               <div v-if="isShowReal" style="margin: 19px 0 0 52px">
                 <div v-if="sell.sellRealizationChainModel.manager">
