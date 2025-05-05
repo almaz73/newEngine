@@ -324,6 +324,8 @@ function open(row) {
       console.log('comiss res = ',res)
       transformationFromComission(res, row.id)
       globalStore.isWaiting = false
+      appealTabs.value.open(appeal.value)
+      init()
     })
 
   } else {
@@ -345,7 +347,6 @@ function open(row) {
       mileageAuto: res.view.appeal.mileagev,
       yearReleased: res.view.appeal.yearReleased,
       lead: res.view.autoOwner,
-      leadName: res.view.autoOwner.person.lastName,
       leadPhone: res.view.autoOwner.person.phone,
       email: res.view.autoOwner.person.email,
       leadSourceTitle: res.view.autoOwner.treatmentSourceTitle,
@@ -355,7 +356,13 @@ function open(row) {
       statusTitle: res.view.statusTitle,
       archiveReasons: res.view.archiveReasons,
       workflowLeadType: 8,
-      id: appealId
+      id: appealId,
+      leadName: res.view.autoOwner.person?.lastName+' '+res.view.autoOwner.person?.middleName+' '+ res.view.autoOwner.person?.firstName,
+      managerName: res.view.appeal.responsibleTitle,
+      managerId: res.view.appeal.responsibleId,
+      treatmentSourceTitle: res.view.appeal.treatmentSourceTitle,
+      locationName: res.view.appeal.location.title +' ('+res.view.appeal.location.city+')',
+      workflowLeadTypeTitle:'Комиссия'
     }
   }
 
@@ -388,7 +395,7 @@ function getEvents() {
         (result.comment ? ' с результатом: <b>' + result.comment : '</b>')
     }
 
-    prevTask.value = 'Следующее действие: ' + events.value[0].typeTitle + ' на ' + formatDMY_hm(events.value[0].dateStart)
+    prevTask.value = 'Следующее действие: ' + events.value[0]?.typeTitle + ' на ' + formatDMY_hm(events.value[0]?.dateStart)
 
     if (appeal.value.archiveRequestReasons?.length) {
       lastTaskAndResult.value = ''
