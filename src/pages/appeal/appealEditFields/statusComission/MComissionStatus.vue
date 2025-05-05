@@ -19,13 +19,14 @@
 
 <script setup lang="ts">
 import {useAppealStoreStatus} from "@/stores/appealStoreStatus.ts";
+import {useAppealStore} from '@/stores/appealStore'
 import {ref, watchEffect} from 'vue'
 import ComissStatusModal from "@/pages/appeal/appealEditFields/statusComission/ComissStatusModal.vue";
 
+const appealStore = useAppealStore()
 const appealStoreStatus = useAppealStoreStatus()
 const props = defineProps(['appeal'])
 const ComissionStatusTypes = ref([])
-let comissId = null
 let archiveReasons = null
 const comissStatusModal = ref()
 
@@ -38,7 +39,7 @@ function getStatuses(appealId: number) {
 
     console.log('comiss res = ',res)
 
-    comissId = res.view.id
+    appealStore.comissId = res.view.id
     archiveReasons = res.view.archiveReasons
 
     appealStoreStatus.getComissionStatuses(comissId).then(res => {
@@ -49,7 +50,7 @@ function getStatuses(appealId: number) {
 
 function makeChoice(val: any) {
   if (archiveReasons) val.archiveReasons = archiveReasons
-  comissStatusModal.value.open(val, comissId)
+  comissStatusModal.value.open(val, appealStore.comissId)
 }
 
 </script>

@@ -371,7 +371,7 @@ a:hover {
 
 .many-photo {
     display: inline-block;
-    margin: 2px 0 12px 12px;
+    margin: 2px 0 0 12px;
     width: 150px;
     background: white;
     font-size: smaller;

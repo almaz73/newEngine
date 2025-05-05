@@ -124,9 +124,10 @@ function uploadFiles(obj) {
           autoId: dealStore.deal.auto.autoId,
           dealId: dealStore.deal.id,
           number: props.number,
-          fullPhotoId: files[0].id,
-          thumbMediumId: files[1].id,
-          thumbSmallId: files[2].id
+          fullPhotoId: files.id,
+          // fullPhotoId: files[0].id,
+          // thumbMediumId: files[1].id,
+          // thumbSmallId: files[2].id
         }
         globalStore.attachFile(params).then(() => emits('setNewPhoto', true))
       })

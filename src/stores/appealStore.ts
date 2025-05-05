@@ -4,7 +4,8 @@ import cache from "@/utils/globalCach";
 
 export const useAppealStore = defineStore("appealStore", {
     state: () => ({
-        currentRow: null
+        currentRow: null,
+        comissId: null
     }),
     actions: {
         async getAppeals(params: any, noCach: boolean) {
@@ -121,7 +122,7 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/communication/appeal/get?id=${id}`)
             return (cache.getCommunication = res.data)
         },
-        async getResponsible(location) {
+        async getResponsible(location:string) {
             const res = await axios.get(`/api/user/search?location=${location}&roles=20&roles=21&roles=120&roles=110&roles=111`)
               .then(q => q)
             return res.data
@@ -149,8 +150,10 @@ export const useAppealStore = defineStore("appealStore", {
             const res = await axios.get(`/api/brand/find?search=${model}`).then(q => q)
             return res.data
         },
+        async getComissionPhotos(id: number) {
+            return await axios.get(`/api/commission/get/photos?id=${id}`).then(q => q)
+        },
 
-        // api/carmodel/add
     }
 })
 

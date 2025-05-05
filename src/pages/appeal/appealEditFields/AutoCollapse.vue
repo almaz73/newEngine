@@ -28,12 +28,14 @@
             </div>
             <div style="clear: both"></div>
 
-            <div style="max-width: 500px; display: flex; flex-wrap: wrap">
-              <div v-for="a in [1,2,3,4,5,6]"
-                   style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">
-                Салон - приборня доска
-              </div>
-            </div>
+            <C_PhotoVideoFilesComiss/>
+
+<!--            <div style="max-width: 500px; display: flex; flex-wrap: wrap">-->
+<!--              <div v-for="a in [1,2,3,4,5,6]"-->
+<!--                   style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">-->
+<!--                Салон - приборня доска-->
+<!--              </div>-->
+<!--            </div>-->
           </div>
 
           <!--        Параметры-->
@@ -106,6 +108,7 @@ import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import { useAppealStore } from '@/stores/appealStore'
 import EditCarModal from '@/pages/appeal/appealEditFields/EditCarModal.vue'
+import C_PhotoVideoFilesComiss from '@/pages/appeal/appealEditFields/C_PhotoVideoFilesComiss.vue'
 
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()

@@ -122,9 +122,10 @@ function uploadFiles(obj) {
           autoId: dealStore.deal.auto.autoId,
           dealId: dealStore.deal.id,
           number: props.number,
-          fullPhotoId: files[0].id,
-          thumbMediumId: files[1].id,
-          thumbSmallId: files[2].id
+          fullPhotoId: files.id,
+          // fullPhotoId: files[0].id,
+          // thumbMediumId: files[1].id,
+          // thumbSmallId: files[2].id
         }
         console.log('params = ',params)
         // globalStore.attachFile(params).then(() => emits('setNewPhoto', true))
@@ -143,9 +144,10 @@ function sendPhotoToServer(file:File) {
   globalStore.uploadFile({ file: file, fileName: file.name }).then(res => {
     let files = res.data.files
     let params = {
-      fullPhotoId: files[0].id,
-      thumbMediumId: files[1].id,
-      thumbSmallId: files[2].id,
+      fullPhotoId: files.id,
+      // fullPhotoId: files[0].id,
+      // thumbMediumId: files[1].id,
+      // thumbSmallId: files[2].id
       autoId: dealStore.deal.auto.autoId,
       dealId: dealStore.deal.id,
       number: 5

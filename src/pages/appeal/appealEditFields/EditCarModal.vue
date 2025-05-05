@@ -367,8 +367,8 @@ import { Plus } from '@element-plus/icons-vue'
 import { useAppealStoreStatus } from '@/stores/appealStoreStatus'
 
 
+
 const appealStoreStatus = useAppealStoreStatus()
-let comissId: number
 const form = ref(null)
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
@@ -438,7 +438,7 @@ function changeColor(colorId: number) {
 function prepareBeforeSave() {
   return  {
     'id': newDeal.value.auto.autoId,
-    'parentId': comissId,
+    'parentId': appealStore.comissId,
     'vin': newDeal.value.auto.vinNotExist ? '' : newDeal.value.auto.vin,
     'model': newDeal.value.auto.carModelId,
     'brandTitle': newDeal.value.auto.carBrand, //"ВАЗ (LADA)",
@@ -570,10 +570,6 @@ function open(appeal: any) {
   adminStore.getAutoTypes().then(res => autoTypes.value = res.items)
   globalStore.getBrands().then(res => brands.value = res).then(() => setBrand())
   globalStore.getColors().then(res => colors.value = res.items)
-
-  appealStoreStatus.getComission(appeal.id).then(res => {
-    comissId = res.view.id
-  })
 }
 
 defineExpose({ open })
