@@ -483,7 +483,7 @@ export const useAdminStore = defineStore("adminStore", {
         },
         // start фидбек
         async getAllFeedback(skip: number=0, take:number=30){
-            let link = '?take=' + take + '&skip=' + skip
+            let link = '?take=' + take + '&skip=' + skip 
             const res = await axios.get(`/api/Comment/GetAllFeedback`+link).then(q => q)
             return res.data
         },
