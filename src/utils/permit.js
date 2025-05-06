@@ -108,6 +108,9 @@ const leftPanelPermissions = {
         'Admin',
         'GenManager'
     ],
+    showcase: [
+        'CallManager'
+    ],
 }
 const reportPermissions = {
     rEmployees: [
@@ -136,7 +139,7 @@ const reportPermissions = {
         'Admin',
         'CallManager',
     ],
-    rAсtual: [
+    rActual: [
         'Admin',
         'CallManager',
         'LocalCallEmployee',

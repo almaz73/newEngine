@@ -41,23 +41,20 @@ const c_PhotoVideoFilesAnalitic = ref(null)
 
 //
 watchEffect(()=>{
-  console.log('appealStore.comissId = ',appealStore.comissId)
-  appealStore.comissId && getData(appealStore.comissId).then(res=>{
-    console.log(':::res = ',res)
-  })
-
+  appealStore.comissId && getData(appealStore.comissId)
 })
 
 
-function getData(comissId) {
-console.log(' ? ? ? ? comissId = ',comissId)
+function getData(comissId: number) {
+// console.log(' ? ? ? ? comissId = ',comissId)
 
 
   photoOrder.value = {}
   analiticPhoto.value = []
 
   appealStore.getComissionPhotos(comissId).then(res => {
-    console.log('res = ',res)
+    // console.log('res = ',res)
+    console.log('c_photo = ')
   // dealStore.getPhoto(dealStore.deal.dealId, comissId).then(res => {
     let arr = res.data.items
 

@@ -351,7 +351,6 @@ function open(row) {
       email: res.view.autoOwner.person.email,
       leadSourceTitle: res.view.autoOwner.treatmentSourceTitle,
       treatmentSourceId: res.view.autoOwner.treatmentSourceId,
-      auto: res.view.auto,
       carBrandModel: res.view.carBrand + ' ' + res.view.carModel,
       statusTitle: res.view.statusTitle,
       archiveReasons: res.view.archiveReasons,
@@ -362,7 +361,9 @@ function open(row) {
       managerId: res.view.appeal.responsibleId,
       treatmentSourceTitle: res.view.appeal.treatmentSourceTitle,
       locationName: res.view.appeal.location.title +' ('+res.view.appeal.location.city+')',
-      workflowLeadTypeTitle:'Комиссия'
+      workflowLeadTypeTitle:'Комиссия',
+      responsibleUser:  res.view.appeal.responsible,
+      auto: res.view.appeal.auto
     }
   }
 

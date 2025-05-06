@@ -181,7 +181,6 @@ const workflowHistory = ref([])
 
 
 function getEvents(noCach) {
-  console.log('getEvents = appeal.value=', appeal.value)
   if (!appeal.value) return false
   globalStore.getWorkflowHistory(appeal.value.id).then(res => {
     workflowHistory.value = res.data.items
@@ -267,8 +266,6 @@ function tabChange(val) {
 }
 
 function open(val) {
-  console.log('val = ', val)
-
   appeal.value = val
   getEvents()
 }

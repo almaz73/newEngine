@@ -555,6 +555,9 @@ function save() {
 
 
 function open(appeal: any) {
+
+  console.log(':::!!! appeal = ',appeal)
+
   isOpen.value = true
   newDeal.value.auto = appeal.auto
 

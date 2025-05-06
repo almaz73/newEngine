@@ -22,8 +22,8 @@
           <el-button :icon="Select" @click="changeType('rBuyout')">По выкупу а/м</el-button>
           Отчет по выкупу а/м
         </div>
-        <div  v-if="permit('reports','rAсtual')">
-          <el-button :icon="Flag" @click="changeType('rAсtual')"> По актуальности</el-button>
+        <div  v-if="permit('reports','rActual')">
+          <el-button :icon="Flag" @click="changeType('rActual')"> По актуальности</el-button>
           Отчет актуальности обращений
         </div>
         <div  v-if="permit('reports','rOverDue')">
@@ -46,7 +46,7 @@ import rEmployees from "./rEmployees.vue";
 import rArchive from "./rArchive.vue"
 import rCalls from "./rCalls.vue"
 import rBuyout from "./rBuyout.vue"
-import rAсtual from "./rAсtual.vue"
+import rActual from "./rActual.vue"
 import rOverDue from "./rOverDue.vue"
 import {permit} from "@/utils/permit.js";
 
@@ -58,7 +58,7 @@ const types = {
   'rArchive': rArchive,
   'rCalls': rCalls,
   'rBuyout': rBuyout,
-  'rAсtual': rAсtual,
+  'rActual': rActual,
   'rOverDue': rOverDue
 }
 

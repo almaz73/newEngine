@@ -10,6 +10,7 @@
         </span>
 
         <span style="float: right">
+          <el-button>🌓</el-button>
           <el-button title="Вложенности" @click="levels()">≣</el-button>
         </span>
 

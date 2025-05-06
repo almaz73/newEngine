@@ -3,7 +3,7 @@
   <div v-if="appeal.auto">
     <el-collapse v-model="activeCollapse">
       <el-collapse-item :title="'&nbsp; Автомобиль: ' +
-     ''+appeal.auto.carBrand +' ' +(appeal.auto.carModel||'')+ '  '+ appeal.auto.yearReleased+ '&nbsp;г. '+
+     ''+appeal.auto.brandTitle +' ' +(appeal.auto.modelTitle||'')+ '  '+ appeal.yearReleased+ '&nbsp;г. '+
                       (appeal.auto.vin?'  &nbsp; &nbsp; &nbsp;  vin: '+appeal.auto.vin:'')"
                         name="1" style="position: relative">
         <div style="display: flex; flex-wrap: wrap">
@@ -23,7 +23,7 @@
                 style="display: inline-block;text-align: center; color: white; padding: 3px 20px;
                 border: 1px solid #ddd;border-radius: 4px;text-shadow: 1px 1px 2px black"
                 :style="{'background': appeal.auto.bodyColorCode}">
-                {{ appeal.auto.bodyColorName }}
+                {{ appeal.auto.bodyColorTitle }}
               </div>
             </div>
             <div style="clear: both"></div>
@@ -48,7 +48,7 @@
                     <span class="label">Мощность дв.(л.с.):</span> {{ appeal.auto.enginePowerHP }} <br>
                     <span class="label">Тип КПП:</span> {{ GearboxTypeEnum[appeal.auto.gearboxType] }} <br>
                     <span class="label">Привод:</span> {{ driveTypiesEnum[appeal.auto.driveType] }}<br>
-                    <span class="label">Цвет:</span> {{ appeal.auto.bodyColorName }}<br>
+                    <span class="label">Цвет:</span> {{ appeal.auto.bodyColorTitle }}<br>
                     <span class="label">Пробег авто (км):</span> {{ appeal.mileageAuto }}<br>
                     <span class="label">Тип кузова:</span> {{ bodyTypesEnum[appeal.auto.bodyType] }}<br>
                   </div>
@@ -56,10 +56,12 @@
                     <span class="label">Тип двигателя:</span> {{ EngineTypeEnum[appeal.auto.engineType] }}<br>
                     <span class="label">Номер двигателя:</span> {{ appeal.auto.engineBrandAndNumber }} <br>
                     <span class="label">Номер кузова:</span> {{ appeal.auto.bodyNumber }}<br>
-                    <span class="label">Гос. номер:</span> {{ appeal.auto.registrationMark }}<br>
-                    <span class="label">Марка по ПТС:</span> {{ appeal.auto.brandByVC }}<br>
-                    <span class="label">Модель по ПТС:</span> {{ appeal.auto.modelByVC }}<br>
-                    <span class="label">ПТС оригинальный:</span> {{ appeal.auto.isOriginalVC ? 'Да' : 'Нет' }}<br>
+                    <template v-if="appeal.auto.certificate">
+                      <span class="label">Гос. номер:</span> {{ appeal.auto.certificate.registrationMark }}<br>
+                      <span class="label">Марка по ПТС:</span> {{ appeal.auto.certificate.brandVCTitle }}<br>
+                      <span class="label">Модель по ПТС:</span> {{ appeal.auto.certificate.modelVCTitle  }}<br>
+                      <span class="label">ПТС оригинальный:</span> {{ appeal.auto.certificate.isOriginalVC ? 'Да' : 'Нет' }}<br>
+                    </template>
                   </div>
                 </div>
               </el-collapse-item>
@@ -119,6 +121,9 @@ const editCarModal = ref(null)
 
 
 function openEditCar() {
+
+  console.log('!!! appeal = ',appeal)
+
   editCarModal.value.open(appeal)
 }
 
