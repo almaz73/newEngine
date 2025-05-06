@@ -122,7 +122,7 @@ const editCarModal = ref(null)
 
 function openEditCar() {
 
-  console.log('!!! appeal = ',appeal)
+  // console.log('!!! appeal = ',appeal)
 
   editCarModal.value.open(appeal)
 }

@@ -177,29 +177,26 @@
           </div>
 
           <div class="edit-car-column-to">
-            <div>
+            <div v-if="newDeal.auto.certificate">
               <label class="label-right l_150">Цвет</label>
-              <el-form-item prop="auto['bodyColorId']" style="display: inline-block; margin: 0 !important;"
-                            :rules="{required: true, message: 'Цвет', trigger: ['change']}">
                 <el-select
                   style="width: 200px"
-                  v-model="newDeal.auto.bodyColorId"
+                  v-model="newDeal.auto.certificate.colorVCTitle"
                   :filterable="!globalStore.isMobileView"
                   clearable
-                  @change="changeColor(newDeal.auto.bodyColorId)"
+                  @change="changeColor(newDeal.auto.certificate.colorVCTitle)"
                 >
                   <el-option v-for="color in colors" :key="color.id" :label="color.colorName" :value="color.id" />
                 </el-select>
-              </el-form-item>
             </div>
 
             <div>
               <label class="label-right l_150">Руль</label>
-              <el-form-item prop="auto['steeringWheelType']" style="display: inline-block; margin: 0 !important;"
+              <el-form-item prop="auto['steeringWheel']" style="display: inline-block; margin: 0 !important;"
                             :rules="{required: true, message: 'Руль', trigger: ['change']}">
                 <el-select
                   style="width: 200px"
-                  v-model="newDeal.auto.steeringWheelType"
+                  v-model="newDeal.auto.steeringWheel"
                   placeholder="Выберите руль">
                   <el-option v-for="item in SteeringWheelType" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
@@ -210,26 +207,26 @@
               <label class="label-right l_150">Категория</label>
               <el-select
                 style="width: 200px"
-                v-model="newDeal.auto.categoryAuto"
+                v-model="newDeal.auto.category"
                 placeholder="Выберите категорию">
                 <el-option v-for="item in CategoryAuto" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
 
-            <div>
+            <div v-if="newDeal.auto.certificate">
               <label class="label-right l_150"> Марка по ПТС</label>
               <el-autocomplete
                 style="width: 200px"
-                v-model="newDeal.auto.brandByVC"
+                v-model="newDeal.auto.certificate.brandVCTitle"
                 :fetch-suggestions="getCarBrand"
               />
             </div>
 
-            <div>
+            <div v-if="newDeal.auto.certificate">
               <label class="label-right l_150"> Модель по ПТС</label>
               <el-autocomplete
                 style="width: 200px"
-                v-model="newDeal.auto.modelByVC"
+                v-model="newDeal.auto.certificate.modelVCTitle"
                 :fetch-suggestions="getCarModel"
               />
               <el-button :icon="Plus"
@@ -268,9 +265,9 @@
 
             <div v-if="!newDeal.auto.Elpts">
               <label class="label-right l_150">Номер ПТС</label>
-              <el-form-item prop="auto['certificateNumber']" style="display: inline-block; margin: 0 !important;"
+              <el-form-item prop="auto.certificate['certificateNumber']" style="display: inline-block; margin: 0 !important;"
                             :rules="{required: true, message: 'Номер ПТС', trigger: ['change']}">
-                <el-input v-model="newDeal.auto.certificateNumber" />
+                <el-input v-model="newDeal.auto.certificate.certificateNumber" />
               </el-form-item>
             </div>
 
@@ -384,7 +381,7 @@ const newDeal = ref<any>({
   dealStatus: 0,
   type: 0,
   lead: { leadType: 10 },
-  auto: { vinNotExist: false, year: null, autoType: 10 },
+  auto: { vinNotExist: false, year: null, autoType: 10, certificate: {} },
   arrest: false
 })
 const brands = ref([])
@@ -451,16 +448,16 @@ function prepareBeforeSave() {
     'enginePowerHP': newDeal.value.auto.enginePowerHP, //1231,
     'engineCapacity': newDeal.value.auto.engineCapacity, // 800,
     'gearboxType': newDeal.value.auto.gearboxType, // 20,
-    'bodyColor': newDeal.value.auto.bodyColorId, //1,
+    'bodyColor': newDeal.value.auto.certificate.colorVCTitle, //1,
     'bodyColorTitle': newDeal.value.auto.bodyColorName, // "Бежевый",
     'bodyColorCode': newDeal.value.auto.bodyColorCode, // "#FFEFD5",
     'mileage': newDeal.value.auto.mileageAuto, // 123,
-    'steeringWheel': newDeal.value.auto.steeringWheelType, // 10,
+    'steeringWheel': newDeal.value.auto.steeringWheel, // 10,
     'enginePowerVC': newDeal.value.auto.enginePowerVC, // 12,
     'vinNotExist': newDeal.value.auto.vinNotExist,
-    'steeringWheelType': newDeal.value.auto.steeringWheelType,
+    // 'steeringWheelType': newDeal.value.auto.steeringWheelType,
     'autoType': newDeal.value.auto.autoType, // 30,
-    'category': newDeal.value.auto.categoryAuto, // 1,
+    'category': newDeal.value.auto.category, // 1,
     'engineBrandAndNumber': newDeal.value.auto.engineBrandAndNumber, //"132323",
     'chassisNumber': newDeal.value.auto.chassisNumber,// null,
     'bodyNumber': newDeal.value.auto.bodyNumber,// "34543534dfd53",
@@ -474,12 +471,12 @@ function prepareBeforeSave() {
       'id': newDeal.value.auto.currentVehicleCertificateId,//132285,
       'registrationMark': newDeal.value.auto.registrationMark,//"В 233 УВ 233",
       'engineCapacityByVC': newDeal.value.auto.engineCapacityByVC,//1212,
-      'certificateNumber': newDeal.value.auto.certificateNumber,//"12 КА 232323",
+      'certificateNumber': newDeal.value.auto.certificate!.certificateNumber,//"12 КА 232323",
       'issuedDate': newDeal.value.auto.issuedDate,// "18.04.2025",
       'issuedBy': newDeal.value.auto.issuedBy,// "увд",
       'modelVC': newDeal.value.auto.modelByVCId,//4820,
       'brandVCTitle': 'ывы',
-      'modelVCTitle': newDeal.value.auto.modelByVC,//"ВАЗ",
+      'modelVCTitle': newDeal.value.auto.certificate!.modelVCTitle,//"ВАЗ",
       'colorVC': newDeal.value.auto.bodyColorByVCId,
       'colorVCTitle': newDeal.value.auto.bodyColorByVC,//'12121',
       'isOriginalVC': newDeal.value.auto.isOriginalVC,//false,
@@ -517,9 +514,9 @@ function saveBodycolor(color: string) {
 
 function saveNewBrand() {
   let params = {
-    brand: newDeal.value.auto.brandByVC,
+    brand: newDeal.value.auto.certificate.brandVCTitle,
     entityType: 20,
-    model: newDeal.value.auto.modelByVC
+    model: newDeal.value.auto.certificate.modelVCTitle
   }
   adminStore.saveBrands(params).then(() => {
     ElMessage.info('Модель в базу добавлен')
@@ -528,7 +525,7 @@ function saveNewBrand() {
 }
 
 function getCarModel(modelName: string, cb: any) {
-  let params = `?brand=${newDeal.value.auto.brandByVC}&model=${newDeal.value.auto.modelByVC}`
+  let params = `?brand=${newDeal.value.auto.certificate.brandVCTitle}&model=${newDeal.value.auto.certificate.modelVCTitle}`
   appealStore.getCarModel(params).then(res => {
     res.models.map((el: any) => (el.value = el.model))
     cb(res.models)
@@ -546,10 +543,12 @@ function getCarBrand(modelName: string, cb: any) {
 function save() {
   checkEmptyFields(form.value).then(() => {
     let params = prepareBeforeSave()
+    
+    console.log('params = ',params)
 
-    appealStore.saveComissionAuto(params).then(res => {
-      if (res.status === 200) location.reload()
-    })
+    // appealStore.saveComissionAuto(params).then(res => {
+    //   if (res.status === 200) location.reload()
+    // })
   })
 }
 
@@ -557,13 +556,15 @@ function save() {
 function open(appeal: any) {
 
   console.log(':::!!! appeal = ',appeal)
+  console.log('newDeal.value.yearReleased = ',appeal.yearReleased)
 
   isOpen.value = true
   newDeal.value.auto = appeal.auto
 
   if (newDeal.value.auto) {
     newDeal.value.auto.mileageAuto = appeal.mileageAuto
-    newDeal.value.auto.year = new Date(String(newDeal.value.auto.yearReleased))
+    newDeal.value.auto.year = new Date(String(appeal.yearReleased))
+    newDeal.value.auto.registrationMark = newDeal.value.auto.certificate!.registrationMark
     if (newDeal.value.auto.vinNotExist) newDeal.value.auto.vin = newDeal.value.auto.vin.slice(6)
     newDeal.value.auto.isOriginalVC = '' + newDeal.value.auto.isOriginalVC
     svgColor.value = newDeal.value.auto.bodyColorCode

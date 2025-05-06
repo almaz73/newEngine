@@ -217,7 +217,7 @@
             <label class="label-right l_150">Номер ПТС (todo)</label>
             <el-form-item prop="auto['certificateNumber']" style="display: inline-block; margin: 0 !important;"
                           :rules="{required: true, message: 'Номер ПТС', trigger: ['change']}">
-              <el-input v-model="newDeal.auto.certificateNumber" />
+              <el-input v-model="newDeal.auto?.certificateNumber" />
             </el-form-item>
           </div>
 
