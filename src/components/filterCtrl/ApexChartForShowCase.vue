@@ -65,8 +65,7 @@ function getData(data: any) {
 
   setTimeout(() => {
     data && data.length && data.forEach(el => {
-      console.log('el = ',el)
-      chartOptions.value.labels.push(el.name.slice(0, 16))
+      chartOptions.value.labels.push(el.name)
       chartOptions.value.series.push(el.count)
     })
   })

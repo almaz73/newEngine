@@ -17,15 +17,15 @@
         <div class="vitrina_b_org_us" v-if="!isShort">
           <el-button
             plain
-            type="primary"
+            :type="lenUsers?'primary':''"
             @click="toUser()"
-            :style="!!lenUsers?{background:'white', borderRadius: '4px'}:''">
+            >
             Сотрудники {{ lenUsers }}
           </el-button>
           <el-button
             plain
-            @click="toOrg()"
-            :style="lenOrgs?{background:'white', borderRadius: '4px'}:''">
+            :type="lenOrgs?'primary':''"
+            @click="toOrg()">
             Организации {{ lenOrgs }}
           </el-button>
         </div>
@@ -363,7 +363,10 @@ function makeTable(data: any) {
     rowLevel1Id++
   })
 
-  currentDataForDiagram.value = items.value
+  let kkk: any = []
+  items.value.forEach((el: any) => el.level === 1 && kkk.push({ name: el.name, count: el.count }))
+
+  currentDataForDiagram.value = kkk
 }
 
 function showData(data: any, node: string) {
@@ -374,7 +377,6 @@ function showData(data: any, node: string) {
     isShort.value = true
     level1()
   } else {
-    makeTable(data.usersData)
     rootTitle.value = 'Обращения в работе'
     isShort.value = false
     setTimeout(toUser)
