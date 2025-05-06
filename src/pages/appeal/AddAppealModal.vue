@@ -3,7 +3,7 @@
             @closeModal="closeModal()"
             :width="globalStore.isMobileView? 360: 500"
             :top="40"
-            :title="'Обращения - '+workflowTypes.find(el=>el.value===newWorkflow.workflowLeadType).title"
+            :title="'Обращение - '+workflowTypes.find(el=>el.value===String(newWorkflow.workflowLeadType)).title"
             draggable>
     <el-scrollbar>
       <div class="modal-fields">
@@ -335,11 +335,7 @@ function open(cbModal) {
   globalStore.getTreatmentSources().then(res => {
     treatmentSources.value = res.items
   })
-  globalStore.getenabledemployeers().then(res => {
-    managers.value = res.items
-    managers.value.map(user => user.fullName = globalStore.account.lastName + ' '
-        + globalStore.account.firstName + ' ' + (globalStore.account.middleName == null ? ' ' : globalStore.account.middleName))
-  })
+  globalStore.getenabledemployeers().then(res => managers.value = res.items)
 }
 
 function changeWorkflowType(flow) {

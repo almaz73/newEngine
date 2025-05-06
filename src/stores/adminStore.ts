@@ -100,10 +100,9 @@ export const useAdminStore = defineStore("adminStore", {
             const res = await axios.delete('/api/user/' + id).then(q => q)
             return res.data
         },
-        async getAllOrganizations() {
-            if (cache.getAllOrganizations) return cache.getAllOrganizations
-            const res = await axios.get('/api/orgElement/0').then(q => q)
-            return (cache.getAllOrganizations = res.data)
+        async getAllOrganizations(link: string) {
+            const res = await axios.get(`/api/OrgElement/GetAll${link}`).then(q => q)
+            return res.data
         },
         async getOrganization(id: number) {
             if (cache.getOrganization) return cache.getOrganization

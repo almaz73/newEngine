@@ -3,30 +3,39 @@
   <div v-if="appeal.auto">
     <el-collapse v-model="activeCollapse">
       <el-collapse-item :title="'&nbsp; Автомобиль: ' +
-     ''+appeal.auto.carBrand +' ' +(appeal.auto.carModel||'')+ '  '+ appeal.auto.yearReleased+ '&nbsp;г. '+
+     ''+appeal.auto.brandTitle +' ' +(appeal.auto.modelTitle||'')+ '  '+ appeal.yearReleased+ '&nbsp;г. '+
                       (appeal.auto.vin?'  &nbsp; &nbsp; &nbsp;  vin: '+appeal.auto.vin:'')"
                         name="1" style="position: relative">
         <div style="display: flex; flex-wrap: wrap">
+          <span class="button-on-collapse">
+            <el-button type="success" size="small" @click="openEditCar()"> Редактировать авто</el-button>
+<!--            &nbsp;-->
+<!--&lt;!&ndash;            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`">&ndash;&gt;-->
+<!--&lt;!&ndash;              <el-button type="success" :icon="Edit" size="small">Оценивать авто</el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </RouterLink>&ndash;&gt;-->
+          </span>
 
           <div>
             <el-button type="danger">Принять автомобиль</el-button>
             <div style="display: inline-block; float: right; margin-right: 40px">
-              Цвет автомобиля:
+              Цвет авто:
               <div
-                style="display: inline-block;text-align: center;
-                border: 1px solid gray;width: 120px;height: 25px;border-radius: 4px;"
+                style="display: inline-block;text-align: center; color: white; padding: 3px 20px;
+                border: 1px solid #ddd;border-radius: 4px;text-shadow: 1px 1px 2px black"
                 :style="{'background': appeal.auto.bodyColorCode}">
-                {{ appeal.auto.bodyColorName }}
+                {{ appeal.auto.bodyColorTitle }}
               </div>
             </div>
             <div style="clear: both"></div>
 
-            <div style="max-width: 500px; display: flex; flex-wrap: wrap">
-              <div v-for="a in [1,2,3,4,5,6]"
-                   style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">
-                Салон - проборня доска
-              </div>
-            </div>
+            <C_PhotoVideoFilesComiss/>
+
+<!--            <div style="max-width: 500px; display: flex; flex-wrap: wrap">-->
+<!--              <div v-for="a in [1,2,3,4,5,6]"-->
+<!--                   style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">-->
+<!--                Салон - приборня доска-->
+<!--              </div>-->
+<!--            </div>-->
           </div>
 
           <!--        Параметры-->
@@ -39,7 +48,7 @@
                     <span class="label">Мощность дв.(л.с.):</span> {{ appeal.auto.enginePowerHP }} <br>
                     <span class="label">Тип КПП:</span> {{ GearboxTypeEnum[appeal.auto.gearboxType] }} <br>
                     <span class="label">Привод:</span> {{ driveTypiesEnum[appeal.auto.driveType] }}<br>
-                    <span class="label">Цвет:</span> {{ appeal.auto.bodyColorName }}<br>
+                    <span class="label">Цвет:</span> {{ appeal.auto.bodyColorTitle }}<br>
                     <span class="label">Пробег авто (км):</span> {{ appeal.mileageAuto }}<br>
                     <span class="label">Тип кузова:</span> {{ bodyTypesEnum[appeal.auto.bodyType] }}<br>
                   </div>
@@ -47,10 +56,12 @@
                     <span class="label">Тип двигателя:</span> {{ EngineTypeEnum[appeal.auto.engineType] }}<br>
                     <span class="label">Номер двигателя:</span> {{ appeal.auto.engineBrandAndNumber }} <br>
                     <span class="label">Номер кузова:</span> {{ appeal.auto.bodyNumber }}<br>
-                    <span class="label">Гос. номер:</span> {{ appeal.auto.registrationMark }}<br>
-                    <span class="label">Марка по ПТС:</span> {{ appeal.auto.brandByVC }}<br>
-                    <span class="label">Модель по ПТС:</span> {{ appeal.auto.modelByVC }}<br>
-                    <span class="label">ПТС оригинальный:</span> {{ appeal.auto.isOriginalVC ? 'Да' : 'Нет' }}<br>
+                    <template v-if="appeal.auto.certificate">
+                      <span class="label">Гос. номер:</span> {{ appeal.auto.certificate.registrationMark }}<br>
+                      <span class="label">Марка по ПТС:</span> {{ appeal.auto.certificate.brandVCTitle }}<br>
+                      <span class="label">Модель по ПТС:</span> {{ appeal.auto.certificate.modelVCTitle  }}<br>
+                      <span class="label">ПТС оригинальный:</span> {{ appeal.auto.certificate.isOriginalVC ? 'Да' : 'Нет' }}<br>
+                    </template>
                   </div>
                 </div>
               </el-collapse-item>
@@ -90,6 +101,7 @@
       </el-collapse-item>
     </el-collapse>
   </div>
+<EditCarModal ref="editCarModal"/>
 </template>
 
 <script setup lang="ts">
@@ -97,21 +109,23 @@ import { useGlobalStore } from '@/stores/globalStore'
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import { useAppealStore } from '@/stores/appealStore'
+import EditCarModal from '@/pages/appeal/appealEditFields/EditCarModal.vue'
+import C_PhotoVideoFilesComiss from '@/pages/appeal/appealEditFields/C_PhotoVideoFilesComiss.vue'
 
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])
+const editCarModal = ref(null)
 
 
-// const PhotoNumberBuyer = {
-//   19: '45 спереди-справа',
-//   10: '45 спереди-слева',
-//   22: 'Cалон-приборная панель',
-//   24: 'VIN',
-//   290: 'Щиток приборов'
-// }
+function openEditCar() {
+
+  console.log('!!! appeal = ',appeal)
+
+  editCarModal.value.open(appeal)
+}
 
 
 </script>

@@ -16,7 +16,7 @@
 
         <div v-if="!isOnlyEvents">
           <div class="event-field" v-for="checkAuto in workflowHistory" :key="checkAuto.id" style="background: #f5fff5">
-            🚗  <small>{{ formatDMY_hm(checkAuto.created) }}</small> :  {{ checkAuto.userTitle }}
+            🚗 <small>{{ formatDMY_hm(checkAuto.created) }}</small> : {{ checkAuto.userTitle }}
             <small style="margin: 12px"><b> Смена статуса оценки: </b></small>
             {{ checkAuto.statusTitle }}
             <div v-if="checkAuto.comment">
@@ -116,9 +116,9 @@
     </el-tab-pane>
     <el-tab-pane label="Фото автомобиля" name="photoTab" v-if="carPhoto">
       <UploadPhotoViewer
-        :width="300"
-        :height="200"
-        :url="carPhoto"
+          :width="300"
+          :height="200"
+          :url="carPhoto"
       />
     </el-tab-pane>
   </el-tabs>
@@ -142,7 +142,8 @@
   background: #f5fff5;
   margin: 4px 20px
 }
-.dark .event-field  {
+
+.dark .event-field {
   background: black !important;
 }
 </style>
@@ -179,10 +180,9 @@ const lastTask = ref(null)
 const workflowHistory = ref([])
 
 
-
 function getEvents(noCach) {
-  if( !appeal.value ) return false
-  globalStore.getWorkflowHistory(appeal.value.id).then(res=>{
+  if (!appeal.value) return false
+  globalStore.getWorkflowHistory(appeal.value.id).then(res => {
     workflowHistory.value = res.data.items
   })
 
@@ -212,7 +212,7 @@ function closeEvent() {
 
 function canCloseEvent(event) {
   if ((event.status !== EventStatusEnums['Закрыта'] && appeal.value.status !== 17 &&
-          event.responsible.id === globalStore.account.id && globalStore.account.id !== appeal.value.responsibleUser.id) ||
+          event.responsible.id === globalStore.account.id && globalStore.account.id !== appeal.value.responsibleUser?.id) ||
       (event.status !== EventStatusEnums['Закрыта'] && globalStore.account.role === 'Admin')) return true
 }
 
@@ -259,6 +259,7 @@ function getComments() {
 
 
 function tabChange(val) {
+  console.log('tabChange = ')
   if (val === 'eventsTab') getEvents()
   if (val === 'smsTab') getSms()
   if (val === 'commentsTab') getComments()

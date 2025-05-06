@@ -146,16 +146,14 @@ function toBase64(file) {
 
 function save() {
   if (!text.value) return ElMessage.error('Напишите ваши замечания')
-  adminStore.postFeedback({
-    content: text.value + ':::' + imgBase64.value,
-    id: 0,
-    status: 10
-  })
-      .then(() => {
-        clearFields()
-        getData()
-        ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
-      })
+  globalStore.isWaiting = true
+  adminStore.postFeedback({ content: text.value + ':::' + imgBase64.value, id: 0, status: 10 })
+    .then(() => {
+      clearFields()
+      getData()
+      ElMessage.success('Спасибо за подсказку и помощь в улучшении программы!')
+      globalStore.isWaiting = false
+    })
 }
 
 function clearFields() {

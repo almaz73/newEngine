@@ -5,7 +5,6 @@ import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
 import {startCounter} from "@/utils/counterPageViews"
 
-//const instance = getCurrentInstance();
 const router = createRouter({
     history: createWebHistory('/v2/'),
     routes: [
@@ -150,21 +149,20 @@ function reloadPage() {
     localStorage.setItem('isRouteGluk', 'true') // для выхода из бесконечного цикла
 }
 
-router.beforeEach(res => {
-    // console.log("%c ...прослушивание route=", "color: orange; font-size:smaller", res.fullPath);
-    // нужно переписать на универсальный исправитель глюка.. который будет смотреть изменилась ли страница, любая
+router.beforeEach((res, from, next) => {
+    let startLength = document.body.textContent.length
+
     setTimeout(() => {
-      if (res.fullPath.includes('/undercontruction')) return false
-      if (res.fullPath.includes('/appeal/')
-        && !document.body.textContent.includes('Источник:')) return reloadPage()
-      else if (res.fullPath.includes('/auto/')
-        && !document.body.textContent.includes('Категория автомобиля')) return reloadPage()
-      else if (res.fullPath.includes('/login')
-        && !document.body.textContent.includes('Авторизация')) return reloadPage()
-      localStorage.removeItem('isRouteGluk')
-    }, 730)
-  startCounter(res.fullPath, Date.now())
-});
+        let endLength = document.body.textContent.length
+        if (startLength === endLength) reloadPage()
+        else localStorage.removeItem('isRouteGluk')
+    }, 1000)
+
+    if (res.fullPath === '/appeal/showcase') router.push('/showcase')
+    else next()
+
+    startCounter(res.fullPath, Date.now())
+})
 
 router.afterEach((to) => {
     let acceptedPaths = [

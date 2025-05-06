@@ -11,7 +11,6 @@
     <div class="appealStatRight" v-if="lastTaskAndResult || prevTask">
       <div style="font-size: smaller">
         <div class="label-red ">Результаты и действия:</div>
-        <!--              <div v-if="lastTaskAndResult">⚡{{ lastTaskAndResult }}</div>-->
         <div v-if="lastTaskAndResult" v-html="lastTaskAndResult"/>
         <div>⚡{{ prevTask }}</div>
       </div>
@@ -27,31 +26,6 @@
     </div>
   </div>
   <br>
-
-  <!--small-- style="display: flex;
-  flex-direction: column;
-  flex-wrap: wrap; gap: 8px">
-    <span class="nowrap" v-if="appeal.locationName">
-      <span class="label-red ">Место выкупа:</span>
-      <span class="bigger">{{ appeal.locationName }} ({{ appeal.city }})</span>
-    </span>
-    <span class="nowrap" v-if="appeal.buyCategoryTitle">
-      <span class="label-red ">Вид выкупа:</span>
-      <span class="bigger">{{ appeal.buyCategoryTitle }}</span>
-    </span>
-    <span class="nowrap" v-if="appeal.workflowLeadType">
-      <span class="label-red ">Тип обращения: </span>
-      <div style="font-size: 22px; display: inline-block; margin-top: -5px">{{ workFlowType(appeal.workflowLeadType) }} &nbsp;</div>
-    </span>
-    <span class="nowrap" v-if="appeal.tradeInDirectionTypeTitle">
-          <span class="label-red"> Тип направления:</span>
-          <span class="bigger">{{ appeal.tradeInDirectionTypeTitle }}</span>
-    </span>
-    <span class="nowrap">
-          <span class="label-red ">Источник:</span>
-          <span class="bigger">{{ appeal.treatmentSourceTitle }}</span>
-    </span>
-  </small-->
 
   <small style="display: flex; flex-direction: column; flex-wrap: wrap; gap: 8px; margin-top: -10px">
     <span class="nowrap" v-if="appeal.locationName">
@@ -83,7 +57,9 @@
   <div class="big-collapse">
     <el-collapse>
       <el-collapse-item
-          :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+' &nbsp; ☎: '+formattingPhone(appeal.leadPhone)"
+          :title="'&nbsp; Клиент: &nbsp; '+appeal.leadName+
+          (appeal.leadPhone?' &nbsp; ☎: '+formattingPhone(appeal.leadPhone):'')+
+           (!appeal.leadPhone && appeal.swapPhone?' &nbsp; подменный ☎: '+formattingPhone(appeal.swapPhone):'') "
           name="1"  style="position: relative">
         <div class="collapse"  style="gap: 0 40px">
           <div>
@@ -180,7 +156,7 @@
 
 
           <span class="button-on-collapse">
-            <el-button size="small" @click="opanModalClientDeals()">История сделок с клиентом</el-button>
+            <el-button size="small"  v-if="permit()"  @click="opanModalClientDeals()">История сделок с клиентом</el-button>
            </span>
         </div>
         <br>
@@ -197,7 +173,7 @@
         <span class="button-on-collapse" v-else>
           <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
                       v-if="permit_locale()">
-            <el-button :icon="Edit" size="small">Оценивать авто</el-button>
+            <el-button type="success" :icon="Edit" size="small">Заполнить данные авто</el-button>
           </RouterLink>
         </span>
 
@@ -251,6 +227,7 @@
 import {useGlobalStore} from "@/stores/globalStore";
 import {ref} from "vue";
 import {useAppealStore} from "@/stores/appealStore";
+import {useAppealStoreStatus} from "@/stores/appealStoreStatus";
 import {Workflows} from "@/utils/globalConstants";
 import AppealTabs from "@/pages/appeal/controls/AppealTabs.vue";
 import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
@@ -266,7 +243,9 @@ import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
 import AutoCollapse from '@/pages/appeal/appealEditFields/AutoCollapse.vue'
+import {permit} from "@/utils/permit";
 
+const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore();
 const appealStore = useAppealStore()
 const isOpen = ref(false);
@@ -286,7 +265,7 @@ const editAppealSimpleModal = ref(null)
 const activeNames = ref(['2'])
 
 const openModalSwapHistory = function (typeHistory) {
-  let clientId = appeal.value.lead.leadId || appeal.value.leadId
+  let clientId = appeal.value.lead.leadId || appeal.value.lead.id || appeal.value.leadId
   swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
 }
 
@@ -326,7 +305,7 @@ function workFlowType(type) {
 
 
 function openClient() {
-  appeal.value && clientsDirModal.value.open(appeal.value.leadId, null)
+  appeal.value && clientsDirModal.value.open(appeal.value.leadId || appeal.value.lead.id, null)
 }
 
 function openLegal() {
@@ -338,15 +317,55 @@ function open(row) {
   if (row.fullPhotos?.length) carPhoto.value = row.fullPhotos[0]
   isOpen.value = true;
   globalStore.isWaiting = true
-  appealStore.getAppeal(row.id).then(res => {
+  
+  if (location.pathname.includes('/commission/') && globalStore.account.role !== 'Admin') {
+    appealStoreStatus.getComission(row.id).then(res => {
+      appealStore.comissId = res.view.id
+      console.log('comiss res = ',res)
+      transformationFromComission(res, row.id)
+      globalStore.isWaiting = false
+      appealTabs.value.open(appeal.value)
+      init()
+    })
 
-    console.log('9999 Основной res = ',res)
+  } else {
+    appealStore.getAppeal(row.id).then(res => {
 
-    globalStore.isWaiting = false
-    appeal.value = res
-    appealTabs.value.open(res)
-    init()
-  })
+      console.log('9999 Основной res = ', res)
+
+      globalStore.isWaiting = false
+      appeal.value = res
+      appealTabs.value.open(res)
+      init()
+    })
+  }
+
+  function transformationFromComission(res, appealId) {
+    appeal.value = res.view.autoOwner
+    appeal.value = {
+      clientStatus: res.view.appeal.clientStatusTitle,
+      mileageAuto: res.view.appeal.mileagev,
+      yearReleased: res.view.appeal.yearReleased,
+      lead: res.view.autoOwner,
+      leadPhone: res.view.autoOwner.person.phone,
+      email: res.view.autoOwner.person.email,
+      leadSourceTitle: res.view.autoOwner.treatmentSourceTitle,
+      treatmentSourceId: res.view.autoOwner.treatmentSourceId,
+      carBrandModel: res.view.carBrand + ' ' + res.view.carModel,
+      statusTitle: res.view.statusTitle,
+      archiveReasons: res.view.archiveReasons,
+      workflowLeadType: 8,
+      id: appealId,
+      leadName: res.view.autoOwner.person?.lastName+' '+res.view.autoOwner.person?.middleName+' '+ res.view.autoOwner.person?.firstName,
+      managerName: res.view.appeal.responsibleTitle,
+      managerId: res.view.appeal.responsibleId,
+      treatmentSourceTitle: res.view.appeal.treatmentSourceTitle,
+      locationName: res.view.appeal.location.title +' ('+res.view.appeal.location.city+')',
+      workflowLeadTypeTitle:'Комиссия',
+      responsibleUser:  res.view.appeal.responsible,
+      auto: res.view.appeal.auto
+    }
+  }
 
 
 }
@@ -377,7 +396,7 @@ function getEvents() {
         (result.comment ? ' с результатом: <b>' + result.comment : '</b>')
     }
 
-    prevTask.value = 'Следующее действие: ' + events.value[0].typeTitle + ' на ' + formatDMY_hm(events.value[0].dateStart)
+    prevTask.value = 'Следующее действие: ' + events.value[0]?.typeTitle + ' на ' + formatDMY_hm(events.value[0]?.dateStart)
 
     if (appeal.value.archiveRequestReasons?.length) {
       lastTaskAndResult.value = ''

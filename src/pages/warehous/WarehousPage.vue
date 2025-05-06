@@ -76,9 +76,9 @@
 
       <el-table-column label="Характеристики">
         <template #default="scope">
-          <div v-if="scope.row.auto" class="red-text">{{ scope.row.auto.certificate.registrationMark }}</div>
+          <div v-if="scope.row.auto && scope.row.auto.certificate" class="red-text">{{ scope.row.auto.certificate.registrationMark }}</div>
           <div v-if="scope.row.auto">{{ scope.row.auto.gearboxTypeTitle }}</div>
-          <div v-if="scope.row.auto">V. двиг (см): {{ scope.row.auto.certificate.engineCapacityByVC }}</div>
+          <div v-if="scope.row.auto &&  scope.row.auto.certificate">V. двиг (см): {{ scope.row.auto.certificate.engineCapacityByVC }}</div>
         </template>
       </el-table-column>
 
