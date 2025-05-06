@@ -556,7 +556,6 @@ function save() {
 function open(appeal: any) {
 
   console.log(':::!!! appeal = ',appeal)
-  console.log('newDeal.value.yearReleased = ',appeal.yearReleased)
 
   isOpen.value = true
   newDeal.value.auto = appeal.auto

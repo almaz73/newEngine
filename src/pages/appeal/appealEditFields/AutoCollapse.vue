@@ -9,16 +9,13 @@
         <div style="display: flex; flex-wrap: wrap">
           <span class="button-on-collapse">
             <el-button type="success" size="small" @click="openEditCar()"> Редактировать авто</el-button>
-<!--            &nbsp;-->
-<!--&lt;!&ndash;            <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`">&ndash;&gt;-->
-<!--&lt;!&ndash;              <el-button type="success" :icon="Edit" size="small">Оценивать авто</el-button>&ndash;&gt;-->
-<!--&lt;!&ndash;            </RouterLink>&ndash;&gt;-->
+
           </span>
 
           <div>
             <el-button type="danger">Принять автомобиль</el-button>
             <div style="display: inline-block; float: right; margin-right: 40px">
-              Цвет авто:
+              Цвет авто: &nbsp;
               <div
                 style="display: inline-block;text-align: center; color: white; padding: 3px 20px;
                 border: 1px solid #ddd;border-radius: 4px;text-shadow: 1px 1px 2px black"
@@ -28,14 +25,8 @@
             </div>
             <div style="clear: both"></div>
 
-            <C_PhotoVideoFilesComiss/>
+            <C_PhotoVideoFilesComiss />
 
-<!--            <div style="max-width: 500px; display: flex; flex-wrap: wrap">-->
-<!--              <div v-for="a in [1,2,3,4,5,6]"-->
-<!--                   style="width: 150px; height: 100px; background: #6b6b6b; margin: 2px">-->
-<!--                Салон - приборня доска-->
-<!--              </div>-->
-<!--            </div>-->
           </div>
 
           <!--        Параметры-->
@@ -59,8 +50,9 @@
                     <template v-if="appeal.auto.certificate">
                       <span class="label">Гос. номер:</span> {{ appeal.auto.certificate.registrationMark }}<br>
                       <span class="label">Марка по ПТС:</span> {{ appeal.auto.certificate.brandVCTitle }}<br>
-                      <span class="label">Модель по ПТС:</span> {{ appeal.auto.certificate.modelVCTitle  }}<br>
-                      <span class="label">ПТС оригинальный:</span> {{ appeal.auto.certificate.isOriginalVC ? 'Да' : 'Нет' }}<br>
+                      <span class="label">Модель по ПТС:</span> {{ appeal.auto.certificate.modelVCTitle }}<br>
+                      <span class="label">ПТС оригинальный:</span>
+                      {{ appeal.auto.certificate.isOriginalVC ? 'Да' : 'Нет' }}<br>
                     </template>
                   </div>
                 </div>
@@ -101,7 +93,7 @@
       </el-collapse-item>
     </el-collapse>
   </div>
-<EditCarModal ref="editCarModal"/>
+  <EditCarModal ref="editCarModal" />
 </template>
 
 <script setup lang="ts">
@@ -121,9 +113,6 @@ const editCarModal = ref(null)
 
 
 function openEditCar() {
-
-  // console.log('!!! appeal = ',appeal)
-
   editCarModal.value.open(appeal)
 }
 

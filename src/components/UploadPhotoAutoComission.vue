@@ -8,14 +8,16 @@
     :http-request="uploadFiles"
     :data-name="props.number"
   >
-    <span class="photo-upload" @click.stop="()=>{}" v-if="props.photo">
+    <span class="photo-upload" @click.stop="()=>{}" v-if="props.photo && props.photo.bigPhoto">
       <span class="photo-upload__btns">
         <span @click="handlePictureCardPreview()" title="Посмотреть" style="width: 130px; height: 160px">
           <el-icon><zoom-in /></el-icon>
         </span>
       </span>
    </span>
-    <img alt="" v-if="props.photo" :src="props.photo.bigPhoto+isDirty" class="avatar" />
+    <span style="width: 0; opacity: 0">{{isDirty}}</span>
+    <img :key="isDirty" alt="" v-if="props.photo.bigPhoto" :src="props.photo.bigPhoto+isDirty" class="avatar">
+
     <el-icon v-else class="avatar-uploader-icon">
       <Plus />
     </el-icon>
@@ -56,11 +58,12 @@ import { Plus, ZoomIn } from '@element-plus/icons-vue'
 import { ref, watch } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useDealStore } from '@/stores/dealStore'
-import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
+import { checkPictureBeforeUpload } from '@/utils/globalFunctions'
+import { useAppealStore } from '@/stores/appealStore'
 
+const appealStore = useAppealStore()
 const dealStore = useDealStore()
 const props = defineProps(['photo', 'number', 'listBigPictures'])
-const emits = defineEmits(['setNewPhoto'])
 const globalStore = useGlobalStore()
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
@@ -100,43 +103,35 @@ watch(dialogVisible, (val) => {
 
 
 const deleteFile = () => {
-  globalStore.deleteFile(props.photo.id).then(res => res.status === 200 && emits('setNewPhoto', true))
-}
-
-function rotatePhoto(type) {
-  globalStore.rotatoPhoto(props.photo.id, type).then(() => {
-    emits('setNewPhoto', true)
+  props.photo.id && appealStore.deleteFileComission(appealStore.comissId, props.photo.id).then(res => {
+    props.photo.bigPhoto = ''
+    delete props.listBigPictures[props.number]
     isDirty.value = '?' + parseInt(Math.random() * 100)
   })
 }
 
-//https://dev.autonet.pro/api/commission/add/photo
+function rotatePhoto(type) {
+  globalStore.rotatoPhoto(props.photo.id, type).then(() => {
+    isDirty.value = '?' + parseInt(Math.random() * 100)
+  })
+}
 
 function uploadFiles(obj) {
-  
-  console.log('props = ',props)
-
   if (checkPictureBeforeUpload(obj.file, 2)) return false
 
+  globalStore.isWaiting = true
   if (obj.file) {
     const fr = new FileReader()
     fr.onload = () => {
-      /* 
-      file: (двоичный)
-      id: 2179
-      number: 22
-      */
-      globalStore.uploadComissionPhoto({ file: obj.file, fileName: obj.file.name }).then(res => {
-        console.log('res = ',res)
-        // let files = res.data.files
-        // let params = {
-        //   autoId: dealStore.deal?.auto?.autoId,
-        //   dealId: dealStore.deal?.id,
-        //   number: props.number,
-        //   fullPhotoId: files.id,
-        // }
-        // globalStore.attachFile(params).then(() => emits('setNewPhoto', true))
-      })
+      appealStore.uploadComissionPhoto({ file: obj.file, id: appealStore.comissId, number: props.number })
+        .then(res => {
+          props.listBigPictures[props.number] = res.data.photo.fullUrl
+          props.photo.bigPhoto = res.data.photo.fullUrl
+          props.photo.id = res.data.photo.id
+          props.photo['bigPhoto'] = res.data.photo.fullUrl
+          isDirty.value = '?' + parseInt(Math.random() * 100)
+          globalStore.isWaiting = false
+        })
     }
     fr.readAsDataURL(obj.file)
   }

@@ -1,22 +1,20 @@
 <template>
-  <div style="width: 520px; height: 370px; overflow-y: auto" >
+  <div style="height: 380px; overflow-y: auto" :style="{width:globalStore.isMobileView?'360px':'520px' }">
   <div class="many-photo" :class="{empty:false}"
        v-for="nessasaryPhoto in mandatoryPhotoList"
        :key="nessasaryPhoto">
     {{ PhotoNumberBuyer[nessasaryPhoto] }}
 
 
-      <div class="photo-place" style="margin: 12px; ">
-        <UploadPhotoAuto @setNewPhoto="getData"
-                         :photo="photoOrder[nessasaryPhoto]"
-                         :number="nessasaryPhoto"
-                         :listBigPictures="bigPhotos"
-        />
-      </div>
+    <div class="photo-place" style="margin: 12px; ">
+      <UploadPhotoAutoComission
+        :photo="photoOrder[nessasaryPhoto]||{bigPhoto:'', id:null}"
+        :number="nessasaryPhoto"
+        :listBigPictures="bigPhotos"
+      />
+    </div>
     </div>
   </div>
-
-  <C_PhotoVideoFilesAnalitic ref="c_PhotoVideoFilesAnalitic"/>
 
 </template>
 
@@ -25,16 +23,15 @@ import { ref, watchEffect } from 'vue'
 import {useDealStore} from '@/stores/dealStore'
 import {useGlobalStore} from "@/stores/globalStore";
 import {PhotoNumberBuyer} from "@/utils/globalConstants";
-import UploadPhotoAuto from "@/components/UploadPhotoAuto.vue";
-import C_PhotoVideoFilesAnalitic from '@/pages/deal/tabs/collapses/C_PhotoVideoFilesAnalitic.vue'
 import {useAppealStore} from '@/stores/appealStore'
+import UploadPhotoAutoComission from '@/components/UploadPhotoAutoComission.vue'
 
 const appealStore = useAppealStore()
 const globalStore = useGlobalStore()
 const dealStore = useDealStore()
-const bigPhotos = ref({})
-const photoOrder = ref({})
-const mandatoryPhotoList = [10, 20, 22]//, 24, 290, 19, 11, 23, 308, 306, 307]
+const bigPhotos = ref<any>({})
+const photoOrder = ref<any>({})
+const mandatoryPhotoList = [10, 20, 22, 24, 290, 19, 11, 23, 308, 306, 307]
 const analiticPhoto = ref([])
 const c_PhotoVideoFilesAnalitic = ref(null)
 
@@ -46,39 +43,24 @@ watchEffect(()=>{
 
 
 function getData(comissId: number) {
-// console.log(' ? ? ? ? comissId = ',comissId)
-
-
   photoOrder.value = {}
   analiticPhoto.value = []
 
   appealStore.getComissionPhotos(comissId).then(res => {
-    // console.log('res = ',res)
-    console.log('c_photo = ')
-  // dealStore.getPhoto(dealStore.deal.dealId, comissId).then(res => {
     let arr = res.data.items
 
     arr.forEach((el:any) => {
-      bigPhotos.value[el.number] = el.fullPhotoUrl
-      if (el.number === 5) analiticPhoto.value.push(el)
+      bigPhotos.value[el.number] = el.fullUrl
     })
 
-    if (c_PhotoVideoFilesAnalitic.value)c_PhotoVideoFilesAnalitic.value.open(analiticPhoto.value)
+
+    c_PhotoVideoFilesAnalitic.value?.open(analiticPhoto.value)
 
     mandatoryPhotoList.forEach(el => {
-      let p = arr.find((item:any) => item.number === el)
-      if (p) {
-        photoOrder.value[el] ={
-          fullphotos: p.thumbSmallUrl,
-          bigPhoto: p.fullPhotoUrl,
-          id: p.id
-        }
-      }
-
+      let p = arr.find((item: any) => item.number === el)
+      if (p) photoOrder.value[el] = { bigPhoto: p.fullUrl, id: p.id }
     })
   })
 }
 
-
-// defineExpose({open})
 </script>

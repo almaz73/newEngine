@@ -154,6 +154,19 @@ export const useAppealStore = defineStore("appealStore", {
             return await axios.get(`/api/commission/get/photos?id=${id}`).then(q => q)
         },
 
+        // работа с фотками комиссии
+        async uploadComissionPhoto(params: any) { // сохранение файла
+            let fd: FormData = new FormData();
+            fd.append('file', params.file);
+            fd.append('id', params.id);
+            fd.append('number', params.number);
+            return await axios.post(`/api/commission/add/photo`, fd).then(q => q)
+        },
+        async deleteFileComission(comissId: number, photoId: number) {
+            return await axios.delete(`/api/commission/delete/photo/${comissId}/${photoId}`).then(q => q)
+        },
+
+
     }
 })
 
