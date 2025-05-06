@@ -10,7 +10,7 @@
         </span>
 
         <span style="float: right">
-          <el-button>🌓</el-button>
+          <el-button @click="isDiagram=true">🌓</el-button>
           <el-button title="Вложенности" @click="levels()">≣</el-button>
         </span>
 
@@ -31,8 +31,8 @@
         </div>
       </div>
       <br>
-      <div style="padding:0 8px; max-height: 650px; overflow-y: auto">
-        <table style="color: #494848;">
+      <div style="padding:0 4px; max-height: 650px" :style="{'overflow-y':isDiagram?'':'auto'}">
+        <table style="color: #494848;" v-if="!isDiagram">
           <tbody>
           <tr
             v-for="item in items"
@@ -56,6 +56,8 @@
           </tr>
           </tbody>
         </table>
+
+        <ApexChartForShowCase :currentDataForDiagram v-if="isDiagram" />
         <br><br>
       </div>
     </div>
@@ -104,6 +106,7 @@
 
 import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
+import ApexChartForShowCase from '@/components/filterCtrl/ApexChartForShowCase.vue'
 
 const globalStore = useGlobalStore()
 const rootTitle = ref('')
@@ -113,6 +116,8 @@ const items = ref<any>([])
 const lenUsers = ref<string>()
 const lenOrgs = ref<string>('')
 const show = ref<any>({})
+const currentDataForDiagram = ref({})
+const isDiagram = ref(false)
 
 
 function toUser() {
@@ -170,6 +175,7 @@ function levels() {
   if (level === 1) level1()
   if (level === 2) level2()
   if (level === 3) level3()
+  isDiagram.value = false
 }
 
 function level1() {
@@ -356,6 +362,8 @@ function makeTable(data: any) {
 
     rowLevel1Id++
   })
+
+  currentDataForDiagram.value = items.value
 }
 
 function showData(data: any, node: string) {
