@@ -73,44 +73,20 @@
           </template>
         </el-table-column>
       </el-table>
-
+        <el-pagination
+            v-model:page-size="rowsPerPage"
+            :page-sizes="[5, 10, 20, 50]"
+            layout="prev, pager, next, sizes"
+            @current-change="changePage"
+            @size-change="changePageSize"
+            :total="total"
+        />
+        <div class="page-info">Показаны {{ pageDescription }} из {{ total }}</div>
     </main>
     <FeedBackModal ref="feedBackModal"/>
   </div>
 </template>
 
-<style scoped>
-.feedback {
-  padding: 0;
-  z-index: -1;
-  max-width: 1200px;
-}
-
-.feedback .textarea {
-  width: 600px;
-  margin: 4px 0
-}
-
-.feedback .collapse {
-  width: 600px;
-  color: #bbb;
-  padding: 0;
-
-  border: 1px solid #ddd
-}
-
-@media (width < 500px) {
-  .feedback .textarea, .feedback .collapse {
-    width: 300px;
-  }
-}
-
-.feedback .collapse .div {
-  padding: 0 43px;
-  font-size: 16px;
-  color: #999;
-}
-</style>
 
 <script setup>
 import {onMounted, ref} from 'vue'
@@ -128,8 +104,13 @@ const autor = ref('')
 const text = ref('')
 const tableData = ref([])
 const feedBackModal = ref(null)
+const rowsPerPage = ref(5)
+const total = ref(0)
+const pageDescription = ref('')
+const filter = {skip: 0, take: 5,}
 let imageFiled = null
 let imgBase64 = ref(null)
+
 
 window.addEventListener('paste', e => {
   if (e.clipboardData) {
@@ -150,6 +131,7 @@ window.addEventListener('paste', e => {
     }
   }
 })
+
 
 function sound(row) {
   const utterance2 = new SpeechSynthesisUtterance(' Сообщение : ' + row.message)
@@ -198,7 +180,7 @@ function deleteFeedBack(id) {
 }
 
 function getData() {
-  adminStore.getAllFeedback(0, 12).then(res => {
+  adminStore.getAllFeedback(filter.skip,filter.take).then(res => {
     res.items.map(el => {
       let part = el.content.split(':::')
       el.message = part[0]
@@ -206,9 +188,22 @@ function getData() {
       if (part[2]) el.comment = part[2]
       return el
     })
-    tableData.value = res.items.reverse()
+    res.items = res.items.sort((a, b) => b.id - a.id); // убрать если сортировка не нужна
+    tableData.value = res.items;
+    total.value = res.total;
   })
 }
+
+function changePageSize() {
+  filter.take = rowsPerPage.value
+  getData()
+}
+
+function changePage(val) {
+  filter.skip = (val - 1) * rowsPerPage.value
+  getData()
+}
+
 
 
 onMounted(() => {
@@ -219,3 +214,36 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.feedback {
+  padding: 0;
+  z-index: -1;
+  max-width: 1200px;
+}
+
+.feedback .textarea {
+  width: 600px;
+  margin: 4px 0
+}
+
+.feedback .collapse {
+  width: 600px;
+  color: #bbb;
+  padding: 0;
+
+  border: 1px solid #ddd
+}
+
+@media (width < 500px) {
+  .feedback .textarea, .feedback .collapse {
+    width: 300px;
+  }
+}
+
+.feedback .collapse .div {
+  padding: 0 43px;
+  font-size: 16px;
+  color: #999;
+}
+</style>
