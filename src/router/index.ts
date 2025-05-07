@@ -150,10 +150,10 @@ function reloadPage() {
 }
 
 router.beforeEach((res, from, next) => {
-    let startLength = document.body.textContent.length
+    let startLength = document.body.textContent?.length
 
     setTimeout(() => {
-        let endLength = document.body.textContent.length
+        let endLength = document.body.textContent?.length
         if (startLength === endLength) reloadPage()
         else localStorage.removeItem('isRouteGluk')
     }, 1000)
@@ -181,8 +181,8 @@ router.afterEach((to) => {
     ]
 
 
-    // if (location.hostname === 'live.autonet.pro') {
-    if (location.hostname === "localhost") {
+    if (location.hostname === 'live.autonet.pro') {
+    // if (location.hostname === "localhost") {
         let part = to.path
         if (to.path.split('/').length > 2) part = to.path.slice(0, to.path.lastIndexOf('/'))
 

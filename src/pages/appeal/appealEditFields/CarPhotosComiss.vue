@@ -56,7 +56,7 @@ const photoOrder = ref<any>({})
 const mandatoryPhotoList = [10, 20, 22, 24, 290, 19, 11, 23, 308, 306, 307]
 const analiticPhoto = ref([])
 const c_PhotoVideoFilesAnalitic = ref(null)
-const isShort = ref(true)
+const isShort = ref(false)
 
 
 watchEffect(() => {

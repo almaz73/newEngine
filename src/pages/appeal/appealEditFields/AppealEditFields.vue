@@ -171,10 +171,7 @@
           </RouterLink>
         </span>
         <span class="button-on-collapse" v-else>
-          <RouterLink :to="`/auto/deal/add/clientId/${appeal.leadId}/parentId/${appeal.id}`"
-                      v-if="permit_locale()">
-            <el-button type="success" :icon="Edit" size="small">Заполнить данные авто</el-button>
-          </RouterLink>
+           <el-button type="success" size="small" @click="openEditCar()"> Заполнить данные авто (комиссия)</el-button>
         </span>
 
         <div style="width: 310px">
@@ -189,6 +186,7 @@
     </el-collapse>
     <!--    Развернутый раздел авто-->
     <AutoCollapse :appeal />
+    <EditCarModal ref="editCarModal" />
   </div>
 
   <el-divider/>
@@ -244,6 +242,7 @@ import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
 import AutoCollapse from '@/pages/appeal/appealEditFields/AutoCollapse.vue'
 import {permit} from "@/utils/permit";
+import EditCarModal from "@/pages/appeal/appealEditFields/EditCarModal.vue";
 
 const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore();
@@ -263,7 +262,11 @@ const communicationLink = ref('')
 const dealsHistoryModal = ref(null)
 const editAppealSimpleModal = ref(null)
 const activeNames = ref(['2'])
+const editCarModal = ref(null)
 
+function openEditCar() {
+  editCarModal.value.open(appeal)
+}
 const openModalSwapHistory = function (typeHistory) {
   let clientId = appeal.value.lead.leadId || appeal.value.lead.id || appeal.value.leadId
   swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
@@ -318,7 +321,7 @@ function open(row) {
   isOpen.value = true;
   globalStore.isWaiting = true
   
-  if (location.pathname.includes('/commission/') && globalStore.account.role !== 'Admin') {
+  if (location.pathname.includes('/commission/')) { // данные комиссии
     appealStoreStatus.getComission(row.id).then(res => {
       appealStore.comissId = res.view.id
       console.log('comiss res = ',res)
@@ -329,7 +332,7 @@ function open(row) {
     })
 
   } else {
-    appealStore.getAppeal(row.id).then(res => {
+    appealStore.getAppeal(row.id).then(res => { // данные выкупа
 
       console.log('9999 Основной res = ', res)
 

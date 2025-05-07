@@ -99,18 +99,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
-import EditCarModal from '@/pages/appeal/appealEditFields/EditCarModal.vue'
 import CarPhotosComiss from '@/pages/appeal/appealEditFields/CarPhotosComiss.vue'
+import EditCarModal from "@/pages/appeal/appealEditFields/EditCarModal.vue";
 
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])
 const editCarModal = ref(null)
 
-
 function openEditCar() {
   editCarModal.value.open(appeal)
 }
+
 
 
 </script>
