@@ -181,13 +181,18 @@ router.afterEach((to) => {
     ]
 
 
-    if (location.hostname === 'live.autonet.pro') {
-        // if (location.hostname === "localhost") {
+    // if (location.hostname === 'live.autonet.pro') {
+    if (location.hostname === "localhost") {
         let part = to.path
         if (to.path.split('/').length > 2) part = to.path.slice(0, to.path.lastIndexOf('/'))
 
         let door = acceptedPaths.includes(part)
-        if (!door) router.push(`/undercontruction`)
+        // if (!door) router.push(`/undercontruction`)
+
+        if (!door) {
+            router.push(`/desktop`)
+            ElMessage({message: 'Доступ к разделу закрыт!', type: 'warning',})
+        }
     }
     window.scrollTo({top: 0}) // прокручиваю наверх
 })
@@ -200,3 +205,4 @@ function fail(val: any) {
 }
 
 export default router
+

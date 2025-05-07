@@ -25,7 +25,7 @@
             </div>
             <div style="clear: both"></div>
 
-            <C_PhotoVideoFilesComiss />
+            <CarPhotosComiss />
 
           </div>
 
@@ -97,15 +97,11 @@
 </template>
 
 <script setup lang="ts">
-import { useGlobalStore } from '@/stores/globalStore'
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
-import { useAppealStore } from '@/stores/appealStore'
 import EditCarModal from '@/pages/appeal/appealEditFields/EditCarModal.vue'
-import C_PhotoVideoFilesComiss from '@/pages/appeal/appealEditFields/C_PhotoVideoFilesComiss.vue'
+import CarPhotosComiss from '@/pages/appeal/appealEditFields/CarPhotosComiss.vue'
 
-const appealStore = useAppealStore()
-const globalStore = useGlobalStore()
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])

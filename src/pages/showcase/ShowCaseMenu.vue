@@ -2,7 +2,7 @@
 
   <div class="vitrina-block little">
     <br>
-    <div class="vitrina_l_frame" style="height: 100px">
+    <div class="vitrina_l_frame" style="height: 100px" v-if="show.appealData">
       <div class="vitrins_l_frame-title">
         <small>Оперативная информация</small>
       </div>
@@ -42,7 +42,7 @@
     </div>
     <br>
 
-    <div class="vitrina_l_frame" style="height: 50px">
+    <div class="vitrina_l_frame" style="height: 50px" v-if="show.appealData">
       <div class="vitrins_l_frame-title">
         <small>Оперативная информация по обращениями</small>
       </div>
@@ -68,7 +68,7 @@
 
     </div>
     <br>
-    <div class="vitrina_l_frame" style="height: 190px">
+    <div class="vitrina_l_frame" style="height: 190px" v-if="show.buyCallCenterData">
       <div class="vitrins_l_frame-title">
         <small>Воронка КЦ (выкуп)</small>
       </div>
@@ -138,7 +138,7 @@
 
     </div>
     <br>
-    <div class="vitrina_l_frame" style="height: 130px">
+    <div class="vitrina_l_frame" style="height: 130px" v-if="show.commissionCallCenterData">
       <div class="vitrins_l_frame-title">
         <small>Воронка КЦ (комиссия)</small>
       </div>

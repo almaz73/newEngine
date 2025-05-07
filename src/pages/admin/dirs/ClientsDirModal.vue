@@ -10,7 +10,7 @@
 
       <div class="modal-fields">
         <el-form ref="form" :model="client" class="error-to-message">
-          <small class="line" style="justify-content: space-around">
+          <div class="line" style="justify-content: space-around">
             <span class="label l_150">Источник</span>
 
             <el-form-item prop="treatmentSourceId"
@@ -32,10 +32,13 @@
               </el-select>
             </el-form-item>
 
-            <el-button v-if="permit()" @click="opanModalClientDeals()" style="outline: none">
-              История сделок с клиентом
-            </el-button>
-          </small>
+            <div style="width: 660px ; text-align: center">
+              <el-button v-if="permit()" @click="opanModalClientDeals()" style="outline: none">
+                История сделок с клиентом
+              </el-button>
+            </div>
+
+          </div>
 
           <hr>
           <el-form-item prop="person.lastName"

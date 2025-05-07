@@ -28,6 +28,7 @@
             <details v-show="buy.buyAppealChainModel">
               <div style="display: block">
                 <table style="width: 100%; color: grey">
+                  <tbody>
                   <tr>
                     <td style="width: 220px">
                       <a v-if="buy.buyAppealChainModel.appealId"
@@ -57,6 +58,7 @@
                             </span>
                     </td>
                   </tr>
+                  </tbody>
                 </table>
                 <div v-if="buy.buyAppealChainModel.appealComment" style="margin-bottom:12px">
                   Комментарий:
@@ -103,6 +105,7 @@
             <details v-show="buy.buyWorkflowChainModel">
               <div style="display: block">
                 <table style="width: 100%; color: grey">
+                  <tbody>
                   <tr>
                     <td style="width: 220px">
                       <a v-if="buy.buyWorkflowChainModel?.autoId"
@@ -132,6 +135,7 @@
                                 </span>
                     </td>
                   </tr>
+                  </tbody>
                 </table>
 
                 <div v-if="buy.buyWorkflowChainModel?.appealComment" style="margin-bottom:12px">
@@ -189,6 +193,7 @@
           <details v-if="!isComiss" v-show="comiss.commissionAppealChainModel">
             <div style="display: block">
               <table style="width: 100%; color: grey">
+                <tbody>
                 <tr>
                   <td style="width: 220px">
                     <a v-if="comiss.commissionAppealChainModel?.appealId"
@@ -217,6 +222,7 @@
                             </span>
                   </td>
                 </tr>
+                </tbody>
               </table>
 
               <div v-if="comiss.commissionAppealChainModel.appealComment" style="margin-bottom:12px">
@@ -273,6 +279,7 @@
             <details v-show="sell.sellAppealChainModel">
               <div style="display: block">
                 <table style="width: 100%; color: grey">
+                  <tbody>
                   <tr>
                     <td style="width: 220px">
                       <a v-if="sell.sellAppealChainModel?.appealId"
@@ -302,6 +309,7 @@
                                 </span>
                     </td>
                   </tr>
+                  </tbody>
                 </table>
 
 
@@ -352,6 +360,7 @@
             <details v-show="sell.sellCreditChainModel">
               <div style="display: block">
                 <table style="width: 100%; color: grey">
+                  <tbody>
                   <tr>
                     <td style="width: 220px">
                       <a v-if="sell.sellCreditChainModel?.creditID"
@@ -382,6 +391,7 @@
                                 </span>
                     </td>
                   </tr>
+                  </tbody>
                 </table>
 
                 <div v-if="sell.sellCreditChainModel.appealComment" style="margin-bottom:12px">
@@ -437,6 +447,7 @@
             <details v-show="sell.sellRealizationChainModel">
               <div style="display: block">
                 <table style="width: 100%; color: grey">
+                  <tbody>
                   <tr>
                     <td style="width: 220px">
                       <a v-if="sell.sellRealizationChainModel?.realizationId"
@@ -467,6 +478,7 @@
                                 </span>
                     </td>
                   </tr>
+                  </tbody>
                 </table>
 
 
