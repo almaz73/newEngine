@@ -23,6 +23,7 @@
               <label class="label-right l_150">VIN</label>
               <el-input
                   v-model="auto.vin"
+                  @input="auto.vin.length>16 && chosenVin(auto.vin)"
                   maxlength="17"
                   minlength="17"
                   clearable
@@ -174,7 +175,7 @@
               <label class="label-right l_150">Пробег (км)</label>
               <el-form-item prop="mileage" style="display: inline-block"
                             :rules="{required: true, message: 'Пробег автомобиля', trigger: ['change']}">
-                <el-input v-model="auto.mileage" placeholder="Введите пробег"
+                <el-input v-model="auto.mileage" placeholder="Введите пробег" style="border: 1px solid yellow;"
                           title="Пробег"/>
 
               </el-form-item>
@@ -260,7 +261,6 @@
               <el-button :icon="Plus"
                          title="+ Добавить новую модель"
                          @click="addModelVS()"
-                         @change="auto.bodyColorByVC=''"
                          style="width: 30px; float: right; margin-right: -30px"></el-button>
             </div>
 
@@ -279,7 +279,7 @@
 
               <el-button :icon="Plus"
                          title="+ Добавить новый цвет"
-                         @click="saveBodycolor(auto.bodyColorByVC)"
+                         @click="saveBodycolor(auto.certificate.colorVCTitle)"
                          style="width: 30px; float: right; margin-right: -30px"></el-button>
             </div>
 
@@ -396,12 +396,13 @@ import {ref} from 'vue'
 import {useGlobalStore} from '@/stores/globalStore'
 import {useAdminStore} from '@/stores/adminStore'
 import {useAppealStore} from '@/stores/appealStore'
-import {ElMessage} from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 import {checkEmptyFields, formatDateOnlyYear, vetRegNumber} from '@/utils/globalFunctions'
 import {bodyTypes, CategoryAuto, driveTypies, EngineType, kpp, SteeringWheelType} from '@/utils/globalConstants'
 import {useDealStore} from '@/stores/dealStore'
 import {Plus} from '@element-plus/icons-vue'
 import {useAppealStoreStatus} from '@/stores/appealStoreStatus'
+import {useDesktopStore} from "@/stores/desktopStore";
 
 
 const appealStoreStatus = useAppealStoreStatus()
@@ -413,12 +414,6 @@ const adminStore = useAdminStore()
 const isOpen = ref(false)
 const carGenerations = ref([])
 const auto = ref<any>({mileage: 0, certificate: {}})
-
-const closeModal = () => {
-  isOpen.value = false
-}
-
-
 const brands = ref([])
 const models = ref([])
 const colors = ref([])
@@ -426,6 +421,7 @@ const svgColor = ref('white')
 const autoTypes = ref(null)
 const carModifications = ref([])
 
+const closeModal = () => isOpen.value = false
 
 function changeModel(modelId: number) {
   modelId && useAdminStore().getGenerations(modelId).then(res => carGenerations.value = res)
@@ -444,7 +440,7 @@ function changeBrand(name: string) {
   let brand = brands.value.find((el: any) => el.name === name)
   brand && globalStore.getModels(brand.id).then(res => {
     models.value = res
-    changeModel(auto.value.carModelId)
+    changeModel(auto.value.model)
   })
 }
 
@@ -453,13 +449,11 @@ function getModifications(ids: number[]) {
   adminStore.getModifications([ids]).then(res => carModifications.value = res)
 }
 
-
 function changeColor(colorId: number) {
   if (!colorId) return false
   let c: any = colors.value.find((el: any) => el.id === colorId)
   if (c) svgColor.value = c.colorCode
 }
-
 
 let colorsVc: any = []
 
@@ -471,15 +465,15 @@ function getBodyColorAuto(color: string, cb: any) {
 }
 
 function choseColorVC() {
-  let colorVC = colorsVc.find((el: any) => el.value === auto.value.bodyColorByVC)
-  if (colorVC) auto.value.colorVC = colorVC.id
+  let colorVC = colorsVc.find((el: any) => el.value === auto.value.colorVCTitle)
+  if (colorVC) auto.value.certificate.colorVC = colorVC.id
 }
 
 function saveBodycolor(color: string) {
   appealStore.addBodycolor(color).then(res => {
     if (res.status === 200) {
-      auto.value.bodyColorByVCId = res.data.data.id
-      ElMessage.info('Цвет выбран')
+      auto.value.colorVC = res.data.data.id
+      ElMessage.info('Цвет записан')
     }
   })
 }
@@ -511,14 +505,87 @@ function getCarBrand(modelName: string, cb: any) {
   })
 }
 
+function chosenVin(vin: string) {
+
+  if (vin.length < 17) return ElMessage.warning('VIN должен иметь не менее 17 знаков')
+  useDesktopStore().getAutoVIN(vin).then(res => {
+    if (res.autoId) {
+      ElMessageBox.confirm('Автомобиль с текущим VIN существует. Заменить?', '', {
+        confirmButtonText: 'Да',
+        cancelButtonText: 'Нет'
+      }).then(yes => {
+        if (yes) {
+          let z = auto.value
+
+          z.autoType = res.autoType
+          z.brandTitle = res.carBrand
+          if (res.carBrandId) changeBrand(res.carBrandId)
+          z.model = res.carModel
+          z.bodyColorId = res.bodyColorId
+          z.bodyColor = res.bodyColorName
+
+          z.categoryAuto = res.categoryAuto
+          z.countFreeHostsByVC = res.countFreeHostsByVC
+          z.year = new Date('' + res.yearReleased)
+          z.vin = res.vin
+          z.vinNotExist = res.vinNotExist
+          z.bodyType = res.bodyType
+          z.steeringWheel = res.steeringWheelType
+
+
+          z.certificate.issuedBy = res.issuedBy
+          z.certificate.registrationMark = res.registrationMark
+          z.certificate.engineCapacityByVC = res.engineCapacityByVC
+          z.certificate.certificateNumber = res.certificateNumber
+          z.certificate.issuedBy = res.issuedBy
+          z.certificate.issuedDate = res.issuedDate
+          z.certificate.brandVCTitle = res.brandByVC
+          z.certificate.modelVCTitle = res.modelByVC
+          z.certificate.colorVC = res.bodyColorByVCId
+          z.certificate.colorVCTitle = res.bodyColorByVC
+          z.certificate.isOriginalVC = res.isOriginalVC
+          z.certificate.countOfHosts = res.countHostsByVC
+          z.certificate.enginePowerInKWByVC = res.enginePowerInKWByVC
+          z.certificate.isElpts = res.isElpts
+          z.certificate.elCertificateNumber = res.certificateNumber
+          z.certificate.elCertificateNumber = res.elCertificateNumber
+          z.certificate.elCertificateIssuedDate = res.elCertificateIssuedDate
+
+
+          z.modificationId = res.modificationId
+          z.issuedDateText = res.issuedDateText
+          z.isRegisteredEngine = res.isRegisteredEngine
+          z.isNativeEngine = res.isNativeEngine
+          z.isCertifiedPreOwned = res.isCertifiedPreOwned
+          z.generationId = res.generationId
+          z.enginePowerVC = res.enginePowerVC
+          z.enginePowerInKWByVC = res.enginePowerInKWByVC
+          // z.elCertificateIssuedDateText = res.elCertificateIssuedDateText
+          // z.additionalInformation = res.additionalInformation
+
+          svgColor.value = res.bodyColorCode
+
+          // не все затягивается - доработать надо
+        }
+
+      })
+    } else ElMessage.info('Не найден автомобиль с таким Vin')
+
+  }).catch(() => {
+  })
+}
+
 
 function save() {
 
-  if (!auto.value.certificate.isOriginalVC) ElMessage.warning('Поле "ПТС оригинал" обязателен для  заполнения')
+  if (!auto.value.certificate.isOriginalVC) return ElMessage.warning('Поле "ПТС оригинал" обязателен для  заполнения')
+
 
   checkEmptyFields(form.value).then((res: boolean) => {
     auto.value.year = formatDateOnlyYear(auto.value.year)
     auto.value.parentId = appealStore.comissId
+    if (auto.value.vinNotExist) auto.value.vin = ''
+    auto.value.certificate.isOriginalVC = auto.value.certificate.isOriginalVC == 'true'
 
     res && appealStore.saveComissionAuto(auto.value).then(res => {
       if (res.status === 200) location.reload()
@@ -527,22 +594,21 @@ function save() {
 }
 
 
-function open(appeal: any) {
+function open(view_appeal: any) {
   isOpen.value = true
-  if (auto.value.parentId && appeal.auto) {
-    auto.value = appeal.auto
-    auto.value.parentId = appealStore.comissId
-  }
-  // auto.value.mileage = appeal.mileage /// пока не приходит в методе
-  auto.value.year = new Date(String(appeal.yearReleased))
-  auto.value.certificate.isOriginalVC = '' + auto.value.certificate.isOriginalVC
 
+  if (view_appeal.auto) auto.value = view_appeal.auto
+
+  auto.value.parentId = appealStore.comissId
+  // auto.value.mileage = appeal.mileage /// пока не приходит в методе
+  auto.value.year = new Date(String(view_appeal.yearReleased))
+  auto.value.certificate.isOriginalVC = '' + auto.value.certificate.isOriginalVC
 
   adminStore.getAutoTypes().then(res => autoTypes.value = res.items)
   globalStore.getBrands().then(res => brands.value = res).then(() => setBrand())
   globalStore.getColors().then(res => {
     colors.value = res.items
-    if (auto.value.bodyColor) changeColor(auto.value.bodyColor)
+    changeColor(auto.value.bodyColor)
   })
 }
 

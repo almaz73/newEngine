@@ -171,7 +171,7 @@
           </RouterLink>
         </span>
         <span class="button-on-collapse" v-else>
-           <el-button type="success" size="small" @click="openEditCar()"> Заполнить данные авто (комиссия)</el-button>
+           <el-button v-if="appealStore.comissId" type="success" size="small" @click="openEditCar()"> Заполнить данные авто (комиссия)</el-button>
         </span>
 
         <div style="width: 310px">
@@ -320,7 +320,7 @@ function open(row) {
   if (row.fullPhotos?.length) carPhoto.value = row.fullPhotos[0]
   isOpen.value = true;
   globalStore.isWaiting = true
-  
+
   if (location.pathname.includes('/commission/')) { // данные комиссии
     appealStoreStatus.getComission(row.id).then(res => {
       appealStore.comissId = res.view.id
