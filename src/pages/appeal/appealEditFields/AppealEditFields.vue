@@ -240,9 +240,9 @@ import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
-import AutoCollapse from '@/pages/appeal/appealEditFields/AutoCollapse.vue'
+import AutoCollapse from '@/pages/appeal/appealEditFields/comiss/AutoCollapse.vue'
 import {permit} from "@/utils/permit";
-import EditCarModal from "@/pages/appeal/appealEditFields/EditCarModal.vue";
+import EditCarModal from "@/pages/appeal/appealEditFields/comiss/EditCarModal.vue";
 
 const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore();
@@ -324,7 +324,7 @@ function open(row) {
   if (location.pathname.includes('/commission/')) { // данные комиссии
     appealStoreStatus.getComission(row.id).then(res => {
       appealStore.comissId = res.view.id
-      console.log('comiss res = ',res)
+      console.log('COMISS res = ',res)
       transformationFromComission(res, row.id)
       globalStore.isWaiting = false
       appealTabs.value.open(appeal.value)
@@ -344,7 +344,7 @@ function open(row) {
   }
 
   function transformationFromComission(res, appealId) {
-    appeal.value = res.view.autoOwner
+    // appeal.value = res.view.autoOwner
     appeal.value = {
       clientStatus: res.view.appeal.clientStatusTitle,
       mileageAuto: res.view.appeal.mileagev,
@@ -368,8 +368,13 @@ function open(row) {
       responsibleUser:  res.view.appeal.responsible,
       auto: res.view.appeal.auto
     }
-  }
 
+    appeal.value._ = {
+      action: res.action,
+      events: res.events,
+      availablePrints: res.availablePrints
+    }
+  }
 
 }
 

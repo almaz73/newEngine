@@ -13,7 +13,10 @@
           </span>
 
           <div>
-            <el-button type="danger">Принять автомобиль</el-button>
+
+            <el-button type="danger"  @click="clickAction(appeal._.action.value)">{{appeal._.action.title}}</el-button>
+
+
             <div style="display: inline-block; float: right; margin-right: 40px">
               Цвет авто: &nbsp;
               <div
@@ -99,8 +102,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
-import CarPhotosComiss from '@/pages/appeal/appealEditFields/CarPhotosComiss.vue'
-import EditCarModal from "@/pages/appeal/appealEditFields/EditCarModal.vue";
+import CarPhotosComiss from '@/pages/appeal/appealEditFields/comiss/CarPhotosComiss.vue'
+import EditCarModal from "@/pages/appeal/appealEditFields/comiss/EditCarModal.vue";
 
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
@@ -111,6 +114,49 @@ function openEditCar() {
   editCarModal.value.open(appeal)
 }
 
+function clickAction(actionNumber:number) {
+  if (actionNumber === 10) {
+    console.log('10  action.inspection.add() ', 10)
+    /*if ($scope.model.inspection) {
+      $location.path('appeal/commission/' + $scope.model.id + '/inspection/' + $scope.model.inspection.id + '/10');
+    } else {
+      PostService.Post(ControllerEnums.Commission.AddInspection + '/' + $scope.model.id).then(
+          function (data) {
+            $location.path('appeal/commission/' + $scope.model.id + '/inspection/' + data.id + '/10',);
+          },
+      );
+    }*/
+  }
+  if (actionNumber === 20) {
+    console.log('20  action.auto.take() ', 20)
+
+    /*$scope.load.currentUser();
+    GetService.Get(ControllerEnums.Commission.GetLocationSell, { id: $scope.model.id }).then(function ( data ) {
+      $scope.sellLocations = data.items;
+    });
+    GetService.Get(ControllerEnums.Lead.GetCommission, {
+      userId: $scope.model.appeal.responsibleId,
+    }).then(function (data) {
+      $scope.commissionLeads = data.items;
+      $scope.isInitProxy = !!$scope.model.proxy;
+      $scope.workModel = angular.copy($scope.model);
+      UIkit.modal('#setPrice_modal').show();
+    });*/
+
+  }
+  if (actionNumber === 30) {
+    console.log('30  action.prices.open() ', 30)
+
+    // $scope.load.currentUser();
+    // UIkit.modal('#setPrice_modal').show();
+    // $scope.calculate.sellPercent();
+    // $scope.isInitProxy = !!$scope.model.proxy;
+    // $scope.workModel = angular.copy($scope.model);
+
+  }
+
+
+}
 
 
 </script>
