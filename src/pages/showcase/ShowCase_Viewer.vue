@@ -6,7 +6,7 @@
     <div v-show="!globalStore.isWaiting">
       <div style="margin-top: 8px;padding: 8px;">
         <span>
-          <el-input clearable v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
+          <el-input clearable v-if="!isDiagram" v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
         </span>
 
         <span style="float: right">

@@ -1,11 +1,8 @@
 <template>
   <ForFullSceen>
     <div class="custom-report-table_bts">
-      <button class="bt" @click="toSubSection(1)" title="Скрыть узлы">⭱</button>
-      <button class="bt" @click="toSubSection(2)" title="Разделы">⭶</button>
-      <button class="bt" @click="toSubSection(4)" title="Все узлы">⭶</button>
-
-      &nbsp; <input v-model="searchTxt" placeholder="фильтр по ФИО" @input="init()"/>
+      <el-button size="small" title="Вложенности" @click="levels()">≣</el-button>
+      <el-input size="small" v-model="searchTxt" placeholder="фильтр по ФИО" @input="init()"/>
     </div>
     <table class="custom-report-table">
       <thead>
@@ -93,7 +90,7 @@ const sortIcon = function (col) {
 
 function toSort(col) {
   sortOrder = !sortOrder
-  toSubSection(1)
+  subSections.value = 1
   sortCol.value = col
 
   if (col === 1) {
@@ -241,10 +238,10 @@ function clearPoints() {
   })
 }
 
-function toSubSection(val) {
-  if (val === 2 && subSections.value === 2) subSections.value = 3
-  else if (val === 2 && subSections.value === 3) subSections.value = 2
-  else subSections.value = val
+function levels() {
+  if (subSections.value < 4) subSections.value++
+  else subSections.value = 1
+
   clearPoints()
   forceUpdate()
 }

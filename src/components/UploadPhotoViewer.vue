@@ -4,21 +4,22 @@
        :style="{width: props.width+'px', height: props.height+'px'}">
     <img :src="props.url" />
 
-    <span v-if="props.delete" @click.stop="emits('deleteAnaliticScreen', props.id)" class="crest" title="Удалить"> 🗙 </span>
   </div>
 
   <Teleport to="body">
-    <el-dialog v-model="isDialogVisible" top="10px">
-      <ForFullSceen>
-      <a :href="props.url" target="_blank"
-         style="position: absolute; right: 40px; top: 14px; color: #bbb"> Открыть в отдельной вкладке</a>
-      <img :src="props.url" alt="Preview Image" style="width: 100%; height: 100%" />
-      </ForFullSceen>
+    <el-dialog class="all-place"  v-model="isDialogVisible" top="0">
+      <img :src="props.url" alt=""  />
     </el-dialog>
   </Teleport>
 </template>
 
 <style>
+.photo-big{
+  position: absolute;
+  top: 3px;
+  padding: 0 100px;
+  left: calc(50% - 150px);
+}
 .photo-view img {
   border-radius: 0;
   cursor: pointer
@@ -30,8 +31,18 @@
   padding: 0 4px;
 }
 
-.photo-view:hover .crest {
-  background: white;
+.all-place{
+  background: #00000099;
+  width: 100vw;
+  overflow: hidden;
+  height: 100vh;
+  position: absolute;
+}
+.all-place img{
+  object-fit: contain;
+  width: 99vw;
+  height: 97vh;
+  margin-top:-20px;
 }
 
 </style>
@@ -41,13 +52,11 @@
  */
 
 import { ref } from 'vue'
-import ForFullSceen from '@/components/ForFullSceen.vue'
 
 const isDialogVisible = ref(false)
 const props = defineProps(['url', 'id', 'width', 'height', 'delete'])
 const emits = defineEmits(['deleteAnaliticScreen'])
 
 const handlePictureCardPreview = () => isDialogVisible.value = true
-
 
 </script>
