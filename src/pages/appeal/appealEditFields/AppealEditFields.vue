@@ -161,17 +161,15 @@
         </div>
         <br>
       </el-collapse-item>
+
       <el-collapse-item
-        v-if="appeal && !appeal.auto"
+        v-if="appeal && !appeal.auto && !appealStore.comissId"
         :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
         name="2" style="position: relative">
         <span class="button-on-collapse" v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
           <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`">
             <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
           </RouterLink>
-        </span>
-        <span class="button-on-collapse" v-else>
-           <el-button v-if="appealStore.comissId" type="success" size="small" @click="openEditCar()"> Заполнить данные авто (комиссия)</el-button>
         </span>
 
         <div style="width: 310px">
@@ -184,8 +182,8 @@
         </div>
       </el-collapse-item>
     </el-collapse>
-    <!--    Развернутый раздел авто-->
-    <AutoCollapse :appeal />
+    <!--    Развернутый раздел авто для комиссии-->
+    <AutoCollapseComiss :appeal v-if="appealStore.comissId" />
     <EditCarModal ref="editCarModal" />
   </div>
 
@@ -240,7 +238,7 @@ import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
-import AutoCollapse from '@/pages/appeal/appealEditFields/comiss/AutoCollapse.vue'
+import AutoCollapseComiss from '@/pages/appeal/appealEditFields/comiss/AutoCollapseComiss.vue'
 import {permit} from "@/utils/permit";
 import EditCarModal from "@/pages/appeal/appealEditFields/comiss/EditCarModal.vue";
 

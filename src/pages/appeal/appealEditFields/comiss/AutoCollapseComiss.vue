@@ -1,8 +1,28 @@
 <template>
 
-  <div v-if="appeal.auto">
+  <div >
     <el-collapse v-model="activeCollapse">
-      <el-collapse-item :title="'&nbsp; Автомобиль: ' +
+
+      <el-collapse-item
+          v-if="appeal && !appeal.auto"
+          :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
+          name="2" style="position: relative">
+              <span class="button-on-collapse">
+                   <el-button v-if="appealStore.comissId" type="success" size="small" @click="openEditCar()"> Заполнить данные авто (комиссия)</el-button>
+                </span>
+        <div style="width: 310px">
+          <span class="label" v-if="appeal.carBrandModel">  Модель: </span>{{ appeal.carBrandModel }}
+          <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
+          <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
+          <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
+          {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
+          <br><br>
+        </div>
+      </el-collapse-item>
+
+      <el-collapse-item
+          v-if="appeal.auto"
+          :title="'&nbsp; Автомобиль: ' +
      ''+appeal.auto.brandTitle +' ' +(appeal.auto.modelTitle||'')+ '  '+ appeal.yearReleased+ '&nbsp;г. '+
                       (appeal.auto.vin?'  &nbsp; &nbsp; &nbsp;  vin: '+appeal.auto.vin:'')"
                         name="1" style="position: relative">
@@ -14,7 +34,9 @@
 
           <div>
 
-            <el-button type="danger"  @click="clickAction(appeal._.action.value)">{{appeal._.action.title}}</el-button>
+            <el-button type="danger" v-if="appeal._" @click="clickAction(appeal._.action.value)">
+              {{ appeal._.action.title }}
+            </el-button>
 
 
             <div style="display: inline-block; float: right; margin-right: 40px">
@@ -35,7 +57,8 @@
           <!--        Параметры-->
           <div style="width: 600px; ">
             <el-collapse accordion v-model="activeCollapseSub">
-              <el-collapse-item title="Категория">
+              <el-collapse-item :title="'Категория '+appeal.auto.categoryTitle">
+
                 <div style="display: flex; flex-wrap: wrap">
                   <div>
                     <span class="label">Объем двигателя:</span> {{ appeal.auto.engineCapacity }}<br>
@@ -104,7 +127,9 @@ import { ref } from 'vue'
 import { bodyTypesEnum, driveTypiesEnum, EngineTypeEnum, GearboxTypeEnum } from '@/utils/globalConstants'
 import CarPhotosComiss from '@/pages/appeal/appealEditFields/comiss/CarPhotosComiss.vue'
 import EditCarModal from "@/pages/appeal/appealEditFields/comiss/EditCarModal.vue";
+import {useAppealStore} from "@/stores/appealStore";
 
+const appealStore = useAppealStore()
 const activeCollapse = ref(['1'])
 const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])

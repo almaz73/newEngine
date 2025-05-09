@@ -586,10 +586,14 @@ function save() {
     auto.value.parentId = appealStore.comissId
     if (auto.value.vinNotExist) auto.value.vin = ''
     auto.value.certificate.isOriginalVC = auto.value.certificate.isOriginalVC == 'true'
+    if (res) {
+      globalStore.isWaiting = true
 
-    res && appealStore.saveComissionAuto(auto.value).then(res => {
-      if (res.status === 200) location.reload()
-    })
+      appealStore.saveComissionAuto(auto.value).then(res => {
+        if (res.status === 200) location.reload()
+        globalStore.isWaiting = true
+      })
+    }
   })
 }
 
