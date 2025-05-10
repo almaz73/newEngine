@@ -56,7 +56,7 @@
 
           <!--        Параметры-->
           <div style="width: 600px; ">
-            <el-collapse accordion v-model="activeCollapseSub">
+            <el-collapse accordion>
               <el-collapse-item :title="'Категория '+appeal.auto.categoryTitle">
 
                 <div style="display: flex; flex-wrap: wrap">
@@ -131,7 +131,6 @@ import {useAppealStore} from "@/stores/appealStore";
 
 const appealStore = useAppealStore()
 const activeCollapse = ref(['1'])
-const activeCollapseSub = ref('4')
 const { appeal } = defineProps(['appeal'])
 const editCarModal = ref(null)
 

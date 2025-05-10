@@ -161,29 +161,9 @@
         </div>
         <br>
       </el-collapse-item>
-
-      <el-collapse-item
-        v-if="appeal && !appeal.auto && !appealStore.comissId"
-        :title="'&nbsp; Автомобиль'+(appeal.carBrandModel?': &nbsp; '+appeal.carBrandModel:'')"
-        name="2" style="position: relative">
-        <span class="button-on-collapse" v-if="permit_locale() && appeal.auto && appeal.deal && appeal.auto.vin">
-          <RouterLink :to="`/auto/${appeal.autoId}/deal/${appeal.deal.id}`">
-            <el-button :icon="Edit" size="small">Автомобиль на стадии оценки</el-button>
-          </RouterLink>
-        </span>
-
-        <div style="width: 310px">
-          <span class="label" v-if="appeal.carBrandModel">  Модель: </span>{{ appeal.carBrandModel }}
-          <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
-          <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
-          <span class="label" v-if="appeal.deal && appeal.deal.dealStatus"> Статус: </span>
-          {{ appeal && appeal.deal && statuses.find(el => el.id === appeal.deal.dealStatus).name }}
-          <br><br>
-        </div>
-      </el-collapse-item>
     </el-collapse>
+    <SimpleCarCarusel ref="simpleCarCarusel"/>
     <!--    Развернутый раздел авто для комиссии-->
-    <AutoCollapseComiss :appeal v-if="appealStore.comissId" />
     <EditCarModal ref="editCarModal" />
   </div>
 
@@ -230,7 +210,6 @@ import {formatDateDDMMYYYY, formatDMY_hm, formattingPhone} from "@/utils/globalF
 import ClientsDirModal from "@/pages/admin/dirs/ClientsDirModal.vue";
 import MResponsible from "@/pages/appeal/appealEditFields/MResponsible.vue";
 import MStatus from "@/pages/appeal/appealEditFields/status/MStatus.vue";
-import {Edit} from "@element-plus/icons-vue";
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import {ElMessageBox} from 'element-plus'
 import SwapPhoneHistoryModal from "@/pages/appeal/controls/SwapPhoneHistoryModal.vue";
@@ -238,9 +217,9 @@ import ClientsDirLegalModal from '@/pages/admin/dirs/ClientsDirLegalModal.vue'
 import DealsHistoryModal from "@/pages/appeal/DealsHistoryModal.vue";
 import EditAppealSimpleModal from '@/pages/appeal/controls/EditAppealSimpleModal.vue'
 import MComissionStatus from '@/pages/appeal/appealEditFields/statusComission/MComissionStatus.vue'
-import AutoCollapseComiss from '@/pages/appeal/appealEditFields/comiss/AutoCollapseComiss.vue'
 import {permit} from "@/utils/permit";
 import EditCarModal from "@/pages/appeal/appealEditFields/comiss/EditCarModal.vue";
+import SimpleCarCarusel from "@/pages/appeal/appealEditFields/SimpleCarCarusel.vue";
 
 const appealStoreStatus = useAppealStoreStatus()
 const globalStore = useGlobalStore();
@@ -261,6 +240,7 @@ const dealsHistoryModal = ref(null)
 const editAppealSimpleModal = ref(null)
 const activeNames = ref(['2'])
 const editCarModal = ref(null)
+const simpleCarCarusel = ref(null)
 
 function openEditCar() {
   editCarModal.value.open(appeal)
@@ -295,9 +275,7 @@ function changeTypeClient() {
 
 }
 
-function permit_locale() {
-  return ['BuyerEmployee', 'Admin'].includes(globalStore.account.role)
-}
+
 
 function workFlowType(type) {
   let el = appeal.value.workflowLeadType && Workflows.find(el => el.id === type)
@@ -318,6 +296,7 @@ function open(row) {
   if (row.fullPhotos?.length) carPhoto.value = row.fullPhotos[0]
   isOpen.value = true;
   globalStore.isWaiting = true
+  appealStore.comissId = null
 
   if (location.pathname.includes('/commission/')) { // данные комиссии
     appealStoreStatus.getComission(row.id).then(res => {
@@ -419,6 +398,7 @@ function init() {
   })
 
   getEvents()
+  simpleCarCarusel.value.showData(appeal.value)
 }
 
 defineExpose({open})
