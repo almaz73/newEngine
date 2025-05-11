@@ -4,7 +4,7 @@
       <el-scrollbar>
         <el-button :icon="Plus" @click="openModalEvent()"
                    type="success" style="margin: 0 8px">
-          Создать событие
+          Запланировать следующее действие
         </el-button>
 
         <el-button @click="isOnlyEvents=!isOnlyEvents"

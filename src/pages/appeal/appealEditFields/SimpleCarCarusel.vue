@@ -32,6 +32,7 @@
       </el-collapse-item>
 
       <AutoComiss :appeal v-if="isComiss"/>
+      <SellCollapse :appeal v-if="isSell"/>
     </el-collapse>
   </div>
 </template>
@@ -42,25 +43,31 @@ import {useGlobalStore} from "@/stores/globalStore";
 import {statuses} from "@/utils/globalConstants";
 import {ref} from "vue";
 import AutoComiss from "@/pages/appeal/appealEditFields/comiss/AutoComiss.vue";
-import { Edit } from '@element-plus/icons-vue'
+import {Edit} from '@element-plus/icons-vue'
+import SellCollapse from "@/pages/appeal/appealEditFields/sell/SellCollapse.vue";
 
 const globalStore = useGlobalStore()
 const appealStore = useAppealStore()
 const appeal = ref({})
 const isVisible = ref(true) // [10:'Комиссия-simple', 11:'Комиссия', 2:'tradeIn']
 const isComiss = ref(false)
+const isSell = ref(false)
 
 function showData(data: any) {
   appeal.value = data
   console.log('appeal.value = ', appeal.value)
 
 
-  if (appealStore.comissId) {
+  if (appealStore.comissId) { // Комиссия
     isComiss.value = true
     isVisible.value = false
-  }  // скрываем для комиссии
-  
-  console.log('isVisible.value = ',isVisible.value)
+  }
+
+  if (appeal.value.workflowLeadType === 1 && permit_locale()) { //Продажа
+    isSell.value = true
+    isVisible.value = false
+  }
+
 
 }
 

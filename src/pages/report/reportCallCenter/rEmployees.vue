@@ -112,7 +112,7 @@ function monthChanged() {
 
 
 adminStore.getUserRoles().then(res => {
-  roles.value = res.items.filter(it => [60, 61].includes(it.group.value))
+  roles.value = res.items && res.items.filter(it => [60, 61].includes(it.group.value))
 })
 
 

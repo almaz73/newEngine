@@ -136,7 +136,7 @@
         <template #default="scope">
           <div :style="highlightCell(scope.row)" style="padding: 4px">
             <div
-                :title="scope.row.lastTaskTitle"> {{ EventType[scope.row.workflowLeadType] }}
+                :title="scope.row.lastTaskTitle"> {{ EventType[scope.row.lastTaskType] }}
             </div>
             <br/>
             {{ formatDMY_hm(scope.row.lastTaskDate) }}<br/>

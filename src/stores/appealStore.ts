@@ -167,6 +167,13 @@ export const useAppealStore = defineStore("appealStore", {
         },
 
 
+        // работа с sell (продажа)
+        async deleteSellInAppeal(appealId: number,sellId:number,type: number) { // сохранение файла
+            return await axios.post(`/api/sellinappeal/deleteSellInAppeal/${appealId}/${sellId}/${type}`).then(q => q)
+        },
+        async getSellInAppeal(id: number) {
+            return await axios.get(`/api/sellinappeal/getSellInAppeal?appealId=${id}`).then(q => q)
+        },
     }
 })
 
