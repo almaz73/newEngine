@@ -285,7 +285,10 @@
 
             <div>
               <label class="label-right l_150"> Объем двиг. ПТС</label>
-              <el-input v-model="auto.certificate.engineCapacityByVC"/>
+              <el-form-item prop="certificate['engineCapacityByVC']" class="style-valid"
+                            :rules="{required: true, message: 'Объем двиг. ПТС', trigger: ['change']}">
+                <el-input v-model="auto.certificate.engineCapacityByVC"/>
+              </el-form-item>
             </div>
 
 
@@ -359,14 +362,10 @@
 
             <div>
               <label class="label-right l_150">ПТС оригинал</label>
-              <el-form-item
-                  prop="certificate['isOriginalVC']" class="style-valid"
-                  :rules="{required: true, message: 'ПТС оригинальный', trigger: ['change']}">
-                <el-radio-group v-model="auto.certificate.isOriginalVC">
-                  <el-radio-button label="Да" value="true"/>
-                  <el-radio-button label="Нет" value="false"/>
-                </el-radio-group>
-              </el-form-item>
+              <el-radio-group v-model="auto.certificate.isOriginalVC">
+                <el-radio-button label="Да" value="true"/>
+                <el-radio-button label="Нет" value="false"/>
+              </el-radio-group>
             </div>
 
           </div>
@@ -374,6 +373,7 @@
 
         <div style="text-align: center; margin: 30px 0 0 ">
           <el-button type="danger" @click="save()">Сохранить</el-button>
+          <el-button @click="init()">Очистить</el-button>
           <el-button @click="isOpen = false">Отмена</el-button>
         </div>
       </el-scrollbar>
@@ -397,7 +397,7 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {useAdminStore} from '@/stores/adminStore'
 import {useAppealStore} from '@/stores/appealStore'
 import {ElMessage, ElMessageBox} from 'element-plus'
-import {checkEmptyFields, formatDateOnlyYear, vetRegNumber} from '@/utils/globalFunctions'
+import {checkEmptyFields, formatDateDDMMYYYY, formatDateOnlyYear, vetRegNumber} from '@/utils/globalFunctions'
 import {bodyTypes, CategoryAuto, driveTypies, EngineType, kpp, SteeringWheelType} from '@/utils/globalConstants'
 import {useDealStore} from '@/stores/dealStore'
 import {Plus} from '@element-plus/icons-vue'
@@ -420,6 +420,10 @@ const colors = ref([])
 const svgColor = ref('white')
 const autoTypes = ref(null)
 const carModifications = ref([])
+
+function init() {
+  auto.value ={mileage: 0, certificate: {}}
+}
 
 const closeModal = () => isOpen.value = false
 
@@ -520,9 +524,8 @@ function chosenVin(vin: string) {
           z.autoType = res.autoType
           z.brandTitle = res.carBrand
           if (res.carBrandId) changeBrand(res.carBrandId)
-          z.model = res.carModel
-          z.bodyColorId = res.bodyColorId
-          z.bodyColor = res.bodyColorName
+          z.model = res.carModelId
+          z.bodyColor = res.bodyColorId
 
           z.categoryAuto = res.categoryAuto
           z.countFreeHostsByVC = res.countFreeHostsByVC
@@ -533,17 +536,19 @@ function chosenVin(vin: string) {
           z.steeringWheel = res.steeringWheelType
 
 
+          z.certificate.id = res.currentVehicleCertificateId
+          z.certificate.modelVC = res.modelByVCId
           z.certificate.issuedBy = res.issuedBy
           z.certificate.registrationMark = res.registrationMark
           z.certificate.engineCapacityByVC = res.engineCapacityByVC
           z.certificate.certificateNumber = res.certificateNumber
           z.certificate.issuedBy = res.issuedBy
-          z.certificate.issuedDate = res.issuedDate
+          z.certificate.issuedDate = new Date(res.issuedDate)
           z.certificate.brandVCTitle = res.brandByVC
           z.certificate.modelVCTitle = res.modelByVC
           z.certificate.colorVC = res.bodyColorByVCId
           z.certificate.colorVCTitle = res.bodyColorByVC
-          z.certificate.isOriginalVC = res.isOriginalVC
+          z.certificate.isOriginalVC = '' + res.isOriginalVC
           z.certificate.countOfHosts = res.countHostsByVC
           z.certificate.enginePowerInKWByVC = res.enginePowerInKWByVC
           z.certificate.isElpts = res.isElpts
@@ -553,15 +558,22 @@ function chosenVin(vin: string) {
 
 
           z.modificationId = res.modificationId
-          z.issuedDateText = res.issuedDateText
+// z.issuedDateText = res.issuedDateText
+//           z.issuedDate = res.issuedDate
           z.isRegisteredEngine = res.isRegisteredEngine
           z.isNativeEngine = res.isNativeEngine
           z.isCertifiedPreOwned = res.isCertifiedPreOwned
           z.generationId = res.generationId
           z.enginePowerVC = res.enginePowerVC
-          z.enginePowerInKWByVC = res.enginePowerInKWByVC
-          // z.elCertificateIssuedDateText = res.elCertificateIssuedDateText
-          // z.additionalInformation = res.additionalInformation
+
+          z.complectationId = res.complectationId
+          z.bodyTypeTitle = res.bodyTypeTitle
+          z.doorsCount = res.doorsCount
+          z.driveType = res.driveType
+          z.engineType = res.engineType
+          z.enginePowerHP = res.enginePowerHP
+          z.engineCapacity = res.engineCapacity
+          z.gearboxType = res.gearboxType
 
           svgColor.value = res.bodyColorCode
 
@@ -578,23 +590,41 @@ function chosenVin(vin: string) {
 
 function save() {
 
-  if (!auto.value.certificate.isOriginalVC) return ElMessage.warning('Поле "ПТС оригинал" обязателен для  заполнения')
-
-
   checkEmptyFields(form.value).then((res: boolean) => {
+    console.log('res = ', res)
+    // auto.value.year = formatDateOnlyYear(auto.value.year)
+    // auto.value.parentId = appealStore.comissId
+    // if (auto.value.vinNotExist) auto.value.vin = ''
+    // auto.value.certificate.isOriginalVC = auto.value.certificate.isOriginalVC == 'true'
+    // if (res) {
+    //   globalStore.isWaiting = true
+    //
+    //   appealStore.saveComissionAuto(auto.value).then(res => {
+    //     if (res.status === 200) location.reload()
+    //     globalStore.isWaiting = true
+    //   })
+    // }
+  })
+
+
+  function core() {
     auto.value.year = formatDateOnlyYear(auto.value.year)
+    auto.value.certificate.issuedDate = formatDateDDMMYYYY(auto.value.certificate.issuedDate)
+
     auto.value.parentId = appealStore.comissId
     if (auto.value.vinNotExist) auto.value.vin = ''
     auto.value.certificate.isOriginalVC = auto.value.certificate.isOriginalVC == 'true'
-    if (res) {
-      globalStore.isWaiting = true
+    globalStore.isWaiting = true
 
-      appealStore.saveComissionAuto(auto.value).then(res => {
-        if (res.status === 200) location.reload()
-        globalStore.isWaiting = true
-      })
-    }
-  })
+    appealStore.saveComissionAuto(auto.value).then(res => {
+      if (res.status === 200) location.reload()
+      else auto.value.certificate.issuedDate = new Date(auto.value.certificate.issuedDate.split('.').reverse())
+      globalStore.isWaiting = true
+    })
+  }
+
+  core()
+
 }
 
 
