@@ -10,7 +10,7 @@
     <el-scrollbar :maxHeight="globalStore.isMobileView?'480px':'600px'">
 
       <div
-          v-if="!dossier.sellWorkflowChains?.length && !dossier.commissionChains?.length && !dossier.buyWorkflowChains?.length"
+          v-if="dossier && !dossier.sellWorkflowChains?.length && !dossier.commissionChains?.length && !dossier.buyWorkflowChains?.length"
           style="text-align: center">Нет данных
       </div>
 

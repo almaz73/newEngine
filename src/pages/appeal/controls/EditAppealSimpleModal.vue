@@ -8,49 +8,49 @@
     <div>
       <label class="label l_200">Марка</label>
       <el-select
-        style="width: 220px"
-        placeholder="Выберите бренд"
-        v-model="appealEditModal.carModel.brand"
-        :filterable="!globalStore.isMobileView"
-        @change="changeBrand(appealEditModal.carModel.brand)"
-        clearable
+          style="width: 220px"
+          placeholder="Выберите бренд"
+          v-model="appealEditModal.carModel.brand"
+          :filterable="!globalStore.isMobileView"
+          @change="changeBrand(appealEditModal.carModel.brand)"
+          clearable
       >
-        <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id" />
+        <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id"/>
       </el-select>
     </div>
 
     <div v-if="appealEditModal.carModel.brand">
       <label class="label l_200">Модель</label>
       <el-select
-        style="width: 220px"
-        v-model="appealEditModal.carModel.id"
-        :filterable="!globalStore.isMobileView"
-        placeholder="Выберите модель">
-        <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id" />
+          style="width: 220px"
+          v-model="appealEditModal.carModel.id"
+          :filterable="!globalStore.isMobileView"
+          placeholder="Выберите модель">
+        <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
     </div>
 
     <div>
       <label class="label l_200">Место хранения</label>
       <el-select
-        style="width: 220px"
-        placeholder="Введите место хранения/выкупа"
-        v-model="appealEditModal.location.id"
-        filterable
-        clearable>
-        <el-option v-for="item in locations" :key="item.id" :label="item.title" :value="item.id" />
+          style="width: 220px"
+          placeholder="Введите место"
+          v-model="appealEditModal.location.id"
+          filterable
+          clearable>
+        <el-option v-for="item in locations" :key="item.id" :label="item.title" :value="item.id"/>
       </el-select>
     </div>
 
     <div>
       <label class="label l_200">Вид выкупа</label>
       <el-select
-        style="width: 220px"
-        placeholder="Выберите бренд"
-        v-model="appealEditModal.buyCategory"
-        clearable
+          style="width: 220px"
+          placeholder="Выберите вид"
+          v-model="appealEditModal.buyCategory"
+          clearable
       >
-        <el-option v-for="type in BuyCategoryTypes" :key="type.id" :label="type.title" :value="type.id" />
+        <el-option v-for="type in BuyCategoryTypes" :key="type.id" :label="type.title" :value="type.id"/>
       </el-select>
     </div>
 
@@ -59,13 +59,13 @@
       <el-select style="width: 220px" v-model="appealEditModal.responsible.id" filterable>
         <el-option v-for="item in responsible" :key="item.id"
                    :label="item.person.lastName +' '+ item.person.firstName"
-                   :value="item.id" />
+                   :value="item.id"/>
       </el-select>
     </div>
 
     <div>
       <label class="label l_200">Подменный номер ☎</label>
-      <el-input v-model="appealEditModal.swapPhone" placeholder="Ваше имя" />
+      <el-input v-model="appealEditModal.swapPhone" placeholder="Введите номер"/>
     </div>
 
 
@@ -87,11 +87,11 @@
 
 <script setup lang="ts">
 import AppModal from '@/components/AppModal.vue'
-import { ref } from 'vue'
-import { useGlobalStore } from '@/stores/globalStore'
-import { useReportStore } from '@/stores/reportStore'
-import { useAppealStore } from '@/stores/appealStore'
-import { useDesktopStore } from '@/stores/desktopStore'
+import {ref} from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
+import {useReportStore} from '@/stores/reportStore'
+import {useAppealStore} from '@/stores/appealStore'
+import {useDesktopStore} from '@/stores/desktopStore'
 
 const desktopStore = useDesktopStore()
 const appealStore = useAppealStore()
@@ -106,13 +106,13 @@ const auto = ref(null)
 const brands = ref([])
 const models = ref([])
 const responsible = ref([])
-const appealEditModal = ref({ carModel: {}, location: {}, responsible: {} })
+const appealEditModal = ref({carModel: {}, location: {id: null}, responsible: {}})
 const locations = ref([])
 const BuyCategoryTypes = ref([
-  { id: 10, title: 'Свободный выкуп' },
-  { id: 20, title: 'Выездной выкуп' },
-  { id: 30, title: 'Регион' },
-  { id: 40, title: 'Fleet' }
+  {id: 10, title: 'Свободный выкуп'},
+  {id: 20, title: 'Выездной выкуп'},
+  {id: 30, title: 'Регион'},
+  {id: 40, title: 'Fleet'}
 ])
 
 
@@ -127,14 +127,13 @@ function clear() {
 function save() {
   let params = {
     buyCategory: appealEditModal.value.buyCategory,
-    carModel:appealEditModal.value.carModel,
+    carModel: appealEditModal.value.carModel,
     id: appealEditModal.value.id,
     location: appealEditModal.value.location,
     responsible: {id: appealEditModal.value.responsible.id},
     swapPhone: appealEditModal.value.swapPhone
   }
 
-  console.log('params = ',params)
   appealStore.saveEditAppealSimple(params).then(res => {
     if (res.status === 200) location.reload()
   })
@@ -143,35 +142,39 @@ function save() {
 function open(appeal: any) {
   isOpen.value = true
 
-  // console.log('appeal', appeal)
   appealEditModal.value.id = appeal.id
 
   if (appeal.auto) {
     appealEditModal.value.carModel.brand = appeal.auto.carBrandId
-    appealEditModal.value.carModel.id = appeal.auto.carModelId
+    appealEditModal.value.carModel.id = appeal.carModelId
+  } else {
+    appealEditModal.value.carModel.id = appeal.carModelId
   }
   appealEditModal.value.swapPhone = appeal.swapPhone
   appealEditModal.value.responsible = appeal.responsibleUser
   appealEditModal.value.buyCategory = appeal.buyCategory
-  appealEditModal.value.location.id = appeal.locationId
-  
-  // console.log('appealEditModal.value = ',appealEditModal.value)
-
+  if (appeal.locationId) appealEditModal.value.location.id = appeal.locationId
 
   globalStore.getBrands().then(res => {
     brands.value = res
-    if (appealEditModal.value.carModel.brand) changeBrand(appealEditModal.value.carModel.brand)
+    let brandEl = brands.value.find(el => el.name === appeal.carBrand)
+    if (brandEl) {
+      appealEditModal.value.carModel.brand = brandEl.name
+      changeBrand(brandEl.id)
+    }
   })
-  reportStore.getLocation({ types: 10 }).then(res => locations.value = res.items)
+  reportStore.getLocation({types: 10}).then(res => locations.value = res.items)
   appealStore.getResponsible(appeal.locationId).then(res => responsible.value = res.items)
 
 }
 
 
 function changeBrand(id: number) {
-  id && globalStore.getModels(id).then(res => models.value = res)
+  id && globalStore.getModels(id).then(res => {
+    models.value = res
+  })
 }
 
-defineExpose({ open })
+defineExpose({open})
 
 </script>

@@ -128,9 +128,7 @@ export const useAppealStore = defineStore("appealStore", {
             return res.data
         },
         async saveEditAppealSimple(params: any) {
-            console.log('params = ',params)
-            const res = await axios.post('/api/appeals/save', params)
-            return res.data
+            return await axios.post('/api/appeals/save', params)
         },
         async saveComissionAuto(params: any) {
             return await axios.post('/api/commission/add/auto', params)
