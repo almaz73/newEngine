@@ -10,13 +10,11 @@
         style="right: 100px; float: right "
         v-model="startDate"
         format="DD.MM.YYYY"
-        value-format="DD.MM.YYYY"
         @change="getDatas()"
         :clearable="false"
     />
     <div style="clear: both"></div>
     <el-scrollbar :maxHeight="globalStore.isMobileView?'450px':'600px'">
-
 
 
       <el-table
@@ -81,19 +79,23 @@ const desktopStore = useDesktopStore();
 const isOpen = ref(false);
 const closeModal = () => isOpen.value = false;
 const tableData = ref([])
-const startDate = ref('18.03.2025')
+const startDate = ref(new Date())
+
 
 function openAppeal(row) {
   router.push({path: '/appeal/' + row.id})
 }
+
 function open() {
   isOpen.value = true;
   getDatas()
 }
 
 function getDatas() {
-  desktopStore.getleadworkflowsbydate(startDate.value).then(res => {
-    tableData.value = res.items
+  globalStore.isWaiting = true
+  desktopStore.getleadworkflowsbydate(formatDateDDMMYYYY(startDate.value)).then(res => {
+    if (res) tableData.value = res.items
+    globalStore.isWaiting = false
   })
 }
 
