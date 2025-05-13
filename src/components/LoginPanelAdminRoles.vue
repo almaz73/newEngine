@@ -16,6 +16,9 @@
     <br>
     <div @click="openAs">Выкупщик сотрудник</div>
     <div @click="openAs">Выкупщик менеджер</div>
+    <br>
+    <div @click="openAs">Аналитик сотрудник</div>
+    <div @click="openAs">Аналитик менеджер</div>
   </div>
 </template>
 <script setup lang="ts">
@@ -34,29 +37,35 @@ function openAs(val) {
       login = 'd.afzalova'
 
       break;
-    case'Управляющий':
+    case 'Управляющий':
       login = 'm.verhotina'
       break;
-    case'Продажник оформитель':
+    case 'Продажник оформитель':
       login = 't.avramenko'
       break;
-    case'Колл-центр: сотрудник':
+    case 'Колл-центр: сотрудник':
       login = 'r.altinbeva'
       break;
-    case'Колл-центр: менеджер':
+    case 'Колл-центр: менеджер':
       login = 'g.babaeva'
       break;
-    case'Продажи сотрудник':
+    case 'Продажи сотрудник':
       login = 'a.aynutdinov'
       break;
-    case'Продажи менеджер':
+    case 'Продажи менеджер':
       login = 's.antipin'
       break;
-    case'Выкупщик сотрудник':
+    case 'Выкупщик сотрудник':
       login = 'd.abzalov'
       break;
-    case'Выкупщик менеджер':
+    case 'Выкупщик менеджер':
       login = 'aleksey'
+      break;
+    case 'Аналитик сотрудник':
+      login = 'a.ahmetov'
+      break;
+    case 'Аналитик менеджер':
+      login = 'r.garaev2'
       break;
 
   }
