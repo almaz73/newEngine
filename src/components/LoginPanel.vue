@@ -40,6 +40,7 @@
       </RouterLink>
     </div>
     <div class="under_window" @click="emits('closeLoginPanel')"></div>
+    <LoginPanelAdminRoles v-if="isLocaleHost()"/>
   </div>
   <UsersDirModal ref="UserModal"/>
 </template>
@@ -57,6 +58,7 @@ import router from "@/router";
 import EventBus from '@/utils/eventBus'
 import UsersDirModal from "@/pages/admin/dirs/UsersDirModal.vue";
 import {computed, ref} from "vue";
+import LoginPanelAdminRoles from "@/components/LoginPanelAdminRoles.vue";
 
 
 const emits = defineEmits(['closeLoginPanel'])
@@ -74,6 +76,10 @@ function signOut() {
     globalStore.isWaiting = false
     router.push('login')
   })
+}
+
+function isLocaleHost() {
+  return location.hostname.includes('localhost')
 }
 
 function openCounterPage() {
