@@ -519,7 +519,6 @@ function getData(mainFilter) {
     hostesId: searchFilterAppeals.value.hostesId,
     mainFilter: mainFilter,
   }
-  console.log('params', params)
   desktopStore.getHostess(params).then(res => {
     tableData.value = res.items
     globalStore.isWaiting = false
