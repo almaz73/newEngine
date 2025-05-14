@@ -34,12 +34,6 @@ const authMessage = ref('')
 
 function goMyFirstPage(role: string) {
   switch (role) {
-    case "Admin":
-      location.replace("/v2/deal")
-      break
-    case "Hostess":
-      location.replace("/v2/hostess")
-      break
     case "CallManager":
       location.replace("/v2/appeal")
       break

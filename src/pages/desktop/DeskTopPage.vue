@@ -1,5 +1,7 @@
 <template>
-  <main>
+  <HostesPage v-if="globalStore.account.role==='Hostess'"/>
+
+  <main v-else>
     <br>
     <el-form ref="form" :model="appeal">
       <div class="main__flex custom">
@@ -407,6 +409,7 @@ import router from '@/router'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
 import DeleteCtrl from '@/controls/DeleteCtrl.vue'
+import HostesPage from "@/pages/desktop/HostesPage.vue";
 
 const appealStore = useAppealStore()
 const dealStore = useDealStore()
@@ -451,9 +454,11 @@ function moreButtons() {
 }
 
 onMounted(() => {
-  document.querySelector('form').addEventListener('submit', event => {
-    event.preventDefault()  // Стоп! Прерываем действие по умолчанию.
-  })
+  if (globalStore.account.role !== 'Hostess') {
+    document.querySelector('form').addEventListener('submit', event => {
+      event.preventDefault()  // Стоп! Прерываем действие по умолчанию.
+    })
+  }
 })
 
 
