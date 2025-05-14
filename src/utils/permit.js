@@ -34,7 +34,9 @@ const leftPanelPermissions = {
         'AnalystEmployee',
         'BuyerManager',
         'BuyerEmployee',
-        'CallEmployee'
+        'CallEmployee',
+        'SalesEmployee',
+        'SalesManager'
     ],
     appeal: [
         'Admin',
@@ -45,13 +47,18 @@ const leftPanelPermissions = {
         'Hostess',
         'BuyerManager',
         'BuyerEmployee',
-        'CallEmployee'
+        'CallEmployee',
+        'Agent',
+        'SalesEmployee',
+        'SalesManager'
     ],
     deal: [
         'Admin',
         'GenManager',
         'BuyerManager',
         'BuyerEmployee',
+        'Agent',
+        'AnalystManager'
     ],
     sell: [
         'Admin',
@@ -59,6 +66,9 @@ const leftPanelPermissions = {
         'Hostess',
         'PsmManager',
         'BuyerEmployee',
+        'Agent',
+        'SalesEmployee',
+        'SalesManager'
     ],
     calendar: [
         'Admin',
@@ -71,6 +81,8 @@ const leftPanelPermissions = {
         'BuyerManager',
         'CallEmployee',
         'BuyerEmployee',
+        'Agent',
+        'AnalystManager'
     ],
     calls: [
         'Admin',
@@ -86,6 +98,9 @@ const leftPanelPermissions = {
         'BuyerManager',
         'CallEmployee',
         'BuyerEmployee',
+        'SalesEmployee',
+        'SalesManager',
+        'AnalystManager'
     ],
     importExport: [
         'Admin',
@@ -150,8 +165,7 @@ const reportPermissions = {
         'Admin',
         'CallManager',
         'LocalCallEmployee',
-        'LocalCallManager',
-        'CallEmployee'
+        'LocalCallManager'
     ],
     rCountEmployers:[
         'BuyerEmployee',

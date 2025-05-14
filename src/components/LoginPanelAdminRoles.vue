@@ -23,7 +23,6 @@
 </template>
 <script setup lang="ts">
 import {useGlobalStore} from "@/stores/globalStore.ts";
-import router from "@/router";
 
 const globalStore = useGlobalStore()
 
@@ -35,36 +34,46 @@ function openAs(val) {
   switch (val.target.innerText) {
     case 'Хостес':
       login = 'd.afzalova'
-
+      //Hostess
       break;
     case 'Управляющий':
       login = 'm.verhotina'
+      //GenManager
       break;
     case 'Продажник оформитель':
       login = 't.avramenko'
+      // Agent
       break;
     case 'Колл-центр: сотрудник':
+      // CallEmployee
       login = 'r.altinbeva'
       break;
     case 'Колл-центр: менеджер':
+      // CallManager
       login = 'g.babaeva'
       break;
     case 'Продажи сотрудник':
+      // SalesEmployee
       login = 'a.aynutdinov'
       break;
     case 'Продажи менеджер':
+      // SalesManager
       login = 's.antipin'
       break;
     case 'Выкупщик сотрудник':
+      // BuyerEmployee
       login = 'd.abzalov'
       break;
     case 'Выкупщик менеджер':
+      // BuyerManager
       login = 'aleksey'
       break;
     case 'Аналитик сотрудник':
+      // AnalystEmployee
       login = 'a.ahmetov'
       break;
     case 'Аналитик менеджер':
+      // AnalystManager
       login = 'r.garaev2'
       break;
 
@@ -75,9 +84,7 @@ function openAs(val) {
     globalStore.isWaiting = false
     globalStore.isAuthorized = true
     localStorage.setItem('account', JSON.stringify(res.data))
-    router.push('login')
-    window.location.reload();
-    setTimeout(() => router.push('desktop'), 1000)
+    location.replace("/v2/desktop")
   })
 }
 </script>

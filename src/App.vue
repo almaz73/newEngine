@@ -66,5 +66,7 @@ onMounted(() => {
   })
 
   setTimeout(() => heightPage.value = document.body.scrollHeight)
+
+  console.log('%c ' + globalStore.account.role, 'color: blue')
 })
 </script>

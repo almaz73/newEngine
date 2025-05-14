@@ -87,7 +87,6 @@ export const useGlobalStore = defineStore('globalStore', {
             return (cache.getTeatments = res.data)
         },
         async getColors(type = 10) {
-            console.log('type = ',type)
             const res = await axios.get(`/api/bodycolor/getbytype/${type}`).then(res => res)
             return res.data
         },
