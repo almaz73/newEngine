@@ -91,9 +91,9 @@
             <!--            </div>-->
 
             <div>
+              <label class="label-right l_150">Год выпуска</label>
               <el-form-item prop="year" class="style-valid"
                             :rules="{required: true, message: 'Год выпуска', trigger: ['change']}">
-                <label class="label-right l_150">Год выпуска</label>
                 <el-date-picker
                     class="auto-panel"
                     v-model="auto.year"
@@ -106,13 +106,16 @@
 
             <div>
               <label class="label-right l_150">Тип кузова</label>
-              <el-select
-                  style="width: 200px"
-                  v-model="auto.bodyType"
-                  :filterable="!globalStore.isMobileView"
-                  placeholder="Выберите тип">
-                <el-option v-for="item in bodyTypes" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item prop="bodyType" class="style-valid"
+                            :rules="{required: true, message: 'Тип кузова', trigger: ['change']}">
+                <el-select
+                    style="width: 200px"
+                    v-model="auto.bodyType"
+                    :filterable="!globalStore.isMobileView"
+                    placeholder="Выберите тип">
+                  <el-option v-for="item in bodyTypes" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
             <div>
@@ -125,13 +128,16 @@
 
             <div>
               <label class="label-right l_150">Привод авто</label>
-              <el-select
-                  style="width: 200px"
-                  v-model="auto.driveType"
-                  :filterable="!globalStore.isMobileView"
-                  placeholder="Выберите привод">
-                <el-option v-for="item in driveTypies" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item prop="driveType" class="style-valid"
+                            :rules="{required: true, message: 'Привод авто', trigger: ['change']}">
+                <el-select
+                    style="width: 200px"
+                    v-model="auto.driveType"
+                    :filterable="!globalStore.isMobileView"
+                    placeholder="Выберите привод">
+                  <el-option v-for="item in driveTypies" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
             <div>
@@ -150,7 +156,10 @@
 
             <div>
               <label class="label-right l_150">Мощность (л.с.)</label>
-              <el-input v-model="auto.enginePowerHP"/>
+              <el-form-item prop="enginePowerHP" class="style-valid"
+                            :rules="{required: true, message: 'Мощность (л.с.)', trigger: ['change']}">
+                <el-input v-model="auto.enginePowerHP"/>
+              </el-form-item>
             </div>
 
 
@@ -161,13 +170,16 @@
 
             <div>
               <label class="label-right l_150">Тип КПП</label>
-              <el-select
-                  style="width: 200px"
-                  v-model="auto.gearboxType"
-                  :filterable="!globalStore.isMobileView"
-                  placeholder="Выберите привод">
-                <el-option v-for="item in kpp" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item prop="gearboxType" class="style-valid"
+                            :rules="{required: true, message: 'Тип КПП', trigger: ['change']}">
+                <el-select
+                    style="width: 200px"
+                    v-model="auto.gearboxType"
+                    :filterable="!globalStore.isMobileView"
+                    placeholder="Выберите привод">
+                  <el-option v-for="item in kpp" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
 
@@ -253,15 +265,17 @@
 
             <div v-if="auto.certificate">
               <label class="label-right l_150"> Модель по ПТС</label>
-              <el-autocomplete
-                  style="width: 200px"
-                  v-model="auto.certificate.modelVCTitle"
-                  :fetch-suggestions="getCarModel"
-              />
-              <el-button :icon="Plus"
-                         title="+ Добавить новую модель"
-                         @click="addModelVS()"
-                         style="width: 30px; float: right; margin-right: -30px"></el-button>
+              <el-form-item prop="certificate['modelVCTitle']" class="style-valid"
+                            :rules="{required: true, message: 'Модель по ПТС', trigger: ['change']}">
+                <el-autocomplete style="width: 200px"
+                                 @select="choseModelVC(auto.certificate.modelVCTitle)"
+                                 v-model="auto.certificate.modelVCTitle"
+                                 :fetch-suggestions="getCarModel"/>
+                <el-button :icon="Plus"
+                           title="+ Добавить новую модель"
+                           @click="addModelVS()"
+                           style="width: 30px; float: right; margin-right: -30px"></el-button>
+              </el-form-item>
             </div>
 
             <div>
@@ -272,7 +286,7 @@
                     style="width: 200px"
                     v-model="auto.certificate.colorVCTitle"
                     :fetch-suggestions="getBodyColorAuto"
-                    @change="choseColorVC()"
+                    @select="choseColorVC(auto.certificate.colorVCTitle)"
                     placeholder="Введите Цвет"
                 />
               </el-form-item>
@@ -307,13 +321,16 @@
 
             <div>
               <label class="label-right l_150">Дата выдачи ПТС</label>
-              <el-date-picker
-                  class="auto-panel"
-                  v-model="auto.certificate.issuedDate"
-                  placeholder="Введите дату"
-                  :clearable="false"
-                  format="DD.MM.YYYY"
-              />
+              <el-form-item prop="certificate['issuedDate']" class="style-valid"
+                            :rules="{required: true, message: 'Дата выдачи ПТС', trigger: ['change']}">
+                <el-date-picker
+                    class="auto-panel"
+                    v-model="auto.certificate.issuedDate"
+                    placeholder="Введите дату"
+                    :clearable="false"
+                    format="DD.MM.YYYY"
+                />
+              </el-form-item>
             </div>
 
 
@@ -335,7 +352,10 @@
 
             <div>
               <label class="label-right l_150">ПТС выдан</label>
-              <el-input v-model="auto.certificate.issuedBy"/>
+              <el-form-item prop="certificate['issuedBy']" class="style-valid"
+                            :rules="{required: true, message: 'ПТС выдан', trigger: ['change']}">
+                <el-input v-model="auto.certificate.issuedBy"/>
+              </el-form-item>
             </div>
 
             <div>
@@ -422,7 +442,7 @@ const autoTypes = ref(null)
 const carModifications = ref([])
 
 function init() {
-  auto.value ={mileage: 0, certificate: {}}
+  auto.value = {mileage: 0, certificate: {}}
 }
 
 const closeModal = () => isOpen.value = false
@@ -468,9 +488,16 @@ function getBodyColorAuto(color: string, cb: any) {
   })
 }
 
-function choseColorVC() {
-  let colorVC = colorsVc.find((el: any) => el.value === auto.value.colorVCTitle)
+function choseColorVC(val: string) {
+  let colorVC = colorsVc.find((el: any) => el.value === val)
   if (colorVC) auto.value.certificate.colorVC = colorVC.id
+}
+
+let modelsVc: any = []
+
+function choseModelVC(val: string) {
+  let modelVC = modelsVc.find((el: any) => el.value === val)
+  if (modelVC) auto.value.certificate.modelVC = modelVC.id
 }
 
 function saveBodycolor(color: string) {
@@ -498,6 +525,7 @@ function getCarModel(modelName: string, cb: any) {
   let params = `?brand=${auto.value.certificate.brandVCTitle}&model=${modelName}`
   modelName && appealStore.getCarModel(params).then(res => {
     res.models.map((el: any) => (el.value = el.model))
+    modelsVc = res.models
     cb(res.models)
   })
 }
@@ -589,6 +617,7 @@ function chosenVin(vin: string) {
 
 
 function save() {
+  if (!auto.value.year) return ElMessage.warning('Поле "Год выпуска" обязателен для заполнения')
 
   checkEmptyFields(form.value).then((res: boolean) => {
     console.log('res = ', res)
@@ -613,6 +642,7 @@ function save() {
 
     auto.value.parentId = appealStore.comissId
     if (auto.value.vinNotExist) auto.value.vin = ''
+    if (auto.value.enginePowerVC) auto.value.enginePowerVC = parseInt(auto.value.enginePowerVC)
     auto.value.certificate.isOriginalVC = auto.value.certificate.isOriginalVC == 'true'
     globalStore.isWaiting = true
 
