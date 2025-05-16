@@ -54,8 +54,26 @@ export const useDesktopStore = defineStore('desktopStore', {
         },
         async getResponsible(locationId: number, workflowLeadType: number){
             return axios.get(`/api/orgElement/users/${locationId}/${workflowLeadType}`).then(res => res.data)
+        },
+        async getDashboardInfoSalesManager(filter: any){
+            console.log('filter = ',filter)
+            return axios.get(`/api/dashboard/getDashboardInfoSalesManager/?filter=%7B%22type%22:%22day%22,%22date%22:%2215.05.2025%22%7D`).then(res => res.data)
+        },
+        async getDashboardInfoBuyer(month: number){
+            return axios.get(`/api/workflow/getDashboardInfoBuyer?id=&month=${month}`).then(res => res.data)
+        },
+        async getDashboardInfoSales(month: number){
+            console.log('month = ',month)
+            return axios.get(`/api/workflow/getDashboardInfoSales/${month}`).then(res => res.data)
         }
+
+
+        //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoBuyer?id=&month=5
+        //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoSales/5
+//http://r1.dev.autonet.pro/api/dashboard/getDashboardInfoSalesManager/?filter=%7B%22type%22:%22day%22,%22date%22:%2216.05.2025%22%7D
     }
+
+
 })
 
 function saveAppeal(obj: any) {

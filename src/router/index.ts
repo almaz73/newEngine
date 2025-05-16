@@ -31,7 +31,7 @@ const router = createRouter({
         }, {
             path: '/desktop',
             name: 'desktop',
-            component: () => import('@/pages/desktop/DeskTopPage.vue').catch(val => fail(val))
+            component: () => import('@/pages/desktop/DeskTop.vue').catch(val => fail(val))
         }, {
             path: '/example',
             name: 'example',

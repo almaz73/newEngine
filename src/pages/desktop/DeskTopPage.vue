@@ -1,7 +1,5 @@
 <template>
-  <HostesPage v-if="globalStore.account.role==='Hostess'"/>
-
-  <main v-else>
+  <main>
     <br>
     <el-form ref="form" :model="appeal">
       <div class="main__flex custom">
@@ -409,7 +407,6 @@ import router from '@/router'
 import EditPensilCtrl from '@/controls/EditPensilCtrl.vue'
 import ClientsDirModal from '@/pages/admin/dirs/ClientsDirModal.vue'
 import DeleteCtrl from '@/controls/DeleteCtrl.vue'
-import HostesPage from "@/pages/desktop/HostesPage.vue";
 
 const appealStore = useAppealStore()
 const dealStore = useDealStore()
