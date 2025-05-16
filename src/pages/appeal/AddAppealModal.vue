@@ -54,7 +54,7 @@
                 <el-option v-for="item in managers" :key="item.id" :label="item.fullName" :value="item.id"/>
               </el-select>
             </small>
-          <hr/>
+          <br><br>
 
           <div v-if="newWorkflow.workflowLeadType!==6 ">
           Автомобиль<br>
@@ -103,7 +103,7 @@
             </el-form-item>
           </small>
           </div>
-        <hr>
+            <br>
           </div>
     <component
         v-if="['8', '10'].includes(newWorkflow.workflowLeadType)"

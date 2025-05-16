@@ -20,54 +20,17 @@
         <div>
           <h3>
             Обращения
+            <el-button style="float: right"
+                       title="Добавить новое обращение"
+                       size="small" @click="addAppeal()" :icon="Plus"/>
           </h3>
 
-          <el-tabs v-model="activeName" @tab-click="tabchange">
-            <el-tab-pane :label="'Новые'" name="1">
-              <div class="notes" v-for="appeal in appeals_1">
-                <small class="date">{{ formatDMY_hm(appeal.createDate) }}</small>
-                <div class="red-text">{{ appeal.leadName }}</div>
-                <div v-if="appeal.leadPhone">☎: {{ formattingPhone(appeal.leadPhone) }}</div>
-                <div v-if="appeal.carBrandModel">🚗 {{ appeal.carBrandModel }}</div>
-                <el-button size="small" class="opener" @click="openAppeal(appeal.id)">Открыть</el-button>
-              </div>
-
-              <template v-if="total_1>2">
-                <el-pagination
-                    size="small"
-                    v-model:page-size="rowsPerPage_1"
-                    :page-sizes="[5, 10, 20, 50]"
-                    layout="prev, pager, next, sizes"
-                    @current-change="changePage_1"
-                    @size-change="changePageSize_1"
-                    :total="total_1"
-                />
-              </template>
-
-
+          <el-tabs v-model="activeName" @tab-change="tabchange">
+            <el-tab-pane :label="'Новые'" name="10">
+              <BuyManagerNotes ref="buyManagerNotes_10"/>
             </el-tab-pane>
-            <el-tab-pane :label="'В работе'" name="2">
-
-              <div class="notes" v-for="appeal in appeals_2">
-                <small class="date">{{ formatDMY_hm(appeal.createDate) }}</small>
-                <div class="red-text">{{ appeal.leadName }}</div>
-                <div v-if="appeal.leadPhone">☎: {{ formattingPhone(appeal.leadPhone) }}</div>
-                <div v-if="appeal.carBrandModel">🚗 {{ appeal.carBrandModel }}</div>
-                <el-button size="small" class="opener" @click="openAppeal(appeal.id)">Открыть</el-button>
-              </div>
-
-              <template v-if="total_2>2">
-                <el-pagination
-                    size="small"
-                    v-model:page-size="rowsPerPage_2"
-                    :page-sizes="[5, 10, 20, 50]"
-                    layout="prev, pager, next, sizes"
-                    @current-change="changePage_2"
-                    @size-change="changePageSize_2"
-                    :total="total_2"
-                />
-              </template>
-
+            <el-tab-pane :label="'В работе'" name="11">
+              <BuyManagerNotes ref="buyManagerNotes_11"/>
             </el-tab-pane>
           </el-tabs>
 
@@ -86,6 +49,7 @@
     </div>
   </div>
 
+  <AddAppealModal ref="addAppealModal"/>
 </template>
 <style>
 
@@ -118,17 +82,18 @@
   position: relative;
   min-height: 30px;
 
-  .date {
-    right: 10px;
-    position: absolute;
-  }
+.date {
+  right: 10px;
+  position: absolute;
+}
 
-  .opener {
-    visibility: hidden;
-    right: 10px;
-    bottom: 5px;
-    position: absolute;
-  }
+.opener {
+  visibility: hidden;
+  right: 10px;
+  bottom: 5px;
+  position: absolute;
+}
+
 }
 
 .desk-panels .notes:hover .opener {
@@ -140,74 +105,34 @@
 import {ref} from "vue";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {useGlobalStore} from "@/stores/globalStore";
-import {formatDMY_hm, formattingPhone} from "@/utils/globalFunctions";
+import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
+import {Plus} from "@element-plus/icons-vue";
+import BuyManagerNotes from "@/pages/desktop/modules/BuyManagerNotes.vue";
 
 const globalStore = useGlobalStore()
 const desktopStore = useDesktopStore()
-const activeName = ref('1')
-const appeals_1 = ref([])
-const appeals_2 = ref([])
-const rowsPerPage_1 = ref(7)
-const rowsPerPage_2 = ref(7)
-const total_1 = ref(0)
-const total_2 = ref(0)
-let filter_1 = {"status": 10, "statuses": [10, 11], limit: 7, offset: 0}
-let filter_2 = {"status": 11, "statuses": [10, 11], limit: 7, offset: 0}
+const activeName = ref('10')
 
-function tabchange() {
-  console.log('tabchange = ')
-  if (!appeals_2.value.length) getNews(11)
+const addAppealModal = ref(null)
+const buyManagerNotes_10 = ref([])
+const buyManagerNotes_11 = ref([])
+
+
+function tabchange(val: number) {
+  eval('buyManagerNotes_' + val).value.getNews(val)
 }
 
-function changePage_1(val: number) {
-  filter_1.offset = (val - 1) * rowsPerPage_1.value
-  getNews(10)
+function init() {
+  buyManagerNotes_10.value.getNews(10)
+  activeName.value = '10'
 }
 
-function changePage_2(val: number) {
-  filter_2.offset = (val - 1) * rowsPerPage_2.value
-  getNews(11)
+setTimeout(init)
+
+
+function addAppeal() {
+  addAppealModal.value.open(init)
 }
 
-function changePageSize_1(val: number) {
-  rowsPerPage_1.value = val
-  filter_1.offset = 0
-  filter_1.limit = rowsPerPage_1.value
-  getNews(10)
-}
-
-function changePageSize_2(val: number) {
-  rowsPerPage_2.value = val
-  filter_2.offset = 0
-  filter_2.limit = rowsPerPage_2.value
-  getNews(11)
-}
-
-
-function getNews(val) {
-  let filterBoth = (val === 10) ? filter_1 : filter_2
-  globalStore.isWaiting = true
-  let filter = JSON.stringify({status: filterBoth.status, statuses: filterBoth.statuses})
-  desktopStore.getLeadWorkflowsByStatus(filter, filterBoth.limit, filterBoth.offset).then(res => {
-    globalStore.isWaiting = false
-    if ((val === 10)) {
-      appeals_1.value = res.appeals
-      total_1.value = res.appealsCount
-    } else {
-      appeals_2.value = res.appeals
-      total_2.value = res.appealsCount
-    }
-  })
-}
-
-getNews(10)
-
-function openAppeal(id: number) {
-  // router.push({path: '/appeal/' + id})
-  // window.open
-  window.open('/v2/appeal/' + id)
-}
-
-// console.log('getLeadWorkflowsByStatus = ',getLeadWorkflowsByStatus)
 
 </script>
