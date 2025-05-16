@@ -6,6 +6,7 @@
         <el-button size="large" :type="dayMode==='day'?'success':'info'" @click="dayMode='day'">День</el-button>
         <el-button size="large" :type="dayMode==='week'?'success':'info'" @click="dayMode='week'">Неделя</el-button>
         <el-button size="large" :type="dayMode==='month'?'success':'info'" @click="dayMode='month'">Месяц</el-button>
+
         <el-date-picker
             class="little_date_picker"
             style="margin: 0 12px"
@@ -21,118 +22,118 @@
           <div class="a-table">
             <div class="a-table-row" @click="clientStatusClick('defaultStatus')">
               <div class="a-table-cell"><a>Не указано</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.defaultStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.defaultStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('firstAppealStatus')">
               <div class="a-table-cell"><a>Первичный</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.firstAppealStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.firstAppealStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('byRecommendationStatus')">
               <div class="a-table-cell"><a>По рекомендации</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.byRecommendationStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.byRecommendationStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('foreignStatus')">
               <div class="a-table-cell"><a>Внешний клиент</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.foreignStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.foreignStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('repeatedStatus')">
               <div class="a-table-cell"><a>Повторный</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.repeatedStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.repeatedStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('returnedStatus')">
               <div class="a-table-cell"><a>Вернувшийся</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.returnedStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.returnedStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('orphanStatus')">
               <div class="a-table-cell"><a>Сирота</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.orphanStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.orphanStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('lostedStatus')">
               <div class="a-table-cell"><a>Упущенный клиент</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.lostedStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.lostedStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('autoServiceStatus')">
               <div class="a-table-cell"><a>Клиент автосервиса</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.autoServiceStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.autoServiceStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('calledBeforeStatus')">
               <div class="a-table-cell"><a>Визит по звонку</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.calledBeforeStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.calledBeforeStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('incomingCallStatus')">
               <div class="a-table-cell"><a>Входящий звонок</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.incomingCallStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.incomingCallStatus }}%
               </div>
             </div>
             <div class="a-table-row" @click="clientStatusClick('forgottenStatus')">
               <div class="a-table-cell"><a>Забытый</a></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.forgottenStatus }}
               </div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusProcentCount.forgottenStatus }}%
               </div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Всего</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 <b>{{ sellManagerDash.appeals.appealsCount }}</b>
               </div>
-              <div class="a-table-cell" style="width: 50px"></div>
+              <div class="a-table-cell" style="width: 60px"></div>
             </div>
           </div>
         </div>
@@ -143,29 +144,29 @@
           <div class="a-table">
             <div class="a-table-row">
               <div class="a-table-cell"><b>Всего</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.appeals.appealsCount }}
               </div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Назначено звонков</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.events.appointedCall }}
               </div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Назначено встреч</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.events.appointedMeet }}
               </div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Рабочие листы</b></div>
-              <div class="a-table-cell" style="width: 50px">{{ sellManagerDash.appeals.workList }}</div>
+              <div class="a-table-cell" style="width: 60px">{{ sellManagerDash.appeals.workList }}</div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Упущенные клиенты</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.clientStatusCount.lostedStatus }}
               </div>
             </div>
@@ -188,17 +189,17 @@
           <div class="a-table" v-if="sellManagerDash.showEvents">
             <div class="a-table-row">
               <div class="a-table-cell"><b>На сегодня</b></div>
-              <div class="a-table-cell" style="width: 50px">{{ sellManagerDash.events.eventsNow }}</div>
+              <div class="a-table-cell" style="width: 60px">{{ sellManagerDash.events.eventsNow }}</div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Просроченные</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.events.eventsExpired }}
               </div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Всего</b></div>
-              <div class="a-table-cell" style="width: 50px">
+              <div class="a-table-cell" style="width: 60px">
                 {{ sellManagerDash.events.eventsCount }}
               </div>
             </div>
@@ -214,15 +215,15 @@
           <div class="a-table" :style="{display:sellManagerDash.showStorage?'table':'none'}">
             <div class="a-table-row">
               <div class="a-table-cell"><b>Транзит</b></div>
-              <div class="a-table-cell" style="width: 50px">{{ sellManagerDash.storage.transit }}</div>
+              <div class="a-table-cell" style="width: 60px">{{ sellManagerDash.storage.transit }}</div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Сервис</b></div>
-              <div class="a-table-cell" style="width: 50px">{{ sellManagerDash.storage.service }}</div>
+              <div class="a-table-cell" style="width: 60px">{{ sellManagerDash.storage.service }}</div>
             </div>
             <div class="a-table-row">
               <div class="a-table-cell"><b>Продажа</b></div>
-              <div class="a-table-cell" style="width: 50px">{{ sellManagerDash.storage.sell }}</div>
+              <div class="a-table-cell" style="width: 60px">{{ sellManagerDash.storage.sell }}</div>
             </div>
           </div>
 
@@ -670,10 +671,11 @@
 import {ref} from "vue";
 import {useDesktopStore} from "@/stores/desktopStore";
 import {useGlobalStore} from "@/stores/globalStore";
+import {formatDateDDMMYYYY} from "@/utils/globalFunctions";
 
 const globalStore = useGlobalStore()
 const desktopStore = useDesktopStore()
-const searchFilter = ref({})
+const searchFilter = ref({ date:formatDateDDMMYYYY(new Date())})
 const dayMode = ref('day')
 // const tableData1 = ref([])
 const currentMonth = ref({})
@@ -695,54 +697,54 @@ console.log('currentUser.value = ',currentUser.value)
 globalStore.isWaiting = true
 desktopStore.getDashboardInfoSalesManager({}).then(function (data) {
   globalStore.isWaiting = false
-  /*let data = {
-    "clientStatusCount": {
-      "defaultStatus": 0.0,
-      "firstAppealStatus": 0.0,
-      "byRecommendationStatus": 0.0,
-      "foreignStatus": 0.0,
-      "repeatedStatus": 0.0,
-      "returnedStatus": 0.0,
-      "orphanStatus": 0.0,
-      "lostedStatus": 0.0,
-      "autoServiceStatus": 0.0,
-      "calledBeforeStatus": 0.0,
-      "forgottenStatus": 0.0,
-      "incomingCallStatus": 0.0
-    },
-    "clientStatusProcentCount": {
-      "defaultStatus": 0.0,
-      "firstAppealStatus": 0.0,
-      "byRecommendationStatus": 0.0,
-      "foreignStatus": 0.0,
-      "repeatedStatus": 0.0,
-      "returnedStatus": 0.0,
-      "orphanStatus": 0.0,
-      "lostedStatus": 0.0,
-      "autoServiceStatus": 0.0,
-      "calledBeforeStatus": 0.0,
-      "forgottenStatus": 0.0,
-      "incomingCallStatus": 0.0
-    },
-    "appeals": {
-      "appealsCount": 0,
-      "appealsNew": 0,
-      "appealsWork": 0,
-      "workList": 0
-    },
-    "events": {
-      "eventsCount": 0,
-      "eventsNow": 0,
-      "eventsExpired": 0,
-      "appointedCall": 0,
-      "appointedMeet": 0
-    },
-    "storage": {
-      "transit": 0,
-      "service": 0,
-      "sell": 0
-    }
-  }*/
+/*let data = {
+  "clientStatusCount": {
+    "defaultStatus": 12.11,
+    "firstAppealStatus": 12.11,
+    "byRecommendationStatus": 12.11,
+    "foreignStatus": 12.11,
+    "repeatedStatus": 12.11,
+    "returnedStatus": 12.11,
+    "orphanStatus": 12.11,
+    "lostedStatus": 12.11,
+    "autoServiceStatus": 12.11,
+    "calledBeforeStatus": 12.11,
+    "forgottenStatus": 12.11,
+    "incomingCallStatus": 12.11
+  },
+  "clientStatusProcentCount": {
+    "defaultStatus": 12.11,
+    "firstAppealStatus": 12.11,
+    "byRecommendationStatus": 12.11,
+    "foreignStatus": 12.11,
+    "repeatedStatus": 12.11,
+    "returnedStatus": 12.11,
+    "orphanStatus": 12.11,
+    "lostedStatus": 12.11,
+    "autoServiceStatus": 12.11,
+    "calledBeforeStatus": 12.11,
+    "forgottenStatus": 12.11,
+    "incomingCallStatus": 12.11
+  },
+  "appeals": {
+    "appealsCount": 7,
+    "appealsNew": 7,
+    "appealsWork": 7,
+    "workList": 7
+  },
+  "events": {
+    "eventsCount": 7,
+    "eventsNow": 7,
+    "eventsExpired": 7,
+    "appointedCall": 7,
+    "appointedMeet": 7
+  },
+  "storage": {
+    "transit": 7,
+    "service": 7,
+    "sell": 7
+  }
+}*/
 
   console.log('data = ', data)
 // DashboardService.getDashboardInfoSalesManager({ filter: $scope.searchFilter }).then(function (data) {
@@ -758,7 +760,6 @@ desktopStore.getDashboardInfoSalesManager({}).then(function (data) {
   console.log('sellManagerDash.value = ', sellManagerDash.value)
 });
 
-// searchFilter.value.date = formatDateDDMMYYYY(new Date())
 
 function clientStatusClick() {
   console.log('clientStatusClick = ')
