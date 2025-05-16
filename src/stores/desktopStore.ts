@@ -5,13 +5,13 @@ export const useDesktopStore = defineStore('desktopStore', {
     state: () => ({}),
     actions: {
         async saveAppeal(obj: any) {
-            return await saveAppeal(obj)
+            return axios.post(`/api/communication/callCenterCommunication`, obj).then((res) => res)
         },
         async saveAppealComission(obj: any) {
-            return await saveAppealComission(obj)
+            return axios.post(`/api/commission/add`, obj).then((res) => res)
         },
         async saveAppealSalon(obj: any) {
-            return await saveAppealSalon(obj)
+            return axios.post(`/api/salon-deal/add`, obj).then((res) => res)
         },
         async getLeadsByPhone(tel: string) {
             return axios.get(`/api/lead/GetLeadsByPhone/` + tel).then((res) => res.data)
@@ -55,6 +55,9 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getResponsible(locationId: number, workflowLeadType: number){
             return axios.get(`/api/orgElement/users/${locationId}/${workflowLeadType}`).then(res => res.data)
         },
+
+
+
         async getDashboardInfoSalesManager(filter: any){
             console.log('filter = ',filter)
             return axios.get(`/api/dashboard/getDashboardInfoSalesManager/?filter=%7B%22type%22:%22day%22,%22date%22:%2215.05.2025%22%7D`).then(res => res.data)
@@ -65,8 +68,14 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getDashboardInfoSales(month: number){
             console.log('month = ',month)
             return axios.get(`/api/workflow/getDashboardInfoSales/${month}`).then(res => res.data)
+        },
+        async getLeadWorkflowsByStatus(filter: string, limit: number = 25, offset: number = 0) {
+            return axios.get(`/api/workflow/getLeadWorkflowsByStatus?limit=${limit}&offset=${offset}&filter=${filter}`)
+                .then(res => res.data)
         }
 
+
+        // http://r1.dev.autonet.pro/api/workflow/getLeadWorkflowsByStatus?filter=%7B%22status%22:10,%22statuses%22:%5B10,11%5D%7D&id=&limit=25&offset=0
 
         //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoBuyer?id=&month=5
         //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoSales/5
@@ -76,16 +85,5 @@ export const useDesktopStore = defineStore('desktopStore', {
 
 })
 
-function saveAppeal(obj: any) {
-    return axios.post(`/api/communication/callCenterCommunication`, obj).then((res) => res)
-}
 
-function saveAppealComission(obj: any) {
-    console.log('obj', obj)
-    return axios.post(`/api/commission/add`, obj).then((res) => res)
-}
-
-function saveAppealSalon(obj: any) {
-    return axios.post(`/api/salon-deal/add`, obj).then((res) => res)
-}
 

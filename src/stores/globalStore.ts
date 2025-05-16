@@ -135,7 +135,8 @@ export const useGlobalStore = defineStore('globalStore', {
             return res.data
         },
         async sendComment(obj: any) {
-            return await axios.post('/api/comment/', obj).then(q => q)
+            console.log('obj = ',obj)
+           //  return await axios.post('/api/comment/', obj).then(q => q)
         },
         async getTypeCompanies() {
             if (cache.getTypeCompanies) return cache.getTypeCompanies // список статичный - кэшируем
