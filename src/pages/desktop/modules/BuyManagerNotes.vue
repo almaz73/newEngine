@@ -34,6 +34,7 @@ import {ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useDesktopStore} from "@/stores/desktopStore";
 
+const emits = defineEmits(['returnNoteCount'])
 
 const desktopStore = useDesktopStore()
 const globalStore = useGlobalStore()
@@ -65,6 +66,7 @@ function getNews(val: number = 10) {
     globalStore.isWaiting = false
     appeals.value = res.appeals
     total.value = res.appealsCount
+    emits('returnNoteCount', {type: currentType.value, value: total.value})
   })
 }
 

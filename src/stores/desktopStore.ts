@@ -49,37 +49,35 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getHostesUser() {
             return axios.get(`/api/user/list/policy?roles=53`).then(res => res.data)
         },
-        async getleadworkflowsbydate(date: Date){
+        async getleadworkflowsbydate(date: Date) {
             return axios.get(`/api/workflow/getleadworkflowsbydate/${date}?limit=12&offset=0`).then(res => res.data)
         },
-        async getResponsible(locationId: number, workflowLeadType: number){
+        async getResponsible(locationId: number, workflowLeadType: number) {
             return axios.get(`/api/orgElement/users/${locationId}/${workflowLeadType}`).then(res => res.data)
         },
 
 
-
-        async getDashboardInfoSalesManager(filter: any){
-            console.log('filter = ',filter)
+        async getDashboardInfoSalesManager(filter: any) {
+            console.log('filter = ', filter)
             return axios.get(`/api/dashboard/getDashboardInfoSalesManager/?filter=%7B%22type%22:%22day%22,%22date%22:%2215.05.2025%22%7D`).then(res => res.data)
         },
-        async getDashboardInfoBuyer(month: number){
+        async getDashboardInfoBuyer(month: number) {
             return axios.get(`/api/workflow/getDashboardInfoBuyer?id=&month=${month}`).then(res => res.data)
         },
-        async getDashboardInfoSales(month: number){
-            console.log('month = ',month)
+        async getDashboardInfoSales(month: number) {
+            console.log('month = ', month)
             return axios.get(`/api/workflow/getDashboardInfoSales/${month}`).then(res => res.data)
         },
         async getLeadWorkflowsByStatus(filter: string, limit: number = 25, offset: number = 0) {
             return axios.get(`/api/workflow/getLeadWorkflowsByStatus?limit=${limit}&offset=${offset}&filter=${filter}`)
                 .then(res => res.data)
+        },
+        async getEventsByStatus(filter: string, limit: number = 25, offset: number = 0) {
+            return axios.get(`/api/event/getEventsByStatus?limit=${limit}&offset=${offset}&filter=${filter}`)
+                .then(res => res.data)
         }
 
 
-        // http://r1.dev.autonet.pro/api/workflow/getLeadWorkflowsByStatus?filter=%7B%22status%22:10,%22statuses%22:%5B10,11%5D%7D&id=&limit=25&offset=0
-
-        //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoBuyer?id=&month=5
-        //http://r1.dev.autonet.pro/api/workflow/getDashboardInfoSales/5
-//http://r1.dev.autonet.pro/api/dashboard/getDashboardInfoSalesManager/?filter=%7B%22type%22:%22day%22,%22date%22:%2216.05.2025%22%7D
     }
 
 
