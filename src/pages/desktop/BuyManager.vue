@@ -57,8 +57,7 @@
         </el-tabs>
       </div>
       <div class="three">
-        33333333333
-
+        <PlanFact/>
       </div>
     </div>
   </div>
@@ -123,6 +122,7 @@ import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
 import {Plus} from "@element-plus/icons-vue";
 import BuyManagerNotes from "@/pages/desktop/modules/BuyManagerNotes.vue";
 import BuyManagerEvents from "@/pages/desktop/modules/BuyManagerEvents.vue";
+import PlanFact from "@/pages/desktop/modules/PlanFact.vue";
 
 const globalStore = useGlobalStore()
 const desktopStore = useDesktopStore()

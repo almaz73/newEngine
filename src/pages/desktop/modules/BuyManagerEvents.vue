@@ -53,11 +53,11 @@ const emits = defineEmits(['returnEventCount'])
 const desktopStore = useDesktopStore()
 const globalStore = useGlobalStore()
 const events = ref([])
-const rowsPerPage = ref(7)
+const rowsPerPage = ref(5)
 const total = ref(0)
 const currentType = ref(null)
 const sendEventModal = ref(null)
-let filter = {"status": 10, limit: 7, offset: 0}
+let filter = {"status": 10, limit: 5, offset: 0}
 
 function changePage(val: number) {
   filter.offset = (val - 1) * rowsPerPage.value
