@@ -6,26 +6,24 @@
     <div v-show="!globalStore.isWaiting">
       <div style="margin-top: 8px;padding: 8px;">
         <span>
-          <el-input clearable v-if="!isDiagram" v-model="show.searchText" @input="toSearch()" placeholder="поиск..." />
+          <el-input clearable v-if="!isDiagram" v-model="show.searchText" @input="toSearch()" placeholder="поиск..."/>
         </span>
 
         <span style="float: right">
-          <el-button @click="isDiagram=true">🌓</el-button>
+          <el-button @click="isDiagram=true" title="Диаграмма">🌓</el-button>
           <el-button title="Вложенности" @click="levels()">≣</el-button>
+          <el-button title="Сортировка" @click="toCahngeSort()">{{ sortTypeText[sortType] }}</el-button>
         </span>
 
         <div class="vitrina_b_org_us" v-if="!isShort">
-          <el-button
-            plain
-            :type="lenUsers?'primary':''"
-            @click="toUser()"
-            >
+          <el-button plain
+                     :type="lenUsers?'primary':''"
+                     @click="toUser()">
             Сотрудники {{ lenUsers }}
           </el-button>
-          <el-button
-            plain
-            :type="lenOrgs?'primary':''"
-            @click="toOrg()">
+          <el-button plain
+                     :type="lenOrgs?'primary':''"
+                     @click="toOrg()">
             Организации {{ lenOrgs }}
           </el-button>
         </div>
@@ -34,16 +32,13 @@
       <div style="padding:0 4px; max-height: 650px" :style="{'overflow-y':isDiagram?'':'auto'}">
         <table style="color: #494848;" v-if="!isDiagram">
           <tbody>
-          <tr
-            v-for="item in items"
-            class="a-grid-row"
-            v-show="item.show === true && !item.hide"
-            @click="rowClick(item)"
-            :style="(item.level === 2) ? {'color' : '#d34439'}:(item.level === 3) ? {'font-style' : 'italic'}:null"
-          >
-            <td
-              :title="item.name"
-              :style="(item.level === 2) ? {'padding-left' : '15px'}:(item.level === 3) ? {'padding-left' : '30px'}:null">
+          <tr v-for="item in items"
+              class="a-grid-row"
+              v-show="item.show === true && !item.hide"
+              @click="rowClick(item)"
+              :style="(item.level === 2) ? {'color' : '#d34439'}:(item.level === 3) ? {'font-style' : 'italic'}:null">
+            <td :title="item.name"
+                :style="(item.level === 2) ? {'padding-left' : '15px'}:(item.level === 3) ? {'padding-left' : '30px'}:null">
 
               <div class="vitrina_row">
                 {{ item.name }}
@@ -57,7 +52,7 @@
           </tbody>
         </table>
 
-        <ApexChartForShowCase :currentDataForDiagram v-if="isDiagram" />
+        <ApexChartForShowCase :currentDataForDiagram v-if="isDiagram"/>
         <br><br>
       </div>
     </div>
@@ -104,8 +99,8 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue'
-import { useGlobalStore } from '@/stores/globalStore'
+import {ref} from 'vue'
+import {useGlobalStore} from '@/stores/globalStore'
 import ApexChartForShowCase from '@/components/filterCtrl/ApexChartForShowCase.vue'
 
 const globalStore = useGlobalStore()
@@ -118,6 +113,8 @@ const lenOrgs = ref<string>('')
 const show = ref<any>({})
 const currentDataForDiagram = ref({})
 const isDiagram = ref(false)
+const sortTypeText = ['А-я', 'я-А', '123..', '321..']
+let sortType = ref(3)
 
 
 function toUser() {
@@ -257,6 +254,40 @@ function rowClick(row: any) {
   }
 }
 
+function toCahngeSort() {
+  sortType.value++
+  if (sortType.value > 3) sortType.value = 0
+  toSort()
+}
+
+function toSort() {
+  items.value = items.value.sort((a: any, b: any) => {
+    if (sortType.value == 3) {
+      if (a.count < b.count) return 1
+      else if (a.count > b.count) return -1
+      return 0
+    }
+
+    if (sortType.value == 2) {
+      if (a.count > b.count) return 1
+      else if (a.count < b.count) return -1
+      return 0
+    }
+
+    if (sortType.value == 1) {
+      if (a.name < b.name) return 1
+      else if (a.name > b.name) return -1
+      return 0
+    }
+
+    if (sortType.value == 0) {
+      if (a.name > b.name) return 1
+      else if (a.name < b.name) return -1
+      return 0
+    }
+  })
+}
+
 function makeTable(data: any) {
   let rowLevel1Id = 1
   let rowLevel2Id = 1
@@ -265,19 +296,19 @@ function makeTable(data: any) {
   items.value = []
   if (!data) return false
 
-  if (data[0] && data[0].count != undefined) {
-    data = data.sort((a: any, b: any) => {
-      if (a.count < b.count) return 1
-      else if (a.count > b.count) return -1
-      else 0
-    })
-  } else {
-    data = data.sort((a: any, b: any) => {
-      if (a.appealCountByUser < b.appealCountByUser) return 1
-      else if (a.appealCountByUser > b.appealCountByUser) return -1
-      else 0
-    })
-  }
+  // if (data[0] && data[0].count != undefined) {
+  //   data = data.sort((a: any, b: any) => {
+  //     if (a.count < b.count) return 1
+  //     else if (a.count > b.count) return -1
+  //     else 0
+  //   })
+  // } else {
+  //   data = data.sort((a: any, b: any) => {
+  //     if (a.appealCountByUser < b.appealCountByUser) return 1
+  //     else if (a.appealCountByUser > b.appealCountByUser) return -1
+  //     else 0
+  //   })
+  // }
 
   data.forEach((item_0: any) => {
     let row: any = {}
@@ -364,9 +395,10 @@ function makeTable(data: any) {
   })
 
   let kkk: any = []
-  items.value.forEach((el: any) => el.level === 1 && kkk.push({ name: el.name, count: el.count }))
+  items.value.forEach((el: any) => el.level === 1 && kkk.push({name: el.name, count: el.count}))
 
   currentDataForDiagram.value = kkk
+  toSort()
 }
 
 function showData(data: any, node: string) {
@@ -385,5 +417,5 @@ function showData(data: any, node: string) {
   show.value = data
 }
 
-defineExpose({ showData })
+defineExpose({showData})
 </script>
