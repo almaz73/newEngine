@@ -10,7 +10,7 @@
         </span>
 
         <span style="float: right">
-          <el-button @click="isDiagram=true" title="Диаграмма">🌓</el-button>
+          <el-button @click="isDiagram=!isDiagram" title="Диаграмма">🌓</el-button>
           <el-button title="Вложенности" @click="levels()">≣</el-button>
           <el-button title="Сортировка" @click="toCahngeSort()">{{ sortTypeText[sortType] }}</el-button>
         </span>
@@ -286,6 +286,12 @@ function toSort() {
       return 0
     }
   })
+
+  currentDataForDiagram.value = items.value
+  if (isDiagram.value) {
+    isDiagram.value = false
+    setTimeout(() => isDiagram.value = true)
+  }
 }
 
 function makeTable(data: any) {
