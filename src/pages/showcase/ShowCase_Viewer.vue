@@ -10,9 +10,9 @@
         </span>
 
         <span style="float: right">
-          <el-button @click="isDiagram=!isDiagram" title="Диаграмма">🌓</el-button>
+          <el-button v-if="isShort" @click="isDiagram=!isDiagram" title="Диаграмма">🌓</el-button>
           <el-button title="Вложенности" @click="levels()">≣</el-button>
-          <el-button title="Сортировка" @click="toCahngeSort()">{{ sortTypeText[sortType] }}</el-button>
+          <el-button v-if="isShort" title="Сортировка" @click="toCahngeSort()">{{ sortTypeText[sortType] }}</el-button>
         </span>
 
         <div class="vitrina_b_org_us" v-if="!isShort">
@@ -417,6 +417,7 @@ function showData(data: any, node: string) {
   } else {
     rootTitle.value = 'Обращения в работе'
     isShort.value = false
+    isDiagram.value = false
     setTimeout(toUser)
   }
 
