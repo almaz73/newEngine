@@ -261,7 +261,8 @@ function toCahngeSort() {
 }
 
 function toSort() {
-  items.value = items.value.sort((a: any, b: any) => {
+  let itemsTMP = items.value.filter((el: any) => el.level === 1)
+  itemsTMP = itemsTMP.sort((a: any, b: any) => {
     if (sortType.value == 3) {
       if (a.count < b.count) return 1
       else if (a.count > b.count) return -1
@@ -285,6 +286,19 @@ function toSort() {
       else if (a.name < b.name) return -1
       return 0
     }
+
+    let list = itemsTMP.map((el: any) => el.id)
+
+    itemsTMP = JSON.parse(JSON.stringify(items.value))
+    items.value = []
+
+    list.forEach((el: any) => {
+      itemsTMP.forEach((it: any) => {
+        if (it.id === el && it.level === 1) items.value.push(it)
+        if (it.parentId === el && it.level === 2) items.value.push(it)
+      })
+    })
+    
   })
 
   currentDataForDiagram.value = items.value
