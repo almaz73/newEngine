@@ -287,18 +287,21 @@ function toSort() {
       return 0
     }
 
-    let list = itemsTMP.map((el: any) => el.id)
 
-    itemsTMP = JSON.parse(JSON.stringify(items.value))
-    items.value = []
 
-    list.forEach((el: any) => {
-      itemsTMP.forEach((it: any) => {
-        if (it.id === el && it.level === 1) items.value.push(it)
-        if (it.parentId === el && it.level === 2) items.value.push(it)
-      })
+
+  })
+
+  let list = itemsTMP.map((el: any) => el.id)
+
+  itemsTMP = JSON.parse(JSON.stringify(items.value))
+  items.value = []
+
+  list.forEach((el: any) => {
+    itemsTMP.forEach((it: any) => {
+      if (it.id === el && it.level === 1) items.value.push(it)
+      if (it.parentId === el && it.level === 2) items.value.push(it)
     })
-    
   })
 
   currentDataForDiagram.value = items.value
