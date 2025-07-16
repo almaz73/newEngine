@@ -43,7 +43,6 @@
       <label class="label-right l_150">Описание:</label>
       <el-input type="textarea" name="description" v-model="event.description"
                 :style="{width:globalStore.isMobileView?'213px':'395px'}"
-                rows="2"
       ></el-input>
     </small><br>
 
