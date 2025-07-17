@@ -64,6 +64,8 @@ export const useDesktopStore = defineStore('desktopStore', {
         async getDashboardInfoBuyer(month: number) {
             return axios.get(`/api/workflow/getDashboardInfoBuyer?id=&month=${month}`).then(res => res.data)
         },
+
+        //http://localhost:5000/api/workflow/getDashboardInfoSales/2?id=
         async getDashboardInfoSales(month: number) {
             console.log('month = ', month)
             return axios.get(`/api/workflow/getDashboardInfoSales/${month}`).then(res => res.data)

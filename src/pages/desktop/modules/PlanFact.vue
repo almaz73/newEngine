@@ -124,6 +124,7 @@
   vertical-align: middle;
   text-align: center;
   font-size: smaller;
+  line-height: 0.5
 }
 
 #a-analytics-block .a-credit-application-status-analytics .a-status-count-item .a-value {
