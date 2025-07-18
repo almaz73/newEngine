@@ -251,7 +251,7 @@ const openModalSwapHistory = function (typeHistory) {
 }
 
 const openEditAppeal = function() {
-  editAppealSimpleModal.value.open(appeal.value)
+  editAppealSimpleModal.value.open(appeal.value, communicationLink.value)
 }
 
 function opanModalClientDeals() {

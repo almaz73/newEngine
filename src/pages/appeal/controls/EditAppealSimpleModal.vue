@@ -29,8 +29,7 @@
         <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
       </el-select>
     </div>
-
-    <div>
+    <div v-if="!editByResponsible()">
       <label class="label l_200">Место хранения</label>
       <el-select
           style="width: 220px"
@@ -42,7 +41,7 @@
       </el-select>
     </div>
 
-    <div>
+    <div v-if="!editByResponsible() && appealEditModal.buyCategory">
       <label class="label l_200">Вид выкупа</label>
       <el-select
           style="width: 220px"
@@ -54,7 +53,18 @@
       </el-select>
     </div>
 
-    <div>
+    <div v-if="!editByResponsible() && appealEditModal.tradeInDirectionType">
+      <label class="label l_200">Тип направления</label>
+      <el-select
+          style="width: 220px"
+          placeholder="Выберите тип"
+          v-model="appealEditModal.tradeInDirectionType"
+          clearable>
+        <el-option v-for="type in tradeinDirectionTypes" :key="type.id" :label="type.title" :value="type.value"/>
+      </el-select>
+    </div>
+
+    <div v-if="!editByResponsible()">
       <label class="label l_200">Ответственный</label>
       <el-select style="width: 220px" v-model="appealEditModal.responsible.id" filterable>
         <el-option v-for="item in responsible" :key="item.id"
@@ -63,11 +73,41 @@
       </el-select>
     </div>
 
-    <div>
+    <div v-if="!editByResponsible()">
       <label class="label l_200">Подменный номер ☎</label>
       <el-input v-model="appealEditModal.swapPhone" placeholder="Введите номер"/>
     </div>
 
+
+    <div>
+      <label class="label l_200">Ссылка</label>
+      <el-input v-model="appealEditModal.communicationLink" placeholder="Добавьте ссылку"/>
+      <a v-if="appealEditModal.communicationLink" :href="appealEditModal.communicationLink" target="_blank"> сайт</a>
+    </div>
+
+    <div>
+      <label class="label l_200">Год</label>
+      <el-select placeholder="Год выпуска"
+                 clearable
+                 style="width: 150px"
+                 v-model="appealEditModal.year">
+        <el-option v-for="item in Years" :key="item.name" :label="item.name" :value="item.name"/>
+      </el-select>
+    </div>
+
+    <div>
+      <label class="label l_200">Цвет кузова</label>
+      <el-select placeholder="Цвет кузова"
+                 clearable
+                 style="width: 150px"
+                 v-model="appealEditModal.bodyColorCode">
+        <el-option v-for="item in colors" :key="item.id" :label="item.colorName" :value="item.colorCode"/>
+      </el-select>
+      <div
+          style="display: inline-block;border-radius:50%;width:25px;height:25px;margin: 0 0 -7px 8px; border: 1px solid #bbb"
+          :style="{'background': appealEditModal.bodyColorCode}">
+      </div>
+    </div>
 
     <br>
     <div>
@@ -92,6 +132,7 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {useReportStore} from '@/stores/reportStore'
 import {useAppealStore} from '@/stores/appealStore'
 import {useDesktopStore} from '@/stores/desktopStore'
+import {Years} from "@/utils/globalConstants.ts";
 
 const desktopStore = useDesktopStore()
 const appealStore = useAppealStore()
@@ -108,13 +149,20 @@ const models = ref([])
 const responsible = ref([])
 const appealEditModal = ref({carModel: {}, location: {id: null}, responsible: {}})
 const locations = ref([])
-const BuyCategoryTypes = ref([
+const colors = ref(null)
+const BuyCategoryTypes = [
   {id: 10, title: 'Свободный выкуп'},
   {id: 20, title: 'Выездной выкуп'},
   {id: 30, title: 'Регион'},
   {id: 40, title: 'Fleet'}
-])
+]
 
+const tradeinDirectionTypes = [{"value": 10, "title": "New car"}, {"value": 20, "title": "Used car"}]
+
+globalStore.getColors().then((res) => {
+  res.items.map(el => el.name = el.colorName)
+  colors.value = res.items
+})
 
 function clear() {
   smsTemplate.value = null
@@ -124,22 +172,15 @@ function clear() {
 }
 
 
-function save() {
-  let params = {
-    buyCategory: appealEditModal.value.buyCategory,
-    carModel: appealEditModal.value.carModel,
-    id: appealEditModal.value.id,
-    location: appealEditModal.value.location,
-    responsible: {id: appealEditModal.value.responsible.id},
-    swapPhone: appealEditModal.value.swapPhone
-  }
-
-  appealStore.saveEditAppealSimple(params).then(res => {
-    if (res.status === 200) location.reload()
-  })
+function editByResponsible() {
+  return (
+      ['SalesManager', 'SalesEmployee', 'GenManager', 'Agent', 'Admin'].includes(globalStore.account.role)
+      && globalStore.account.id == appealEditModal.value.responsible.id
+  );
 }
 
-function open(appeal: any) {
+
+function open(appeal: any, communicationLink: any) {
   isOpen.value = true
 
   appealEditModal.value.id = appeal.id
@@ -152,7 +193,13 @@ function open(appeal: any) {
   }
   appealEditModal.value.swapPhone = appeal.swapPhone
   appealEditModal.value.responsible = appeal.responsibleUser
-  appealEditModal.value.buyCategory = appeal.buyCategory
+  if (!appeal.tradeInDirectionType) appealEditModal.value.buyCategory = appeal.buyCategory
+  appealEditModal.value.tradeInDirectionType = appeal.tradeInDirectionType
+  appealEditModal.value.communicationLink = communicationLink
+  appealEditModal.value.year = appeal.yearReleased
+  appealEditModal.value.bodyColorId = appeal.bodyColorId
+  appealEditModal.value.bodyColorCode = appeal.bodyColorCode
+
   if (appeal.locationId) appealEditModal.value.location.id = appeal.locationId
 
   globalStore.getBrands().then(res => {
@@ -174,6 +221,27 @@ function changeBrand(id: number) {
     models.value = res
   })
 }
+
+function save() {
+  let params = {
+    buyCategory: appealEditModal.value.buyCategory,
+    carModel: appealEditModal.value.carModel,
+    id: appealEditModal.value.id,
+    location: appealEditModal.value.location,
+    responsible: {id: appealEditModal.value.responsible.id},
+    swapPhone: appealEditModal.value.swapPhone,
+    tradeInDirectionType: appealEditModal.value.tradeInDirectionType,
+    communicationLink: appealEditModal.value.communicationLink,
+    year: appealEditModal.value.year,
+    bodyColorCode: appealEditModal.value.bodyColorCode,
+    bodyColorId: colors.value.find(el=>el.colorCode === appealEditModal.value.bodyColorCode).id,
+  }
+
+  appealStore.saveEditAppealSimple(params).then(res => {
+    if (res.status === 200) location.reload()
+  })
+}
+
 
 defineExpose({open})
 
