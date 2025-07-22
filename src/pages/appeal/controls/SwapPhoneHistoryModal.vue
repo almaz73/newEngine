@@ -78,10 +78,11 @@ function summClientValues(data: any) {
 }
 
 
-function open(typeHistory: string, appealId: number, clientId: number) {
+function open(typeHistory: string, appealId: number, clientId: number, communicationId:number) {
   title.value = 'История изменений подменного телефона ☎'
   if (typeHistory === 'client') title.value = 'История изменений ФИО клиента'
   if (typeHistory === 'phone') title.value = 'История изменений основного телефона ☎'
+  if (typeHistory === 'link') title.value = 'История изменений ссылок'
 
   tableData.value = []
   isOpen.value = true;
@@ -93,15 +94,31 @@ function open(typeHistory: string, appealId: number, clientId: number) {
       tableData.value.map((el:any)=>el.phone=el.swapPhone)
       globalStore.isWaiting = false
     })
-  } else{
-    adminStore.getClientHistory(clientId).then(res=>{
-      if (typeHistory === 'phone') return summTime(res.data)
-      else summClientValues(res.data)
+  } else if (typeHistory === 'link') {
+    adminStore.GetCommunicationHistory(communicationId).then(res => {
+      res.data && res.data.forEach((el:any) => {
+        let changedValue
+        el.differences.forEach((item:any) => {
+          if (item.field === 'Description') changedValue = item.newValue
+        })
+        tableData.value.push({
+          changeDate: el.createDate,
+          phone: changedValue,
+          responsible: el.user.person.lastName + ' ' + el.user.person.firstName
+        })
+        globalStore.isWaiting = false
+      })
     })
-    adminStore.getLeadHistory(clientId).then(res=>{
-      if (typeHistory === 'phone') return summTime(res.data)
-      else summClientValues(res.data)
-    })
+
+  } else  {
+      adminStore.getClientHistory(clientId).then(res=>{
+        if (typeHistory === 'phone') return summTime(res.data)
+        else summClientValues(res.data)
+      })
+      adminStore.getLeadHistory(clientId).then(res=>{
+        if (typeHistory === 'phone') return summTime(res.data)
+        else summClientValues(res.data)
+      })
 
   }
 

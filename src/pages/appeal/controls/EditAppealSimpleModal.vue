@@ -13,7 +13,6 @@
           v-model="appealEditModal.carModel.brand"
           :filterable="!globalStore.isMobileView"
           @change="changeBrand(appealEditModal.carModel.brand)"
-          clearable
       >
         <el-option v-for="brand in brands" :key="brand.id" :label="brand.name" :value="brand.id"/>
       </el-select>
@@ -35,8 +34,7 @@
           style="width: 220px"
           placeholder="Введите место"
           v-model="appealEditModal.location.id"
-          filterable
-          clearable>
+          filterable>
         <el-option v-for="item in locations" :key="item.id" :label="item.title" :value="item.id"/>
       </el-select>
     </div>
@@ -47,7 +45,6 @@
           style="width: 220px"
           placeholder="Выберите вид"
           v-model="appealEditModal.buyCategory"
-          clearable
       >
         <el-option v-for="type in BuyCategoryTypes" :key="type.id" :label="type.title" :value="type.id"/>
       </el-select>
@@ -58,8 +55,7 @@
       <el-select
           style="width: 220px"
           placeholder="Выберите тип"
-          v-model="appealEditModal.tradeInDirectionType"
-          clearable>
+          v-model="appealEditModal.tradeInDirectionType">
         <el-option v-for="type in tradeinDirectionTypes" :key="type.id" :label="type.title" :value="type.value"/>
       </el-select>
     </div>
@@ -88,7 +84,6 @@
     <div>
       <label class="label l_200">Год</label>
       <el-select placeholder="Год выпуска"
-                 clearable
                  style="width: 150px"
                  v-model="appealEditModal.year">
         <el-option v-for="item in Years" :key="item.name" :label="item.name" :value="item.name"/>
@@ -98,7 +93,7 @@
     <div>
       <label class="label l_200">Цвет кузова</label>
       <el-select placeholder="Цвет кузова"
-                 clearable
+
                  style="width: 150px"
                  v-model="appealEditModal.bodyColorCode">
         <el-option v-for="item in colors" :key="item.id" :label="item.colorName" :value="item.colorCode"/>
@@ -133,6 +128,7 @@ import {useReportStore} from '@/stores/reportStore'
 import {useAppealStore} from '@/stores/appealStore'
 import {useDesktopStore} from '@/stores/desktopStore'
 import {Years} from "@/utils/globalConstants.ts";
+import {ElMessage} from "element-plus";
 
 const desktopStore = useDesktopStore()
 const appealStore = useAppealStore()
@@ -223,6 +219,19 @@ function changeBrand(id: number) {
 }
 
 function save() {
+  if (appealEditModal.value.communicationLink
+      && !appealEditModal.value.communicationLink.includes('https://')) {
+    return ElMessage.warning('Поле "Ссылка" должна начинаться с "https://"')
+  }
+
+  if (!appealEditModal.value.bodyColorCode) {
+    return  ElMessage.warning('Поле "Цвет кузова" обязателен для заполнения')
+  }
+  appealEditModal.value.buyCategory = appealEditModal.value.buyCategory || null
+  if (!appealEditModal.value.carModel || !appealEditModal.value.carModel.id) {
+    return  ElMessage.warning('Поле "Модель" обязателен для заполнения')
+  }
+  
   let params = {
     buyCategory: appealEditModal.value.buyCategory,
     carModel: appealEditModal.value.carModel,

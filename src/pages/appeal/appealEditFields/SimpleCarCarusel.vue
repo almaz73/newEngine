@@ -19,7 +19,11 @@
         <div style="width: 310px">
           <span class="label" v-if="appeal.carBrandModel">  Модель: </span>{{ appeal.carBrandModel }}
           <span class="label" v-if="appeal.yearReleased">  Год: </span>{{ appeal.yearReleased }}
-          <span class="label" v-if="appeal.mileageAuto">  Пробег: </span>{{ appeal.mileageAuto }}
+          <span class="label" v-if="appeal.bodyColorCode">  Цыет кузова: </span>
+          <div v-if="appeal.bodyColorCode"
+               style="display: inline-block;border-radius:50%;width:25px;height:25px;margin: 0 0 -7px 8px; border: 1px solid #bbb"
+               :style="{'background': appeal.bodyColorCode}">
+          </div>
 
           <div v-if="appeal.deal && appeal.deal.dealStatus">
             <span class="label">
