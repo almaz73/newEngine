@@ -505,7 +505,6 @@ function openFilter() {
 }
 
 function toSearchFilter() {
-  console.log('toSearchFilter searchFilterAppeals.value=' , searchFilterAppeals.value)
   getData(filterButtonValue.value)
 }
 

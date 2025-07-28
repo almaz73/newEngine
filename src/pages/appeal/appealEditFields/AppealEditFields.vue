@@ -259,7 +259,7 @@ const openEditAppeal = function() {
 }
 
 function opanModalClientDeals() {
-  let clientId = appeal.value.lead.leadId || appeal.value.leadId
+  let clientId = appeal.value.lead.leadId || appeal.value.leadId || appeal.value.lead.id
   let fio = appeal.value.leadName || (appeal.value.person?.lastName + appeal.value.person?.firstName)
   dealsHistoryModal.value.open(clientId, fio)
 }

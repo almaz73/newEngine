@@ -219,11 +219,6 @@ function changeBrand(id: number) {
 }
 
 function save() {
-  if (appealEditModal.value.communicationLink
-      && !appealEditModal.value.communicationLink.includes('https://')) {
-    return ElMessage.warning('Поле "Ссылка" должна начинаться с "https://"')
-  }
-
   if (!appealEditModal.value.bodyColorCode) {
     return  ElMessage.warning('Поле "Цвет кузова" обязателен для заполнения')
   }
