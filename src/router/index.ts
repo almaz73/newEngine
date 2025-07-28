@@ -60,8 +60,8 @@ const router = createRouter({
             name: 'sell',
             component: () => import('@/pages/warehous/WarehousPage.vue').catch(val => fail(val))
         }, {
-            path: '/realization',
-            name: 'realization',
+            path: '/realizations',
+            name: 'realizations',
             component: () => import('@/pages/realization/RealizationPage.vue').catch(val => fail(val))
         }, {
             path: '/ideas',

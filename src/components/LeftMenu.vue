@@ -73,7 +73,7 @@
       </RouterLink>
 
       <RouterLink to="showcase" v-if="permit('menu','showcase')">
-        <el-menu-item index="4">
+        <el-menu-item index="5">
           <el-icon>
             <img alt="Склад" src="@/assets/icons/ic-vitrina-black-18-px.png" height="34" width="34"/>
           </el-icon>
@@ -82,7 +82,7 @@
       </RouterLink>
 
       <RouterLink to="calls" v-if="permit('menu','calls')">
-        <el-menu-item index="5">
+        <el-menu-item index="6">
           <el-icon>
             <img alt="Звонки" src="@/assets/icons/ic-call-black-20-px.png" height="34" width="34"/>
           </el-icon>
@@ -100,7 +100,7 @@
         </el-menu-item>
       </RouterLink>
 
-      <el-sub-menu index="6" v-if="permit('menu','importExport')">
+      <el-sub-menu index="8" v-if="permit('menu','importExport')">
         <template #title>
           <el-icon>
             <img alt="Управление" src="@/assets/icons/ic-import-export-black-18-px.png" height="34" width="34"/>
@@ -110,32 +110,32 @@
         <template><span>Раздел с подподразделом</span></template>
         <a href="https://www.forbes.ru/karera-i-svoy-biznes/384349-kak-zhitel-kazani-perezhil-bankrotstvo-i-postroil-set-avtosalonov-s"
            target="_blank">
-          <el-menu-item index="6-1">то Подаздел</el-menu-item>
+          <el-menu-item index="8-1">то Подаздел</el-menu-item>
         </a>
-        <el-sub-menu index="6-2">
+        <el-sub-menu index="8-2">
           <template #title><span>Раздел с подподразделом</span></template>
           <a href="https://xn--80aej9aped4f.xn--p1ai/" target="_blank">
-            <el-menu-item index="6-2-1">Подподраздел</el-menu-item>
+            <el-menu-item index="8-2-1">Подподраздел</el-menu-item>
           </a>
         </el-sub-menu>
 
-        <el-sub-menu index="6-3" disabled>
+        <el-sub-menu index="8-3" disabled>
           <template #title><span>Задизаблим</span></template>
         </el-sub-menu>
       </el-sub-menu>
 
 
       <RouterLink to="/calendar" v-if="permit('menu','calendar')">
-        <el-menu-item index="8">
+        <el-menu-item index="9">
           <el-icon>
             <img alt="Cобытия" src="@/assets/icons/ic-done-all-black-18-px.png" height="34" width="34"/>
           </el-icon>
-          <template #title>Cобытия</template>
+          <template #title>События</template>
         </el-menu-item>
       </RouterLink>
 
       <RouterLink to="/map" v-if="permit('menu','map')">
-        <el-menu-item index="9">
+        <el-menu-item index="10">
           <el-icon>
             <img alt="Аналитика" src="@/assets/icons/ic-trending-up-black-18-px.png" height="34" width="34"/>
           </el-icon>
@@ -144,7 +144,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','plan')">
-        <el-menu-item index="10">
+        <el-menu-item index="11">
           <el-icon>
             <img alt="Плановые показатели" src="@/assets/icons/icon-plan-indicator.png" height="34" width="34"/>
           </el-icon>
@@ -153,7 +153,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="11">
+        <el-menu-item index="12">
           <el-icon>
             <img alt="Заявки на кредит" src="@/assets/icons/ic-account-balance-black-18-px.png" height="34" width="34"/>
           </el-icon>
@@ -161,8 +161,8 @@
         </el-menu-item>
       </RouterLink>
 
-      <RouterLink to="/realization" v-if="permit('menu','realization')">
-        <el-menu-item index="12">
+      <RouterLink to="/realizations" v-if="permit('menu','realization')">
+        <el-menu-item index="13">
           <el-icon>
             <img alt="Реализация" src="@/assets/icons/ic-shopping-cart-black-18-px.png" height="34" width="34"/>
           </el-icon>
@@ -171,7 +171,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="13">
+        <el-menu-item index="14">
           <el-icon>
             <img alt="Страховые полисы" src="@/assets/icons/icon-insurance-policies.png" height="34" width="34"/>
           </el-icon>
@@ -180,7 +180,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="14">
+        <el-menu-item index="15">
           <el-icon>
             <img alt="Доп.оборудование" src="@/assets/icons/icon-equip.png" height="34" width="34"/>
           </el-icon>
@@ -189,7 +189,7 @@
       </RouterLink>
 
       <RouterLink to="/reports" v-if="permit('menu','reports')">
-        <el-menu-item index="15">
+        <el-menu-item index="16">
           <el-icon>
             <img alt="отчеты" src="@/assets/icons/icon-reports.png" height="34" width="34"/>
           </el-icon>
@@ -198,7 +198,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="16">
+        <el-menu-item index="17">
           <el-icon>
             <img alt="Новости" src="@/assets/icons/ic-chat-black-18-px.png" height="34" width="34"/>
           </el-icon>
@@ -207,7 +207,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="17">
+        <el-menu-item index="18">
           <el-icon>
             <img alt="Система" src="@/assets/icons/ic-system-inactive.png" height="34" width="34"/>
           </el-icon>
@@ -216,7 +216,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="18">
+        <el-menu-item index="19">
           <el-icon>
             <img alt="Помощь" src="@/assets/icons/ic-help-red-18-px.png" height="32" width="32"/>
           </el-icon>
@@ -225,7 +225,7 @@
       </RouterLink>
 
       <RouterLink to="/" v-if="permit('menu','')">
-        <el-menu-item index="19">
+        <el-menu-item index="20">
           <el-icon>
             <img alt="Анкеты" src="@/assets/icons/icon-questionnaires_.png" height="34" width="34"/>
           </el-icon>
@@ -291,7 +291,8 @@ function changeMenu(a: any) {
 // нужно автоматически вычислить по браузерному адресу подходящее меню
 router.beforeEach(rout => {
   let storage = 0
-  const indexes = { '/v2/desktop': 1, '/v2/appeal': 2, '/v2/deal': 3, '/v2/auto': 3, '/v2/sell': 4 }
+  const indexes = { '/v2/desktop': 1, '/v2/appeal': 2, '/v2/deal': 3, '/v2/auto': 3, '/v2/sell': 4,
+    '/v2/showcase': 5, '/v2/calls': 6, '/v2/admin': 7, '/v2/calendar': 9, '/v2/reports': 16, '/v2/realizations':13}
 
   setTimeout(() => {
     let path = rout && rout.href.match(/(\/[^\/]*\/[^\/]*\/)/)
