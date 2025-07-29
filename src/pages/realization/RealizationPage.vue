@@ -24,45 +24,63 @@
     <!-- для компа таблица -->
     <el-table
         class="big-table"
-        v-if="!globalStore.isMobileView"
+        v-if="!globalStore.isMobileView && realizationStore.list.length"
         :data="realizationStore.list"
         ref="singleTableRef"
         empty-text="Нет данных"
         highlight-current-row
     >
-      <el-table-column label="Обращение">
+      <el-table-column label="Дата">
         <template #default="scope">
           <ColorButtons :statusTitle="scope.row.statusTitle"/>
-          <div class="red-text">{{ scope.row.id }}</div>
-          <div>{{ formatDate(scope.row.lastTaskDate) }}</div>
+          <div v-if="scope.row.appeal">{{ scope.row.id }} <span class="red-text">{{ scope.row.appeal.id }}</span></div>
+          <div>{{ scope.row.created }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="Клиент">
+      <el-table-column label="Покупатель">
         <template #default="scope">
-          <div><b> {{ scope.row.leadName }}</b></div>
-          <div> {{ scope.row.leadPhone }}</div>
-          <div class="red-text">{{ scope.row.clientStatusTitle }}</div>
+          <div v-if="scope.row.client &&  scope.row.client.person"><b>
+            {{ scope.row.client.person.lastName }} {{ scope.row.client.person.firstName }}</b></div>
+          <div v-if="scope.row.client">{{ formattingPhone(scope.row.client.person.phone) }}</div>
+
         </template>
       </el-table-column>
 
-      <el-table-column label="Менеджер">
+      <el-table-column label="Продавец/Оформитель">
         <template #default="scope">
-          <div><b> {{ scope.row.createUserName }}</b></div>
-          <div> {{ scope.row.locationName }}</div>
-          <div class="red-text">{{ scope.row.city }}</div>
+          <small v-if="scope.row.sell"> {{ scope.row.sell.createdUser.person.lastName }}
+            {{ scope.row.sell.createdUser.person.firstName }} / </small>
+          <small v-if="scope.row.user"> <b>{{ scope.row.user.person.lastName }} {{
+              scope.row.user.person.firstName
+            }}</b></small>
+          <div v-if="scope.row.appeal && scope.row.appeal.location">{{ scope.row.appeal.location.city }}</div>
         </template>
       </el-table-column>
 
-      <el-table-column label="Автомобиль">
+      <el-table-column label="Реализация">
         <template #default="scope">
-          <div><b> {{ scope.row.carBrandModel }}</b></div>
-          <div> {{ scope.row.carBrandModel }}</div>
-          <div class="red-text">{{ scope.row.vin }}</div>
+          <div v-if="scope.row.auto">🚓<b> {{  scope.row.auto.brandTitle  }} {{ scope.row.auto.modelTitle }}</b></div>
+          <span v-if="scope.row.auto" style="white-space: nowrap"> {{ scope.row.auto.vin }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="Событие">
+      <el-table-column label="Марка">
+        <template #default="scope">
+          <span> GM1: {{ formatPrice(scope.row.gm1) }}</span><br/>
+
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Цена">
+        <template #default="scope">
+          <span style="border-radius: 4px; background-color: #a4a4a4;color: white; padding: 3px 12px;">
+            {{ formatPrice(scope.row.totalPriceSum) }}</span><br/>
+          {{ formatDate(scope.row.lastTaskDate) }}<br/>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="Кредит">
         <template #default="scope">
           <span class="red-text"> {{ scope.row.lastTaskTitle }} </span><br/>
           {{ formatDate(scope.row.lastTaskDate) }}<br/>
@@ -103,14 +121,14 @@
   </main>
 </template>
 <script setup>
-import {carColor, formatDate, gotoTop} from "@/utils/globalFunctions";
+import {carColor, formatDate, formatPrice, formattingPhone, gotoTop} from "@/utils/globalFunctions";
 import FilterButtonsCtrl from "@/components/filterCtrl/FilterButtonsCtrl.vue";
 import FilterTagsCtrl from "@/components/filterCtrl/FilterTagsCtrl.vue";
 import RealizationFilter from "@/pages/realization/RealizationFilter.vue";
 import {ElTable} from "element-plus";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useRealizationStore} from "@/stores/realizationStore";
-import {reactive, ref, computed, onMounted} from 'vue'
+import {computed, onMounted, reactive, ref} from 'vue'
 import {globalRef} from '@/components/filterCtrl/FilterGlobalRef.js';
 import ColorButtons from "@/controls/ColorButtons.vue";
 
@@ -185,7 +203,7 @@ function validateFilter() {
 function getData() {
   if (validateFilter()) return false;
   globalStore.isWaiting = true
-  realizationStore.getRealization(filterOld).then((res) => {
+  realizationStore.getRealization(filterOld).then(res => {
     globalStore.isWaiting = false
     if (!res) return console.warn('НЕТ ДАННЫХ')
     filterButtons.map(el => el.count = res[el.type] | 0)
