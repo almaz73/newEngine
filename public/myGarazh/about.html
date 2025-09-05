@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Мой Гараж - Личный кабинет</title>
+		<meta name="theme-color" content="#4caf50" />
+		<link rel="manifest" href="manifest.json" />
+		<link rel="icon" href="favicon.ico" />
+		<link rel="stylesheet" href="/v2/myGarazh/assets/style.css" />
+	</head>
+	<body>
+		<div id="offline-text">
+			Нет подключения к интернету.
+		</div>
+
+		<header>
+			<nav>
+				<div class="logo">Мой Гараж</div>
+				<img src="/v2/myGarazh/assets/pic/logo.png" />
+				<ul class="nav-links">
+					<li><a href="/v2/myGarazh/index.html" class="nav-link">Главная</a></li>
+					<li><a class="nav-link active">Автомобили</a></li>
+					<li>
+						<button id="installBtn" class="btn install-btn">Установить</button>
+					</li>
+				</ul>
+			</nav>
+		</header>
+
+		<div class="container">
+			<!-- Страница автомобилей -->
+			<section id="cars-page">
+				<h2>Мои автомобили</h2>
+
+				<div class="car-list">
+					<div class="car-card">
+						<div class="car-image">
+							<img
+								title="Toyota Camry"
+								style="height: 160px"
+								src="/v2/myGarazh/assets/pic/camry.jpg"
+							/>
+						</div>
+						<div class="car-info">
+							<h3>Toyota Camry</h3>
+							<p>Год: 2018</p>
+							<p>VIN: JTDBU4EE3JJ123456</p>
+							<p>Пробег: 65,430 км</p>
+							<button class="btn">Подробнее</button>
+						</div>
+					</div>
+
+					<div class="car-card">
+						<div class="car-image">
+							<img
+								title="Honda Civic"
+								style="height: 160px"
+								src="/v2/myGarazh/assets/pic/honda.jpg"
+							/>
+						</div>
+						<div class="car-info">
+							<h3>Honda Civic</h3>
+							<p>Год: 2020</p>
+							<p>VIN: 2HGFC2F56LH789012</p>
+							<p>Пробег: 32,150 км</p>
+							<button class="btn">Подробнее</button>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin-top: 2rem; text-align: center">
+					<button class="btn">Добавить автомобиль</button>
+				</div>
+			</section>
+		</div>
+
+		<footer>
+			<p>Мой Гараж - Личный кабинет © 2025</p>
+			<p>PWA приложение</p>
+		</footer>
+
+		<script src="/v2/myGarazh/assets/script.js"></script>
+	</body>
+</html>

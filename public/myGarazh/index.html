@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Мой Гараж - Личный кабинет</title>
+		<meta name="theme-color" content="#4caf50" />
+		<link rel="manifest" href="manifest.json" />
+		<link rel="icon" href="favicon.ico" />
+		<link rel="stylesheet" href="/v2/myGarazh/assets/style.css" />
+	</head>
+	<body>
+		<div id="offline-text">
+			Нет подключения к интернету.
+		</div>
+
+		<header>
+			<nav>
+				<div class="logo">Мой Гараж</div>
+				<img src="/v2/myGarazh/assets/pic/logo.png" />
+				<ul class="nav-links">
+					<li><a href="#main" class="nav-link active">Главная</a></li>
+					<li><a href="/v2/myGarazh/about.html" class="nav-link">Автомобили</a></li>
+					<li>
+						<button id="installBtn" class="btn install-btn">Установить</button>
+					</li>
+				</ul>
+			</nav>
+		</header>
+
+		<div class="container">
+			<!-- Главная страница -->
+			<section id="main-page" class="page active">
+				<div class="stats">
+					<div class="stat-card">
+						<h3>2</h3>
+						<p>Автомобиля</p>
+					</div>
+					<div class="stat-card">
+						<h3>5</h3>
+						<p>Записей о ремонте</p>
+					</div>
+					<div class="stat-card">
+						<h3>2</h3>
+						<p>Предстоящих ТО</p>
+					</div>
+					<div class="stat-card">
+						<h3>12,500 ₽</h3>
+						<p>Расходы за месяц</p>
+					</div>
+				</div>
+
+				<div class="card">
+					<h2>Последние действия</h2>
+					<ul>
+						<li>Замена масла - Toyota Camry - 15.05.2025</li>
+						<li>Покупка запчастей - 12.05.2025 - 8,400 ₽</li>
+						<li>Замена тормозных колодок - Honda Civic - 10.05.2025</li>
+					</ul>
+				</div>
+
+				<div class="card">
+					<h2>Предстоящие события</h2>
+					<ul>
+						<li>Техническое обслуживание - Toyota Camry - 25.06.2025</li>
+						<li>Замена шин - Honda Civic - 15.11.2025</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- Страница автомобилей -->
+			<section id="cars-page" class="page">
+				<h2>Мои автомобили</h2>
+
+				<div class="car-list">
+					<div class="car-card">
+						<div class="car-image">
+							<img
+								title="Toyota Camry"
+								style="height: 160px"
+								src="/v2/myGarazh/assets/pic/camry.jpg"
+							/>
+						</div>
+						<div class="car-info">
+							<h3>Toyota Camry</h3>
+							<p>Год: 2018</p>
+							<p>VIN: JTDBU4EE3JJ123456</p>
+							<p>Пробег: 65,430 км</p>
+							<button class="btn">Подробнее</button>
+						</div>
+					</div>
+
+					<div class="car-card">
+						<div class="car-image">
+							<img
+								title="Honda Civic"
+								style="height: 160px"
+								src="/v2/myGarazh/assets/pic/honda.jpg"
+							/>
+						</div>
+						<div class="car-info">
+							<h3>Honda Civic</h3>
+							<p>Год: 2020</p>
+							<p>VIN: 2HGFC2F56LH789012</p>
+							<p>Пробег: 32,150 км</p>
+							<button class="btn">Подробнее</button>
+						</div>
+					</div>
+				</div>
+
+				<div style="margin-top: 2rem; text-align: center">
+					<button class="btn">Добавить автомобиль</button>
+				</div>
+			</section>
+		</div>
+
+		<footer>
+			<p>Мой Гараж - Личный кабинет © 2025</p>
+			<p>PWA приложение</p>
+		</footer>
+
+		<script src="/v2/myGarazh/assets/script.js"></script>
+	</body>
+</html>

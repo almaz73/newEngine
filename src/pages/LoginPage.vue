@@ -20,6 +20,8 @@
              @click.prevent="signIn()">
       <div class="danger">{{ authMessage }}</div>
 
+      <br><br><br><br>
+      <a href="myGarazh/index.html"> МОЙ ГАРАЖ </a>
     </form>
   </div>
 </template>
