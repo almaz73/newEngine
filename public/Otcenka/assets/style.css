@@ -59,7 +59,8 @@ label {
     font-weight: bold;
 }
 
-input, select {
+input,
+select {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -72,7 +73,7 @@ select {
 }
 
 .required::after {
-    content: " *";
+    content: ' *';
     color: #e74c3c;
 }
 
@@ -127,6 +128,27 @@ select {
     margin-top: 15px;
     font-size: 14px;
     color: #666;
+}
+
+.file-list-preview {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.file-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.file-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
 .damage-map {
@@ -189,9 +211,10 @@ select {
     }
 }
 
-.damage_block{
+.damage_block {
     display: block;
 }
-.damage_block img{
+
+.damage_block img {
     max-width: 320px;
 }
