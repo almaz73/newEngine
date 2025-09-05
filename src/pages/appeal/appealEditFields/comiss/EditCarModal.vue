@@ -583,6 +583,8 @@ function chosenVin(vin: string) {
           z.certificate.elCertificateNumber = res.certificateNumber
           z.certificate.elCertificateNumber = res.elCertificateNumber
           z.certificate.elCertificateIssuedDate = res.elCertificateIssuedDate
+          z.certificate.issuedDate = res.issuedDate
+          z.certificate.registrationMark = res.registrationMark
 
 
           z.modificationId = res.modificationId

@@ -149,8 +149,11 @@
 
             <div v-if="communicationLink"><span class="label">Коммуникация:</span>
               <span  style="width: 200px; overflow: hidden;display: inline-grid">
-                <a :href="communicationLink" target="_blank"> {{ communicationLink }} </a>
+                <a :href="communicationLink"
+                   :title="communicationLink"
+                   target="_blank"> {{ communicationLink.slice(0,25)+'...' }} </a>
               </span>
+              <a title="история изменений" @click="openModalSwapHistory('link')">👁</a>
             </div>
           </div>
 
@@ -236,6 +239,7 @@ const clientsDirLegalModal = ref(null)
 const isTypeClientEdit = ref(false)
 const swapPhoneHistoryModal = ref(null)
 const communicationLink = ref('')
+let communicationId = ''
 const dealsHistoryModal = ref(null)
 const editAppealSimpleModal = ref(null)
 const activeNames = ref(['2'])
@@ -247,15 +251,15 @@ function openEditCar() {
 }
 const openModalSwapHistory = function (typeHistory) {
   let clientId = appeal.value.lead.leadId || appeal.value.lead.id || appeal.value.leadId
-  swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId)
+  swapPhoneHistoryModal.value.open(typeHistory, appeal.value.id, clientId, communicationId)
 }
 
 const openEditAppeal = function() {
-  editAppealSimpleModal.value.open(appeal.value)
+  editAppealSimpleModal.value.open(appeal.value, communicationLink.value)
 }
 
 function opanModalClientDeals() {
-  let clientId = appeal.value.lead.leadId || appeal.value.leadId
+  let clientId = appeal.value.lead.leadId || appeal.value.leadId || appeal.value.lead.id
   let fio = appeal.value.leadName || (appeal.value.person?.lastName + appeal.value.person?.firstName)
   dealsHistoryModal.value.open(clientId, fio)
 }
@@ -395,6 +399,7 @@ function init() {
   globalStore.steps = [{title: 'Обращение', done: true}]
   appealStore.getCommunication(appeal.value.id).then(res => {
     communicationLink.value = res.description
+    communicationId = res.id
   })
 
   getEvents()

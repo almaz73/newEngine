@@ -2,14 +2,14 @@
   <div>
     <div class="notes" v-for="event in events">
       <small class="date">{{ formatDMY_hm(event.dateStart) }}</small>
-      <div class="red-text">{{ event.title }}</div>
+      <div class="red-text"><a @click="openAppeal(event)">{{ event.title }}</a></div>
       <small style="color: #4682b4"v-if="event.clientTitle">☻: {{ event.clientTitle }}
         <small v-if="event.clientPhone"> &nbsp; &nbsp; &nbsp;☎: {{ formattingPhone(event.clientPhone) }}</small>
       </small><br>
       <small>{{event.description}}</small>
       <div v-if="event.autoTitle">🚗 {{ event.autoTitle }}</div>
       <div  class="opener" >
-        <el-button size="small" @click="openAppeal(event.entityId)">Открыть</el-button>
+        <el-button size="small" @click="openAppeal(event)">Открыть</el-button>
         <el-button size="small" :icon="Plus" @click="openModalEvent()">Событие</el-button>
       </div>
     </div>
@@ -97,8 +97,15 @@ function openModalEvent() {
   sendEventModal.value.open(getNews)
 }
 
-function openAppeal(id: number) {
-  window.open('/v2/appeal/' + id)
+function openAppeal(item: any) {
+  switch (item.workflowLeadType) {
+    case 8:
+      window.open('/v2/appeal/commission/' + item.entityId);
+      break;
+    default:
+      window.open('/v2/appeal/' + item.entityId);
+      break;
+  }
 }
 
 defineExpose({getNews})

@@ -116,7 +116,6 @@
 </style>
 <script setup lang="ts">
 import {ref} from "vue";
-import {useDesktopStore} from "@/stores/desktopStore";
 import {useGlobalStore} from "@/stores/globalStore";
 import AddAppealModal from "@/pages/appeal/AddAppealModal.vue";
 import {Plus} from "@element-plus/icons-vue";
@@ -125,16 +124,15 @@ import BuyManagerEvents from "@/pages/desktop/modules/BuyManagerEvents.vue";
 import PlanFact from "@/pages/desktop/modules/PlanFact.vue";
 
 const globalStore = useGlobalStore()
-const desktopStore = useDesktopStore()
 const activeName = ref('10')
 const activeEventName = ref('10')
-const addAppealModal = ref(null)
-const buyManagerNotes_10 = ref([])
-const buyManagerNotes_11 = ref([])
+const addAppealModal = ref<any|null>()
+const buyManagerNotes_10 = ref<any|null>()
+const buyManagerNotes_11 = ref<any|null>()
 const note_10 = ref('')
 const note_11 = ref('')
 const buyManagerEvents_20 = ref(null)
-const buyManagerEvents_10 = ref(null)
+const buyManagerEvents_10 = ref<any|null>()
 const buyManagerEvents_30 = ref(null)
 const event_20 = ref('')
 const event_10 = ref('')
@@ -170,5 +168,7 @@ function addAppeal() {
   addAppealModal.value.open(init)
 }
 
+globalStore.setTitle('Рабочий стол')
+globalStore.steps = []
 
 </script>

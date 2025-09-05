@@ -304,7 +304,7 @@ function toSort() {
     })
   })
 
-  currentDataForDiagram.value = items.value
+  currentDataForDiagram.value = items.value.filter((el: any) => el.level === 1)
   if (isDiagram.value) {
     isDiagram.value = false
     setTimeout(() => isDiagram.value = true)

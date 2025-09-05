@@ -317,6 +317,11 @@ export const getFiasByName = (queryString: string, cb: any) => {
     useGlobalStore().getFias(queryString).then(res => cb(res.data.items || []))
 }
 
+export function formatPrice(n: number){
+    // 33333 => 33 333 руб.
+    return n && n.toLocaleString('ru-RU')+' руб.'
+}
+
 export function timeAgoF(input: Date): string | undefined {
     const date = (input instanceof Date) ? input : new Date(input)
     const formatter = new Intl.RelativeTimeFormat('ru')

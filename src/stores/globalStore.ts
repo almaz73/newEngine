@@ -224,5 +224,13 @@ export const useGlobalStore = defineStore('globalStore', {
             return res.data
         },
 
+
+        async getRegularlyQueryingEvents() {
+            const res = await axios.get(`/api/notification/getUnread`).then(q => q)
+            return res.data
+        },
+        async readedQueryingEvents(id: number) {
+            return await axios.post(`/api/notification/${id}/markReaded`).then(q => q)
+        },
     }
 })
