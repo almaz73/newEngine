@@ -23,7 +23,7 @@
       <br><br><br><br>
       <a href="myGarazh/index.html"> МОЙ ГАРАЖ </a>
       <br>
-      <a href="otcenka/index.html"> ОЦЕНКА </a>
+      <a href="price/index.html"> О Ц Е Н К А </a>
     </form>
   </div>
 </template>
