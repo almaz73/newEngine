@@ -263,6 +263,7 @@
     <div v-else>
       <img alt="" src="@/assets/img/right-toggle-arrow.png" width="16"/>
     </div>
+    <RegularlyQueryingEvents/>
   </div>
 </template>
 
@@ -272,7 +273,7 @@ import {ref} from "vue";
 import EventBus from "@/utils/eventBus";
 import {permit} from "@/utils/permit.js"
 import router from '@/router'
-
+import RegularlyQueryingEvents from "@/components/RegularlyQueryingEvents.vue";
 
 const globalStore = useGlobalStore()
 const activeIndex = ref('')

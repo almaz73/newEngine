@@ -11,8 +11,7 @@ body {
     color: #333;
     line-height: 1.6;
     padding: 20px;
-    background: linear-gradient(to right top, red, yellow);
-    background: linear-gradient(135deg, #f3f9a7 0%, #f06859 100%); /* Теплый градиент */
+    background: linear-gradient(135deg, #a7d5f9 0%, #020a2d 100%); /* Теплый градиент */
 }
 
 .container {
@@ -216,5 +215,5 @@ select {
 }
 
 .damage_block img {
-    max-width: 320px;
+    max-width: 290px;
 }

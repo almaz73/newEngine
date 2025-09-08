@@ -5,6 +5,12 @@
 </template>
 <script setup>
 import {useGlobalStore} from "@/stores/globalStore";
+import router from "@/router";
 
-useGlobalStore().setTitle('')
+const globalStore = useGlobalStore()
+globalStore.setTitle('')
+setTimeout(() => {
+  globalStore.isAuthorized = false
+  router.push('/login')
+}, 2000)
 </script>

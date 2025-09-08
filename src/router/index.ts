@@ -3,11 +3,21 @@ import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
+import Pub from '@/pages/pub/Pub.vue'
 import {startCounter} from "@/utils/counterPageViews"
+import {useGlobalStore} from "@/stores/globalStore.ts";
 
 const router = createRouter({
     history: createWebHistory('/v2/'),
     routes: [
+        {
+            path: '/public',
+            name: 'pub',
+            component: Pub,
+            meta: {withoutAuth: false} // Эта страница не требует авторизации // дополнительно настраивается App.vue
+        },
+
+        /// авторизованные
         {
             path: '/',
             name: 'home',
@@ -145,7 +155,9 @@ function reloadPage() {
     localStorage.setItem('isRouteGluk', 'true') // для выхода из бесконечного цикла
 }
 
-router.beforeEach((res, from, next) => {
+router.beforeEach((to, from, next) => {
+    console.log('to = ',to)
+
     let startLength = document.body.textContent?.length
 
     setTimeout(() => {
@@ -154,10 +166,10 @@ router.beforeEach((res, from, next) => {
         else localStorage.removeItem('isRouteGluk')
     }, 1000)
 
-    if (res.fullPath === '/appeal/showcase') router.push('/showcase')
+    if (to.fullPath === '/appeal/showcase') router.push('/showcase')
     else next()
 
-    startCounter(res.fullPath, Date.now())
+    //startCounter(res.fullPath, Date.now())
 })
 
 router.afterEach((to) => {

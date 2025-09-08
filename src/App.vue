@@ -15,7 +15,6 @@
         src="@/assets/img/gtt.svg"
         alt=""
     />
-    <RegularlyQueryingEvents/>
   </div>
 </template>
  
@@ -30,7 +29,6 @@ import '@/stores/_g_axios.ts'
 import {widthMobile} from '@/utils/globalConstants'
 import {gotoTop} from "@/utils/globalFunctions";
 import {useDark} from "@vueuse/core";
-import RegularlyQueryingEvents from "@/components/RegularlyQueryingEvents.vue";
 
 
 
@@ -47,9 +45,11 @@ onMounted(() => {
     // @ts-ignore
     if (new Date() - new Date(+globalStore.account.dateTime) > 32400000) { // 9 часов
       // вышел срок авторизации
-      console.log('%cвышел срок авторизации','background:red')
+      console.log('%cвышел срок авторизации', 'background:red')
       navigator.onLine && router.push('login')
     }
+  } else if (location.pathname.includes('public')) {
+    console.log('Тут без авторизации = ')
   } else {
     globalStore.isAuthorized = false
     
