@@ -1,6 +1,7 @@
 <template>
   <div class="frame_pub">
     <div class="container">
+      <button class="fix-button" v-if="isDatas" @click="removeDatas()"> ОЧИСТИТЬ</button>
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />
@@ -12,7 +13,14 @@
           <div class="form-row">
             <div class="form-group">
               <label class="required">VIN номер</label>
-              <el-input size="large" v-model="auto.vin" placeholder="Введите VIN"/>
+              <el-input
+                  size="large"
+                  placeholder="Введите VIN"
+                  v-model="auto.vin"
+                  maxlength="17"
+                  minlength="17"
+                  clearable
+              />
             </div>
           </div>
 
@@ -61,6 +69,7 @@
               <el-select
                   size="large"
                   placeholder="Выберите год выпуска"
+                  @change="saveDatas()"
                   v-model="auto.year">
                 <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
               </el-select>
@@ -83,7 +92,8 @@
             <div class="form-group">
 
               <label for="brand" class="required">Пробег</label>
-              <el-input v-model="auto.mileageAuto"/><span style="float: right">км</span>
+              <el-input v-model="auto.mileageAuto"/>
+              <span style="float: right">км</span>
               <el-slider
                   :show-tooltip="false"
                   v-model="auto.mileageAuto1000"
@@ -110,17 +120,53 @@ const generations = ref<[]>()
 const modifications = ref<[]>()
 const years = ref([])
 const isWaiting = ref(true)
+const isDatas = ref()
+
+function removeDatas() {
+  localStorage.removeItem('datas')
+  isDatas.value = null
+}
+
+function saveDatas() {
+  // локально запоминаем введенные данные
+  let newDatas = {}
+  Object.entries(auto.value).forEach(el => {
+    if (el[1]) newDatas[el[0]] = el[1]
+  })
+  if (Object.keys(newDatas).length) {
+    isDatas.value = true
+    localStorage.setItem('datas', JSON.stringify(newDatas))
+  }
+}
 
 
-function mili(val) {
-  auto.value.mileageAuto = val*10000
+let datas = localStorage.getItem('datas')
+if (datas) {
+  isDatas.value = true
+  fillDields(JSON.parse(datas))
+}
+
+function fillDields(datas: any) {
+  console.log('datas = ', datas)
+  // заполняем созраненными данными
+  Object.assign(auto.value, datas)
+  if (auto.value.brand) getModels(auto.value.brand)
+  if (auto.value.model) getGenerations(auto.value.model)
+  if (auto.value.generation) getModifications(auto.value.generation)
+  if (auto.value.modification) getComplectations(auto.value.modification)
+
+}
+
+
+
+function mili(val: number) {
+  auto.value.mileageAuto = val * 10000
 }
 
 let currentYear = new Date().getFullYear()
 for (let year: number = currentYear; year >= 1980; year--) {
   years.value.push(year)
 }
-
 
 pubStore.getBrands().then(res => {
   brands.value = res.data
@@ -133,6 +179,7 @@ function getModels(id: number) {
   pubStore.getModels(id).then(res => {
     models.value = res.data
     isWaiting.value = false
+    saveDatas()
   })
 }
 
@@ -141,6 +188,7 @@ function getGenerations(id: number) {
   pubStore.getGenerations(id).then(res => {
     generations.value = res.data
     isWaiting.value = false
+    saveDatas()
   })
 }
 
@@ -148,26 +196,37 @@ function getModifications(id: number) {
   isWaiting.value = true
   pubStore.getModifications(id).then(res => {
     modifications.value = res.data
-    modifications.value = res.data.map(el=>{
-      el.name_short= el.name.split('\n')[0]+' ('+el.engineTypeName+')'
+    modifications.value = res.data.map(el => {
+      el.name_short = el.name.split('\n')[0] + ' (' + el.engineTypeName + ')'
       return el
     })
+    saveDatas()
     isWaiting.value = false
   })
 }
 
-function getComplectations(id:number) {
+function getComplectations(id: number) {
   pubStore.getComplectations(id).then(res => {
-    console.log('res = ',res)
+    console.log('res = ', res)
+    saveDatas()
     // modifications.value = res.data
   })
-  
+
 }
 
 
 </script>
 
 <style>
+
+.frame_pub .fix-button {
+  position: fixed;
+  left: 5px;
+  top: 5px;
+  background: #f5f1dc;
+  border: none;
+  padding: 5px;
+}
 
 .frame_pub .waiter {
   width: 73px;
@@ -249,11 +308,9 @@ function getComplectations(id:number) {
   /*.frame_pub .buttons {*/
   /*  flex-direction: column;*/
   /*}*/
-  
   /*.frame_pub .btn {*/
   /*  width: 100%;*/
   /*}*/
-
 
 
 }
