@@ -12,11 +12,17 @@ export const usePubStore = defineStore("pubStore", {
             const res = await axios.get(`/api/auto/getBrands`)
             return (cache['getBrands'] = res)
         },
-        async getModels(id) {
+        async getModels(id:number) {
             return await axios.get(`/api/auto/getModels?brandId=${id}`)
         },
-        async getGenerations(id) {
+        async getGenerations(id:number) {
             return await axios.get(`/api/auto/getGenerations?modelId=${id}`)
+        },
+        async getModifications(id:number) {
+            return await axios.get(`/api/auto/getModifications?generationId=${id}`)
+        },
+        async getComplectations(id:number) {
+            return await axios.get(`/api/auto/getComplectations?modificationId=${id}`)
         },
 
     }

@@ -163,8 +163,6 @@ function reloadPage() {
 }
 
 router.beforeEach((to, from, next) => {
-    console.log('to = ',to)
-
     let startLength = document.body.textContent?.length
 
     setTimeout(() => {

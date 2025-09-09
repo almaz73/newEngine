@@ -17,7 +17,7 @@
     />
   </div>
 </template>
- 
+
 <script setup lang="ts">
 import {RouterView} from 'vue-router'
 import LeftMenu from '@/components/LeftMenu.vue'
@@ -29,7 +29,6 @@ import '@/stores/_g_axios.ts'
 import {widthMobile} from '@/utils/globalConstants'
 import {gotoTop} from "@/utils/globalFunctions";
 import {useDark} from "@vueuse/core";
-
 
 
 useDark()
@@ -49,10 +48,9 @@ onMounted(() => {
       navigator.onLine && router.push('login')
     }
   } else if (location.pathname.includes('public')) {
-    console.log('Тут без авторизации = ')
+    // страницы без  авторизации
   } else {
     globalStore.isAuthorized = false
-    
     navigator.onLine && router.push('login')
   }
 

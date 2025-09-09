@@ -1,6 +1,9 @@
 <template>
   <div class="frame_pub">
     <div class="container">
+      <img src="@/assets/img/loading.gif" alt=""
+           :class="{showwaiter:isWaiting}" class="waiter"
+      />
       <div style="margin: auto; width: 243px"><img src="@/pages/pub/images/logo.png"></div>
       <h1>Онлайн оценка вашего автомобиля</h1>
 
@@ -10,7 +13,7 @@
             <div class="form-group">
               <label class="required">VIN номер</label>
               <el-input size="large" v-model="auto.vin" placeholder="Введите VIN"/>
-             </div>
+            </div>
           </div>
 
           <div class="form-row">
@@ -20,7 +23,7 @@
               <el-select
                   size="large"
                   placeholder="Выберите марку"
-                  @change="getModels(obj.brand)"
+                  @change="getModels(auto.brand)"
                   v-model="auto.brand">
                 <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
               </el-select>
@@ -30,10 +33,9 @@
 
               <label for="brand" class="required">Модель</label>
               <el-select
-                  id="brand"
                   size="large"
                   placeholder="Выберите модель"
-                  @change="getGenerations(obj.model)"
+                  @change="getGenerations(auto.model)"
                   v-model="auto.model">
                 <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
               </el-select>
@@ -45,9 +47,9 @@
 
               <label for="brand" class="required">Поколение</label>
               <el-select
-                  id="brand"
                   size="large"
                   placeholder="Выберите поколение"
+                  @change="getModifications(auto.generation)"
                   v-model="auto.generation">
                 <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
               </el-select>
@@ -57,7 +59,6 @@
 
               <label for="brand" class="required">Год выпуска</label>
               <el-select
-                  id="brand"
                   size="large"
                   placeholder="Выберите год выпуска"
                   v-model="auto.year">
@@ -71,24 +72,24 @@
 
               <label for="brand" class="required">Модификация</label>
               <el-select
-                  id="brand"
                   size="large"
-                  placeholder="Выберите поколение"
-                  v-model="auto.generation">
-                <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
+                  placeholder="Выберите модификацию"
+                  @change="getComplectations(auto.modification)"
+                  v-model="auto.modification">
+                <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
               </el-select>
             </div>
 
             <div class="form-group">
 
               <label for="brand" class="required">Пробег</label>
-              <el-select
-                  id="brand"
-                  size="large"
-                  placeholder="Выберите поколение"
-                  v-model="auto.generation">
-                <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-input v-model="auto.mileageAuto"/><span style="float: right">км</span>
+              <el-slider
+                  :show-tooltip="false"
+                  v-model="auto.mileageAuto1000"
+                  style="max-width: 300px"
+                  @input="mili(auto.mileageAuto1000)"/>
+
             </div>
           </div>
         </form>
@@ -102,45 +103,99 @@ import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/pubStore";
 
 const pubStore = usePubStore()
-const auto = ref<{}>({brand: null, model: null, generation: null, year: null})
+const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: 0})
 const brands = ref<[]>()
 const models = ref<[]>()
 const generations = ref<[]>()
+const modifications = ref<[]>()
 const years = ref([])
+const isWaiting = ref(true)
+
+
+function mili(val) {
+  auto.value.mileageAuto = val*10000
+}
 
 let currentYear = new Date().getFullYear()
-for (let year:number = currentYear; year >= 1980; year--) {
+for (let year: number = currentYear; year >= 1980; year--) {
   years.value.push(year)
 }
 
-pubStore.getBrands().then(res => brands.value = res.data)
 
-function getModels(id:number) {
+pubStore.getBrands().then(res => {
+  brands.value = res.data
+  isWaiting.value = false
+})
+
+function getModels(id: number) {
+  isWaiting.value = true
+
   pubStore.getModels(id).then(res => {
     models.value = res.data
+    isWaiting.value = false
   })
 }
 
-function getGenerations(id:number) {
+function getGenerations(id: number) {
+  isWaiting.value = true
   pubStore.getGenerations(id).then(res => {
     generations.value = res.data
+    isWaiting.value = false
   })
 }
+
+function getModifications(id: number) {
+  isWaiting.value = true
+  pubStore.getModifications(id).then(res => {
+    modifications.value = res.data
+    modifications.value = res.data.map(el=>{
+      el.name_short= el.name.split('\n')[0]+' ('+el.engineTypeName+')'
+      return el
+    })
+    isWaiting.value = false
+  })
+}
+
+function getComplectations(id:number) {
+  pubStore.getComplectations(id).then(res => {
+    console.log('res = ',res)
+    // modifications.value = res.data
+  })
+  
+}
+
 
 </script>
 
-<style scoped>
+<style>
+
+.frame_pub .waiter {
+  width: 73px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  left: calc(50% - 35px);
+  top: 73px;
+  transition: opacity .3s;
+  opacity: 0;
+}
+
+.frame_pub .waiter.showwaiter {
+  opacity: 1;
+}
+
 .frame_pub {
   font-family: 'Roboto', Arial, sans-serif;
   color: #333;
   line-height: 1.6;
   padding: 10px;
   background: linear-gradient(135deg, #a7d5f9 0%, #020a2d 100%); /* Теплый градиент */
+  background: linear-gradient(135deg, #f5f1dc 0%, #e9d202 100%); /* Теплый градиент */
   /*background: linear-gradient(135deg, #fcc4c4 0%, #880202 100%); !* Теплый градиент *!*/
-  margin: 1px;
+
 }
 
-.container {
+.frame_pub .container {
   max-width: 800px;
   margin: 0 auto;
   background: white;
@@ -149,50 +204,57 @@ function getGenerations(id:number) {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+.frame_pub h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #2c3e50;
 }
 
-.form-section {
+.frame_pub .form-section {
   margin-bottom: 25px;
 }
 
-.form-row {
+.frame_pub .form-row {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -10px 15px;
 }
 
-.form-group {
+.frame_pub .form-group {
   flex: 1 0 0;
   padding: 0 30px 0 20px;
   margin-bottom: 15px;
 }
 
-label {
+.frame_pub label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-.required::after {
+.frame_pub .required::after {
   content: ' *';
   color: #e74c3c;
 }
 
 @media (max-width: 600px) {
-  .form-group {
+  .frame_pub .form-group {
     flex: 1 0 50%;
   }
 
-  .buttons {
-    flex-direction: column;
+  .frame_pub .el-input__inner {
+    max-width: inherit;
   }
 
-  .btn {
-    width: 100%;
-  }
+  /*.frame_pub .buttons {*/
+  /*  flex-direction: column;*/
+  /*}*/
+  
+  /*.frame_pub .btn {*/
+  /*  width: 100%;*/
+  /*}*/
+
+
+
 }
 </style>
