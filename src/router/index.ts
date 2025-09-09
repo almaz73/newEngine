@@ -14,7 +14,7 @@ const router = createRouter({
             path: '/public',
             name: 'pub',
             component: Pub,
-            meta: {withoutAuth: false} // Эта страница не требует авторизации // дополнительно настраивается App.vue
+            meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
         },
 
         /// авторизованные
@@ -189,7 +189,9 @@ router.afterEach((to) => {
     ]
 
 
-    if (location.hostname === 'live.autonet.pro') {
+    let isPublic = to.matched.some(el=>el.meta.withoutAuth)
+
+    if (location.hostname === 'live.autonet.pro' && !isPublic) {
     // if (location.hostname === "localhost") {
         let part = to.path
         if (to.path.split('/').length > 2) part = to.path.slice(0, to.path.lastIndexOf('/'))
