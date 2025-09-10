@@ -1,0 +1,119 @@
+:root {
+    /*--main-color: #d34439; старый вариант*/
+    --fon-color: #036660;
+}
+
+.frame_pub .fix-button {
+    position: fixed;
+    left: 5px;
+    top: 5px;
+    background: var(--fon-color);
+    border: none;
+    padding: 5px;
+    z-index: 1000;
+    color: white;
+}
+
+.frame_pub .waiter {
+    width: 73px;
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    left: calc(50% - 35px);
+    top: 73px;
+    transition: opacity .3s;
+    opacity: 0;
+}
+
+.frame_pub .waiter.showwaiter {
+    opacity: 1;
+}
+
+.frame_pub {
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    padding: 10px;
+    /*background: linear-gradient(135deg, #a7d5f9 0%, #020a2d 100%); !* Теплый градиент *!*/
+    /*background: linear-gradient(135deg, #f5f1dc 0%, #e9d202 100%); !* Теплый градиент *!*/
+    /*background: linear-gradient(135deg, #d9ffff 0%, #036660 100%); !* Теплый градиент *!*/
+    background-color: var(--fon-color);
+    /*background: linear-gradient(135deg, #fcc4c4 0%, #880202 100%); !* Теплый градиент *!*/
+
+}
+
+.frame_pub .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.frame_pub h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.frame_pub .form-section {
+    margin-bottom: 25px;
+}
+
+.frame_pub .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px 15px;
+}
+
+.frame_pub .form-group {
+    flex: 1 0 0;
+    padding: 0 30px 0 20px;
+    margin-bottom: 15px;
+}
+
+.frame_pub label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.frame_pub .required::after {
+    content: ' *';
+    color: #e74c3c;
+}
+
+.frame_pub .damage_block {
+    display: block;
+}
+
+.frame_pub .damage_block img {
+    max-width: 290px;
+}
+
+/*.frame_pub .flex-grid-1{*/
+/*    min-height: 200px;*/
+/*}*/
+
+
+@media (max-width: 600px) {
+    .frame_pub .form-group {
+        flex: 1 0 50%;
+    }
+
+    .frame_pub .el-input__inner {
+        max-width: inherit;
+    }
+
+
+}
+
+/*.frame_pub .el-input__inner{*/
+/*  min-width: 270px;*/
+/*}*/
+/*.frame_pub .el-input__inner {*/
+/*  max-width: inherit;*/
+/*}*/
+
+

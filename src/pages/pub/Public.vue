@@ -14,11 +14,13 @@
             <div class="form-group">
               <label class="required">VIN номер</label>
               <el-input
+                  @change="auto.vin>16 && saveDatas()"
                   size="large"
                   placeholder="Введите VIN"
                   v-model="auto.vin"
                   maxlength="17"
                   minlength="17"
+                  style="min-width: 325px;"
                   clearable
               />
             </div>
@@ -30,6 +32,7 @@
               <label class="required">Марка</label>
               <el-select
                   size="large"
+                  clearable
                   placeholder="Выберите марку"
                   @change="getModels(auto.brand)"
                   v-model="auto.brand">
@@ -39,9 +42,10 @@
 
             <div class="form-group">
 
-              <label for="brand" class="required">Модель</label>
+              <label class="required">Модель</label>
               <el-select
                   size="large"
+                  clearable
                   placeholder="Выберите модель"
                   @change="getGenerations(auto.model)"
                   v-model="auto.model">
@@ -53,9 +57,10 @@
           <div class="form-row">
             <div class="form-group">
 
-              <label for="brand" class="required">Поколение</label>
+              <label class="required">Поколение</label>
               <el-select
                   size="large"
+                  clearable
                   placeholder="Выберите поколение"
                   @change="getModifications(auto.generation)"
                   v-model="auto.generation">
@@ -65,9 +70,10 @@
 
             <div class="form-group">
 
-              <label for="brand" class="required">Год выпуска</label>
+              <label class="required">Год выпуска</label>
               <el-select
                   size="large"
+                  clearable
                   placeholder="Выберите год выпуска"
                   @change="saveDatas()"
                   v-model="auto.year">
@@ -79,9 +85,10 @@
           <div class="form-row">
             <div class="form-group">
 
-              <label for="brand" class="required">Модификация</label>
+              <label class="required">Модификация</label>
               <el-select
                   size="large"
+                  clearable
                   placeholder="Выберите модификацию"
                   @change="getComplectations(auto.modification)"
                   v-model="auto.modification">
@@ -91,18 +98,103 @@
 
             <div class="form-group">
 
-              <label for="brand" class="required">Пробег</label>
-              <el-input v-model="auto.mileageAuto"/>
+              <label class="required">Пробег</label>
+              <!--              <el-input v-model="auto.mileageAuto"/>-->
+
+              <el-input v-model="auto.mileageAuto"
+                        size="large"
+                        clearable
+                        @change="saveDatas()"
+                        @input="()=>{auto.mileageAuto=numberWithSpaces(auto.mileageAuto)}"/>
+
               <span style="float: right">км</span>
               <el-slider
                   :show-tooltip="false"
-                  v-model="auto.mileageAuto1000"
+                  v-model="mileageAuto1000"
                   style="max-width: 300px"
-                  @input="mili(auto.mileageAuto1000)"/>
+                  @input="auto.mileageAuto=numberWithSpaces(mileageAuto1000 * 10000)"/>
 
             </div>
           </div>
+
+<!--          <div class="form-row">-->
+<!--            <div class="form-group">-->
+<!--              <label class="required">ПТС оригинальный</label>-->
+<!--              <el-radio-group-->
+<!--                  @change="saveDatas()"-->
+<!--                  size="large"-->
+<!--                  v-model="auto.isOriginalVC">-->
+<!--                <el-radio :value="true">Да</el-radio>-->
+<!--                <el-radio :value="false">Нет</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </div>-->
+
+<!--            <div class="form-group">-->
+<!--              <label class="required">Количество хозяев по ПТС</label>-->
+<!--              <el-input-number v-model="auto.countHostsByVC" :min="1" :max="10" @change="saveDatas()"/>-->
+<!--            </div>-->
+<!--          </div>-->
+
+
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required">Телефон</label>
+
+              <el-input placeholder="Телефон" title="Телефон"
+                        size="large"
+                        clearable
+                        @change="saveDatas()"
+                        :formatter="(value) =>value && formattingPhone(value, (val)=>auto.phone=val)"
+                        v-model="auto.phone"/>
+            </div>
+
+            <div class="form-group">
+              <label>Email</label>
+
+              <el-input placeholder="Email"
+                        clearable
+                        size="large"
+                        @change="emailValidate(auto.email); saveDatas()"
+                        title="Email" v-model="auto.email" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required">Город</label>
+              <el-select
+                  size="large"
+                  clearable
+                  placeholder="Выберите город"
+                  @change="saveDatas()"
+                  v-model="auto.city">
+                <el-option v-for="item in cities" :key="item" :label="item" :value="item"/>
+              </el-select>
+            </div>
+
+            <div class="form-group">
+              <label class="required">ФИО</label>
+              <el-input
+                  input-style="500px"
+                  @change="saveDatas()"
+                  size="large"
+                  clearable
+                  placeholder="Введите имя"
+                  v-model="auto.person"
+                  style="min-width: 325px;"
+              />
+            </div>
+          </div>
+
+
         </form>
+
+        <div style="text-align: center">
+          <el-button type="primary" size="large" @click="nextPage()">
+            Перейти на добавление фото
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -111,6 +203,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/pubStore";
+import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/GlobFuntions";
+import '@/pages/pub/style.css'
+import router from "@/router";
 
 const pubStore = usePubStore()
 const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: 0})
@@ -119,13 +214,51 @@ const models = ref<[]>()
 const generations = ref<[]>()
 const modifications = ref<[]>()
 const years = ref([])
-const isWaiting = ref(true)
+const isWaiting = ref(false)
 const isDatas = ref()
+const cities = ["Алматы",
+  "Альметьевск",
+  "Бавлы",
+  "Белгород",
+  "Бугульма",
+  "Буинск",
+  "Волгоград",
+  "Грозный",
+  "Екатеринбург",
+  "Ижевск",
+  "Йошкар-Ола",
+  "Казань",
+  "Москва",
+  "Набережные Челны",
+  "Нижнекамск",
+  "Октябрьский",
+  "Омск",
+  "Пермь",
+  "Россия",
+  "Самара",
+  "Саранск",
+  "Саратов",
+  "Стерлитамак",
+  "Сургут",
+  "Сызрань",
+  "Томск",
+  "Тюмень",
+  "Ульяновск",
+  "Уфа",
+  "хз",
+  "Чайковский",
+  "Чебоксары",
+  "Челябинск",
+  "Чехов"]
+const mileageAuto1000 = ref(0)
 
 function removeDatas() {
   localStorage.removeItem('datas')
   isDatas.value = null
+  auto.value = {}
 }
+
+let timerSave;
 
 function saveDatas() {
   // локально запоминаем введенные данные
@@ -135,7 +268,15 @@ function saveDatas() {
   })
   if (Object.keys(newDatas).length) {
     isDatas.value = true
-    localStorage.setItem('datas', JSON.stringify(newDatas))
+    saveF(newDatas)
+  }
+
+  function saveF(val:any) {
+    if (timerSave) clearTimeout(timerSave)
+    timerSave = setTimeout(() => {
+      localStorage.setItem('datas', JSON.stringify(val))
+      console.log(' - - - - - - - - -  ')
+    }, 200)
   }
 }
 
@@ -154,13 +295,8 @@ function fillDields(datas: any) {
   if (auto.value.model) getGenerations(auto.value.model)
   if (auto.value.generation) getModifications(auto.value.generation)
   if (auto.value.modification) getComplectations(auto.value.modification)
+  if (auto.value.mileageAuto) mileageAuto1000.value = numberNoSpace(auto.value.mileageAuto) / 1000
 
-}
-
-
-
-function mili(val: number) {
-  auto.value.mileageAuto = val * 10000
 }
 
 let currentYear = new Date().getFullYear()
@@ -168,6 +304,7 @@ for (let year: number = currentYear; year >= 1980; year--) {
   years.value.push(year)
 }
 
+isWaiting.value = true
 pubStore.getBrands().then(res => {
   brands.value = res.data
   isWaiting.value = false
@@ -211,107 +348,14 @@ function getComplectations(id: number) {
     saveDatas()
     // modifications.value = res.data
   })
-
 }
+
+
+function nextPage(){
+  console.log('11 = ',11)
+  router.push('public2')
+}
+
 
 
 </script>
-
-<style>
-
-.frame_pub .fix-button {
-  position: fixed;
-  left: 5px;
-  top: 5px;
-  background: #f5f1dc;
-  border: none;
-  padding: 5px;
-}
-
-.frame_pub .waiter {
-  width: 73px;
-  position: fixed;
-  pointer-events: none;
-  z-index: 1000;
-  left: calc(50% - 35px);
-  top: 73px;
-  transition: opacity .3s;
-  opacity: 0;
-}
-
-.frame_pub .waiter.showwaiter {
-  opacity: 1;
-}
-
-.frame_pub {
-  font-family: 'Roboto', Arial, sans-serif;
-  color: #333;
-  line-height: 1.6;
-  padding: 10px;
-  background: linear-gradient(135deg, #a7d5f9 0%, #020a2d 100%); /* Теплый градиент */
-  background: linear-gradient(135deg, #f5f1dc 0%, #e9d202 100%); /* Теплый градиент */
-  /*background: linear-gradient(135deg, #fcc4c4 0%, #880202 100%); !* Теплый градиент *!*/
-
-}
-
-.frame_pub .container {
-  max-width: 800px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.frame_pub h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #2c3e50;
-}
-
-.frame_pub .form-section {
-  margin-bottom: 25px;
-}
-
-.frame_pub .form-row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -10px 15px;
-}
-
-.frame_pub .form-group {
-  flex: 1 0 0;
-  padding: 0 30px 0 20px;
-  margin-bottom: 15px;
-}
-
-.frame_pub label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.frame_pub .required::after {
-  content: ' *';
-  color: #e74c3c;
-}
-
-@media (max-width: 600px) {
-  .frame_pub .form-group {
-    flex: 1 0 50%;
-  }
-
-  .frame_pub .el-input__inner {
-    max-width: inherit;
-  }
-
-  /*.frame_pub .buttons {*/
-  /*  flex-direction: column;*/
-  /*}*/
-  /*.frame_pub .btn {*/
-  /*  width: 100%;*/
-  /*}*/
-
-
-}
-</style>

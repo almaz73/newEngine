@@ -5,6 +5,8 @@ import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
 import Pub from '@/pages/pub/Pub.vue'
 import Public from '@/pages/pub/Public.vue'
+import Public2 from '@/pages/pub/Public2.vue'
+import Public3 from '@/pages/pub/Public3.vue'
 import {startCounter} from "@/utils/counterPageViews"
 import {useGlobalStore} from "@/stores/globalStore.ts";
 
@@ -15,6 +17,18 @@ const router = createRouter({
             path: '/public',
             name: 'public',
             component: Public,
+            meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
+        },
+        {
+            path: '/public2',
+            name: 'public2',
+            component: Public2,
+            meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
+        },
+        {
+            path: '/public3',
+            name: 'public3',
+            component: Public3,
             meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
         },
         {
