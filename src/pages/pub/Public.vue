@@ -9,14 +9,15 @@
       <h1>Онлайн оценка вашего автомобиля</h1>
 
       <div class="form-section">
-        <el-form ref="form" :model="auto">
+        <el-form ref="formRef" :model="auto">
           <div class="form-row">
             <div class="form-group">
               <label class="required">VIN номер</label>
 
               <el-form-item
                   prop="vin"
-                  :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
+                  :rules="[{validator:checkVIN, required: true, min: 17, max: 17,
+                    trigger: ['blur']}]">
                 <el-input
                     @change="auto.vin>16 && saveDatas()"
                     size="large"
@@ -28,15 +29,6 @@
                     clearable
                 />
               </el-form-item>
-
-
-              <el-form-item
-                  prop="'vin'"
-                  :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
-                <el-input placeholder="VIN 17 символов"
-                          maxlength="17"
-                          v-model="auto.vin"/>
-              </el-form-item>
             </div>
           </div>
 
@@ -44,27 +36,35 @@
             <div class="form-group">
 
               <label class="required">Марка</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите марку"
-                  @change="getModels(auto.brand)"
-                  v-model="auto.brand">
-                <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item
+                  prop="brand"
+                  :rules="{required: true, message: 'Не выбрана марка', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите марку"
+                    @change="getModels(auto.brand)"
+                    v-model="auto.brand">
+                  <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
             <div class="form-group">
 
               <label class="required">Модель</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите модель"
-                  @change="getGenerations(auto.model)"
-                  v-model="auto.model">
-                <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item
+                  prop="model"
+                  :rules="{required: true, message: 'Не выбрана модель', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите модель"
+                    @change="getGenerations(auto.model)"
+                    v-model="auto.model">
+                  <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
           </div>
 
@@ -72,27 +72,35 @@
             <div class="form-group">
 
               <label class="required">Поколение</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите поколение"
-                  @change="getModifications(auto.generation)"
-                  v-model="auto.generation">
-                <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
-              </el-select>
+              <el-form-item
+                  prop="generation"
+                  :rules="{required: true, message: 'Не выбрано поколение', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите поколение"
+                    @change="getModifications(auto.generation)"
+                    v-model="auto.generation">
+                  <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
             <div class="form-group">
 
               <label class="required">Год выпуска</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите год выпуска"
-                  @change="saveDatas()"
-                  v-model="auto.year">
-                <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
-              </el-select>
+              <el-form-item
+                  prop="year"
+                  :rules="{required: true, message: 'Не выбран год выпуска', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите год выпуска"
+                    @change="saveDatas()"
+                    v-model="auto.year">
+                  <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
+                </el-select>
+              </el-form-item>
             </div>
           </div>
 
@@ -100,28 +108,36 @@
             <div class="form-group">
 
               <label class="required">Модификация</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите модификацию"
-                  @change="getComplectations(auto.modification)"
-                  v-model="auto.modification">
-                <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
-              </el-select>
+              <el-form-item
+                  prop="modification"
+                  :rules="{required: true, message: 'Не выбрана модификация', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите модификацию"
+                    @change="getComplectations(auto.modification)"
+                    v-model="auto.modification">
+                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
+                </el-select>
+              </el-form-item>
             </div>
 
             <div class="form-group">
 
               <label class="required">Пробег</label>
-              <!--              <el-input v-model="auto.mileageAuto"/>-->
-
-              <el-input v-model="auto.mileageAuto"
-                        size="large"
-                        clearable
-                        @change="saveDatas()"
-                        @input="()=>{auto.mileageAuto=numberWithSpaces(auto.mileageAuto)}"/>
-
               <span style="float: right">км</span>
+              <el-form-item
+                  prop="mileageAuto"
+                  :rules="{validator: checkMili, equired: true, message: 'Не выбран пробег', trigger: ['blur']}">
+                <el-input v-model="auto.mileageAuto"
+                          size="large"
+                          clearable
+                          @change="saveDatas()"
+                          @input="()=>{auto.mileageAuto=numberWithSpaces(auto.mileageAuto)}"
+                />
+              </el-form-item>
+
+
               <el-slider
                   :show-tooltip="false"
                   v-model="mileageAuto1000"
@@ -131,35 +147,20 @@
             </div>
           </div>
 
-          <!--          <div class="form-row">-->
-          <!--            <div class="form-group">-->
-          <!--              <label class="required">ПТС оригинальный</label>-->
-          <!--              <el-radio-group-->
-          <!--                  @change="saveDatas()"-->
-          <!--                  size="large"-->
-          <!--                  v-model="auto.isOriginalVC">-->
-          <!--                <el-radio :value="true">Да</el-radio>-->
-          <!--                <el-radio :value="false">Нет</el-radio>-->
-          <!--              </el-radio-group>-->
-          <!--            </div>-->
-
-          <!--            <div class="form-group">-->
-          <!--              <label class="required">Количество хозяев по ПТС</label>-->
-          <!--              <el-input-number v-model="auto.countHostsByVC" :min="1" :max="10" @change="saveDatas()"/>-->
-          <!--            </div>-->
-          <!--          </div>-->
-
 
           <div class="form-row">
             <div class="form-group">
               <label class="required">Телефон</label>
-
-              <el-input placeholder="Телефон" title="Телефон"
-                        size="large"
-                        clearable
-                        @change="saveDatas()"
-                        :formatter="(value) =>value && formattingPhone(value, (val)=>auto.phone=val)"
-                        v-model="auto.phone"/>
+              <el-form-item
+                  prop="phone"
+                  :rules="{required: true, message: 'Не выбран телефон', trigger: ['blur']}">
+                <el-input placeholder="Телефон" title="Телефон"
+                          size="large"
+                          clearable
+                          @change="saveDatas()"
+                          :formatter="(value) =>value && formattingPhone(value, (val)=>auto.phone=val)"
+                          v-model="auto.phone"/>
+              </el-form-item>
             </div>
 
             <div class="form-group">
@@ -177,8 +178,8 @@
             <div class="form-group">
               <label class="required">Город</label>
               <el-form-item
-                  prop="'city'"
-                  :rules="{required: true, message: 'Горо', trigger: ['blur']}">
+                  prop="city"
+                  :rules="{required: true, message: 'Не выбран город', trigger: ['blur']}">
                 <el-select
                     size="large"
                     clearable
@@ -194,15 +195,19 @@
 
             <div class="form-group">
               <label class="required">ФИО</label>
-              <el-input
-                  input-style="500px"
-                  @change="saveDatas()"
-                  size="large"
-                  clearable
-                  placeholder="Введите имя"
-                  v-model="auto.person"
-                  style="min-width: 325px;"
-              />
+              <el-form-item
+                  prop="person"
+                  :rules="{required: true, message: 'Не выбрано имя', trigger: ['blur']}">
+                <el-input
+                    input-style="500px"
+                    @change="saveDatas()"
+                    size="large"
+                    clearable
+                    placeholder="Введите имя"
+                    v-model="auto.person"
+                    style="min-width: 325px;"
+                />
+              </el-form-item>
             </div>
           </div>
 
@@ -227,7 +232,7 @@ import {ElMessage} from "element-plus";
 import {saveUnSaved} from "@/utils/unsavedRequests";
 
 const pubStore = usePubStore()
-const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: 0})
+const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: null})
 const brands = ref<[]>()
 const models = ref<[]>()
 const generations = ref<[]>()
@@ -269,20 +274,10 @@ const cities = ["Алматы",
   "Чебоксары",
   "Челябинск",
   "Чехов"]
-const mileageAuto1000 = ref(0)
-const form = ref(null)
-const submitForm = formEl => {
+const mileageAuto1000 = ref(null)
+const formRef = ref()
+const submitForm = (formEl:any) => formEl && formEl.validate((valid:boolean) => !valid)
 
-  console.log('formEl = ',formEl)
-
-  formEl && formEl.validate(valid => !valid)
-}
-// const resetForm = formEl => {
-//   // formEl && formEl.resetFields()
-//   // Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)))
-//   // isNeedCheckUnSaved && saveUnSaved(cbForEdit)
-//   // isShowEditClient.value = false
-// }
 
 function removeDatas() {
   localStorage.removeItem('datas')
@@ -290,7 +285,21 @@ function removeDatas() {
   auto.value = {}
 }
 
-let timerSave;
+const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
+
+function checkVIN(rule: any, value: any, callback: any) {
+  if (vinRegex.test(value)) callback('Ошибочный VIN')
+  else if (value.length != 17) callback('Поле не заполнено')
+  else callback()
+
+}
+
+function checkMili(rule: any, value: any, callback: any) {
+  if (value < 1000) callback(true)
+  else callback()
+}
+
+let timerSave:any = null;
 
 function saveDatas() {
   // локально запоминаем введенные данные
@@ -320,12 +329,11 @@ if (datas) {
 }
 
 function fillDields(datas: any) {
-  console.log('datas = ', datas)
   // заполняем созраненными данными
   Object.assign(auto.value, datas)
-  if (auto.value.brand) getModels(auto.value.brand)
-  if (auto.value.model) getGenerations(auto.value.model)
-  if (auto.value.generation) getModifications(auto.value.generation)
+  if (auto.value.brand) getModels(auto.value.brand, true)
+  if (auto.value.model) getGenerations(auto.value.model, true)
+  if (auto.value.generation) getModifications(auto.value.generation, true)
   if (auto.value.modification) getComplectations(auto.value.modification)
   if (auto.value.mileageAuto) mileageAuto1000.value = numberNoSpace(auto.value.mileageAuto) / 1000
 
@@ -342,7 +350,17 @@ pubStore.getBrands().then(res => {
   isWaiting.value = false
 })
 
-function getModels(id: number) {
+function getModels(id: number, noClear) {
+  // удалим связку
+  if (!noClear) {
+    auto.value.model = null
+    auto.value.generation = null
+    auto.value.modification = null
+  }
+
+
+  if (!id) return false
+
   isWaiting.value = true
 
   pubStore.getModels(id).then(res => {
@@ -352,7 +370,13 @@ function getModels(id: number) {
   })
 }
 
-function getGenerations(id: number) {
+function getGenerations(id: number, noClear) {
+
+  if (!noClear) {
+    auto.value.generation = null
+    auto.value.modification = null
+  }
+  if (!id) return false
   isWaiting.value = true
   pubStore.getGenerations(id).then(res => {
     generations.value = res.data
@@ -361,7 +385,12 @@ function getGenerations(id: number) {
   })
 }
 
-function getModifications(id: number) {
+function getModifications(id: number, noClear) {
+
+  if (!noClear) {
+    auto.value.modification = null
+  }
+  if (!id) return false
   isWaiting.value = true
   pubStore.getModifications(id).then(res => {
     modifications.value = res.data
@@ -381,33 +410,12 @@ function getComplectations(id: number) {
   })
 }
 
-// function checkParams() {
-//   if (!auto.vin) return ElMessage({message: 'Поле VIN обязателен для заполнения', type: 'warning'})
-// }
-
-function checkAndWarning() {
-  console.log('auto.value = ', auto.value)
-  if (!auto.value.vin || auto.value.vin.length < 16)
-    return ElMessage({message: 'Поле "VIN" не заполнено', type: 'error'})
-  // if (appeal.lead.leadType === 20 && !appeal.lead.person.phone) return ElMessage({
-  //   message: 'Поле "Основной телефон" не заполнен',
-  //   type: 'error'
-  // })
-  // if (appeal.lead.leadType === 20 && !appeal.workflow.locationId)
-  //   return ElMessage({ message: 'Поле "Салон" не заполнено', type: 'error' })
-  // if (appeal.lead.leadType === 10 && !isTel.value && (!appeal.lead.person.phone && !appeal.workflow.swapPhone))
-  //   return ElMessage({ message: 'Если имеется, укажите телефон', type: 'warning' })
-  // if (!appeal.lead.person.firstName) return ElMessage({ message: 'Поле "Имя" не заполнено', type: 'error' })
-  // if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
-  //   return ElMessage({ message: 'Поле "Вид выкупа" не заполнено', type: 'error' })
-}
 
 function nextPage() {
-  checkAndWarning()
 
-  submitForm(auto.value).then(res => { // проверка заполненности обязательных полей
-    console.log('>>>res = ',res)
+  submitForm(formRef.value).then((res:boolean) => { // проверка заполненности обязательных полей
     if (res) router.push('public2')
+    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error'})
   })
 }
 
