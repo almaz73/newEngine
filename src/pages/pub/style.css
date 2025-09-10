@@ -96,14 +96,8 @@
     border-radius: 15px !important; /*округляем углы контролов*/
 }
 
-.frame_pub .el-form-item__error{
-    color: #F56C6CFF;
-    font-size: 15px;
-    left: 0;
-    line-height: 1;
+.frame_pub .el-form-item__error {
     padding-top: 7px;
-    position: absolute;
-    top: 100%;
 }
 
 
