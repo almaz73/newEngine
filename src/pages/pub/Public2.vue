@@ -142,9 +142,12 @@ function fillDields(datas: any) {
 }
 
 
+function prevPage() {
+  router.push('public')
+}
+
 function nextPage() {
-  console.log('11 = ', 11)
-  router.push('public2')
+  router.push('public3')
 }
 
 

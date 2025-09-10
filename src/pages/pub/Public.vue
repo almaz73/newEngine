@@ -9,20 +9,34 @@
       <h1>Онлайн оценка вашего автомобиля</h1>
 
       <div class="form-section">
-        <form id="carEvaluationForm">
+        <el-form ref="form" :model="auto">
           <div class="form-row">
             <div class="form-group">
               <label class="required">VIN номер</label>
-              <el-input
-                  @change="auto.vin>16 && saveDatas()"
-                  size="large"
-                  placeholder="Введите VIN"
-                  v-model="auto.vin"
-                  maxlength="17"
-                  minlength="17"
-                  style="min-width: 325px;"
-                  clearable
-              />
+
+              <el-form-item
+                  prop="vin"
+                  :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
+                <el-input
+                    @change="auto.vin>16 && saveDatas()"
+                    size="large"
+                    placeholder="Введите VIN"
+                    v-model="auto.vin"
+                    maxlength="17"
+                    minlength="17"
+                    style="min-width: 325px;"
+                    clearable
+                />
+              </el-form-item>
+
+
+              <el-form-item
+                  prop="'vin'"
+                  :rules="[{  min: 17, max: 17, message: 'Не менее 17 знаков', trigger: ['blur']}]">
+                <el-input placeholder="VIN 17 символов"
+                          maxlength="17"
+                          v-model="auto.vin"/>
+              </el-form-item>
             </div>
           </div>
 
@@ -117,24 +131,23 @@
             </div>
           </div>
 
-<!--          <div class="form-row">-->
-<!--            <div class="form-group">-->
-<!--              <label class="required">ПТС оригинальный</label>-->
-<!--              <el-radio-group-->
-<!--                  @change="saveDatas()"-->
-<!--                  size="large"-->
-<!--                  v-model="auto.isOriginalVC">-->
-<!--                <el-radio :value="true">Да</el-radio>-->
-<!--                <el-radio :value="false">Нет</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </div>-->
+          <!--          <div class="form-row">-->
+          <!--            <div class="form-group">-->
+          <!--              <label class="required">ПТС оригинальный</label>-->
+          <!--              <el-radio-group-->
+          <!--                  @change="saveDatas()"-->
+          <!--                  size="large"-->
+          <!--                  v-model="auto.isOriginalVC">-->
+          <!--                <el-radio :value="true">Да</el-radio>-->
+          <!--                <el-radio :value="false">Нет</el-radio>-->
+          <!--              </el-radio-group>-->
+          <!--            </div>-->
 
-<!--            <div class="form-group">-->
-<!--              <label class="required">Количество хозяев по ПТС</label>-->
-<!--              <el-input-number v-model="auto.countHostsByVC" :min="1" :max="10" @change="saveDatas()"/>-->
-<!--            </div>-->
-<!--          </div>-->
-
+          <!--            <div class="form-group">-->
+          <!--              <label class="required">Количество хозяев по ПТС</label>-->
+          <!--              <el-input-number v-model="auto.countHostsByVC" :min="1" :max="10" @change="saveDatas()"/>-->
+          <!--            </div>-->
+          <!--          </div>-->
 
 
           <div class="form-row">
@@ -156,21 +169,27 @@
                         clearable
                         size="large"
                         @change="emailValidate(auto.email); saveDatas()"
-                        title="Email" v-model="auto.email" />
+                        title="Email" v-model="auto.email"/>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="required">Город</label>
-              <el-select
-                  size="large"
-                  clearable
-                  placeholder="Выберите город"
-                  @change="saveDatas()"
-                  v-model="auto.city">
-                <el-option v-for="item in cities" :key="item" :label="item" :value="item"/>
-              </el-select>
+              <el-form-item
+                  prop="'city'"
+                  :rules="{required: true, message: 'Горо', trigger: ['blur']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите город"
+                    @change="saveDatas()"
+                    v-model="auto.city">
+                  <el-option v-for="item in cities" :key="item" :label="item" :value="item"/>
+                </el-select>
+              </el-form-item>
+
+
             </div>
 
             <div class="form-group">
@@ -187,9 +206,7 @@
             </div>
           </div>
 
-
-        </form>
-
+        </el-form>
         <div style="text-align: center">
           <el-button type="primary" size="large" @click="nextPage()">
             Перейти на добавление фото
@@ -206,6 +223,8 @@ import {usePubStore} from "@/pages/pub/pubStore";
 import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/GlobFuntions";
 import '@/pages/pub/style.css'
 import router from "@/router";
+import {ElMessage} from "element-plus";
+import {saveUnSaved} from "@/utils/unsavedRequests";
 
 const pubStore = usePubStore()
 const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: 0})
@@ -251,6 +270,19 @@ const cities = ["Алматы",
   "Челябинск",
   "Чехов"]
 const mileageAuto1000 = ref(0)
+const form = ref(null)
+const submitForm = formEl => {
+
+  console.log('formEl = ',formEl)
+
+  formEl && formEl.validate(valid => !valid)
+}
+// const resetForm = formEl => {
+//   // formEl && formEl.resetFields()
+//   // Object.assign(appeal, JSON.parse(JSON.stringify(appealStart)))
+//   // isNeedCheckUnSaved && saveUnSaved(cbForEdit)
+//   // isShowEditClient.value = false
+// }
 
 function removeDatas() {
   localStorage.removeItem('datas')
@@ -271,7 +303,7 @@ function saveDatas() {
     saveF(newDatas)
   }
 
-  function saveF(val:any) {
+  function saveF(val: any) {
     if (timerSave) clearTimeout(timerSave)
     timerSave = setTimeout(() => {
       localStorage.setItem('datas', JSON.stringify(val))
@@ -344,18 +376,40 @@ function getModifications(id: number) {
 
 function getComplectations(id: number) {
   pubStore.getComplectations(id).then(res => {
-    console.log('res = ', res)
     saveDatas()
     // modifications.value = res.data
   })
 }
 
+// function checkParams() {
+//   if (!auto.vin) return ElMessage({message: 'Поле VIN обязателен для заполнения', type: 'warning'})
+// }
 
-function nextPage(){
-  console.log('11 = ',11)
-  router.push('public2')
+function checkAndWarning() {
+  console.log('auto.value = ', auto.value)
+  if (!auto.value.vin || auto.value.vin.length < 16)
+    return ElMessage({message: 'Поле "VIN" не заполнено', type: 'error'})
+  // if (appeal.lead.leadType === 20 && !appeal.lead.person.phone) return ElMessage({
+  //   message: 'Поле "Основной телефон" не заполнен',
+  //   type: 'error'
+  // })
+  // if (appeal.lead.leadType === 20 && !appeal.workflow.locationId)
+  //   return ElMessage({ message: 'Поле "Салон" не заполнено', type: 'error' })
+  // if (appeal.lead.leadType === 10 && !isTel.value && (!appeal.lead.person.phone && !appeal.workflow.swapPhone))
+  //   return ElMessage({ message: 'Если имеется, укажите телефон', type: 'warning' })
+  // if (!appeal.lead.person.firstName) return ElMessage({ message: 'Поле "Имя" не заполнено', type: 'error' })
+  // if (appeal.workflow.workflowLeadType === 2 && !appeal.workflow.BuyCategory)
+  //   return ElMessage({ message: 'Поле "Вид выкупа" не заполнено', type: 'error' })
 }
 
+function nextPage() {
+  checkAndWarning()
+
+  submitForm(auto.value).then(res => { // проверка заполненности обязательных полей
+    console.log('>>>res = ',res)
+    if (res) router.push('public2')
+  })
+}
 
 
 </script>
