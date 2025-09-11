@@ -17,7 +17,7 @@
               <el-form-item
                   prop="vin"
                   :rules="[{validator:checkVIN, required: true, min: 17, max: 17,
-                    trigger: ['blur']}]">
+                    trigger: ['blur','change']}]">
                 <el-input
                     @change="auto.vin>16 && saveDatas()"
                     size="large"
@@ -37,7 +37,7 @@
               <label class="required">Марка</label>
               <el-form-item
                   prop="brand"
-                  :rules="{required: true, message: 'Не выбрана марка', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбрана марка', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -54,7 +54,7 @@
               <label class="required">Модель</label>
               <el-form-item
                   prop="model"
-                  :rules="{required: true, message: 'Не выбрана модель', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбрана модель', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -73,7 +73,7 @@
               <label class="required">Поколение</label>
               <el-form-item
                   prop="generation"
-                  :rules="{required: true, message: 'Не выбрано поколение', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбрано поколение', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -90,7 +90,7 @@
               <label class="required">Год выпуска</label>
               <el-form-item
                   prop="year"
-                  :rules="{required: true, message: 'Не выбран год выпуска', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбран год выпуска', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -109,7 +109,7 @@
               <label class="required">Модификация</label>
               <el-form-item
                   prop="modification"
-                  :rules="{required: true, message: 'Не выбрана модификация', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбрана модификация', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -127,7 +127,7 @@
               <span style="float: right">км</span>
               <el-form-item
                   prop="mileageAuto"
-                  :rules="{validator: checkMili, equired: true, message: 'Не выбран пробег', trigger: ['blur']}">
+                  :rules="{validator: checkMili, equired: true, message: 'Не выбран пробег', trigger: ['blur','change']}">
                 <el-input v-model="auto.mileageAuto"
                           size="large"
                           clearable
@@ -152,7 +152,7 @@
               <label class="required">Телефон</label>
               <el-form-item
                   prop="phone"
-                  :rules="{required: true, message: 'Не выбран телефон', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбран телефон', trigger: ['blur','change']}">
                 <el-input placeholder="Телефон" title="Телефон"
                           size="large"
                           clearable
@@ -178,7 +178,7 @@
               <label class="required">Город</label>
               <el-form-item
                   prop="city"
-                  :rules="{required: true, message: 'Не выбран город', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбран город', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -196,7 +196,7 @@
               <label class="required">ФИО</label>
               <el-form-item
                   prop="person"
-                  :rules="{required: true, message: 'Не выбрано имя', trigger: ['blur']}">
+                  :rules="{required: true, message: 'Не выбрано имя', trigger: ['blur','change']}">
                 <el-input
                     input-style="500px"
                     @change="saveDatas()"
@@ -283,10 +283,9 @@ function removeDatas() {
   auto.value = {}
 }
 
-const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
-
+const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
 function checkVIN(rule: any, value: any, callback: any) {
-  if (vinRegex.test(value)) callback('Ошибочный VIN')
+  if (!value.match(vinRegex))callback('Ошибочный VIN')
   else if (value.length != 17) callback('Поле не заполнено')
   else callback()
 
