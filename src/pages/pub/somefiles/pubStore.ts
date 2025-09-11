@@ -24,6 +24,10 @@ export const usePubStore = defineStore("pubStore", {
         async getComplectations(id:number) {
             return await axios.get(`/api/auto/getComplectations?modificationId=${id}`)
         },
+        async saveExternalAppeal(params: any) {
+            return await axios.post(`/api/Lead/PostExternalAppeal`, params)
+        },
+
 
     }
 })

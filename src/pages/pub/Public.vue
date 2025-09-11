@@ -18,7 +18,7 @@
                   :rules="[{validator:checkVIN, required: true, min: 17, max: 17,
                     trigger: ['blur','change']}]">
                 <el-input
-                    @change="auto.vin>16 && saveDatas()"
+                    @change="auto.vin.length>16 && saveDatas()"
                     size="large"
                     placeholder="Введите VIN"
                     v-model="auto.vin"
@@ -41,7 +41,7 @@
                     size="large"
                     clearable
                     placeholder="Выберите марку"
-                    @change="getModels(auto.brandId)"
+                    @change="getModels(auto.brandId, false)"
                     v-model="auto.brandId">
                   <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
@@ -58,7 +58,7 @@
                     size="large"
                     clearable
                     placeholder="Выберите модель"
-                    @change="getGenerations(auto.modelId)"
+                    @change="getGenerations(auto.modelId, false)"
                     v-model="auto.modelId">
                   <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
@@ -76,8 +76,9 @@
                 <el-select
                     size="large"
                     clearable
+                    :disabled="!auto.modelId"
                     placeholder="Выберите поколение"
-                    @change="getModifications(auto.generationId)"
+                    @change="getModifications(auto.generationId, false)"
                     v-model="auto.generationId">
                   <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
@@ -112,6 +113,7 @@
                 <el-select
                     size="large"
                     clearable
+                    :disabled="!auto.generationId"
                     placeholder="Выберите модификацию"
                     @change="getComplectations(auto.modificationId)"
                     v-model="auto.modificationId">
@@ -194,7 +196,7 @@
             <div class="form-group">
               <label class="required">ФИО</label>
               <el-form-item
-                  prop="person"
+                  prop="fullName"
                   :rules="{required: true, message: 'Не выбрано имя', trigger: ['blur','change']}">
                 <el-input
                     input-style="500px"
@@ -202,7 +204,7 @@
                     size="large"
                     clearable
                     placeholder="Введите имя"
-                    v-model="auto.person"
+                    v-model="auto.fullName"
                 />
               </el-form-item>
             </div>
@@ -210,11 +212,6 @@
 
         </el-form>
         <div style="text-align: center">
-          <el-button type="primary" size="large" @click="save()">
-            Сохранить
-          </el-button>
-          <br>  <br>
-
           <el-button size="large" @click="removeDatas()">
             Очистить
           </el-button>
@@ -230,23 +227,46 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
-import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate, simplePhone} from "@/pages/pub/GlobFuntions";
+import {emailValidate, formattingPhone, numberNoSpace, numberWithSpaces, simplePhone} from "@/pages/pub/GlobFuntions";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
 import {ElMessage, ElMessageBox} from "element-plus";
 
-const pubStore = usePubStore()
-const auto = ref<{
-  brandId:number,
+interface ICar {
+  id: number,
+  name: string,
+  name_short: string,
+  engineType: number,
+  driveType: number,
+  mileage: number,
+  phone: string,
+  gearboxType: number,
+  bodyType: number,
+  enginePower: number,
+  engineCapacity: number,
+  doorsCount: number,
+}
+interface IAuto {
+  vin: string,
+  fullName: string,
+  brandId: number,
   modelId: number,
   generationId: number,
   yearReleased: number,
-  mileage: number
-}>({})
-const brands = ref<[]>()
-const models = ref<[]>()
-const generations = ref<[]>()
-const modifications = ref<[]>()
+  mileage: number,
+  modificationId: number,
+  phone: string,
+  email: string,
+  city: string,
+
+}
+
+const pubStore = usePubStore()
+const auto = ref<IAuto>()
+const brands = ref<[{ id: number, name: string }]>()
+const models = ref<[{ id: number, name: string }]>()
+const generations = ref<[{ id: number, name: string }]>()
+const modifications = ref<[ICar]>()
 const years = ref([])
 const isWaiting = ref(false)
 const isDatas = ref()
@@ -286,7 +306,7 @@ const cities = ["Алматы",
   "Чехов"]
 const mileage1000 = ref(null)
 const formRef = ref()
-const submitForm = (formEl:any) => formEl && formEl.validate((valid:boolean) => !valid)
+const submitForm = (formEl: any) => formEl && formEl.validate((valid: boolean) => !valid)
 
 
 function removeDatas() {
@@ -303,8 +323,9 @@ function removeDatas() {
 
 // const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
 const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
+
 function checkVIN(rule: any, value: any, callback: any) {
-  if (!value.match(vinRegex))callback('Ошибочный VIN')
+  if (!value.match(vinRegex)) callback('Ошибочный VIN')
   else if (value.length != 17) callback('Поле не заполнено')
   else callback()
 
@@ -315,7 +336,7 @@ function checkMili(rule: any, value: any, callback: any) {
   else callback()
 }
 
-let timerSave:any = null;
+let timerSave: any = null;
 
 function saveDatas() {
   // локально запоминаем введенные данные
@@ -346,6 +367,7 @@ if (datas) {
 
 function fillDields(datas: any) {
   // заполняем созраненными данными
+  auto.value = {}
   Object.assign(auto.value, datas)
   if (auto.value.brandId) getModels(auto.value.brandId, true)
   if (auto.value.modelId) getGenerations(auto.value.modelId, true)
@@ -366,7 +388,7 @@ pubStore.getBrands().then(res => {
   isWaiting.value = false
 })
 
-function getModels(id: number, noClear) {
+function getModels(id: number, noClear: boolean | null) {
   // удалим связку
   if (!noClear) {
     auto.value.modelId = null
@@ -420,56 +442,40 @@ function getModifications(id: number, noClear) {
 function getComplectations(id: number) {
   pubStore.getComplectations(id).then(res => {
     saveDatas()
-    // modifications.value = res.data
   })
 }
 
 
 function nextPage() {
 
-  submitForm(formRef.value).then((res:boolean) => { // проверка заполненности обязательных полей
-    if (res) router.push('public2')
-    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error'})
+  submitForm(formRef.value).then((res: boolean) => { // проверка заполненности обязательных полей
+    if (res) save()
+    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error', duration:0})
   })
 }
 
 
 function save() {
+  let car: ICar = modifications.value.find((el: any) => el.modificationId = auto.value.modificationId)
 
-  console.log('auto.value = ', auto.value)
-
-  let newAuto = JSON.parse(JSON.stringify(auto.value))
-
+  let newAuto: ICar = JSON.parse(JSON.stringify(auto.value))
   newAuto.mileage = numberNoSpace(newAuto.mileage)
   newAuto.phone = simplePhone(newAuto.phone)
+  newAuto.engineType = car.engineType
+  newAuto.driveType = car.driveType
+  newAuto.gearboxType = car.gearboxType
+  newAuto.bodyType = car.bodyType
+  newAuto.enginePower = car.enginePower
+  newAuto.engineCapacity = car.engineCapacity
+  newAuto.doorsCount = car.doorsCount
 
-  console.log('newAuto= ',newAuto)
+  isWaiting.value = true
+  pubStore.saveExternalAppeal(newAuto).then(res => {
+    isWaiting.value = false
+    if (res.status === 200) router.push('public2')
+  })
 
-
-  let primer = {
-    "vin": "string",
-      "modelId": 0,
-      "generationId": 0,
-      "modificationId": 0,
-      "yearReleased": 0,
-      "mileage": 0,
-      "countHostsByVC": 0,
-      "engineType": 10,
-      "driveType": 10,
-      "gearboxType": 10,
-      "bodyType": 1,
-      "enginePower": 0,
-      "engineCapacity": 0,
-      "doorsCount": 0,
-      "comment": "string",
-      "city": "string",
-      "fullName": "string",
-      "phone": "string",
-      "email": "user@example.com"
-  }
 }
-
-//generationId, model, modification,year, 
 
 
 </script>
