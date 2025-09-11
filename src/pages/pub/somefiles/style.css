@@ -3,17 +3,6 @@
     --fon-color: #036660;
 }
 
-.frame_pub .fix-button {
-    position: fixed;
-    left: 5px;
-    top: 5px;
-    background: var(--fon-color);
-    border: none;
-    padding: 5px;
-    z-index: 1000;
-    color: white;
-}
-
 .frame_pub .waiter {
     width: 73px;
     position: fixed;
@@ -114,10 +103,6 @@
         background: #3498db;
     }
 
-}
-
-
-@media (max-width: 600px) {
     .frame_pub .form-group {
         flex: 1 0 50%;
     }
@@ -127,6 +112,13 @@
     }
 
 
+    .frame_pub .el-input__wrapper{
+        width: 220px;
+    }
+
+    .el-message__content{
+        font-size: 18px !important;
+    }
 }
 
 /*.frame_pub .el-input__inner{*/

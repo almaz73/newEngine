@@ -1,7 +1,6 @@
 <template>
   <div class="frame_pub">
     <div class="container">
-      <button class="fix-button" v-if="isDatas" @click="removeDatas()"> ОЧИСТИТЬ</button>
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />
@@ -36,14 +35,14 @@
 
               <label class="required">Марка</label>
               <el-form-item
-                  prop="brand"
+                  prop="brandId"
                   :rules="{required: true, message: 'Не выбрана марка', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
                     placeholder="Выберите марку"
-                    @change="getModels(auto.brand)"
-                    v-model="auto.brand">
+                    @change="getModels(auto.brandId)"
+                    v-model="auto.brandId">
                   <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -53,14 +52,14 @@
 
               <label class="required">Модель</label>
               <el-form-item
-                  prop="model"
+                  prop="modelId"
                   :rules="{required: true, message: 'Не выбрана модель', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
                     placeholder="Выберите модель"
-                    @change="getGenerations(auto.model)"
-                    v-model="auto.model">
+                    @change="getGenerations(auto.modelId)"
+                    v-model="auto.modelId">
                   <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -72,14 +71,14 @@
 
               <label class="required">Поколение</label>
               <el-form-item
-                  prop="generation"
+                  prop="generationId"
                   :rules="{required: true, message: 'Не выбрано поколение', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
                     placeholder="Выберите поколение"
-                    @change="getModifications(auto.generation)"
-                    v-model="auto.generation">
+                    @change="getModifications(auto.generationId)"
+                    v-model="auto.generationId">
                   <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -89,14 +88,14 @@
 
               <label class="required">Год выпуска</label>
               <el-form-item
-                  prop="year"
+                  prop="yearReleased"
                   :rules="{required: true, message: 'Не выбран год выпуска', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
                     placeholder="Выберите год выпуска"
                     @change="saveDatas()"
-                    v-model="auto.year">
+                    v-model="auto.yearReleased">
                   <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
                 </el-select>
               </el-form-item>
@@ -108,14 +107,14 @@
 
               <label class="required">Модификация</label>
               <el-form-item
-                  prop="modification"
+                  prop="modificationId"
                   :rules="{required: true, message: 'Не выбрана модификация', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
                     placeholder="Выберите модификацию"
-                    @change="getComplectations(auto.modification)"
-                    v-model="auto.modification">
+                    @change="getComplectations(auto.modificationId)"
+                    v-model="auto.modificationId">
                   <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -126,22 +125,22 @@
               <label class="required">Пробег</label>
               <span style="float: right">км</span>
               <el-form-item
-                  prop="mileageAuto"
+                  prop="mileage"
                   :rules="{validator: checkMili, equired: true, message: 'Не выбран пробег', trigger: ['blur','change']}">
-                <el-input v-model="auto.mileageAuto"
+                <el-input v-model="auto.mileage"
                           size="large"
                           clearable
                           @change="saveDatas()"
-                          @input="()=>{auto.mileageAuto=numberWithSpaces(auto.mileageAuto)}"
+                          @input="()=>{auto.mileage=numberWithSpaces(auto.mileage)}"
                 />
               </el-form-item>
 
 
               <el-slider
                   :show-tooltip="false"
-                  v-model="mileageAuto1000"
+                  v-model="mileage1000"
                   style="max-width: 300px"
-                  @input="auto.mileageAuto=numberWithSpaces(mileageAuto1000 * 10000)"/>
+                  @input="auto.mileage=numberWithSpaces(mileage1000 * 5000)"/>
 
             </div>
           </div>
@@ -211,8 +210,16 @@
 
         </el-form>
         <div style="text-align: center">
+          <el-button type="primary" size="large" @click="save()">
+            Сохранить
+          </el-button>
+          <br>  <br>
+
+          <el-button size="large" @click="removeDatas()">
+            Очистить
+          </el-button>
           <el-button type="primary" size="large" @click="nextPage()">
-            Добавление фото ▷
+            Добавить фото ▷
           </el-button>
         </div>
       </div>
@@ -223,14 +230,19 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
-import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/GlobFuntions";
+import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate, simplePhone} from "@/pages/pub/GlobFuntions";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
-import {ElMessage} from "element-plus";
-import {saveUnSaved} from "@/utils/unsavedRequests";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const pubStore = usePubStore()
-const auto = ref<{}>({brand: null, model: null, generation: null, year: null, mileageAuto: null})
+const auto = ref<{
+  brandId:number,
+  modelId: number,
+  generationId: number,
+  yearReleased: number,
+  mileage: number
+}>({})
 const brands = ref<[]>()
 const models = ref<[]>()
 const generations = ref<[]>()
@@ -272,18 +284,25 @@ const cities = ["Алматы",
   "Чебоксары",
   "Челябинск",
   "Чехов"]
-const mileageAuto1000 = ref(null)
+const mileage1000 = ref(null)
 const formRef = ref()
 const submitForm = (formEl:any) => formEl && formEl.validate((valid:boolean) => !valid)
 
 
 function removeDatas() {
-  localStorage.removeItem('datas')
-  isDatas.value = null
-  auto.value = {}
+  ElMessageBox.confirm('Вы действительно хотите удалить?', 'Внимание', {
+    confirmButtonText: 'Да',
+    cancelButtonText: 'Нет'
+  })
+      .then(() => {
+        localStorage.removeItem('datas')
+        isDatas.value = null
+        auto.value = {}
+      })
 }
 
-const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
+// const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
+const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
 function checkVIN(rule: any, value: any, callback: any) {
   if (!value.match(vinRegex))callback('Ошибочный VIN')
   else if (value.length != 17) callback('Поле не заполнено')
@@ -292,7 +311,7 @@ function checkVIN(rule: any, value: any, callback: any) {
 }
 
 function checkMili(rule: any, value: any, callback: any) {
-  if (value < 1000) callback(true)
+  if (!value || value < 1000) callback('Не реальный пробег')
   else callback()
 }
 
@@ -328,11 +347,11 @@ if (datas) {
 function fillDields(datas: any) {
   // заполняем созраненными данными
   Object.assign(auto.value, datas)
-  if (auto.value.brand) getModels(auto.value.brand, true)
-  if (auto.value.model) getGenerations(auto.value.model, true)
-  if (auto.value.generation) getModifications(auto.value.generation, true)
-  if (auto.value.modification) getComplectations(auto.value.modification)
-  if (auto.value.mileageAuto) mileageAuto1000.value = numberNoSpace(auto.value.mileageAuto) / 1000
+  if (auto.value.brandId) getModels(auto.value.brandId, true)
+  if (auto.value.modelId) getGenerations(auto.value.modelId, true)
+  if (auto.value.generationId) getModifications(auto.value.generationId, true)
+  if (auto.value.modificationId) getComplectations(auto.value.modificationId)
+  if (auto.value.mileage) mileage1000.value = numberNoSpace(auto.value.mileage) / 1000
 
 }
 
@@ -350,9 +369,9 @@ pubStore.getBrands().then(res => {
 function getModels(id: number, noClear) {
   // удалим связку
   if (!noClear) {
-    auto.value.model = null
-    auto.value.generation = null
-    auto.value.modification = null
+    auto.value.modelId = null
+    auto.value.generationId = null
+    auto.value.modificationId = null
   }
 
 
@@ -368,10 +387,9 @@ function getModels(id: number, noClear) {
 }
 
 function getGenerations(id: number, noClear) {
-
   if (!noClear) {
-    auto.value.generation = null
-    auto.value.modification = null
+    auto.value.generationId = null
+    auto.value.modificationId = null
   }
   if (!id) return false
   isWaiting.value = true
@@ -383,9 +401,8 @@ function getGenerations(id: number, noClear) {
 }
 
 function getModifications(id: number, noClear) {
-
   if (!noClear) {
-    auto.value.modification = null
+    auto.value.modificationId = null
   }
   if (!id) return false
   isWaiting.value = true
@@ -415,6 +432,44 @@ function nextPage() {
     else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error'})
   })
 }
+
+
+function save() {
+
+  console.log('auto.value = ', auto.value)
+
+  let newAuto = JSON.parse(JSON.stringify(auto.value))
+
+  newAuto.mileage = numberNoSpace(newAuto.mileage)
+  newAuto.phone = simplePhone(newAuto.phone)
+
+  console.log('newAuto= ',newAuto)
+
+
+  let primer = {
+    "vin": "string",
+      "modelId": 0,
+      "generationId": 0,
+      "modificationId": 0,
+      "yearReleased": 0,
+      "mileage": 0,
+      "countHostsByVC": 0,
+      "engineType": 10,
+      "driveType": 10,
+      "gearboxType": 10,
+      "bodyType": 1,
+      "enginePower": 0,
+      "engineCapacity": 0,
+      "doorsCount": 0,
+      "comment": "string",
+      "city": "string",
+      "fullName": "string",
+      "phone": "string",
+      "email": "user@example.com"
+  }
+}
+
+//generationId, model, modification,year, 
 
 
 </script>

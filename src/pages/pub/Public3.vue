@@ -1,7 +1,6 @@
 <template>
   <div class="frame_pub">
     <div class="container">
-      <button class="fix-button" v-if="isDatas" @click="removeDatas()"> ОЧИСТИТЬ</button>
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />

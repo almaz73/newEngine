@@ -25,6 +25,13 @@ export const formattingPhone = function (val: string, fn: any) {
     return res
 }
 
+// телефон должен состоять только из цифр
+export const simplePhone = function (val: string) {
+    if (!val) return ''
+    if (val.slice(0, 2) == '+7') val = val.replaceAll('+7', '8')
+    return val.replaceAll(' ', '').replaceAll('+', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '')
+}
+
 export function numberWithSpaces(x: string) { //добавление пробелов для удобного отображении цен
     if (!x) return 0
     let x_ = parseInt(x.toString().replace(/ /g, ''))

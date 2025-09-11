@@ -30,12 +30,6 @@ const router = createRouter({
             component: Public3,
             meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
         },
-        {
-            path: '/public2',
-            name: 'pub',
-            component: Pub,
-            meta: {withoutAuth: true} // Эта страница не требует авторизации // дополнительно настраивается App.vue
-        },
 
         /// авторизованные
         {
