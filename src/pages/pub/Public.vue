@@ -25,7 +25,6 @@
                     v-model="auto.vin"
                     maxlength="17"
                     minlength="17"
-                    style="min-width: 325px;"
                     clearable
                 />
               </el-form-item>
@@ -205,7 +204,6 @@
                     clearable
                     placeholder="Введите имя"
                     v-model="auto.person"
-                    style="min-width: 325px;"
                 />
               </el-form-item>
             </div>

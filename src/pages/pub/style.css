@@ -102,6 +102,17 @@
 
 
 @media (max-width: 600px) {
+    .el-select--large .el-select__wrapper {
+        font-size: 18px !important;
+    }
+
+    .el-select-dropdown__item {
+        font-size: 18px !important;
+    }
+}
+
+
+@media (max-width: 600px) {
     .frame_pub .form-group {
         flex: 1 0 50%;
     }
