@@ -408,11 +408,11 @@ select {
 </style>
 
 <script setup lang="ts">
-import {usePubStore} from "@/pages/pub/pubStore.ts";
+import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
 import {ref} from "vue";
-import IMG_1 from "@/pages/pub/images/IMG_1.vue";
-import IMG_2 from "@/pages/pub/images/IMG_2.vue";
-import IMG_3 from "@/pages/pub/images/IMG_3.vue";
+import IMG_1 from "@/pages/pub/somefiles/images/IMG_1.vue";
+import IMG_2 from "@/pages/pub/somefiles/images/IMG_2.vue";
+import IMG_3 from "@/pages/pub/somefiles/images/IMG_3.vue";
 const pubStore=usePubStore()
 const obj = ref({brand:0, model:0, generation:0, year:null})
 const brands = ref<[]>()

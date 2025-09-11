@@ -109,6 +109,11 @@
     .el-select-dropdown__item {
         font-size: 18px !important;
     }
+    .frame_pub .el-button--large.el-button--primary{
+        font-size: 17px ;
+        background: #3498db;
+    }
+
 }
 
 

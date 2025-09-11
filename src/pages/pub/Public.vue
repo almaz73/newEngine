@@ -5,7 +5,7 @@
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />
-      <div style="margin: auto; width: 243px"><img src="@/pages/pub/images/logo.png"></div>
+      <div style="margin: auto; width: 243px"><img src="@/pages/pub/somefiles/images/logo.png"></div>
       <h1>Онлайн оценка вашего автомобиля</h1>
 
       <div class="form-section">
@@ -212,7 +212,7 @@
         </el-form>
         <div style="text-align: center">
           <el-button type="primary" size="large" @click="nextPage()">
-            Перейти на добавление фото
+            Добавление фото ▷
           </el-button>
         </div>
       </div>
@@ -222,9 +222,9 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
-import {usePubStore} from "@/pages/pub/pubStore";
+import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
 import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/GlobFuntions";
-import '@/pages/pub/style.css'
+import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
 import {ElMessage} from "element-plus";
 import {saveUnSaved} from "@/utils/unsavedRequests";

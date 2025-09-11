@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import cache from '@/utils/globalCach'
+import cache from '@/utils/globalCach.ts'
 import axios from "axios";
 
 export const usePubStore = defineStore("pubStore", {

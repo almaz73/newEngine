@@ -3,7 +3,6 @@ import LoginPage from '@/pages/LoginPage.vue'
 import IntrodusionPage from "@/pages/IntrodusionPage.vue";
 import {ElMessage} from "element-plus";
 import VersionPage from "@/pages/VersionPage.vue";
-import Pub from '@/pages/pub/Pub.vue'
 import Public from '@/pages/pub/Public.vue'
 import Public2 from '@/pages/pub/Public2.vue'
 import Public3 from '@/pages/pub/Public3.vue'
