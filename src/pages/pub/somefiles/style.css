@@ -85,6 +85,12 @@
     border-radius: 15px !important; /*округляем углы контролов*/
 }
 
+.frame_pub .nowidth .el-input__wrapper{
+    width: inherit;
+    border-radius: initial !important;
+}
+
+
 .frame_pub .el-form-item__error {
     padding-top: 7px;
 }

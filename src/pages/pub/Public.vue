@@ -16,10 +16,11 @@
               <el-form-item
                   prop="vin"
                   :rules="[{validator:checkVIN, required: true, min: 17, max: 17,
-                    trigger: ['blur','change']}]">
+                    trigger: ['blur']}]">
                 <el-input
                     @change="auto.vin.length>16 && saveDatas()"
                     size="large"
+                    onfocus="this.select()"
                     placeholder="Введите VIN"
                     v-model="auto.vin"
                     maxlength="17"
@@ -147,6 +148,29 @@
             </div>
           </div>
 
+          <div class="form-row">
+            <div class="form-group">
+              <label class="required">Количество хозяев по ПТС</label>
+              <el-form-item
+                  prop="countHostsByVC"
+                  :rules="{required: true, message: 'Не заполнено', trigger: ['blur','change']}">
+                <el-input-number
+                    class="nowidth"
+                    v-model="auto.countHostsByVC" :min="1" :max="20" @change="saveDatas()"/>
+              </el-form-item>
+            </div>
+
+            <div class="form-group">
+              <label class="required">Комментарии</label>
+              <el-form-item
+                  title="Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)"
+                  prop="comment"
+                  :rules="{required: true, message: 'Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)', trigger: ['blur','change']}">
+                <el-input type="textarea" v-model="auto.comment" placeholder=""/>
+              </el-form-item>
+            </div>
+          </div>
+
 
           <div class="form-row">
             <div class="form-group">
@@ -245,9 +269,11 @@ interface ICar {
   enginePower: number,
   engineCapacity: number,
   doorsCount: number,
+  countHostsByVC: number
 }
 interface IAuto {
   vin: string,
+  countHostsByVC: number,
   fullName: string,
   brandId: number,
   modelId: number,
@@ -258,11 +284,12 @@ interface IAuto {
   phone: string,
   email: string,
   city: string,
+  comment: string
 
 }
 
 const pubStore = usePubStore()
-const auto = ref<IAuto>()
+const auto = ref<IAuto>({})
 const brands = ref<[{ id: number, name: string }]>()
 const models = ref<[{ id: number, name: string }]>()
 const generations = ref<[{ id: number, name: string }]>()
@@ -307,6 +334,7 @@ const cities = ["Алматы",
 const mileage1000 = ref(null)
 const formRef = ref()
 const submitForm = (formEl: any) => formEl && formEl.validate((valid: boolean) => !valid)
+const resetForm = (formEl:any) => formEl && formEl.resetFields()
 
 
 function removeDatas() {
@@ -318,6 +346,7 @@ function removeDatas() {
         localStorage.removeItem('datas')
         isDatas.value = null
         auto.value = {}
+        resetForm(formRef.value)
       })
 }
 
@@ -375,6 +404,7 @@ function fillDields(datas: any) {
   if (auto.value.modificationId) getComplectations(auto.value.modificationId)
   if (auto.value.mileage) mileage1000.value = numberNoSpace(auto.value.mileage) / 1000
 
+  auto.value.email = auto.value.email || ''
 }
 
 let currentYear = new Date().getFullYear()
@@ -450,7 +480,7 @@ function nextPage() {
 
   submitForm(formRef.value).then((res: boolean) => { // проверка заполненности обязательных полей
     if (res) save()
-    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error', duration:0})
+    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error'})
   })
 }
 
