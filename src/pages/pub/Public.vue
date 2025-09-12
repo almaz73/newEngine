@@ -129,7 +129,7 @@
               <span style="float: right">км</span>
               <el-form-item
                   prop="mileage"
-                  :rules="{validator: checkMili, equired: true, message: 'Не выбран пробег', trigger: ['blur','change']}">
+                  :rules="{validator: checkMili, equired: true, message: 'Не выбран Пробег', trigger: ['blur','change']}">
                 <el-input v-model="auto.mileage"
                           size="large"
                           clearable
@@ -150,10 +150,10 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label class="required">Количество хозяев по ПТС</label>
+              <label class="required">Количество владельцев по ПТС</label>
               <el-form-item
                   prop="countHostsByVC"
-                  :rules="{required: true, message: 'Не заполнено', trigger: ['blur','change']}">
+                  :rules="{required: true, message: 'Не заполнено количество владельцев', trigger: ['blur','change']}">
                 <el-input-number
                     class="nowidth"
                     v-model="auto.countHostsByVC" :min="1" :max="20" @change="saveDatas()"/>
@@ -177,7 +177,7 @@
               <label class="required">Телефон</label>
               <el-form-item
                   prop="phone"
-                  :rules="{required: true, message: 'Не выбран телефон', trigger: ['blur','change']}">
+                  :rules="{required: true, message: 'Не выбран Телефон', trigger: ['blur','change']}">
                 <el-input placeholder="Телефон" title="Телефон"
                           size="large"
                           clearable
@@ -203,7 +203,7 @@
               <label class="required">Город</label>
               <el-form-item
                   prop="city"
-                  :rules="{required: true, message: 'Не выбран город', trigger: ['blur','change']}">
+                  :rules="{required: true, message: 'Не выбран Город', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
@@ -240,7 +240,7 @@
             Очистить
           </el-button>
           <el-button type="primary" size="large" @click="nextPage()">
-            Добавить фото ▷
+            Далее ▷
           </el-button>
         </div>
       </div>
@@ -251,7 +251,14 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
-import {emailValidate, formattingPhone, numberNoSpace, numberWithSpaces, simplePhone} from "@/pages/pub/GlobFuntions";
+import {
+  checkEmptyFields,
+  emailValidate,
+  formattingPhone,
+  numberNoSpace,
+  numberWithSpaces,
+  simplePhone
+} from "@/pages/pub/somefiles/GlobFuntions.ts";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -333,7 +340,6 @@ const cities = ["Алматы",
   "Чехов"]
 const mileage1000 = ref(null)
 const formRef = ref()
-const submitForm = (formEl: any) => formEl && formEl.validate((valid: boolean) => !valid)
 const resetForm = (formEl:any) => formEl && formEl.resetFields()
 
 
@@ -477,10 +483,8 @@ function getComplectations(id: number) {
 
 
 function nextPage() {
-
-  submitForm(formRef.value).then((res: boolean) => { // проверка заполненности обязательных полей
+  checkEmptyFields(formRef.value).then((res: boolean) => { // проверка заполненности обязательных полей
     if (res) save()
-    else ElMessage({message: 'Не все обязательные поля заполнены', type: 'error'})
   })
 }
 

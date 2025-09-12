@@ -65,7 +65,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
-import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/GlobFuntions";
+import {formattingPhone, numberWithSpaces, numberNoSpace, emailValidate} from "@/pages/pub/somefiles/GlobFuntions.ts";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
 import IMG_1 from "@/pages/pub/somefiles/images/IMG_1.vue";

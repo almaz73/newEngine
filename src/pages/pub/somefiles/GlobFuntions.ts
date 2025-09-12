@@ -48,3 +48,12 @@ export const emailValidate = function (val: string) {
     const err = EMAIL_REGEXP.test(val)
     if (!err) ElMessage({message: 'Ошибочный Email ', type: 'warning'})
 }
+
+// Функция для проверки полей на заполненность
+export function checkEmptyFields(formEl: any) {
+    return formEl && formEl.validate((valid: boolean, a: any) => {
+        const empty = a && Object.entries(a).find(el => !el[1].fieldValue)
+        empty && ElMessage({message: `${empty[1][0].message}`, type: 'error'})
+        return !valid
+    })
+}

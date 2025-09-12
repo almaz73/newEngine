@@ -1,6 +1,7 @@
 :root {
     /*--main-color: #d34439; старый вариант*/
     --fon-color: #036660;
+    --font-size-mobile: 22px;
 }
 
 .frame_pub .waiter {
@@ -85,7 +86,7 @@
     border-radius: 15px !important; /*округляем углы контролов*/
 }
 
-.frame_pub .nowidth .el-input__wrapper{
+.frame_pub .nowidth .el-input__wrapper {
     width: inherit;
     border-radius: initial !important;
 }
@@ -98,15 +99,20 @@
 
 @media (max-width: 600px) {
     .el-select--large .el-select__wrapper {
-        font-size: 18px !important;
+        font-size: var(--font-size-mobile) !important;
     }
 
     .el-select-dropdown__item {
-        font-size: 18px !important;
+        font-size: var(--font-size-mobile) !important;
     }
-    .frame_pub .el-button--large.el-button--primary{
-        font-size: 17px ;
+
+    .frame_pub .el-button--large.el-button--primary {
+        font-size: var(--font-size-mobile);
         background: #3498db;
+    }
+
+    .el-message__content {
+        font-size: var(--font-size-mobile) !important;
     }
 
     .frame_pub .form-group {
@@ -118,13 +124,11 @@
     }
 
 
-    .frame_pub .el-input__wrapper{
+    .frame_pub .el-input__wrapper {
         width: 220px;
     }
 
-    .el-message__content{
-        font-size: 18px !important;
-    }
+
 }
 
 /*.frame_pub .el-input__inner{*/
