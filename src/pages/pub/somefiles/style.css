@@ -1,7 +1,7 @@
 :root {
     /*--main-color: #d34439; старый вариант*/
     --fon-color: #036660;
-    --font-size-mobile: 22px;
+    --font-size-mobile: 23px;
 }
 
 .frame_pub .waiter {
@@ -100,19 +100,23 @@
 @media (max-width: 600px) {
     .el-select--large .el-select__wrapper {
         font-size: var(--font-size-mobile) !important;
+        font-weight: bold;
     }
 
     .el-select-dropdown__item {
         font-size: var(--font-size-mobile) !important;
+        font-weight: bold;
     }
 
     .frame_pub .el-button--large.el-button--primary {
         font-size: var(--font-size-mobile);
+        font-weight: bold;
         background: #3498db;
     }
 
     .el-message__content {
         font-size: var(--font-size-mobile) !important;
+        font-weight: bold;
     }
 
     .frame_pub .form-group {

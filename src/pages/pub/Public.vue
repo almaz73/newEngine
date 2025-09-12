@@ -49,7 +49,7 @@
               </el-form-item>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="models && models.length">
 
               <label class="required">Модель</label>
               <el-form-item
@@ -68,16 +68,15 @@
           </div>
 
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group" v-if="generations && generations.length">
 
               <label class="required">Поколение</label>
               <el-form-item
                   prop="generationId"
-                  :rules="{required: true, message: 'Не выбрано поколение', trigger: ['blur','change']}">
+                  :rules="{required: true, message: 'Не выбрано поколение модели', trigger: ['blur','change']}">
                 <el-select
                     size="large"
                     clearable
-                    :disabled="!auto.modelId"
                     placeholder="Выберите поколение"
                     @change="getModifications(auto.generationId, false)"
                     v-model="auto.generationId">
@@ -86,6 +85,25 @@
               </el-form-item>
             </div>
 
+            <div class="form-group" v-if="modifications && modifications.length">
+              <label class="required">Модификация</label>
+              <el-form-item
+                  prop="modificationId"
+                  :rules="{required: true, message: 'Не выбрана модификация модели', trigger: ['blur','change']}">
+                <el-select
+                    size="large"
+                    clearable
+                    placeholder="Выберите модификацию"
+                    @change="getComplectations(auto.modificationId)"
+                    v-model="auto.modificationId">
+                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
+                </el-select>
+              </el-form-item>
+
+            </div>
+          </div>
+
+          <div class="form-row">
             <div class="form-group">
 
               <label class="required">Год выпуска</label>
@@ -101,26 +119,7 @@
                   <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
                 </el-select>
               </el-form-item>
-            </div>
-          </div>
 
-          <div class="form-row">
-            <div class="form-group">
-
-              <label class="required">Модификация</label>
-              <el-form-item
-                  prop="modificationId"
-                  :rules="{required: true, message: 'Не выбрана модификация', trigger: ['blur','change']}">
-                <el-select
-                    size="large"
-                    clearable
-                    :disabled="!auto.generationId"
-                    placeholder="Выберите модификацию"
-                    @change="getComplectations(auto.modificationId)"
-                    v-model="auto.modificationId">
-                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
-                </el-select>
-              </el-form-item>
             </div>
 
             <div class="form-group">
@@ -165,8 +164,8 @@
               <el-form-item
                   title="Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)"
                   prop="comment"
-                  :rules="{required: true, message: 'Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)', trigger: ['blur','change']}">
-                <el-input type="textarea" v-model="auto.comment" placeholder=""/>
+                  :rules="{required: true, message: 'Укажите ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)', trigger: ['blur','change']}">
+                <el-input type="textarea" v-model="auto.comment" placeholder="Укажите  повреждения"/>
               </el-form-item>
             </div>
           </div>
@@ -360,8 +359,9 @@ function removeDatas() {
 const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
 
 function checkVIN(rule: any, value: any, callback: any) {
-  if (!value.match(vinRegex)) callback('Ошибочный VIN')
-  else if (value.length != 17) callback('Поле не заполнено')
+  console.log('value = ',value)
+  if (!value || value.length != 17) callback('Поле VIN не заполнено')
+  else if (!value.match(vinRegex)) callback('Ошибочный VIN')
   else callback()
 
 }
