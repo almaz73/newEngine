@@ -127,7 +127,7 @@ function removeDatas() {
 
 let timerSave;
 
-function saveDatas() {
+function datasSaved() {
   // локально запоминаем введенные данные
   let newDatas = {}
   Object.entries(auto.value).forEach(el => {
