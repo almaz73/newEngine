@@ -55,7 +55,7 @@
 
 <script setup>
 import { Plus, ZoomIn } from '@element-plus/icons-vue'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import {checkPictureBeforeUpload} from "@/utils/globalFunctions";
 
@@ -66,7 +66,6 @@ const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 const upload = ref(null)
 const isDirty = ref('')
-
 
 
 function newFile() {
@@ -118,6 +117,9 @@ function uploadFiles(obj) {
           dealId: 222,
           number: props.number,
           fullPhotoId: files.id,
+          // fullPhotoId: files[0].id,
+          // thumbMediumId: files[1].id,
+          // thumbSmallId: files[2].id
         }
         emits('setNewPhoto', res.data.fullPhotoUrl)
         // globalStore.attachFile(params).then(() => emits('setNewPhoto', true))

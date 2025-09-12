@@ -1,6 +1,10 @@
 <template>
   <div class="frame_pub">
+
     <div class="container photo">
+
+      <h5> 🚀 разработке  </h5>
+
       <h2>Добавьте фото <br>необходимые для оценки автомобиля</h2>
 
       <div class="many-photo" :class="{empty:false}" v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">

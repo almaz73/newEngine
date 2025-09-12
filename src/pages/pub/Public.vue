@@ -26,6 +26,7 @@
                     maxlength="17"
                     minlength="17"
                     clearable
+
                 />
               </el-form-item>
             </div>
@@ -41,6 +42,7 @@
                 <el-select
                     size="large"
                     clearable
+                    filterable
                     placeholder="Выберите марку"
                     @change="getModels(auto.brandId, false)"
                     v-model="auto.brandId">
@@ -58,6 +60,7 @@
                 <el-select
                     size="large"
                     clearable
+                    filterable
                     placeholder="Выберите модель"
                     @change="getGenerations(auto.modelId, false)"
                     v-model="auto.modelId">
@@ -77,6 +80,7 @@
                 <el-select
                     size="large"
                     clearable
+                    filterable
                     placeholder="Выберите поколение"
                     @change="getModifications(auto.generationId, false)"
                     v-model="auto.generationId">
@@ -85,27 +89,7 @@
               </el-form-item>
             </div>
 
-            <div class="form-group" v-if="modifications && modifications.length">
-              <label class="required">Модификация</label>
-              <el-form-item
-                  prop="modificationId"
-                  :rules="{required: true, message: 'Не выбрана модификация модели', trigger: ['blur','change']}">
-                <el-select
-                    size="large"
-                    clearable
-                    placeholder="Выберите модификацию"
-                    @change="getComplectations(auto.modificationId)"
-                    v-model="auto.modificationId">
-                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
-                </el-select>
-              </el-form-item>
-
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-
+            <div class="form-group" v-if="years && years.length">
               <label class="required">Год выпуска</label>
               <el-form-item
                   prop="yearReleased"
@@ -113,6 +97,7 @@
                 <el-select
                     size="large"
                     clearable
+                    filterable
                     placeholder="Выберите год выпуска"
                     @change="saveDatas()"
                     v-model="auto.yearReleased">
@@ -121,8 +106,29 @@
               </el-form-item>
 
             </div>
+          </div>
 
-            <div class="form-group">
+          <div class="form-row">
+            <div class="form-group" v-if="modifications && modifications.length">
+
+              <label class="required">Модификация</label>
+              <el-form-item
+                  prop="modificationId"
+                  :rules="{required: true, message: 'Не выбрана модификация модели', trigger: ['blur','change']}">
+                <el-select
+                    size="large"
+                    clearable
+                    filterable
+                    placeholder="Выберите модификацию"
+                    @change="getComplectations(auto.modificationId)"
+                    v-model="auto.modificationId">
+                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
+                </el-select>
+              </el-form-item>
+
+            </div>
+
+            <div class="form-group" style="max-width: 300px">
 
               <label class="required">Пробег</label>
               <span style="float: right">км</span>
@@ -133,7 +139,7 @@
                           size="large"
                           clearable
                           @change="saveDatas()"
-                          @input="()=>{auto.mileage=numberWithSpaces(auto.mileage)}"
+                          @input="()=>{changeMiles();auto.mileage=numberWithSpaces(auto.mileage)}"
                 />
               </el-form-item>
 
@@ -154,6 +160,7 @@
                   prop="countHostsByVC"
                   :rules="{required: true, message: 'Не заполнено количество владельцев', trigger: ['blur','change']}">
                 <el-input-number
+                    size="large"
                     class="nowidth"
                     v-model="auto.countHostsByVC" :min="1" :max="20" @change="saveDatas()"/>
               </el-form-item>
@@ -165,7 +172,8 @@
                   title="Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)"
                   prop="comment"
                   :rules="{required: true, message: 'Укажите ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)', trigger: ['blur','change']}">
-                <el-input class="textarea_field" type="textarea" size="large" v-model="auto.comment" placeholder="Укажите  повреждения"/>
+                <el-input class="textarea_field" rows="3" type="textarea" size="large" v-model="auto.comment"
+                          placeholder="Укажите  повреждения"/>
               </el-form-item>
             </div>
           </div>
@@ -206,6 +214,7 @@
                 <el-select
                     size="large"
                     clearable
+                    filterable
                     placeholder="Выберите город"
                     @change="saveDatas()"
                     v-model="auto.city">
@@ -235,15 +244,16 @@
 
         </el-form>
         <div style="text-align: center">
-          <el-button size="large" @click="removeDatas()">
+          <el-button size="large" class="el-message__content" @click="removeDatas()">
             Очистить
           </el-button>
           <el-button type="primary" size="large" @click="nextPage()">
-            Далее ▷
+            Сохранить
           </el-button>
 
-          <button  @click="router.push('public2')">
-            .. ▷ ..
+          <br><br>
+          <button @click="router.push('public2')">
+            🚀 разработке  ▷
           </button>
         </div>
       </div>
@@ -255,8 +265,8 @@
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
 import {
-  checkVIN,
   checkEmptyFields,
+  checkVIN,
   emailValidate,
   formattingPhone,
   numberNoSpace,
@@ -265,7 +275,7 @@ import {
 } from "@/pages/pub/somefiles/GlobFuntions.ts";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
-import { ElMessageBox} from "element-plus";
+import {ElMessageBox} from "element-plus";
 
 interface ICar {
   id: number,
@@ -282,6 +292,7 @@ interface ICar {
   doorsCount: number,
   countHostsByVC: number
 }
+
 interface IAuto {
   vin: string,
   countHostsByVC: number,
@@ -305,7 +316,7 @@ const brands = ref<[{ id: number, name: string }]>()
 const models = ref<[{ id: number, name: string }]>()
 const generations = ref<[{ id: number, name: string }]>()
 const modifications = ref<[ICar]>()
-const years = ref([])
+let years = ref([])
 const isWaiting = ref(false)
 const isDatas = ref()
 const cities = ["Алматы",
@@ -344,7 +355,7 @@ const cities = ["Алматы",
   "Чехов"]
 const mileage1000 = ref(null)
 const formRef = ref()
-const resetForm = (formEl:any) => formEl && formEl.resetFields()
+const resetForm = (formEl: any) => formEl && formEl.resetFields()
 
 
 function removeDatas() {
@@ -357,13 +368,17 @@ function removeDatas() {
         isDatas.value = null
         auto.value = {}
         resetForm(formRef.value)
+        models.value = []
+        generations.value = []
+        modifications.value = []
+        years.value = []
       })
 }
 
 
-
 function checkMili(rule: any, value: any, callback: any) {
-  if (!value || value < 1000) callback('Не реальный пробег')
+  if (!value || value < 10) callback('Не реальный пробег')
+
   else callback()
 }
 
@@ -410,9 +425,17 @@ function fillDields(datas: any) {
 }
 
 let currentYear = new Date().getFullYear()
-for (let year: number = currentYear; year >= 1980; year--) {
-  years.value.push(year)
+
+function setYears(id) {
+  let item = generations.value?.find(el => el.id === id)
+  years.value = []
+  if (!item) return false
+
+  for (let year: number = item.yearTo; year >= item.yearFrom; year--) {
+    years.value.push(year)
+  }
 }
+
 
 isWaiting.value = true
 pubStore.getBrands().then(res => {
@@ -459,6 +482,8 @@ function getModifications(id: number, noClear) {
     auto.value.modificationId = null
   }
   if (!id) return false
+
+  setYears(id)
   isWaiting.value = true
   pubStore.getModifications(id).then(res => {
     modifications.value = res.data
@@ -485,11 +510,15 @@ function nextPage() {
 }
 
 
+function changeMiles() {
+  if (auto.value.mileage) mileage1000.value = numberNoSpace(auto.value.mileage) / 1000
+}
 function save() {
   let car: ICar = modifications.value.find((el: any) => el.modificationId = auto.value.modificationId)
 
   let newAuto: ICar = JSON.parse(JSON.stringify(auto.value))
   newAuto.mileage = numberNoSpace(newAuto.mileage)
+  if (typeof newAuto.mileage !== 'number') newAuto.mileage = null
   newAuto.phone = simplePhone(newAuto.phone)
   newAuto.engineType = car.engineType
   newAuto.driveType = car.driveType

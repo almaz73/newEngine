@@ -1,6 +1,8 @@
 <template>
   <div class="frame_pub">
     <div class="container">
+      <h5> 🚀 разработке  </h5>
+
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />
