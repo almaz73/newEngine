@@ -160,12 +160,12 @@
             </div>
 
             <div class="form-group">
-              <label class="required">Комментарии</label>
+              <label class="required">Описание повреждений</label>
               <el-form-item
                   title="Указываются ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)"
                   prop="comment"
                   :rules="{required: true, message: 'Укажите ранее крашенные элементы, все текущие повреждения (узлы, агрегаты, жестянка)', trigger: ['blur','change']}">
-                <el-input type="textarea" v-model="auto.comment" placeholder="Укажите  повреждения"/>
+                <el-input class="textarea_field" type="textarea" size="large" v-model="auto.comment" placeholder="Укажите  повреждения"/>
               </el-form-item>
             </div>
           </div>
@@ -220,7 +220,7 @@
               <label class="required">ФИО</label>
               <el-form-item
                   prop="fullName"
-                  :rules="{required: true, message: 'Не выбрано имя', trigger: ['blur','change']}">
+                  :rules="{required: true, message: 'Не выбрано Имя', trigger: ['blur','change']}">
                 <el-input
                     input-style="500px"
                     @change="saveDatas()"
@@ -241,6 +241,10 @@
           <el-button type="primary" size="large" @click="nextPage()">
             Далее ▷
           </el-button>
+
+          <button  @click="router.push('public2')">
+            .. ▷ ..
+          </button>
         </div>
       </div>
     </div>
@@ -251,6 +255,7 @@
 import {ref} from "vue";
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
 import {
+  checkVIN,
   checkEmptyFields,
   emailValidate,
   formattingPhone,
@@ -260,7 +265,7 @@ import {
 } from "@/pages/pub/somefiles/GlobFuntions.ts";
 import '@/pages/pub/somefiles/style.css'
 import router from "@/router";
-import {ElMessage, ElMessageBox} from "element-plus";
+import { ElMessageBox} from "element-plus";
 
 interface ICar {
   id: number,
@@ -355,16 +360,7 @@ function removeDatas() {
       })
 }
 
-// const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
-const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
 
-function checkVIN(rule: any, value: any, callback: any) {
-  console.log('value = ',value)
-  if (!value || value.length != 17) callback('Поле VIN не заполнено')
-  else if (!value.match(vinRegex)) callback('Ошибочный VIN')
-  else callback()
-
-}
 
 function checkMili(rule: any, value: any, callback: any) {
   if (!value || value < 1000) callback('Не реальный пробег')

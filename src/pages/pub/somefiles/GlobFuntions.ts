@@ -57,3 +57,13 @@ export function checkEmptyFields(formEl: any) {
         return !valid
     })
 }
+
+// const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$");
+const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
+
+export function checkVIN(rule: any, value: any, callback: any) {
+    if (!value) callback('Поле VIN не заполнено')
+    else if (!value.match(vinRegex)  || value.length != 17) callback('Ошибочный VIN')
+    else callback()
+
+}

@@ -1,29 +1,20 @@
 <template>
   <div class="frame_pub">
-    <div class="container">
-      <img src="@/assets/img/loading.gif" alt=""
-           :class="{showwaiter:isWaiting}" class="waiter"
-      />
-      <!--      <div style="margin: auto; width: 243px"><img src="@/pages/pub/images/logo.png"></div>-->
-      <!--      <h1>Онлайн оценка вашего автомобиля</h1>-->
+    <div class="container photo">
+      <h2>Добавьте фото <br>необходимые для оценки автомобиля</h2>
 
-      <div class="form-section">
-        <div class="photo-upload">
-          <p>Добавить фото</p>
-          <p>
-            Не более 10 фотографий одновременно в формате JPG или PNG. Макс. размер одного фото —
-            10MB.
-          </p>
-          <input
-              type="file"
-              id="fileInput"
-              accept="image/jpeg,image/png"
-              multiple
-              style="display: none"
+      <div class="many-photo" :class="{empty:false}" v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">
+        {{ PhotoNumberBuyer[nessasaryPhoto] }}
+
+        <div class="photo-place" style="margin: 12px; min-height: 150px"  @click="currentPhoto=nessasaryPhoto">
+
+
+          <UploadPhotoAutoNew @setNewPhoto="setNewPhoto"
+
+                              :photo="photos[nessasaryPhoto]"
+                              :number="nessasaryPhoto"
+                              :listBigPictures="bigPhotos"
           />
-
-          <el-button type="primary" size="large"  @click="fileAdd()">Выбрать фото</el-button>
-          <div id="file-list-preview"></div>
         </div>
       </div>
 
@@ -33,7 +24,7 @@
           Назад
         </el-button>
         <el-button type="primary" size="large" @click="nextPage()">
-          Описание повреждений ▷
+          Далее ▷
         </el-button>
       </div>
     </div>
@@ -45,77 +36,32 @@ import {ref} from "vue";
 import '@/pages/pub/somefiles/style.css'
 import '@/pages/pub/somefiles/style2.css'
 import router from "@/router";
+import {PhotoNumberBuyer} from "@/utils/globalConstants.ts";
+import UploadPhotoAutoNew from "@/pages/pub/somefiles/UploadPhotoAutoNew.vue";
 
-const isWaiting = ref(false)
-const isDatas = ref(null)
-// const fileListPreview = ref(null)
+const bigPhotos = ref<any>({})
 
-function removeDatas() {
+const photos = ref({})
+const mandatoryPhotoList = [10, 20, 22,  290, 19, 11]
+let currentPhoto = null
 
-}
+function setNewPhoto(url) {
+  console.log('currentPhoto = ', currentPhoto)
+  console.log('file = ', url)
+  if (url) {
 
-
-let fileListPreview = null
-// const fileInput = document.getElementById('fileInput');
-
-
-console.log('fileListPreview = ',fileListPreview)
-
-function fileAdd() {
-  fileListPreview = document.getElementById('file-list-preview');
-  let bt = document.getElementById('fileInput')
-  if (bt) bt.click()
-  bt.addEventListener('change', handleFileSelect);
-}
-
-function handleFileSelect(event) {
-  console.log('fileListPreview = ',fileListPreview)
-
-  fileListPreview.innerHTML = ''; // Очищаем предыдущие превью
-  const files = event.target.files;
-  
-  console.log('files = ',files)
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
-    if (!file.type.startsWith('image/')) {
-      continue;
-    }
-
-    const previewContainer = document.createElement('div');
-    console.log('previewContainer = ',previewContainer)
-    
-    previewContainer.classList.add('file-preview-item');
-
-    const img = document.createElement('img');
-    
-    img.file = file;
-
-    previewContainer.appendChild(img);
-    
-    console.log('previewContainer = ',previewContainer)
-    
-    fileListPreview.appendChild(previewContainer);
-
-    const reader = new FileReader();
-    reader.onload = (function (aImg) {
-      return function (e) {
-        aImg.src = e.target.result;
-      };
-    })(img);
-    reader.readAsDataURL(file);
+    photos.value[currentPhoto] = {bigPhoto :url}
+  } else {
+    photos.value[currentPhoto].file = null
+    photos.value[currentPhoto].url = ''
   }
+  
+  console.log(' photos.value = ', photos.value)
 }
 
 
-function prevPage() {
-  router.push('public')
-}
-
-function nextPage() {
-  router.push('public3')
-}
+const prevPage = () => router.push('public')
+const nextPage = () => router.push('public3')
 
 
 </script>

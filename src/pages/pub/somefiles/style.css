@@ -4,6 +4,11 @@
     --font-size-mobile: 23px;
 }
 
+body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu{
+    display: none;
+    background-color: pink;
+}
+
 .frame_pub .waiter {
     width: 73px;
     position: fixed;
@@ -39,6 +44,11 @@
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.frame_pub .container.photo{
+    padding: 20px 20px 20px 0;
+    text-align: center;
 }
 
 .frame_pub h1 {
@@ -114,9 +124,15 @@
         background: #3498db;
     }
 
-    .el-message__content {
+    .el-message__content , .textarea_field{
         font-size: var(--font-size-mobile) !important;
         font-weight: bold;
+    }
+
+
+
+    .frame_pub .el-form-item__error{
+        font-size: 14px !important;
     }
 
     .frame_pub .form-group {
@@ -134,12 +150,5 @@
 
 
 }
-
-/*.frame_pub .el-input__inner{*/
-/*  min-width: 270px;*/
-/*}*/
-/*.frame_pub .el-input__inner {*/
-/*  max-width: inherit;*/
-/*}*/
 
 
