@@ -3,27 +3,23 @@
 
     <div class="container photo">
 
-      <h5> 🚀 разработке  </h5>
-
       <h2>Добавьте фото <br>необходимые для оценки автомобиля</h2>
 
-      <div class="many-photo" :class="{empty:false}" v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">
-        {{ PhotoNumberBuyer[nessasaryPhoto] }}
+      <div style="display: flex; margin-left: 10px; width: 100%; flex-wrap: wrap; justify-content: space-around"
+          :class="{empty:false}" >
 
-        <div class="photo-place" style="margin: 12px; min-height: 150px"  @click="currentPhoto=nessasaryPhoto">
+         <div @click="currentPhoto=nessasaryPhoto"  v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">
+           <span style="display: flex;
+           align-items: end;
+           width: 150px; flex-wrap: wrap; justify-content: center; min-height: 50px; " >{{ PhotoNumberBuyer[nessasaryPhoto] }}</span>
+            <UploadPhotoJS/>
+          </div>
 
-
-          <UploadPhotoAutoNew @setNewPhoto="setNewPhoto"
-
-                              :photo="photos[nessasaryPhoto]"
-                              :number="nessasaryPhoto"
-                              :listBigPictures="bigPhotos"
-          />
-        </div>
       </div>
 
 
-      <div style="display: flex; justify-content: center">
+
+      <div style="display: flex; justify-content: center; margin: 40px 0">
         <el-button size="large" @click="prevPage()">
           Назад
         </el-button>
@@ -41,27 +37,32 @@ import '@/pages/pub/somefiles/style.css'
 import '@/pages/pub/somefiles/style2.css'
 import router from "@/router";
 import {PhotoNumberBuyer} from "@/utils/globalConstants.ts";
-import UploadPhotoAutoNew from "@/pages/pub/somefiles/UploadPhotoAutoNew.vue";
-
-const bigPhotos = ref<any>({})
+import UploadPhotoJS from "@/pages/pub/somefiles/UploadPhotoJS.vue";
 
 const photos = ref({})
-const mandatoryPhotoList = [10, 20, 22,  290, 19, 11]
+const mandatoryPhotoList = [10, 20, 22, 290, 19, 11]
 let currentPhoto = null
 
-function setNewPhoto(url) {
-  console.log('currentPhoto = ', currentPhoto)
-  console.log('file = ', url)
-  if (url) {
-
-    photos.value[currentPhoto] = {bigPhoto :url}
-  } else {
-    photos.value[currentPhoto].file = null
-    photos.value[currentPhoto].url = ''
-  }
-  
-  console.log(' photos.value = ', photos.value)
-}
+// function setNewPhoto(file) {
+//   console.log('file = ', file)
+//   let zzz = null
+//
+//
+//   if (file && file.fbase64) {
+//     photos.value[currentPhoto] = {file: file.fbase64.split('base64,')[1]}
+//
+//     url = file
+//
+//     // photos.value[currentPhoto] = {url:  file.fbase64.split('base64,')[1]}
+//     // user.value.avatar.file = file.fbase64.split('base64,')[1]
+//     // user.value.avatar.name = file.name
+//   } else {
+//     // user.value.avatar.file = null
+//     // user.value.avatar.url = ''
+//   }
+//
+//   console.log('photos = ', photos)
+// }
 
 
 const prevPage = () => router.push('public')

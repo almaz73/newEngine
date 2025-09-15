@@ -4,7 +4,7 @@
     --font-size-mobile: 22px;
 }
 
-body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu {
+body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .left-menu-logo, .left-menu-opener {
     display: none;
     background-color: pink;
 }
@@ -113,6 +113,13 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu {
 }
 
 .frame_pub .textarea_field textarea {
+    background: #efefef;
+    word-break: break-all;
+}
+
+.frame_pub .buttons img{
+    padding: 5px;
+    margin: 0 2px;
     background: #efefef;
 }
 

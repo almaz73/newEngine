@@ -63,7 +63,72 @@ const vinRegex = new RegExp("^[A-HJ-NPR-Z\\d]{13}\\d{4}$", "i");
 
 export function checkVIN(rule: any, value: any, callback: any) {
     if (!value) callback('Поле VIN не заполнено')
-    else if (!value.match(vinRegex)  || value.length != 17) callback('Ошибочный VIN')
+    else if (!value.match(vinRegex) || value.length != 17) callback('Ошибочный VIN')
     else callback()
+}
 
+/** Отправка Файлов с параметрами */
+export function sendPhoto(file, id, PhotoNumber) {
+    console.log('file, id, PhotoNumber = ', file, id, PhotoNumber)
+
+    let fd = new FormData();
+    fd.append('file', file);
+    fd.append('id', id);
+    fd.append('PhotoNumber', PhotoNumber);
+    fd.append('FileId', 0);
+    // fd.append('AccessLevel', 0);
+
+    console.log('sendPhoto fd = ', fd)
+
+    // return new Promise(function (resolve) {
+    //     $http.post(config.apiUrl + `/Deal/PostAutoAttachment`, fd, {
+    //         transformRequest: angular.identity,
+    //         headers: {'Content-Type': undefined},
+    //     }).then(
+    //         res => resolve(res),
+    //         err => UIkit.notify(err.data && err.data.errorText, {status: 'warning'})
+    //     )
+    // })
+}
+
+export function rotatePhoto(base64Data: string, direction: number, height: number, width: number) {
+    return new Promise((resolve, reject) => {
+        try {
+            const canvas = document.createElement('canvas');
+            const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+
+            if (height < width) {
+                canvas.width = height;
+                canvas.height = width;
+            } else {
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            const img = new Image();
+            img.onload = function () {
+                try {
+                    // Поворачиваем и рисуем изображение
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    if (direction === 10) ctx.rotate(-Math.PI / 2);
+                    if (direction === 20) ctx.rotate(Math.PI / 2);
+                    ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+                    // Получаем base64 повернутого изображения
+                    const rotatedBase64 = canvas.toDataURL('image/jpeg', 1);
+                    resolve(rotatedBase64);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+
+            img.onerror = function () {
+                reject(new Error('Ошибка загрузки изображения'));
+            };
+
+            img.src = base64Data;
+        } catch (error) {
+            reject(error);
+        }
+    });
 }

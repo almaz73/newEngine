@@ -74,7 +74,7 @@
         {{ dealStore.deal.auto.bodyColorName }}
       </div>
 
-      <div class="info-filed">
+      <div class="info-filed" v-if="dealStore.deal.additionalAutoInfo">
         <label class="label l_200">Пробег автомобиля</label>
         {{ dealStore.deal.mileageAuto }}
 

@@ -245,16 +245,13 @@
         </el-form>
         <div style="text-align: center">
           <el-button size="large" class="el-message__content" @click="removeDatas()">
-            Очистить
+            &nbsp; Очистить &nbsp;
           </el-button>
           <el-button type="primary" size="large" @click="nextPage()">
             Сохранить
           </el-button>
 
           <br><br>
-          <button @click="router.push('public2')">
-            🚀 разработке ▷
-          </button>
         </div>
       </div>
     </div>
@@ -363,16 +360,18 @@ function removeDatas() {
     confirmButtonText: 'Да',
     cancelButtonText: 'Нет'
   })
-      .then(() => {
-        localStorage.removeItem('datas')
-        isDatas.value = null
-        auto.value = {}
-        resetForm(formRef.value)
-        models.value = []
-        generations.value = []
-        modifications.value = []
-        years.value = []
-      })
+      .then(() => remove())
+}
+
+function remove() {
+  localStorage.removeItem('datas')
+  isDatas.value = null
+  auto.value = {}
+  resetForm(formRef.value)
+  models.value = []
+  generations.value = []
+  modifications.value = []
+  years.value = []
 }
 
 
@@ -554,7 +553,8 @@ function save() {
     isWaiting.value = false
     if (res.status === 200) {
       ElMessage({message: 'Запрос на оценку успешно отправлен, после оценки с Вами свяжется сотрудник компании Автосеть.РФ', type: 'success', duration: 10000})
-      //router.push('public2')
+      remove()
+      router.push('public2')
     }
   })
 
