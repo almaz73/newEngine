@@ -49,12 +49,18 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
 .frame_pub .container.photo {
     padding: 20px 20px 20px 0;
     text-align: center;
+    padding-left: 18px;
 }
 
 .frame_pub h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #2c3e50;
+}
+
+.frame_pub .avatar-uploader .el-upload {
+    width: 150px;
+    height: 150px;
 }
 
 .frame_pub .form-section {
@@ -118,7 +124,7 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
 }
 
 .frame_pub .buttons img{
-    padding: 5px;
+    padding: 8px;
     margin: 0 2px;
     background: #efefef;
 }
@@ -168,6 +174,10 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     .frame_pub .el-input__wrapper {
         width: 220px;
     }
+    .el-dialog{
+        width: 100% !important;
+    }
+
 
 
 }

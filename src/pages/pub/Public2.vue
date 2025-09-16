@@ -5,14 +5,14 @@
 
       <h2>Добавьте фото <br>необходимые для оценки автомобиля</h2>
 
-      <div style="display: flex; margin-left: 10px; width: 100%; flex-wrap: wrap; justify-content: space-around"
+      <div style="display: flex; width: 100%; flex-wrap: wrap; justify-content: space-around"
           :class="{empty:false}" >
 
          <div @click="currentPhoto=nessasaryPhoto"  v-for="nessasaryPhoto in mandatoryPhotoList" :key="nessasaryPhoto">
            <span style="display: flex;
            align-items: end;
            width: 150px; flex-wrap: wrap; justify-content: center; min-height: 50px; " >{{ PhotoNumberBuyer[nessasaryPhoto] }}</span>
-            <UploadPhotoJS/>
+            <UploadPhotoJS @setNewPhoto="setNewPhoto"/>
           </div>
 
       </div>
@@ -38,31 +38,20 @@ import '@/pages/pub/somefiles/style2.css'
 import router from "@/router";
 import {PhotoNumberBuyer} from "@/utils/globalConstants.ts";
 import UploadPhotoJS from "@/pages/pub/somefiles/UploadPhotoJS.vue";
+import {savePhotoToDB} from "@/pages/pub/somefiles/IndexDBService.ts";
 
 const photos = ref({})
 const mandatoryPhotoList = [10, 20, 22, 290, 19, 11]
 let currentPhoto = null
 
-// function setNewPhoto(file) {
-//   console.log('file = ', file)
-//   let zzz = null
-//
-//
-//   if (file && file.fbase64) {
-//     photos.value[currentPhoto] = {file: file.fbase64.split('base64,')[1]}
-//
-//     url = file
-//
-//     // photos.value[currentPhoto] = {url:  file.fbase64.split('base64,')[1]}
-//     // user.value.avatar.file = file.fbase64.split('base64,')[1]
-//     // user.value.avatar.name = file.name
-//   } else {
-//     // user.value.avatar.file = null
-//     // user.value.avatar.url = ''
-//   }
-//
-//   console.log('photos = ', photos)
-// }
+function setNewPhoto(file:string) {
+  console.log('file = ', file.slice(0, 40))
+  console.log('currentPhoto = ',currentPhoto)
+
+  initDatabase()
+  alert()
+
+}
 
 
 const prevPage = () => router.push('public')

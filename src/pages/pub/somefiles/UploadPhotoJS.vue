@@ -2,13 +2,21 @@
   <div style="min-height: 150px; width:150px">
     <div class="avatar-uploader">
       <div class="el-upload">
-        <i class="el-icon avatar-uploader-icon" @click="upload()">
+        <i  v-if="!showPhoto"
+            class="el-icon avatar-uploader-icon" @click="upload()">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
             <path fill="currentColor"
                   d="M480 480V128a32 32 0 0 1 64 0v352h352a32 32 0 1 1 0 64H544v352a32 32 0 1 1-64 0V544H128a32 32 0 0 1 0-64z">
             </path>
           </svg>
         </i>
+
+        <div
+            v-if="showPhoto"
+            @click="handlePictureCardPreview()"
+            style="background: #00000000; width: 100%; height: 100%">
+        </div>
+
         <input class="el-upload__input" ref="Upload__input" name="file" accept="image/*" capture="camera" type="file">
 
         <div class="photo-upload">
@@ -23,22 +31,36 @@
         <img @click="rotate(20)" alt="" src="@/assets/icons/rotateRight.png">
         <img @click="rotate(10)" alt="" src="@/assets/icons/rotateLeft.png">
       </div>
-      <div style="height: 28px" v-if="!showPhoto"></div>
+      <div style="height: 42px" v-if="!showPhoto"></div>
 
     </div>
   </div>
-
+  <Teleport to="body">
+    <el-dialog v-model="dialogVisible" >
+      <img :src="dialogImageUrl" alt="Preview Image" style="width: 100%; height: 100%" />
+    </el-dialog>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import {ref} from "vue";
 import {rotatePhoto} from "@/pages/pub/somefiles/GlobFuntions.ts";
 
+const emits = defineEmits(['setNewPhoto'])
 const Upload__input = ref(null)
 const imagePreview = ref(null)
 let originalWidth = null
 let originalHeight = null
 const showPhoto = ref(false)
+
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const handlePictureCardPreview = () => {
+  //if (!photoUrl.value) return false
+  dialogImageUrl.value = imagePreview.value.src
+  dialogVisible.value = true
+}
 
 
 
@@ -82,6 +104,9 @@ function photoInp(e) {
         originalHeight = img.height;
       };
       img.src = originalImageData;
+
+      emits('setNewPhoto', originalImageData)
+      // console.log('e = ',e)
     };
 
     reader.readAsDataURL(file);

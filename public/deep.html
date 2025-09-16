@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Загрузка фотографий</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .upload-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:active {
+            background-color: #2980b9;
+            transform: translateY(2px);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .preview-container {
+            width: 100%;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .preview-container.active {
+            display: block;
+        }
+        
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 3px solid #fff;
+        }
+        
+        .delete-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .delete-btn:active {
+            background-color: #c0392b;
+            transform: translateY(2px);
+        }
+        
+        .status-message {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Загрузка фотографии</h1>
+        
+        <div class="instructions">
+            <p>Нажмите кнопку ниже, чтобы сделать фото или выбрать из галереи. Фотография будет сохранена в памяти вашего устройства.</p>
+        </div>
+        
+        <input type="file" id="fileInput" accept="image/*" capture="camera" class="hidden">
+        <button class="upload-btn" id="uploadBtn">Загрузить фотографию</button>
+        
+        <div id="statusMessage" class="status-message hidden"></div>
+        
+        <div class="preview-container" id="previewContainer">
+            <img id="imagePreview" src="" alt="Предварительный просмотр">
+            <button class="delete-btn" id="deleteBtn">Удалить фотографию</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const previewContainer = document.getElementById('previewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            // Проверяем, есть ли сохраненное изображение при загрузке страницы
+            checkSavedImage();
+            
+            // Обработчик клика по кнопке загрузки
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Обработчик выбора файла
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        // Показываем превью
+                        imagePreview.src = e.target.result;
+                        previewContainer.classList.add('active');
+                        
+                        // Сохраняем в localStorage
+                        try {
+                            localStorage.setItem('savedPhoto', e.target.result);
+                            showStatus('Фотография успешно сохранена!', 'success');
+                        } catch (error) {
+                            showStatus('Ошибка при сохранении фотографии. Возможно, недостаточно места.', 'error');
+                            console.error('Ошибка сохранения:', error);
+                        }
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Обработчик кнопки удаления
+            deleteBtn.addEventListener('click', function() {
+                // Удаляем из localStorage
+                localStorage.removeItem('savedPhoto');
+                
+                // Скрываем превью
+                previewContainer.classList.remove('active');
+                imagePreview.src = '';
+                
+                // Сбрасываем значение input
+                fileInput.value = '';
+                
+                showStatus('Фотография удалена.', 'success');
+            });
+            
+            // Функция проверки сохраненного изображения
+            function checkSavedImage() {
+                const savedPhoto = localStorage.getItem('savedPhoto');
+                if (savedPhoto) {
+                    imagePreview.src = savedPhoto;
+                    previewContainer.classList.add('active');
+                }
+            }
+            
+            // Функция показа статуса
+            function showStatus(message, type) {
+                statusMessage.textContent = message;
+                statusMessage.classList.remove('hidden', 'success', 'error');
+                statusMessage.classList.add(type);
+                
+                // Автоматически скрываем сообщение через 3 секунды
+                setTimeout(() => {
+                    statusMessage.classList.add('hidden');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
