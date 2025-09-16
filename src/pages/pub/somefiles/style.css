@@ -177,7 +177,9 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     .el-dialog{
         width: 100% !important;
     }
-
+    .el-message-box__btns{
+        justify-content: center !important
+    }
 
 
 }
