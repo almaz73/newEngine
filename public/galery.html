@@ -137,7 +137,7 @@
             <p>Нажмите кнопку ниже, чтобы сделать фото или выбрать из галереи. Фотография будет сохранена в памяти вашего устройства.</p>
         </div>
         
-        <input type="file" id="fileInput" accept="image/*" capture="camera" class="hidden">
+        <input type="file" id="fileInput" accept="image/*" capture="user" class="hidden">
         <button class="upload-btn" id="uploadBtn">Загрузить фотографию</button>
         
         <div id="statusMessage" class="status-message hidden"></div>
@@ -146,6 +146,19 @@
             <img id="imagePreview" src="" alt="Предварительный просмотр">
             <button class="delete-btn" id="deleteBtn">Удалить фотографию</button>
         </div>
+    </div>
+    <div style="background: #6d6d6d">
+        <input
+                type="file"
+                id="fileInput"
+                accept="image/jpeg,image/png"
+                multiple
+                style="display: none"
+        />
+        <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+            Выбрать фото
+        </button>
+        <div id="file-list"></div>
     </div>
 
     <script>

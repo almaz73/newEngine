@@ -17,7 +17,7 @@
             style="background: #00000000; width: 100%; height: 100%">
         </div>
 
-        <input class="el-upload__input" ref="Upload__input" name="file" accept="image/*" capture="camera" type="file">
+        <input class="el-upload__input" ref="Upload__input" name="file" accept="image/*" capture type="file">
 
         <div class="photo-upload">
           <img ref="imagePreview" alt="" style="width: 100%">
@@ -43,10 +43,11 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {onMounted, ref, watch, watchEffect} from "vue";
 import {rotatePhoto} from "@/pages/pub/somefiles/GlobFuntions.ts";
 
-const emits = defineEmits(['setNewPhoto'])
+const props = defineProps(['src', 'id'])
+const emits = defineEmits(['setNewPhoto', 'deletePhoto'])
 const Upload__input = ref(null)
 const imagePreview = ref(null)
 let originalWidth = null
@@ -56,8 +57,15 @@ const showPhoto = ref(false)
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
 
+
+watchEffect(()=>{
+  if(props.src) {
+    imagePreview.value.src = props.src
+    showPhoto.value = true
+  }
+})
+
 const handlePictureCardPreview = () => {
-  //if (!photoUrl.value) return false
   dialogImageUrl.value = imagePreview.value.src
   dialogVisible.value = true
 }
@@ -67,6 +75,7 @@ const handlePictureCardPreview = () => {
 function deleteFile(){
   imagePreview.value.src = null
   showPhoto.value = false
+  emits('deletePhoto', props.id)
 }
 function rotate(val){
    rotatePhoto(imagePreview.value.src, val, originalHeight, originalWidth).then(res=>{
@@ -106,7 +115,6 @@ function photoInp(e) {
       img.src = originalImageData;
 
       emits('setNewPhoto', originalImageData)
-      // console.log('e = ',e)
     };
 
     reader.readAsDataURL(file);

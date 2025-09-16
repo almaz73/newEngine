@@ -80,7 +80,6 @@
                 <el-select
                     size="large"
                     clearable
-                    filterable
                     @change="setYears(auto.generationId, false)"
                     placeholder="Выберите поколение"
                     v-model="auto.generationId">
@@ -97,7 +96,6 @@
                 <el-select
                     size="large"
                     clearable
-                    filterable
                     placeholder="Выберите год выпуска"
                     @change="getModifications(auto.generationId, false)"
                     v-model="auto.yearReleased">
@@ -118,7 +116,6 @@
                 <el-select
                     size="large"
                     clearable
-                    filterable
                     placeholder="Выберите модификацию"
                     @change="getComplectations(auto.modificationId)"
                     v-model="auto.modificationId">
@@ -214,7 +211,6 @@
                 <el-select
                     size="large"
                     clearable
-                    filterable
                     placeholder="Выберите город"
                     @change="datasSaved()"
                     v-model="auto.city">

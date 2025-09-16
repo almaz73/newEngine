@@ -1,52 +1,41 @@
 let db = null;
-const dbName = "PhotoDB";
-const storeName = "photos";
-const photoKey = "savedPhoto";
+let photoKey: number = 0;
+const dbName: string = "PhotoDB";
+const storeName: string = "photos";
 
 
 export function initDatabase() {
-    const request = indexedDB.open(dbName, 1);
+    return new Promise((resolve) => {
+        const request: IDBOpenDBRequest = indexedDB.open(dbName, 1);
 
-    request.onerror = function (event) {
-        console.error("Ошибка открытия базы данных:", event.target.error);
-        showStatus('Ошибка инициализации базы данных.', 'error');
-    };
+        request.onerror = function (event) {
+            console.error("Ошибка открытия базы данных:", event.target.error);
+        };
 
-    request.onsuccess = function (event) {
-        db = event.target.result;
-        console.log("База данных успешно открыта");
-        // Проверяем, есть ли сохраненное изображение
-        checkSavedImage();
-    };
+        request.onsuccess = function (event: Event) {
+            db = event.target.result;
+            console.log("База данных успешно открыта");
+            resolve(true)
+        };
 
-    request.onupgradeneeded = function (event) {
-        const db = event.target.result;
+        request.onupgradeneeded = function (event: IDBVersionChangeEvent) {
+            const db = event.target.result;
 
-        // Создаем хранилище объектов, если его нет
-        if (!db.objectStoreNames.contains(storeName)) {
-            const objectStore = db.createObjectStore(storeName, {keyPath: 'id'});
-            console.log("Хранилище объектов создано");
-        }
-    };
-}
-
-// Функция проверки сохраненного изображения
-function checkSavedImage() {
-    getPhotoFromDB()
-        .then(photoData => {
-            if (photoData) {
-                imagePreview.src = photoData;
-                previewContainer.classList.add('active');
+            // Создаем хранилище объектов, если его нет
+            if (!db.objectStoreNames.contains(storeName)) {
+                const objectStore = db.createObjectStore(storeName, {keyPath: 'id'});
+                console.log("Хранилище объектов создано");
+                resolve(true)
             }
-        })
-        .catch(error => {
-            console.error('Ошибка при получении фото:', error);
-        });
+        };
+    })
 }
+
 
 // Функция получения фото из IndexedDB
-function getPhotoFromDB() {
+export function getPhotoFromDB(photoK: number) {
     return new Promise((resolve, reject) => {
+        photoKey = photoK
         if (!db) {
             reject(new Error('База данных не инициализирована'));
             return;
@@ -57,21 +46,17 @@ function getPhotoFromDB() {
         const request = objectStore.get(photoKey);
 
         request.onsuccess = function () {
-            if (request.result) {
-                resolve(request.result.data);
-            } else {
-                resolve(null);
-            }
+            if (request.result) resolve(request.result.data);
+            else resolve(null);
         };
 
-        request.onerror = function (event) {
-            reject(event.target.error);
-        };
+        request.onerror = event => reject(event.target.error)
     });
 }
 
-export function savePhotoToDB(photoData) {
+export function savePhotoToDB(photoData: string, photoK:number) {
     return new Promise((resolve, reject) => {
+        photoKey = photoK
         if (!db) {
             reject(new Error('База данных не инициализирована'));
             return;
@@ -79,15 +64,9 @@ export function savePhotoToDB(photoData) {
 
         const transaction = db.transaction([storeName], 'readwrite');
         const objectStore = transaction.objectStore(storeName);
-
         const request = objectStore.put({id: photoKey, data: photoData});
 
-        request.onsuccess = function () {
-            resolve();
-        };
-
-        request.onerror = function (event) {
-            reject(event.target.error);
-        };
+        request.onsuccess = () => resolve();
+        request.onerror = event => reject(event.target.error);
     });
 }
