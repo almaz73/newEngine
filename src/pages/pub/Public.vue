@@ -256,6 +256,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
+import '@/pages/pub/script__pub_sw.js'
 import {usePubStore} from "@/pages/pub/somefiles/pubStore.ts";
 import {
   checkEmptyFields,

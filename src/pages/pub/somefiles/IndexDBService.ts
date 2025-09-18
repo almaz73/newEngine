@@ -14,7 +14,7 @@ export function initDatabase() {
 
         request.onsuccess = function (event: Event) {
             db = event.target.result;
-            console.log("База данных успешно открыта");
+            // console.log("База данных успешно открыта");
             resolve(true)
         };
 

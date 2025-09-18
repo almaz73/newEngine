@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
+import '@/pages/pub/script__pub_sw.js'
 import '@/pages/pub/somefiles/style.css'
 import '@/pages/pub/somefiles/style2.css'
 import router from "@/router";

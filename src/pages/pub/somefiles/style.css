@@ -181,6 +181,9 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
         justify-content: center !important
     }
 
+    .el-message-box__btns button{
+        font-size: var(--font-size-mobile) !important;
+    }
 
 }
 
