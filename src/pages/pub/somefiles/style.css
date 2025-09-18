@@ -6,7 +6,6 @@
 
 body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .left-menu-logo, .left-menu-opener {
     display: none;
-    background-color: pink;
 }
 
 .frame_pub .waiter {
@@ -25,16 +24,42 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
 }
 
 .frame_pub {
-    font-family: 'Roboto', Arial, sans-serif;
     color: #333;
     line-height: 1.6;
     padding: 10px;
-    /*background: linear-gradient(135deg, #a7d5f9 0%, #020a2d 100%); !* Теплый градиент *!*/
-    /*background: linear-gradient(135deg, #f5f1dc 0%, #e9d202 100%); !* Теплый градиент *!*/
-    /*background: linear-gradient(135deg, #d9ffff 0%, #036660 100%); !* Теплый градиент *!*/
     background-color: var(--fon-color);
-    /*background: linear-gradient(135deg, #fcc4c4 0%, #880202 100%); !* Теплый градиент *!*/
 
+    font-family: "Franklin Gothic Book";
+    /*font-family: Gabriola;*/
+    /*font-size: 1.3em;*/
+}
+
+.frame_pub .install-btn {
+    max-width: 800px;
+    width: 100%;
+    padding: 4px;
+    margin-bottom: 4px;
+    text-align: center;
+    background: orange;
+    color: white;
+    font-size: large;
+    cursor: pointer;
+}
+
+.frame_pub.router-window {
+    text-align: center;
+}
+
+.frame_pub #offline-text {
+    opacity: 0;
+    position: fixed;
+    bottom: 0;
+    padding: 8px;
+    background: #999;
+    width: 100%;
+    text-align: center;
+    left: 0;
+    z-index: 1000;
 }
 
 .frame_pub .container {
@@ -123,7 +148,7 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     word-break: break-all;
 }
 
-.frame_pub .buttons img{
+.frame_pub .buttons img {
     padding: 8px;
     margin: 0 2px;
     background: #efefef;
@@ -174,14 +199,16 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     .frame_pub .el-input__wrapper {
         width: 220px;
     }
-    .el-dialog{
+
+    .el-dialog {
         width: 100% !important;
     }
-    .el-message-box__btns{
+
+    .el-message-box__btns {
         justify-content: center !important
     }
 
-    .el-message-box__btns button{
+    .el-message-box__btns button {
         font-size: var(--font-size-mobile) !important;
     }
 

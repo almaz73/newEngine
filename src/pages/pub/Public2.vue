@@ -1,5 +1,9 @@
 <template>
   <div class="frame_pub">
+    <button class="install-btn" style="" id="installBtn">Открыть в приложении</button>
+    <div id="offline-text">
+      Нет подключения к интернету.
+    </div>
 
     <div class="container photo">
 

@@ -57,13 +57,31 @@ async function fetchAssets(e) {
 	}
 }
 
-self.addEventListener("fetch", (event) => {
-	event.respondWith(fetchAssets(event))
-	if (tryNetwork) {
-		let isNet = tryNetwork(event.request, 400)
-		isNet && isNet.cache && event.respondWith(isNet.cache(() => getFromCache(event.request)))
-	}
+// Обработка запросов (стратегия "Cache first")
+self.addEventListener('fetch', event => {
+	event.respondWith(
+		caches.match(event.request).then(cachedResponse => {
+			// Если ресурс есть в кэше, возвращаем его
+			if (cachedResponse) return cachedResponse;
 
+			// Если ресурса нет в кэше, делаем запрос к сети
+			return fetch(event.request).catch(error => {
+				// Запрос к сети не удался, скорее всего, из-за отсутствия подключения.
+				console.log('Не удалось получить; отправка автономного сообщения клиенту.', error);
 
+				// Отправляем сообщение всем клиентам (открытым вкладкам)
+				self.clients.matchAll().then(clients => {
+					clients.forEach(client => {
+						client.postMessage({ type: 'STATUS_UPDATE', payload: { online: false } });
+					});
+				});
+
+				// Важно: после отправки сообщения нужно что-то вернуть.
+				// Пробрасываем ошибку дальше, чтобы запрос завершился неудачей,
+				// как и ожидается при отсутствии сети.
+				throw error;
+			});
+		})
+	);
 });
 
