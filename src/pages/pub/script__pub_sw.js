@@ -101,7 +101,6 @@ function installAndStateButtons() {
     }
 
     window.addEventListener('beforeinstallprompt', e => {
-        console.log('33333 = ',33333)
         e.preventDefault()
         deferredPrompt = e
         installBtn.style.display = 'block'
@@ -112,7 +111,7 @@ function installAndStateButtons() {
 
         installBtn.addEventListener('click', () => {
             installBtn.style.display = 'none'
-            deferredPrompt.prompt()
+            // deferredPrompt.prompt()
             deferredPrompt.userChoice.then(choiceResult => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('Пользователь принял предложение установки')
