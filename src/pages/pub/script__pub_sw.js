@@ -7,10 +7,10 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker
             .register('sw_pub.js')
             .then(function (registration) {
-                console.log('ServiceWorker зарегистрирован успешно!')
+                console.log('ServiceWorker ОЦЕНКИ зарегистрирован!')
             })
             .catch(function (error) {
-                console.log('Ошибка регистрации ServiceWorker:', error)
+                console.log('Ошибка регистрации SW ОЦЕНКИ:', error)
             })
     })
 }

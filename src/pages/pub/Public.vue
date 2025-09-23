@@ -1,6 +1,6 @@
 <template>
   <div class="frame_pub">
-    <button class="install-btn" style="" id="installBtn">Открыть в приложении</button>
+    <button class="install-btn" id="installBtn">Открыть в приложении</button>
     <div id="offline-text">
       Нет подключения к интернету.
     </div>
@@ -414,10 +414,6 @@ if (datas) {
 function fillDields(datas: any) {
   // заполняем созраненными данными
   auto.value = {}
-
-  console.log('datas = ', datas)
-
-  console.log('auto.value = ', auto.value)
 
   Object.assign(auto.value, datas)
   if (auto.value.brandId) getModels(auto.value.brandId, true)
