@@ -1,5 +1,6 @@
 const CACHE_NAME = 'my-public_01'; // При обновлении приложения измените эту версию, например, на 'my-garage-v4'
 
+// todo - serviceWorker сломался по причине, что не может найти файлы для кэша, нужно потом поправить
 
 const tryNetwork = (req, timeout) => {
 	if (!navigator.onLine) return false
