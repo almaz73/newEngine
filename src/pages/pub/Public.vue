@@ -1,9 +1,9 @@
 <template>
   <div class="frame_pub">
-    <button class="install-btn" id="installBtn">Открыть в приложении</button>
-    <div id="offline-text">
-      Нет подключения к интернету.
-    </div>
+<!--    <button class="install-btn" style="" id="installBtn">Открыть в приложении</button>-->
+<!--    <div id="offline-text">-->
+<!--      Нет подключения к интернету.-->
+<!--    </div>-->
     <div class="container">
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
@@ -197,12 +197,13 @@
 
             <div class="form-group">
               <label>Email</label>
-
-              <el-input placeholder="Email"
-                        clearable
-                        size="large"
-                        @change="emailValidate(auto.email); datasSaved()"
-                        title="Email" v-model="auto.email"/>
+              <el-form-item>
+                <el-input placeholder="Email"
+                          clearable
+                          size="large"
+                          @change="emailValidate(auto.email); datasSaved()"
+                          title="Email" v-model="auto.email"/>
+              </el-form-item>
             </div>
           </div>
 
@@ -415,6 +416,10 @@ function fillDields(datas: any) {
   // заполняем созраненными данными
   auto.value = {}
 
+  console.log('datas = ', datas)
+
+  console.log('auto.value = ', auto.value)
+
   Object.assign(auto.value, datas)
   if (auto.value.brandId) getModels(auto.value.brandId, true)
   if (auto.value.modelId) getGenerations(auto.value.modelId, true)
@@ -551,7 +556,7 @@ function save() {
     if (res.status === 200) {
       ElMessage({message: 'Запрос на оценку успешно отправлен, после оценки с Вами свяжется сотрудник компании Автосеть.РФ', type: 'success', duration: 10000})
       remove()
-      router.push('public2')
+      // router.push('public2')
     }
   })
 

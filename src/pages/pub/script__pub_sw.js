@@ -2,17 +2,17 @@
 import {onMounted} from "vue";
 
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-        installAndStateButtons()
-        navigator.serviceWorker
-            .register('sw_pub.js')
-            .then(function (registration) {
-                console.log('ServiceWorker ОЦЕНКИ зарегистрирован!')
-            })
-            .catch(function (error) {
-                console.log('Ошибка регистрации SW ОЦЕНКИ:', error)
-            })
-    })
+    // window.addEventListener('load', function () {
+    //     installAndStateButtons()
+    //     navigator.serviceWorker
+    //         .register('sw_pub.js')
+    //         .then(function (registration) {
+    //             console.log('ServiceWorker зарегистрирован успешно!')
+    //         })
+    //         .catch(function (error) {
+    //             console.log('Ошибка регистрации ServiceWorker:', error)
+    //         })
+    // })
 }
 
 
@@ -101,6 +101,7 @@ function installAndStateButtons() {
     }
 
     window.addEventListener('beforeinstallprompt', e => {
+        console.log('33333 = ',33333)
         e.preventDefault()
         deferredPrompt = e
         installBtn.style.display = 'block'
@@ -111,7 +112,7 @@ function installAndStateButtons() {
 
         installBtn.addEventListener('click', () => {
             installBtn.style.display = 'none'
-            // deferredPrompt.prompt()
+            deferredPrompt.prompt()
             deferredPrompt.userChoice.then(choiceResult => {
                 if (choiceResult.outcome === 'accepted') {
                     console.log('Пользователь принял предложение установки')

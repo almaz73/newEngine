@@ -37,22 +37,24 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
 .frame_pub .install-btn {
     max-width: 800px;
     width: 100%;
-    padding: 12px;
+    padding: 4px;
     margin-bottom: 4px;
     text-align: center;
-    background: #328981;
+    background: orange;
     color: white;
     font-size: large;
     cursor: pointer;
-    border: none;
-    margin: 0 auto 4px;
+}
+
+.frame_pub.router-window {
+    text-align: center;
 }
 
 .frame_pub #offline-text {
     opacity: 0;
     position: fixed;
     bottom: 0;
-    padding: 0;
+    padding: 8px;
     background: #999;
     width: 100%;
     text-align: center;
