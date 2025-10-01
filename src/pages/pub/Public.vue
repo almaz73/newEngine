@@ -14,7 +14,7 @@
       <div class="form-section">
         <el-form ref="formRef" :model="auto">
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group vin">
               <label class="required">VIN номер</label>
 
               <el-form-item
@@ -138,10 +138,10 @@
 
             </div>
 
-            <div class="form-group" style="max-width: 360px">
+            <div class="form-group">
 
               <label class="required">Пробег</label>
-              <span style="float: right">км</span>
+              <span class="km">км</span>
               <el-form-item
                   prop="mileage"
                   :rules="{validator: checkMili, equired: true, message: 'Не выбран Пробег', trigger: ['blur','change']}">
@@ -257,7 +257,7 @@
         </el-form>
         <div style="text-align: center">
           <el-button size="large" class="el-message__content" @click="removeDatas()">
-            &nbsp; Очистить &nbsp;
+            &nbsp;&nbsp;&nbsp; Очистить &nbsp;&nbsp;&nbsp;
           </el-button>
           <el-button type="primary" size="large" @click="nextPage()">
             Сохранить

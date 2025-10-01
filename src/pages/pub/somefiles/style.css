@@ -34,6 +34,23 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     /*font-size: 1.3em;*/
 }
 
+@media (min-width: 600px) {
+    .frame_pub {
+        background-color: inherit;
+    }
+    .el-form-item__content{
+        justify-content: center;
+    }
+    .frame_pub .vin .el-form-item__error{
+        left: 32%;
+    }
+}
+
+.frame_pub .km{
+    float: right;
+    margin: 8px 40px 0;
+}
+
 .frame_pub .install-btn {
     max-width: 800px;
     width: 100%;
@@ -103,6 +120,7 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     flex: 1 0 0;
     padding: 0 30px 0 20px;
     margin-bottom: 15px;
+    max-width: 360px;
 }
 
 .frame_pub label {
