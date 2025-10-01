@@ -29,7 +29,7 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     padding: 10px;
     background-color: var(--fon-color);
 
-    font-family: "Franklin Gothic Book";
+    /*font-family: "Franklin Gothic Book";*/
     /*font-family: Gabriola;*/
     /*font-size: 1.3em;*/
 }
@@ -154,14 +154,20 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
     background: #efefef;
 }
 
+.el-select-dropdown__item.two_row {
+    height: 50px;
+    white-space: break-spaces;
+    line-height: 20px;
+}
+
 
 @media (max-width: 600px) {
-    .el-select--large .el-select__wrapper {
+    .frame_pub .el-select--large .el-select__wrapper {
         font-size: var(--font-size-mobile) !important;
         font-weight: bold;
     }
 
-    .el-select-dropdown__item {
+    .el-select-dropdown__item.frame_pub_st {
         font-size: var(--font-size-mobile) !important;
         font-weight: bold;
     }
@@ -172,13 +178,18 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
         background: #3498db;
     }
 
-    .el-message__content, .textarea_field, .el-input__inner {
+    .frame_pub .el-message__content, .frame_pub .textarea_field, .frame_pub .el-input__inner {
         font-size: var(--font-size-mobile) !important;
         font-weight: bold;
     }
 
 
-    .el-message {
+    .el-select-dropdown__item.two_row {
+        height: 73px;
+    }
+
+
+    .frame_pub .el-message {
         width: 330px !important;
     }
 
@@ -200,17 +211,19 @@ body:has(div.frame_pub) .left-menu-div, body:has(div.frame_pub) .head_menu, .lef
         width: 220px;
     }
 
-    .el-dialog {
+    .frame_pub .el-dialog {
         width: 100% !important;
+        background: yellow;
     }
 
-    .el-message-box__btns {
-        justify-content: center !important
+    .frame_pub .el-message-box__btns {
+        justify-content: center !important;
     }
 
-    .el-message-box__btns button {
+    .frame_pub .el-message-box__btns button {
         font-size: var(--font-size-mobile) !important;
     }
+
 
 }
 

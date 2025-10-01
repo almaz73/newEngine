@@ -1,14 +1,14 @@
 <template>
   <div class="frame_pub">
-<!--    <button class="install-btn" style="" id="installBtn">Открыть в приложении</button>-->
-<!--    <div id="offline-text">-->
-<!--      Нет подключения к интернету.-->
-<!--    </div>-->
+    <!--    <button class="install-btn" style="" id="installBtn">Открыть в приложении</button>-->
+    <!--    <div id="offline-text">-->
+    <!--      Нет подключения к интернету.-->
+    <!--    </div>-->
     <div class="container">
       <img src="@/assets/img/loading.gif" alt=""
            :class="{showwaiter:isWaiting}" class="waiter"
       />
-      <div style="margin: auto; width: 243px"><img src="@/pages/pub/somefiles/images/logo.png"></div>
+      <div style="margin: auto; width: 243px"><img src="@/pages/pub/somefiles/images/logo.png" alt=""></div>
       <h1>Онлайн оценка вашего автомобиля</h1>
 
       <div class="form-section">
@@ -50,7 +50,9 @@
                     placeholder="Выберите марку"
                     @change="getModels(auto.brandId, false)"
                     v-model="auto.brandId">
-                  <el-option v-for="item in brands" :key="item.id" :label="item.name" :value="item.id"/>
+                  <el-option v-for="item in brands"
+                             class="frame_pub_st"
+                             :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
             </div>
@@ -68,7 +70,9 @@
                     placeholder="Выберите модель"
                     @change="getGenerations(auto.modelId, false)"
                     v-model="auto.modelId">
-                  <el-option v-for="item in models" :key="item.id" :label="item.name" :value="item.id"/>
+                  <el-option v-for="item in models"
+                             class="frame_pub_st"
+                             :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
             </div>
@@ -87,7 +91,9 @@
                     @change="setYears(auto.generationId, false)"
                     placeholder="Выберите поколение"
                     v-model="auto.generationId">
-                  <el-option v-for="item in generations" :key="item.id" :label="item.name" :value="item.id"/>
+                  <el-option v-for="item in generations"
+                             class="frame_pub_st"
+                             :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
             </div>
@@ -103,7 +109,9 @@
                     placeholder="Выберите год выпуска"
                     @change="getModifications(auto.generationId, false)"
                     v-model="auto.yearReleased">
-                  <el-option v-for="item in years" :key="item" :label="item" :value="item"/>
+                  <el-option v-for="item in years"
+                             class="frame_pub_st"
+                             :key="item" :label="item" :value="item"/>
                 </el-select>
               </el-form-item>
 
@@ -123,7 +131,8 @@
                     placeholder="Выберите модификацию"
                     @change="getComplectations(auto.modificationId)"
                     v-model="auto.modificationId">
-                  <el-option v-for="item in modifications" :key="item.id" :label="item.name_short" :value="item.id"/>
+                  <el-option class="two_row frame_pub_st" v-for="item in modifications"
+                             :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
               </el-form-item>
 
@@ -147,9 +156,9 @@
 
               <el-slider
                   :show-tooltip="false"
-                  v-model="mileage1000"
+                  v-model="mileage500"
                   style="max-width: 300px"
-                  @input="auto.mileage=numberWithSpaces(mileage1000 * 5000)"/>
+                  @input="auto.mileage=numberWithSpaces(mileage500 * 5000)"/>
 
             </div>
           </div>
@@ -219,7 +228,9 @@
                     placeholder="Выберите город"
                     @change="datasSaved()"
                     v-model="auto.city">
-                  <el-option v-for="item in cities" :key="item" :label="item" :value="item"/>
+                  <el-option v-for="item in cities"
+                             class="frame_pub_st"
+                             :key="item" :label="item" :value="item"/>
                 </el-select>
               </el-form-item>
 
@@ -273,7 +284,6 @@ import {
   simplePhone
 } from "@/pages/pub/somefiles/GlobFuntions.ts";
 import '@/pages/pub/somefiles/style.css'
-import router from "@/router";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 interface ICar {
@@ -352,7 +362,7 @@ const cities = ["Алматы",
   "Чебоксары",
   "Челябинск",
   "Чехов"]
-const mileage1000 = ref(null)
+const mileage500 = ref(null)
 const formRef = ref()
 const resetForm = (formEl: any) => formEl && formEl.resetFields()
 
@@ -424,7 +434,7 @@ function fillDields(datas: any) {
   if (auto.value.brandId) getModels(auto.value.brandId, true)
   if (auto.value.modelId) getGenerations(auto.value.modelId, true)
   if (auto.value.generationId) getModifications(auto.value.generationId, true)
-  if (auto.value.mileage) mileage1000.value = numberNoSpace(auto.value.mileage) / 1000
+  if (auto.value.mileage) mileage500.value = numberNoSpace(auto.value.mileage) / 1000
 
   auto.value.email = auto.value.email || ''
 }
@@ -500,7 +510,7 @@ function getGenerations(id: number, noClear) {
   })
 }
 
-function getModifications(id: number, noClear) {
+function getModifications(id: number) {
 
   if (!id) return false
 
@@ -508,17 +518,13 @@ function getModifications(id: number, noClear) {
   isWaiting.value = true
   pubStore.getModifications(id).then(res => {
     modifications.value = res.data
-    modifications.value = res.data.map(el => {
-      el.name_short = el.name.split('\n')[0] + ' (' + el.engineTypeName + ')'
-      return el
-    })
     datasSaved()
     isWaiting.value = false
   })
 }
 
 function getComplectations(id: number) {
-  pubStore.getComplectations(id).then(res => {
+  pubStore.getComplectations(id).then(() => {
     datasSaved()
   })
 }
@@ -532,14 +538,14 @@ function nextPage() {
 
 
 function changeMiles() {
-  if (auto.value.mileage) mileage1000.value = numberNoSpace(auto.value.mileage) / 1000
+  if (auto.value.mileage) mileage500.value = numberNoSpace(auto.value.mileage) / 5000
 }
+
 function save() {
   let car: ICar = modifications.value.find((el: any) => el.modificationId = auto.value.modificationId)
 
   let newAuto: ICar = JSON.parse(JSON.stringify(auto.value))
   newAuto.mileage = numberNoSpace(newAuto.mileage)
-  if (typeof newAuto.mileage !== 'number') newAuto.mileage = null
   newAuto.phone = simplePhone(newAuto.phone)
   newAuto.engineType = car.engineType
   newAuto.driveType = car.driveType
@@ -554,11 +560,15 @@ function save() {
   pubStore.saveExternalAppeal(newAuto).then(res => {
     isWaiting.value = false
     if (res.status === 200) {
-      ElMessage({message: 'Запрос на оценку успешно отправлен, после оценки с Вами свяжется сотрудник компании Автосеть.РФ', type: 'success', duration: 10000})
+      ElMessage({
+        message: 'Запрос на оценку успешно отправлен, после оценки с Вами свяжется сотрудник компании Автосеть.РФ',
+        type: 'success',
+        duration: 10000
+      })
       remove()
       // router.push('public2')
     }
-  })
+  }, () => isWaiting.value = false)
 
 }
 
